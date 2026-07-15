@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_form_campo_testos",
+  "info": {
+    "displayName": "Campo Testo",
+    "description": "Input testo singola riga"
+  },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "nome": { "type": "string", "required": true },
+    "placeholder": { "type": "string" },
+    "required": { "type": "boolean", "default": false },
+    "larghezza": {
+      "type": "enumeration",
+      "enum": ["full", "half", "third"],
+      "default": "full"
+    }
+  }
+}

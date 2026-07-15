@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_form_campo_textareas",
+  "info": {
+    "displayName": "Campo Textarea",
+    "description": "Testo libero multiriga"
+  },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "nome": { "type": "string", "required": true },
+    "placeholder": { "type": "string" },
+    "righe": { "type": "integer", "default": 5 },
+    "required": { "type": "boolean", "default": false },
+    "larghezza": {
+      "type": "enumeration",
+      "enum": ["full", "half", "third"],
+      "default": "full"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "form_submissions",
+  "info": {
+    "singularName": "form-submission",
+    "pluralName": "form-submissions",
+    "displayName": "Form Submission",
+    "description": "Dati inviati da qualsiasi form dinamico"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "form": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::form.form",
+      "inversedBy": "submissions"
+    },
+    "dati": {
+      "type": "json",
+      "required": true
+    },
+    "letto": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

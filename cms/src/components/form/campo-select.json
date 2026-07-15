@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_form_campo_selects",
+  "info": {
+    "displayName": "Campo Select",
+    "description": "Menu a tendina — opzioni una per riga"
+  },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "nome": { "type": "string", "required": true },
+    "opzioni": { "type": "text", "required": true },
+    "required": { "type": "boolean", "default": false },
+    "larghezza": {
+      "type": "enumeration",
+      "enum": ["full", "half", "third"],
+      "default": "full"
+    }
+  }
+}

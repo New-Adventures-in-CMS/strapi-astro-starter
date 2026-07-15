@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_form_campo_checkboxes",
+  "info": {
+    "displayName": "Campo Checkbox",
+    "description": "Casella di spunta"
+  },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "nome": { "type": "string", "required": true },
+    "required": { "type": "boolean", "default": false },
+    "larghezza": {
+      "type": "enumeration",
+      "enum": ["full", "half", "third"],
+      "default": "full"
+    }
+  }
+}

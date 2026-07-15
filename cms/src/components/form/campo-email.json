@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_form_campo_emails",
+  "info": {
+    "displayName": "Campo Email",
+    "description": "Input email con validazione formato"
+  },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "nome": { "type": "string", "required": true },
+    "placeholder": { "type": "string" },
+    "required": { "type": "boolean", "default": true },
+    "larghezza": {
+      "type": "enumeration",
+      "enum": ["full", "half", "third"],
+      "default": "full"
+    }
+  }
+}
