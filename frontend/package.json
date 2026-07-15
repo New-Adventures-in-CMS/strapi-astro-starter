@@ -7,7 +7,8 @@
     "dev": "astro dev --port 4321",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "setup": "node scripts/generate-env.js"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.5",

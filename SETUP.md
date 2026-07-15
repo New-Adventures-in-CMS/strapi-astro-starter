@@ -26,7 +26,19 @@ strapi-astro-starter/
 
 ---
 
-## Setup CMS
+## Setup rapido (dalla root del progetto)
+
+```bash
+npm run install:all   # installa dipendenze CMS + frontend
+npm run setup         # genera cms/.env con secrets casuali + frontend/.env
+npm run dev           # avvia CMS (porta 1337) e frontend (porta 4321) in parallelo
+```
+
+Poi completa la configurazione manuale al passo 4.
+
+---
+
+## Setup CMS (manuale, se preferisci)
 
 ### 1. Installa dipendenze
 
@@ -35,55 +47,19 @@ cd cms
 npm install
 ```
 
-### 2. Crea `.env`
+### 2. Genera `.env` con secrets automatici
 
 ```bash
-cp .env.example .env
+npm run setup
 ```
 
-Ora genera i secrets uno alla volta. Ogni comando stampa un valore casuale — copialo e incollalo nella variabile corrispondente nel file `.env`.
+Lo script legge `.env.example`, genera tutti i secrets crittografici e scrive `cms/.env` pronto all'uso:
 
-**APP_KEYS** — servono 4 valori separati da virgola. Esegui 4 volte:
+- `APP_KEYS` — 4 valori base64 casuali separati da virgola
+- `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT` — base64 casuale (32 byte)
+- `ENCRYPTION_KEY` — hex casuale (16 byte)
 
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
-
-Nel `.env` il risultato è una lista: `APP_KEYS=valore1,valore2,valore3,valore4`
-
-**API_TOKEN_SALT** — esegui una volta:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
-
-**ADMIN_JWT_SECRET** — esegui una volta:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
-
-**TRANSFER_TOKEN_SALT** — esegui una volta:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
-
-**ENCRYPTION_KEY** — formato diverso (hex, 16 byte):
-
-```bash
-node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"
-```
-
-Il `.env` compilato deve avere tutte le variabili valorizzate:
-
-```env
-APP_KEYS=abc123==,def456==,ghi789==,jkl012==
-API_TOKEN_SALT=...
-ADMIN_JWT_SECRET=...
-TRANSFER_TOKEN_SALT=...
-ENCRYPTION_KEY=...
-```
+> Se `.env` esiste già, lo script si ferma con errore — cancellalo prima di rigenerare.
 
 ### 3. Avvia
 
@@ -104,9 +80,11 @@ Al primo avvio crea utente admin. Poi:
   - Qualsiasi altra collection che il frontend deve leggere pubblicamente
 - **Navigation plugin** — crea le voci di menu (slug: `main`)
 
+> I permessi Public vengono configurati automaticamente dal bootstrap in `cms/src/index.ts` al primo avvio.
+
 ---
 
-## Setup Frontend
+## Setup Frontend (manuale, se preferisci)
 
 ### 1. Installa dipendenze
 
@@ -118,10 +96,14 @@ npm install
 ### 2. Crea `.env`
 
 ```bash
-cp .env.example .env
+npm run setup
 ```
 
-Incolla l'API token generato nel CMS.
+Copia `frontend/.env.example` → `frontend/.env`. Poi incolla il token Strapi:
+
+```env
+STRAPI_API_TOKEN=il-token-copiato-dall-admin
+```
 
 ### 3. Avvia
 

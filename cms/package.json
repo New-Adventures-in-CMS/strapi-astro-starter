@@ -6,7 +6,8 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "build": "strapi build",
-    "deploy": "strapi deploy"
+    "deploy": "strapi deploy",
+    "setup": "node scripts/generate-env.js"
   },
   "dependencies": {
     "@devxcommerce/strapi-plugin-cm-groups": "^1.9.3",
