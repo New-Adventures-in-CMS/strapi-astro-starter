@@ -6,13 +6,13 @@ Stack testato e validato su un progetto reale. Pronto per sviluppare nuovi siti.
 
 ## Stack
 
-| Layer | Versione | Porta |
-|-------|---------|-------|
-| Strapi 5 (CMS) | 5.50.1 | 1337 |
-| Astro 5 (Frontend) | 5.18.2 | 4321 |
-| Tailwind CSS | v4 | — |
-| Database | SQLite (dev) / PostgreSQL (prod) | — |
-| Node.js | ≥ 20 | — |
+| Layer              | Versione                         | Porta |
+| ------------------ | -------------------------------- | ----- |
+| Strapi 5 (CMS)     | 5.50.1                           | 1337  |
+| Astro 5 (Frontend) | 5.18.2                           | 4321  |
+| Tailwind CSS       | v4                               | —     |
+| Database           | SQLite (dev) / PostgreSQL (prod) | —     |
+| Node.js            | ≥ 20                             | —     |
 
 ---
 
@@ -41,17 +41,48 @@ npm install
 cp .env.example .env
 ```
 
-Genera i secrets:
+Ora genera i secrets uno alla volta. Ogni comando stampa un valore casuale — copialo e incollalo nella variabile corrispondente nel file `.env`.
+
+**APP_KEYS** — servono 4 valori separati da virgola. Esegui 4 volte:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-Ripeti 4 volte per: `APP_KEYS` (array separato da virgole), `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`.
+Nel `.env` il risultato è una lista: `APP_KEYS=valore1,valore2,valore3,valore4`
 
-Per `ENCRYPTION_KEY`:
+**API_TOKEN_SALT** — esegui una volta:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+**ADMIN_JWT_SECRET** — esegui una volta:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+**TRANSFER_TOKEN_SALT** — esegui una volta:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+**ENCRYPTION_KEY** — formato diverso (hex, 16 byte):
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"
+```
+
+Il `.env` compilato deve avere tutte le variabili valorizzate:
+
+```env
+APP_KEYS=abc123==,def456==,ghi789==,jkl012==
+API_TOKEN_SALT=...
+ADMIN_JWT_SECRET=...
+TRANSFER_TOKEN_SALT=...
+ENCRYPTION_KEY=...
 ```
 
 ### 3. Avvia
@@ -104,14 +135,14 @@ Frontend disponibile su `http://localhost:4321`.
 
 ## Plugin CMS inclusi
 
-| Plugin | Stato | Funzione |
-|--------|-------|---------|
-| `strapi-plugin-navigation` | installato | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE` |
-| `@devxcommerce/strapi-plugin-cm-groups` | installato | Raggruppa collection nell'admin sidebar |
-| `strapi-plugin-sortable-entries` | installato | Drag-and-drop ordinamento nelle liste |
-| `@strapi/provider-email-nodemailer` | installato | Email via SMTP |
-| `@strapi/plugin-seo` | installato | Campi SEO (meta title, description, og image) su qualsiasi collection |
-| `@strapi/plugin-i18n` | bundled, disabilitato | Internazionalizzazione multi-lingua — abilitare subito se serve, difficile aggiungere dopo |
+| Plugin                                  | Stato                 | Funzione                                                                                   |
+| --------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
+| `strapi-plugin-navigation`              | installato            | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE`                     |
+| `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                    |
+| `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                      |
+| `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                             |
+| `@strapi/plugin-seo`                    | installato            | Campi SEO (meta title, description, og image) su qualsiasi collection                      |
+| `@strapi/plugin-i18n`                   | bundled, disabilitato | Internazionalizzazione multi-lingua — abilitare subito se serve, difficile aggiungere dopo |
 
 ### Abilitare i18n
 
@@ -144,13 +175,13 @@ Il submit va a `POST /api/form-submissions/submit` (endpoint pubblico, no auth).
 
 ### Tipi di campo disponibili
 
-| Tipo | Descrizione |
-|------|------------|
-| `campo-testo` | Input testo singola riga |
-| `campo-email` | Input email |
-| `campo-textarea` | Area testo multiriga |
-| `campo-select` | Menu a tendina |
-| `campo-checkbox` | Casella di spunta |
+| Tipo             | Descrizione              |
+| ---------------- | ------------------------ |
+| `campo-testo`    | Input testo singola riga |
+| `campo-email`    | Input email              |
+| `campo-textarea` | Area testo multiriga     |
+| `campo-select`   | Menu a tendina           |
+| `campo-checkbox` | Casella di spunta        |
 
 Ogni campo ha `larghezza`: `full` (100%), `half` (50%), `third` (33%).
 
@@ -296,9 +327,9 @@ npm run start
 
 ## Gotcha noti
 
-| Problema | Causa | Fix |
-|---------|-------|-----|
-| `env('X', default)` restituisce `''` | Variabile presente ma vuota nel `.env` | Usa `env('X') \|\| 'default'` oppure rimuovi la variabile dal `.env` |
-| Template literal dentro JSX Astro | `Record<T, K>` viene letto come JSX tag | Sposta type annotation nel frontmatter |
-| `TypeError: Cannot read properties of undefined (reading 'kind')` | Spread di `createCoreRouter().routes` dentro oggetto `routes` | Due file separati nella cartella `routes/` |
-| Warning `No adapter installed` | `output: "server"` senza adapter | `@astrojs/node` già incluso nel boilerplate |
+| Problema                                                          | Causa                                                         | Fix                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `env('X', default)` restituisce `''`                              | Variabile presente ma vuota nel `.env`                        | Usa `env('X') \|\| 'default'` oppure rimuovi la variabile dal `.env` |
+| Template literal dentro JSX Astro                                 | `Record<T, K>` viene letto come JSX tag                       | Sposta type annotation nel frontmatter                               |
+| `TypeError: Cannot read properties of undefined (reading 'kind')` | Spread di `createCoreRouter().routes` dentro oggetto `routes` | Due file separati nella cartella `routes/`                           |
+| Warning `No adapter installed`                                    | `output: "server"` senza adapter                              | `@astrojs/node` già incluso nel boilerplate                          |
