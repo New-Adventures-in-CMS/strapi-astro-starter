@@ -23,16 +23,16 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 
 ## Cosa c'è già incluso
 
-| Cosa | Dove | Descrizione |
-|------|------|-------------|
+| Cosa                  | Dove           | Descrizione                                                                 |
+| --------------------- | -------------- | --------------------------------------------------------------------------- |
 | Sistema form dinamici | CMS + Frontend | Crei un form in Strapi, lo metti in qualsiasi pagina con una riga di codice |
-| Plugin navigazione | CMS | Gestisci il menu del sito dall'admin Strapi |
-| Plugin gruppi | CMS | Organizza le collection nella sidebar dell'admin |
-| Plugin ordinamento | CMS | Riordina le voci con drag-and-drop |
-| Email SMTP | CMS | Strapi invia email quando arriva una submission |
-| Utility API | Frontend | Funzioni pronte per chiamare Strapi da Astro |
-| Tailwind CSS v4 | Frontend | Sistema di stili già configurato |
-| Adapter produzione | Frontend | Pronto per il build con Node.js |
+| Plugin navigazione    | CMS            | Gestisci il menu del sito dall'admin Strapi                                 |
+| Plugin gruppi         | CMS            | Organizza le collection nella sidebar dell'admin                            |
+| Plugin ordinamento    | CMS            | Riordina le voci con drag-and-drop                                          |
+| Email SMTP            | CMS            | Strapi invia email quando arriva una submission                             |
+| Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                |
+| Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                            |
+| Adapter produzione    | Frontend       | Pronto per il build con Node.js                                             |
 
 ---
 
@@ -93,93 +93,69 @@ strapi-astro-starter/
 
 ## Installazione passo per passo
 
-### Passo 1 — Prepara le variabili d'ambiente del CMS
-
-Le variabili d'ambiente sono configurazioni sensibili (password, chiavi) che non si mettono nel codice. Vanno in un file `.env` che non viene mai condiviso.
+### Passo 1 — Clona il progetto
 
 ```bash
-cd cms
-cp .env.example .env
+git clone https://github.com/asimonato/strapi-astro-starter.git nome-progetto
+cd nome-progetto
 ```
 
-Ora apri `cms/.env` con l'editor e genera i valori per i campi obbligatori.
+Sostituisci `nome-progetto` con il nome del tuo sito.
 
-Per generare un valore casuale sicuro, esegui questo comando nel terminale (ripetilo per ogni campo):
+### Passo 2 — Installa le dipendenze
 
 ```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+npm run install:all
 ```
 
-Compila questi campi in `cms/.env`:
+Scarica tutte le librerie necessarie per CMS e frontend. Può richiedere qualche minuto.
 
-```env
-APP_KEYS=valore1,valore2,valore3,valore4   # quattro valori separati da virgola
-API_TOKEN_SALT=unValore
-ADMIN_JWT_SECRET=unValore
-TRANSFER_TOKEN_SALT=unValore
-```
-
-Per `ENCRYPTION_KEY` usa questo comando (genera una stringa più corta):
-```bash
-node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"
-```
-
-Gli altri campi (SMTP, database) puoi lasciarli com'è per ora — funziona in locale con SQLite senza configurare nulla.
-
-### Passo 2 — Installa le dipendenze del CMS
+### Passo 3 — Genera i file di configurazione
 
 ```bash
-# sei già nella cartella cms/
-npm install
+npm run setup
 ```
 
-Questo scarica tutte le librerie necessarie. Può richiedere qualche minuto.
+Questo comando crea automaticamente `cms/.env` e `frontend/.env` con tutti i valori necessari già compilati — incluse le chiavi crittografiche generate in modo sicuro. Non devi fare nulla a mano.
 
-### Passo 3 — Avvia il CMS
+Le variabili d'ambiente sono configurazioni sensibili (password, chiavi) che non si mettono nel codice. I file `.env` non vengono mai caricati su GitHub.
+
+### Passo 4 — Avvia tutto
 
 ```bash
-npm run develop
+npm run dev
 ```
 
-Al primo avvio Strapi costruisce l'interfaccia admin (richiede 1-2 minuti). Quando vedi questo nel terminale è pronto:
+Avvia CMS e frontend insieme. Al primo avvio Strapi costruisce l'interfaccia admin (1-2 minuti). Quando il terminale mostra:
 
 ```
-[INFO] Admin panel: http://localhost:1337/admin
+[CMS] Admin panel: http://localhost:1337/admin
 ```
 
-Apri `http://localhost:1337/admin` nel browser e crea il tuo account amministratore.
+il CMS è pronto.
 
-### Passo 4 — Prepara le variabili d'ambiente del frontend
+### Passo 5 — Crea l'account admin in Strapi
 
-Apri un **secondo terminale** (tieni il CMS in esecuzione nel primo).
+Apri `http://localhost:1337/admin` nel browser e registra il tuo account amministratore (email + password).
 
-```bash
-cd frontend
-cp .env.example .env
-```
+### Passo 6 — Crea un API Token e collegalo al frontend
 
-### Passo 5 — Crea un API Token in Strapi
+Il frontend usa un token segreto per comunicare con Strapi in modo sicuro.
 
-Il frontend ha bisogno di un token per autenticarsi con Strapi quando fa operazioni con autenticazione (es. salvare iscrizioni newsletter).
-
-1. Vai su `http://localhost:1337/admin`
-2. Menu a sinistra → **Settings** → **API Tokens**
-3. Clicca **Create new API Token**
-4. Dai un nome (es. "Frontend"), tipo **Full access**, durata **Unlimited**
-5. Copia il token generato
-6. Incollalo in `frontend/.env`:
+1. In Strapi Admin → **Settings** → **API Tokens**
+2. Clicca **Create new API Token**
+3. Nome: `Frontend`, tipo: **Full access**, durata: **Unlimited**
+4. Copia il token che appare (lo vedi solo una volta)
+5. Apri `frontend/.env` con l'editor di testo
+6. Sostituisci il placeholder sulla riga `STRAPI_API_TOKEN=`:
    ```env
-   STRAPI_API_TOKEN=il-token-copiato
+   STRAPI_API_TOKEN=incolla-il-token-qui
    ```
+7. Salva il file
 
-### Passo 6 — Installa le dipendenze del frontend
+### Passo 7 — Riavvia e verifica
 
-```bash
-# sei nella cartella frontend/
-npm install
-```
-
-### Passo 7 — Avvia il frontend
+Ferma il dev server (Ctrl+C nel terminale) e riavvia:
 
 ```bash
 npm run dev
@@ -231,11 +207,11 @@ Per default Strapi blocca l'accesso pubblico. Per ogni collection che il fronten
 
 Ogni file in `src/pages/` diventa automaticamente una URL:
 
-| File | URL |
-|------|-----|
-| `src/pages/index.astro` | `/` |
-| `src/pages/servizi.astro` | `/servizi` |
-| `src/pages/blog/index.astro` | `/blog` |
+| File                          | URL                    |
+| ----------------------------- | ---------------------- |
+| `src/pages/index.astro`       | `/`                    |
+| `src/pages/servizi.astro`     | `/servizi`             |
+| `src/pages/blog/index.astro`  | `/blog`                |
 | `src/pages/blog/[slug].astro` | `/blog/qualsiasi-cosa` |
 
 ### Struttura di un file `.astro`
@@ -306,12 +282,12 @@ const servizi = res.data;
 
 ### Le funzioni di utilità (`src/lib/strapi.ts`)
 
-| Funzione | Quando usarla |
-|----------|--------------|
-| `strapiFind("nome-collection", params)` | Per caricare una lista di elementi |
-| `strapiFindOne("nome-single-type", params)` | Per caricare un Single Type (es. homepage) |
-| `strapiMediaUrl(path)` | Per costruire l'URL completo di un'immagine Strapi |
-| `strapiPost("nome-collection", data)` | Per salvare dati in Strapi (richiede token) |
+| Funzione                                    | Quando usarla                                      |
+| ------------------------------------------- | -------------------------------------------------- |
+| `strapiFind("nome-collection", params)`     | Per caricare una lista di elementi                 |
+| `strapiFindOne("nome-single-type", params)` | Per caricare un Single Type (es. homepage)         |
+| `strapiMediaUrl(path)`                      | Per costruire l'URL completo di un'immagine Strapi |
+| `strapiPost("nome-collection", data)`       | Per salvare dati in Strapi (richiede token)        |
 
 **Esempi:**
 
@@ -443,22 +419,22 @@ Le variabili d'ambiente sono valori di configurazione separati dal codice. Servo
 
 **Nel CMS (`cms/.env`):**
 
-| Variabile | Cosa è |
-|----------|--------|
-| `APP_KEYS` | Chiavi per la crittografia sessioni |
-| `ADMIN_JWT_SECRET` | Chiave per i token admin |
-| `API_TOKEN_SALT` | Sale per gli API token |
-| `TRANSFER_TOKEN_SALT` | Sale per i token di trasferimento |
-| `ENCRYPTION_KEY` | Chiave per dati cifrati |
-| `DATABASE_CLIENT` | Tipo database (`sqlite` in dev, `postgres` in prod) |
-| `SMTP_*` | Credenziali email per le notifiche form |
+| Variabile             | Cosa è                                              |
+| --------------------- | --------------------------------------------------- |
+| `APP_KEYS`            | Chiavi per la crittografia sessioni                 |
+| `ADMIN_JWT_SECRET`    | Chiave per i token admin                            |
+| `API_TOKEN_SALT`      | Sale per gli API token                              |
+| `TRANSFER_TOKEN_SALT` | Sale per i token di trasferimento                   |
+| `ENCRYPTION_KEY`      | Chiave per dati cifrati                             |
+| `DATABASE_CLIENT`     | Tipo database (`sqlite` in dev, `postgres` in prod) |
+| `SMTP_*`              | Credenziali email per le notifiche form             |
 
 **Nel frontend (`frontend/.env`):**
 
-| Variabile | Cosa è |
-|----------|--------|
-| `STRAPI_URL` | URL del CMS — usata server-side (solo Astro) |
-| `STRAPI_API_TOKEN` | Token per operazioni autenticate |
+| Variabile           | Cosa è                                                     |
+| ------------------- | ---------------------------------------------------------- |
+| `STRAPI_URL`        | URL del CMS — usata server-side (solo Astro)               |
+| `STRAPI_API_TOKEN`  | Token per operazioni autenticate                           |
 | `PUBLIC_STRAPI_URL` | URL del CMS — usata client-side (browser, es. DynamicForm) |
 
 ---
@@ -491,22 +467,24 @@ Le variabili d'ambiente sono valori di configurazione separati dal codice. Servo
 Ogni volta che riprendi a lavorare devi avviare **entrambi** i server:
 
 **Terminale 1 — CMS:**
+
 ```bash
 cd cms
 npm run develop
 ```
 
 **Terminale 2 — Frontend:**
+
 ```bash
 cd frontend
 npm run dev
 ```
 
-| Servizio | URL |
-|---------|-----|
+| Servizio     | URL                         |
+| ------------ | --------------------------- |
 | Admin Strapi | http://localhost:1337/admin |
-| API Strapi | http://localhost:1337/api |
-| Sito Astro | http://localhost:4321 |
+| API Strapi   | http://localhost:1337/api   |
+| Sito Astro   | http://localhost:4321       |
 
 ---
 
@@ -515,6 +493,7 @@ npm run dev
 Quando il sito è pronto per andare online:
 
 **CMS:**
+
 ```bash
 cd cms
 npm run build
@@ -522,6 +501,7 @@ npm run start
 ```
 
 **Frontend:**
+
 ```bash
 cd frontend
 npm run build
@@ -539,17 +519,17 @@ Per la produzione dovrai:
 
 ## Glossario
 
-| Termine | Significato |
-|---------|------------|
-| **Headless CMS** | CMS che gestisce solo i dati, senza generare pagine HTML |
-| **API** | Canale di comunicazione tra CMS e frontend — dati in formato JSON |
-| **Collection Type** | Tipo di contenuto con più istanze (es. articoli) |
-| **Single Type** | Tipo di contenuto con una sola istanza (es. homepage) |
-| **Dynamic Zone** | Campo Strapi che permette di aggiungere blocchi di tipi diversi |
-| **SSR** | Server-Side Rendering — le pagine vengono generate dal server a ogni richiesta |
-| **Frontmatter** | Sezione `---` di un file Astro dove si scrive TypeScript |
-| **Slot** | Punto di inserimento del contenuto in un layout Astro |
-| **Variabile d'ambiente** | Valore di configurazione esterno al codice, in `.env` |
-| **Token API** | Chiave di accesso per autenticare le chiamate API |
-| **Plugin Strapi** | Estensione che aggiunge funzionalità al CMS |
-| **Populate** | Parametro API Strapi per caricare le relazioni di un contenuto |
+| Termine                  | Significato                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| **Headless CMS**         | CMS che gestisce solo i dati, senza generare pagine HTML                       |
+| **API**                  | Canale di comunicazione tra CMS e frontend — dati in formato JSON              |
+| **Collection Type**      | Tipo di contenuto con più istanze (es. articoli)                               |
+| **Single Type**          | Tipo di contenuto con una sola istanza (es. homepage)                          |
+| **Dynamic Zone**         | Campo Strapi che permette di aggiungere blocchi di tipi diversi                |
+| **SSR**                  | Server-Side Rendering — le pagine vengono generate dal server a ogni richiesta |
+| **Frontmatter**          | Sezione `---` di un file Astro dove si scrive TypeScript                       |
+| **Slot**                 | Punto di inserimento del contenuto in un layout Astro                          |
+| **Variabile d'ambiente** | Valore di configurazione esterno al codice, in `.env`                          |
+| **Token API**            | Chiave di accesso per autenticare le chiamate API                              |
+| **Plugin Strapi**        | Estensione che aggiunge funzionalità al CMS                                    |
+| **Populate**             | Parametro API Strapi per caricare le relazioni di un contenuto                 |

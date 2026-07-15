@@ -14,5 +14,4 @@ if (existsSync(dest)) {
 }
 
 writeFileSync(dest, readFileSync(src, "utf8"), "utf8");
-console.log("✅  frontend/.env creato da .env.example.");
-console.log("   Incolla il token Strapi nella variabile STRAPI_API_TOKEN.");
+console.log("✅  frontend/.env creato.");

@@ -29,6 +29,12 @@ content = content
   .replace(/^ENCRYPTION_KEY=.*/m, `ENCRYPTION_KEY=${hex()}`);
 
 writeFileSync(dest, content, "utf8");
+console.log("");
 console.log("✅  cms/.env generato con secrets casuali.");
-console.log("   Dopo il primo avvio di Strapi, crea un API token e");
-console.log("   incollalo in frontend/.env come STRAPI_API_TOKEN.");
+console.log("");
+console.log("Prossimi passi:");
+console.log("  1. npm run dev                          → avvia CMS (:1337) e frontend (:4321)");
+console.log("  2. http://localhost:1337/admin          → crea account admin");
+console.log("  3. Settings → API Tokens → New token   → Full access, Unlimited");
+console.log("  4. Copia il token → apri frontend/.env → incolla su STRAPI_API_TOKEN=");
+console.log("");

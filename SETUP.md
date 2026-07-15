@@ -4,6 +4,27 @@ Stack testato e validato su un progetto reale. Pronto per sviluppare nuovi siti.
 
 ---
 
+## Quick Start
+
+```bash
+git clone https://github.com/asimonato/strapi-astro-starter.git nome-progetto
+cd nome-progetto
+npm run install:all   # installa dipendenze CMS + frontend
+npm run setup         # genera cms/.env e frontend/.env con secrets automatici
+npm run dev           # avvia CMS su :1337 e frontend su :4321
+```
+
+**Un solo passaggio manuale** — dopo il primo avvio:
+
+1. Vai su `http://localhost:1337/admin` → crea account admin
+2. **Settings → API Tokens → Create new token** → tipo `Full access`, durata `Unlimited`
+3. Copia il token → apri `frontend/.env` → incolla su `STRAPI_API_TOKEN=`
+4. Riavvia il frontend (Ctrl+C → `npm run dev` di nuovo)
+
+Il sito funziona su `http://localhost:4321`.
+
+---
+
 ## Stack
 
 | Layer              | Versione                         | Porta |
@@ -26,92 +47,26 @@ strapi-astro-starter/
 
 ---
 
-## Setup rapido (dalla root del progetto)
+## Script disponibili (dalla root)
 
-```bash
-npm run install:all   # installa dipendenze CMS + frontend
-npm run setup         # genera cms/.env con secrets casuali + frontend/.env
-npm run dev           # avvia CMS (porta 1337) e frontend (porta 4321) in parallelo
-```
+| Comando              | Cosa fa                                                         |
+| -------------------- | --------------------------------------------------------------- |
+| `npm run install:all` | Installa dipendenze CMS + frontend                             |
+| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env`       |
+| `npm run dev`         | Avvia CMS e frontend in parallelo                              |
+| `npm run build`       | Build produzione di CMS e frontend                             |
 
-Poi completa la configurazione manuale al passo 4.
-
----
-
-## Setup CMS (manuale, se preferisci)
-
-### 1. Installa dipendenze
-
-```bash
-cd cms
-npm install
-```
-
-### 2. Genera `.env` con secrets automatici
-
-```bash
-npm run setup
-```
-
-Lo script legge `.env.example`, genera tutti i secrets crittografici e scrive `cms/.env` pronto all'uso:
-
-- `APP_KEYS` — 4 valori base64 casuali separati da virgola
-- `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT` — base64 casuale (32 byte)
-- `ENCRYPTION_KEY` — hex casuale (16 byte)
-
-> Se `.env` esiste già, lo script si ferma con errore — cancellalo prima di rigenerare.
-
-### 3. Avvia
-
-```bash
-npm run develop
-```
-
-Admin disponibile su `http://localhost:1337/admin`.
-
-### 4. Prima configurazione admin
-
-Al primo avvio crea utente admin. Poi:
-
-- **Settings → API Tokens** — crea token con tipo `Full access`, copialo nel `.env` del frontend come `STRAPI_API_TOKEN`
-- **Settings → Users & Permissions → Roles → Public** — abilita permessi necessari:
-  - `form-submission`: `submit` (custom route)
-  - `form`: `find`, `findOne`
-  - Qualsiasi altra collection che il frontend deve leggere pubblicamente
-- **Navigation plugin** — crea le voci di menu (slug: `main`)
-
-> I permessi Public vengono configurati automaticamente dal bootstrap in `cms/src/index.ts` al primo avvio.
+> Se `.env` esiste già, `npm run setup` si ferma con errore — cancellalo prima di rigenerare.
 
 ---
 
-## Setup Frontend (manuale, se preferisci)
+## Prima configurazione admin (dettaglio)
 
-### 1. Installa dipendenze
+Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
-```bash
-cd frontend
-npm install
-```
-
-### 2. Crea `.env`
-
-```bash
-npm run setup
-```
-
-Copia `frontend/.env.example` → `frontend/.env`. Poi incolla il token Strapi:
-
-```env
-STRAPI_API_TOKEN=il-token-copiato-dall-admin
-```
-
-### 3. Avvia
-
-```bash
-npm run dev
-```
-
-Frontend disponibile su `http://localhost:4321`.
+- **Settings → API Tokens** — crea token `Full access`, copialo in `frontend/.env` come `STRAPI_API_TOKEN`
+- **Settings → Users & Permissions → Roles → Public** — i permessi base vengono configurati automaticamente dal bootstrap (`cms/src/index.ts`); aggiungi manualmente eventuali collection extra
+- **Navigation plugin** — crea le voci di menu con slug `main`
 
 ---
 
