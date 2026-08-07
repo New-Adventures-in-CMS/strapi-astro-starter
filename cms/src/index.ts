@@ -30,7 +30,9 @@ export default {
       return;
     }
 
-    const permissionRepo = strapi.db.query("plugin::users-permissions.permission");
+    const permissionRepo = strapi.db.query(
+      "plugin::users-permissions.permission",
+    );
 
     const desired: string[] = [];
 
@@ -61,7 +63,9 @@ export default {
     }
 
     if (created > 0) {
-      strapi.log.info(`[bootstrap] Aggiunti ${created} permessi al ruolo Public`);
+      strapi.log.info(
+        `[bootstrap] Aggiunti ${created} permessi al ruolo Public`,
+      );
     }
   },
 };

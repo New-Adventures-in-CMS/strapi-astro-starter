@@ -1,0 +1,42 @@
+############################
+# OS
+############################
+.DS_Store
+.AppleDouble
+Thumbs.db
+
+############################
+# Node.js
+############################
+node_modules/
+.node_history
+
+############################
+# Strapi
+############################
+.env
+.tmp/
+dist/
+build/
+.strapi/
+.strapi-updater.json
+.strapi-cloud.json
+exports/
+license.txt
+
+############################
+# Media uploads (solo locale)
+############################
+public/uploads/*
+!public/uploads/.gitkeep
+
+############################
+# Logs
+############################
+*.log
+
+############################
+# TypeScript
+############################
+.tsbuildinfo
+.eslintcache

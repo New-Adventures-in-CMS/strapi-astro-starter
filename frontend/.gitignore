@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+
+# Astro build output
+dist/
+.astro/
+
+# Secrets
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# TypeScript
+.tsbuildinfo

@@ -7,7 +7,7 @@ Stack testato e validato su un progetto reale. Pronto per sviluppare nuovi siti.
 ## Quick Start
 
 ```bash
-git clone https://github.com/asimonato/strapi-astro-starter.git nome-progetto
+git clone https://github.com/New-Adventures-in-CMS/strapi-astro-starter.git nome-progetto
 cd nome-progetto
 npm run install:all   # installa dipendenze CMS + frontend
 npm run setup         # genera cms/.env e frontend/.env con secrets automatici
@@ -49,12 +49,12 @@ strapi-astro-starter/
 
 ## Script disponibili (dalla root)
 
-| Comando              | Cosa fa                                                         |
-| -------------------- | --------------------------------------------------------------- |
-| `npm run install:all` | Installa dipendenze CMS + frontend                             |
-| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env`       |
-| `npm run dev`         | Avvia CMS e frontend in parallelo                              |
-| `npm run build`       | Build produzione di CMS e frontend                             |
+| Comando               | Cosa fa                                                  |
+| --------------------- | -------------------------------------------------------- |
+| `npm run install:all` | Installa dipendenze CMS + frontend                       |
+| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env` |
+| `npm run dev`         | Avvia CMS e frontend in parallelo                        |
+| `npm run build`       | Build produzione di CMS e frontend                       |
 
 > Se `.env` esiste già, `npm run setup` si ferma con errore — cancellalo prima di rigenerare.
 

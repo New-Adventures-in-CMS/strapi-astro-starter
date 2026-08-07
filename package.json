@@ -1,7 +1,9 @@
 {
   "name": "strapi-astro-starter",
-  "private": true,
   "version": "0.1.0",
+  "description": "Production-ready starter kit — Strapi 5 headless CMS + Astro 5 frontend, with dynamic forms, navigation plugin, and Tailwind CSS v4",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "dev": "concurrently --names CMS,WEB --prefix-colors green,blue \"npm run dev:cms\" \"npm run dev:web\"",
     "dev:cms": "npm --prefix cms run develop",

@@ -96,7 +96,7 @@ strapi-astro-starter/
 ### Passo 1 — Clona il progetto
 
 ```bash
-git clone https://github.com/asimonato/strapi-astro-starter.git nome-progetto
+git clone https://github.com/New-Adventures-in-CMS/strapi-astro-starter.git nome-progetto
 cd nome-progetto
 ```
 

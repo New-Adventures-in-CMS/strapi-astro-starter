@@ -9,7 +9,9 @@ const src = join(root, ".env.example");
 const dest = join(root, ".env");
 
 if (existsSync(dest)) {
-  console.error("❌  frontend/.env esiste già — cancellalo manualmente prima di rigenerarlo.");
+  console.error(
+    "❌  frontend/.env esiste già — cancellalo manualmente prima di rigenerarlo.",
+  );
   process.exit(1);
 }
 

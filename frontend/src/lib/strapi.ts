@@ -49,7 +49,8 @@ export async function strapiFind<T>(
 ): Promise<StrapiListResponse<T>> {
   const qs = buildQs(params);
   const res = await fetch(`${STRAPI_URL}/api/${pluralApiId}${qs}`);
-  if (!res.ok) throw new Error(`Strapi GET /api/${pluralApiId} → ${res.status}`);
+  if (!res.ok)
+    throw new Error(`Strapi GET /api/${pluralApiId} → ${res.status}`);
   return res.json() as Promise<StrapiListResponse<T>>;
 }
 
@@ -59,7 +60,8 @@ export async function strapiFindOne<T>(
 ): Promise<StrapiSingleResponse<T>> {
   const qs = buildQs(params);
   const res = await fetch(`${STRAPI_URL}/api/${singularApiId}${qs}`);
-  if (!res.ok) throw new Error(`Strapi GET /api/${singularApiId} → ${res.status}`);
+  if (!res.ok)
+    throw new Error(`Strapi GET /api/${singularApiId} → ${res.status}`);
   return res.json() as Promise<StrapiSingleResponse<T>>;
 }
 
