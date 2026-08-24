@@ -14,34 +14,22 @@ npm run dev
 
 CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 
-**Un passaggio manuale** dopo il primo avvio: crea l'account admin in Strapi, genera un API Token (Full access, Unlimited) e incollalo su `STRAPI_API_TOKEN=` in `frontend/.env`.
+**Un passaggio manuale** dopo il primo avvio: crea l'account admin in Strapi, genera un API Token (Full access, Unlimited) e incollalo su `STRAPI_API_TOKEN=` in `frontend/.env`. Dettagli in [GUIDA.md](GUIDA.md) (passo per passo) o [SETUP.md](SETUP.md) (sintetico).
 
-## Stack
+## Cos'è
 
-| Componente   | Versione                         |
-| ------------ | -------------------------------- |
-| Strapi 5     | 5.52.1                           |
-| Astro 5      | 5.18.2                           |
-| Tailwind CSS | v4                               |
-| TypeScript   | ✓                                |
-| Database     | SQLite (dev) / PostgreSQL (prod) |
-| Node.js      | ≥ 20                             |
+Un headless CMS già cablato: Strapi gestisce i contenuti, Astro genera il sito. Include form dinamici gestiti da Strapi, plugin di navigazione, email SMTP, campi SEO, server MCP per gli AI agent e utility API pronte (`strapiFind` / `strapiFindOne`).
 
-## Incluso
-
-- Form dinamici — crea form da Strapi, rendili con `<DynamicForm slug="…" />`
-- Plugin navigazione — menu gestito da Strapi Admin
-- Email SMTP — notifica ad ogni submission
-- `strapiFind` / `strapiFindOne` — utility API pronte
+Stack: Strapi 5 · Astro 5 · Tailwind CSS v4 · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js ≥ 20. Tabella versioni completa in [SETUP.md](SETUP.md#stack).
 
 ## Documentazione
 
-- **[GUIDA.md](GUIDA.md)** — guida passo-passo in italiano, per chi parte da zero
-- **[SETUP.md](SETUP.md)** — riferimento tecnico: comandi, architettura, gotcha
+- **[GUIDA.md](GUIDA.md)** — guida passo-passo in italiano, per chi parte da zero: concetti, installazione spiegata, workflow, glossario.
+- **[SETUP.md](SETUP.md)** — riferimento tecnico: comandi, stack, pattern, gotcha, env vars, MCP.
 
 ## Requisiti
 
-- Node.js ≥ 20
+Node.js ≥ 20
 
 ## Licenza
 

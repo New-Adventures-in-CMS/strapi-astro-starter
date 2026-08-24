@@ -1,27 +1,8 @@
-# Strapi 5 + Astro 5 — Starter Kit
+# Strapi 5 + Astro 5 — Riferimento tecnico
 
-Stack testato e validato su un progetto reale. Pronto per sviluppare nuovi siti.
+Stack testato e validato su un progetto reale. Questo documento è la reference tecnica: comandi, pattern, gotcha, variabili d'ambiente, MCP.
 
----
-
-## Quick Start
-
-```bash
-git clone https://github.com/New-Adventures-in-CMS/strapi-astro-starter.git nome-progetto
-cd nome-progetto
-npm run install:all   # installa dipendenze CMS + frontend
-npm run setup         # genera cms/.env e frontend/.env con secrets automatici
-npm run dev           # avvia CMS su :1337 e frontend su :4321
-```
-
-**Un solo passaggio manuale** — dopo il primo avvio:
-
-1. Vai su `http://localhost:1337/admin` → crea account admin
-2. **Settings → API Tokens → Create new token** → tipo `Full access`, durata `Unlimited`
-3. Copia il token → apri `frontend/.env` → incolla su `STRAPI_API_TOKEN=`
-4. Riavvia il frontend (Ctrl+C → `npm run dev` di nuovo)
-
-Il sito funziona su `http://localhost:4321`.
+Per il **setup rapido** vedi il [README](README.md#quick-start). Per una **guida passo-passo spiegata** (con concetti e glossario) vedi [GUIDA.md](GUIDA.md).
 
 ---
 
@@ -32,10 +13,9 @@ Il sito funziona su `http://localhost:4321`.
 | Strapi 5 (CMS)     | 5.52.1                           | 1337  |
 | Astro 5 (Frontend) | 5.18.2                           | 4321  |
 | Tailwind CSS       | v4                               | —     |
+| TypeScript         | ✓                                | —     |
 | Database           | SQLite (dev) / PostgreSQL (prod) | —     |
 | Node.js            | ≥ 20                             | —     |
-
----
 
 ## Struttura repo
 
@@ -44,8 +24,6 @@ strapi-astro-starter/
 ├── cms/          # Strapi 5
 └── frontend/     # Astro 5
 ```
-
----
 
 ## Script disponibili (dalla root)
 
@@ -60,11 +38,11 @@ strapi-astro-starter/
 
 ---
 
-## Prima configurazione admin (dettaglio)
+## Prima configurazione admin
 
 Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
-- **Settings → API Tokens** — crea token `Full access`, copialo in `frontend/.env` come `STRAPI_API_TOKEN`
+- **Settings → API Tokens** — crea token `Full access` / `Unlimited`, copialo in `frontend/.env` come `STRAPI_API_TOKEN`, riavvia il frontend
 - **Settings → Users & Permissions → Roles → Public** — i permessi base vengono configurati automaticamente dal bootstrap (`cms/src/index.ts`); aggiungi manualmente eventuali collection extra
 - **Navigation plugin** — crea le voci di menu con slug `main`
 
@@ -72,13 +50,13 @@ Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
 ## Plugin CMS inclusi
 
-| Plugin                                  | Stato                 | Funzione                                                                                   |
+| Plugin                                  | Stato                 | Funzione                                                                                    |
 | --------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
-| `strapi-plugin-navigation`              | installato            | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE`                     |
-| `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                    |
-| `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                      |
-| `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                             |
-| `@strapi/plugin-seo`                    | installato            | Campi SEO (meta title, description, og image) su qualsiasi collection                      |
+| `strapi-plugin-navigation`              | installato            | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE`                      |
+| `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                     |
+| `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                       |
+| `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                              |
+| `@strapi/plugin-seo`                    | installato            | Campi SEO (meta title, description, og image) su qualsiasi collection                       |
 | `@strapi/plugin-i18n`                   | bundled, disabilitato | Internazionalizzazione multi-lingua — abilitare subito se serve, difficile aggiungere dopo |
 
 ### Abilitare i18n
@@ -127,7 +105,7 @@ Riavvia Claude Code → `/mcp` → `strapi-mcp` deve risultare connesso.
 
 ### Limiti noti
 
-| Limite            | Dettaglio                                                                                 |
+| Limite            | Dettaglio                                                                                  |
 | ----------------- | ----------------------------------------------------------------------------------------- |
 | Dynamic Zone      | Passate come array non tipizzati — struttura interna dei blocchi non descritta agli agent |
 | Upload media      | Non supportato via MCP — si possono solo referenziare asset già esistenti                 |
@@ -137,16 +115,10 @@ Riavvia Claude Code → `/mcp` → `strapi-mcp` deve risultare connesso.
 
 ## Sistema Form Dinamici
 
-Il boilerplate include un sistema form headless completo.
+Il boilerplate include un sistema form headless completo. Per il flusso lato editor (creare un form da Strapi) vedi [GUIDA.md](GUIDA.md#il-sistema-form-dinamici). Qui la reference tecnica.
 
-### Come funziona
-
-1. In Strapi Admin → **Form** → crea nuova entry
-2. Imposta `slug` (es. `contatti`)
-3. Aggiungi campi dalla dynamic zone `campi`
-4. In Astro: `<DynamicForm slug="contatti" />`
-
-Il submit va a `POST /api/form-submissions/submit` (endpoint pubblico, no auth).
+- Submit → `POST /api/form-submissions/submit` (endpoint pubblico, no auth)
+- Uso in Astro → `<DynamicForm slug="contatti" />` (lo slug deve corrispondere a quello in Strapi)
 
 ### Tipi di campo disponibili
 
@@ -160,9 +132,7 @@ Il submit va a `POST /api/form-submissions/submit` (endpoint pubblico, no auth).
 
 Ogni campo ha `larghezza`: `full` (100%), `half` (50%), `third` (33%).
 
-### Email notifica
-
-Se il form ha `emailDestinatario` configurato, Strapi invia email notifica al submit. Richiede SMTP configurato nel `.env` del CMS.
+Se il form ha `emailDestinatario` configurato, Strapi invia email notifica al submit (richiede SMTP nel `.env` del CMS).
 
 ---
 
@@ -198,6 +168,8 @@ src/api/[collection]/routes/
 ---
 
 ## Variabili d'ambiente
+
+Per la spiegazione di *cosa sono* e *perché servono* le env vars vedi [GUIDA.md](GUIDA.md#variabili-dambiente--spiegazione). Qui i valori di riferimento.
 
 ### CMS (`cms/.env`)
 
@@ -297,6 +269,7 @@ npm run start
 - Configura SMTP reale
 - Imposta `CLIENT_URL` con dominio reale
 - Usa secrets forti (non i valori di dev)
+- Metti un reverse proxy (es. Nginx) davanti ai due server
 
 ---
 

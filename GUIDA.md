@@ -2,6 +2,8 @@
 
 Questa guida spiega come funziona questo starter kit, a cosa serve ogni parte, e come sviluppare un sito web partendo da zero anche senza esperienza pregressa con questi strumenti.
 
+Per il **riferimento tecnico** (comandi sintetici, pattern, gotcha, MCP) vedi [SETUP.md](SETUP.md). Per il **quick start** vedi il [README](README.md#quick-start).
+
 ---
 
 ## A cosa serve questo starter
@@ -34,6 +36,8 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 | Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                |
 | Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                            |
 | Adapter produzione    | Frontend       | Pronto per il build con Node.js                                             |
+
+> L'elenco puntuale delle versioni e dei plugin installati è in [SETUP.md](SETUP.md#stack).
 
 ---
 
@@ -86,8 +90,9 @@ strapi-astro-starter/
 │   ├── .env.example      ← Variabili d'ambiente di esempio
 │   └── package.json      ← Dipendenze Node.js del frontend
 │
-├── SETUP.md              ← Riferimento tecnico (pattern, gotcha, ecc.)
-└── GUIDA.md              ← Questo file
+├── README.md            ← Vetrina e quick start
+├── SETUP.md             ← Riferimento tecnico (pattern, gotcha, ecc.)
+└── GUIDA.md             ← Questo file
 ```
 
 ---
@@ -349,6 +354,8 @@ Lo `slug` deve corrispondere a quello impostato in Strapi.
 
 Strapi Admin → **Content Manager** → **Form Submission** — trovi tutte le risposte ricevute.
 
+> Reference tecnica (tipi di campo, endpoint di submit): [SETUP.md](SETUP.md#sistema-form-dinamici).
+
 ---
 
 ## Il sistema di navigazione
@@ -387,13 +394,15 @@ const navItems = await fetchNav("main");
 </nav>
 ```
 
+> Nota importante: non usare `strapiFind` per la navigazione — l'endpoint è del plugin, non CRUD. Vedi [SETUP.md](SETUP.md#pattern-navigazione).
+
 ---
 
 ## Collegare Claude Code a Strapi (MCP)
 
 Se usi Claude Code, puoi collegarlo direttamente a Strapi per gestire i contenuti in linguaggio naturale — creare voci, aggiornare testi, pubblicare entry — senza aprire il pannello admin.
 
-Lo starter ha già il server MCP abilitato in sviluppo. Per collegarlo ti serve solo creare un Admin token in Strapi e registrare il server in Claude Code. Trovi tutti i passi nella sezione **Server MCP (AI agents)** di `SETUP.md`.
+Lo starter ha già il server MCP abilitato in sviluppo. Per collegarlo ti serve solo creare un Admin token in Strapi e registrare il server in Claude Code. Trovi tutti i passi nella sezione **Server MCP (AI agents)** di [SETUP.md](SETUP.md#server-mcp-ai-agents).
 
 ---
 
@@ -446,6 +455,8 @@ Le variabili d'ambiente sono valori di configurazione separati dal codice. Servo
 | `STRAPI_API_TOKEN`  | Token per operazioni autenticate                           |
 | `PUBLIC_STRAPI_URL` | URL del CMS — usata client-side (browser, es. DynamicForm) |
 
+> I valori di esempio completi dei file `.env` sono in [SETUP.md](SETUP.md#variabili-dambiente).
+
 ---
 
 ## Workflow di sviluppo tipico
@@ -473,7 +484,13 @@ Le variabili d'ambiente sono valori di configurazione separati dal codice. Servo
 
 ## Avviare i server in sviluppo
 
-Ogni volta che riprendi a lavorare devi avviare **entrambi** i server:
+Dopo la prima configurazione, per riprendere a lavorare basta un comando dalla root:
+
+```bash
+npm run dev
+```
+
+Avvia CMS e frontend insieme. Se preferisci tenerli separati in due terminali:
 
 **Terminale 1 — CMS:**
 
@@ -523,6 +540,8 @@ Per la produzione dovrai:
 2. Configurare un server SMTP reale per le email
 3. Impostare le variabili d'ambiente con valori di produzione
 4. Mettere un reverse proxy (es. Nginx) davanti ai due server
+
+> Dettagli e checklist env di produzione: [SETUP.md](SETUP.md#build-produzione).
 
 ---
 
