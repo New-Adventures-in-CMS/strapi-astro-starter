@@ -11,6 +11,9 @@ const config = ({
   webhooks: {
     populateRelations: env.bool("WEBHOOKS_POPULATE_RELATIONS", false),
   },
+  mcp: {
+    enabled: env.bool("STRAPI_MCP_ENABLED", false),
+  },
 });
 
 export default config;

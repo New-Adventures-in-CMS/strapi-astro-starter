@@ -30,6 +30,7 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 | Plugin gruppi         | CMS            | Organizza le collection nella sidebar dell'admin                            |
 | Plugin ordinamento    | CMS            | Riordina le voci con drag-and-drop                                          |
 | Email SMTP            | CMS            | Strapi invia email quando arriva una submission                             |
+| Server MCP            | CMS            | Collega Claude Code (e altri AI agent) a Strapi per gestire contenuti       |
 | Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                |
 | Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                            |
 | Adapter produzione    | Frontend       | Pronto per il build con Node.js                                             |
@@ -385,6 +386,14 @@ const navItems = await fetchNav("main");
   ))}
 </nav>
 ```
+
+---
+
+## Collegare Claude Code a Strapi (MCP)
+
+Se usi Claude Code, puoi collegarlo direttamente a Strapi per gestire i contenuti in linguaggio naturale — creare voci, aggiornare testi, pubblicare entry — senza aprire il pannello admin.
+
+Lo starter ha già il server MCP abilitato in sviluppo. Per collegarlo ti serve solo creare un Admin token in Strapi e registrare il server in Claude Code. Trovi tutti i passi nella sezione **Server MCP (AI agents)** di `SETUP.md`.
 
 ---
 

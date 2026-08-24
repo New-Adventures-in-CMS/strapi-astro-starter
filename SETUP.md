@@ -97,6 +97,44 @@ Content-Type Builder → seleziona collection → Add another field → **Compon
 
 ---
 
+## Server MCP (AI agents)
+
+Strapi 5.47+ include un server MCP nativo. Permette a Claude Code, Cursor, Windsurf e altri client MCP di leggere, creare, aggiornare e pubblicare contenuti via linguaggio naturale, senza aprire il pannello admin.
+
+### Abilitazione
+
+Già gestita via `STRAPI_MCP_ENABLED` in `cms/.env` (attivo per default in dev, generato da `npm run setup`). In produzione impostarlo a `false` salvo necessità esplicita.
+
+Endpoint: `POST http://localhost:1337/mcp` (stateless, autenticato a ogni richiesta).
+
+### Creare l'Admin token (passo manuale, una tantum, per-utente)
+
+1. Avvia lo starter, crea l'account admin.
+2. **Settings → Administration Panel → Admin Tokens → Create new Admin Token**.
+3. Nome (es. `claude-code`), durata a scelta, permessi minimi necessari (principio least privilege: concedi solo i content type e le azioni che servono).
+4. Copia la chiave — **viene mostrata una sola volta**.
+
+### Collegare Claude Code
+
+```bash
+claude mcp add strapi-mcp --transport http http://localhost:1337/mcp \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+```
+
+Riavvia Claude Code → `/mcp` → `strapi-mcp` deve risultare connesso.
+
+> **Sicurezza:** l'Admin token è una credenziale — non committarlo, non metterlo in file versionati, non esporlo lato client. Non condividere l'URL `/mcp` pubblicamente.
+
+### Limiti noti
+
+| Limite            | Dettaglio                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| Dynamic Zone      | Passate come array non tipizzati — struttura interna dei blocchi non descritta agli agent |
+| Upload media      | Non supportato via MCP — si possono solo referenziare asset già esistenti                 |
+| Populate annidato | Non disponibile in `list`/`get` — per editing blocchi pagina preferire il pannello admin  |
+
+---
+
 ## Sistema Form Dinamici
 
 Il boilerplate include un sistema form headless completo.
