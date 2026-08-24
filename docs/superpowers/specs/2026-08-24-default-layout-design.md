@@ -88,7 +88,15 @@ Con SSR, ogni richiesta alla home fa fetch a Strapi. Il `try/catch` attorno a `s
 
 `src/config/i18n.ts` definisce `defaultLocale: "it"`, `locales: ["it"]`. Non creare routing `[lang]/`, non attivare `i18n` in `astro.config.mjs`. Documentare i passi di attivazione in SETUP come sezione "estensione".
 
-### 5. Tipo `Page` in `src/types/index.ts`
+### 5. Validazione env: lazy, non eager
+
+`src/lib/env.ts` non deve validare all'importazione del modulo: in SSR farebbe crashare l'avvio del server anche per rotte che non toccano Strapi. La validazione (con errore leggibile) va invocata dentro `strapi.ts`, al momento della prima chiamata al client — non a load time.
+
+### 6. Content-type `page`: verificare assenza conflitti
+
+Prima di creare il content-type in Strapi, confermare che non esista già un `page` (o nome simile) nel CMS. Se il progetto è pulito (nessun content-type preesistente), procedere normalmente.
+
+### 8. Tipo `Page` in `src/types/index.ts`
 
 La spec indicava `src/types.ts` ma il repo usa `src/types/index.ts`. L'interfaccia `Page` va aggiunta lì, consistente con la struttura esistente.
 
@@ -129,7 +137,7 @@ Reset: box-sizing, body margin, img/svg/video max-width.
 3. Header evidenzia voce attiva; footer renderizza colonne da `site.ts`.
 4. Modificare solo `site.ts` cambia nome sito, nav e footer ovunque.
 5. `/404` renderizza dentro layout con `noindex`.
-6. `npm run build` genera la sitemap; `robots.txt` è servito.
+6. La sitemap è raggiungibile a `/sitemap-index.xml` con l'app in esecuzione (SSR: generata a runtime, non a build time); `robots.txt` è servito e vi punta.
 7. Rimuovere `PUBLIC_STRAPI_URL` da `.env` produce errore leggibile, non stack trace.
 8. Nessuna dipendenza da plugin Strapi per layout base (nav/footer statici).
 
