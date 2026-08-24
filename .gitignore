@@ -9,3 +9,7 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+
+# Strapi uploads — versiona solo la cartella, non i file caricati
+/cms/public/uploads/*
+!/cms/public/uploads/.gitkeep
