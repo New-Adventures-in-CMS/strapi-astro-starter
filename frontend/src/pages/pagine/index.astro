@@ -1,0 +1,42 @@
+---
+// frontend/src/pages/pagine/index.astro
+import Layout from "@/layouts/Layout.astro";
+import { strapiFind } from "@/lib/strapi";
+import type { Page } from "@/types";
+
+let pages: Page[] = [];
+let cmsError = false;
+
+try {
+  const res = await strapiFind<Page>("pages");
+  pages = res.data;
+} catch {
+  cmsError = true;
+}
+---
+<Layout title="Pagine">
+  <h1 class="text-3xl font-bold">Pagine</h1>
+
+  {cmsError && (
+    <p class="mt-4 text-gray-600">Il CMS non è raggiungibile. Avvia Strapi e riprova.</p>
+  )}
+
+  {!cmsError && pages.length === 0 && (
+    <p class="mt-4 text-gray-600">Nessuna pagina trovata. Crea delle pagine in Strapi.</p>
+  )}
+
+  {pages.length > 0 && (
+    <ul class="mt-6 space-y-3">
+      {pages.map((page) => (
+        <li>
+          <a
+            href={`/pagine/${page.slug}`}
+            class="text-brand-700 underline hover:text-brand-500"
+          >
+            {page.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</Layout>
