@@ -1,10 +1,38 @@
 ---
+// frontend/src/pages/index.astro
 import Layout from "@/layouts/Layout.astro";
----
+import { strapiFind } from "@/lib/strapi";
+import type { Page } from "@/types";
 
-<Layout title="Home">
-  <main style="max-width:800px;margin:0 auto;padding:2rem">
-    <h1>Starter Strapi 5 + Astro 5</h1>
-    <p>CMS disponibile su <a href="http://localhost:1337/admin">localhost:1337/admin</a></p>
-  </main>
+let home: Page | null = null;
+let cmsError = false;
+
+try {
+  const res = await strapiFind<Page>("pages", {
+    filters: { slug: { $eq: "home" } },
+  });
+  home = res.data[0] ?? null;
+} catch {
+  cmsError = true;
+}
+---
+<Layout
+  title={home?.title}
+  description={home?.seo_desc ?? undefined}
+>
+  {home ? (
+    <article>
+      <h1 class="text-3xl font-bold">{home.title}</h1>
+      {home.body && <div class="prose mt-4" set:html={home.body} />}
+    </article>
+  ) : (
+    <section class="rounded-lg border border-dashed border-gray-300 p-8 text-center">
+      <h1 class="text-2xl font-semibold">Benvenuto nel tuo nuovo sito</h1>
+      <p class="mt-2 text-gray-600">
+        {cmsError
+          ? "Il CMS non è raggiungibile. Avvia Strapi e riprova."
+          : 'Crea una pagina con slug "home" in Strapi per popolare questa schermata.'}
+      </p>
+    </section>
+  )}
 </Layout>
