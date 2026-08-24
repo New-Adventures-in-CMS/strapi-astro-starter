@@ -88,6 +88,10 @@ const isActive = (href: string) =>
   const iconOpen = document.getElementById("icon-open");
   const iconClose = document.getElementById("icon-close");
 
+  if (!toggle || !menu || !iconOpen || !iconClose) {
+    console.error("Header: required nav elements not found in DOM");
+  }
+
   toggle?.addEventListener("click", () => {
     const isCurrentlyOpen = !menu?.classList.contains("hidden");
 
