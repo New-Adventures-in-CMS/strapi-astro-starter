@@ -1,0 +1,28 @@
+---
+// frontend/src/pages/pagine/[slug].astro
+import Layout from "@/layouts/Layout.astro";
+import { strapiFind } from "@/lib/strapi";
+import type { Page } from "@/types";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+let page: Page | null = null;
+
+try {
+  const res = await strapiFind<Page>("pages", {
+    filters: { slug: { $eq: slug } },
+  });
+  page = res.data[0] ?? null;
+} catch {
+  // CMS unreachable — treat as not found
+}
+
+if (!page) return Astro.redirect("/404");
+---
+<Layout title={page.title} description={page.seo_desc ?? undefined}>
+  <article>
+    <h1 class="text-3xl font-bold">{page.title}</h1>
+    {page.body && <div class="prose mt-6" set:html={page.body} />}
+  </article>
+</Layout>
