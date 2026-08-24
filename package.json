@@ -5,10 +5,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "predev": "node scripts/free-ports.js",
     "dev": "concurrently --names CMS,WEB --prefix-colors green,blue \"npm run dev:cms\" \"npm run dev:web\"",
     "dev:cms": "npm --prefix cms run develop",
     "dev:web": "npm --prefix frontend run dev",
-    "install:all": "npm --prefix cms install && npm --prefix frontend install",
+    "install:all": "npm install && npm --prefix cms install && npm --prefix frontend install",
     "setup": "npm --prefix cms run setup && npm --prefix frontend run setup",
     "build": "npm --prefix cms run build && npm --prefix frontend run build"
   },

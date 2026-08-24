@@ -27,14 +27,16 @@ strapi-astro-starter/
 
 ## Script disponibili (dalla root)
 
-| Comando               | Cosa fa                                                  |
-| --------------------- | -------------------------------------------------------- |
-| `npm run install:all` | Installa dipendenze CMS + frontend                       |
-| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env` |
-| `npm run dev`         | Avvia CMS e frontend in parallelo                        |
-| `npm run build`       | Build produzione di CMS e frontend                       |
+| Comando               | Cosa fa                                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| `npm run install:all` | Installa dipendenze root + CMS + frontend                                |
+| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env`                 |
+| `npm run dev`         | Avvia CMS e frontend in parallelo (libera porte 1337/4321 in automatico) |
+| `npm run build`       | Build produzione di CMS e frontend                                       |
 
 > Se `.env` esiste già, `npm run setup` si ferma con errore — cancellalo prima di rigenerare.
+
+> `npm run dev` esegue automaticamente `scripts/free-ports.js` prima di partire: termina eventuali processi in ascolto su 1337 e 4321. Nessuna dipendenza esterna — funziona subito dopo il clone.
 
 ---
 
@@ -50,13 +52,13 @@ Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
 ## Plugin CMS inclusi
 
-| Plugin                                  | Stato                 | Funzione                                                                                    |
+| Plugin                                  | Stato                 | Funzione                                                                                   |
 | --------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
-| `strapi-plugin-navigation`              | installato            | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE`                      |
-| `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                     |
-| `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                       |
-| `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                              |
-| `@strapi/plugin-seo`                    | installato            | Campi SEO (meta title, description, og image) su qualsiasi collection                       |
+| `strapi-plugin-navigation`              | installato            | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE`                     |
+| `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                    |
+| `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                      |
+| `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                             |
+| `@strapi/plugin-seo`                    | installato            | Campi SEO (meta title, description, og image) su qualsiasi collection                      |
 | `@strapi/plugin-i18n`                   | bundled, disabilitato | Internazionalizzazione multi-lingua — abilitare subito se serve, difficile aggiungere dopo |
 
 ### Abilitare i18n
@@ -105,7 +107,7 @@ Riavvia Claude Code → `/mcp` → `strapi-mcp` deve risultare connesso.
 
 ### Limiti noti
 
-| Limite            | Dettaglio                                                                                  |
+| Limite            | Dettaglio                                                                                 |
 | ----------------- | ----------------------------------------------------------------------------------------- |
 | Dynamic Zone      | Passate come array non tipizzati — struttura interna dei blocchi non descritta agli agent |
 | Upload media      | Non supportato via MCP — si possono solo referenziare asset già esistenti                 |
@@ -169,7 +171,7 @@ src/api/[collection]/routes/
 
 ## Variabili d'ambiente
 
-Per la spiegazione di *cosa sono* e *perché servono* le env vars vedi [GUIDA.md](GUIDA.md#variabili-dambiente--spiegazione). Qui i valori di riferimento.
+Per la spiegazione di _cosa sono_ e _perché servono_ le env vars vedi [GUIDA.md](GUIDA.md#variabili-dambiente--spiegazione). Qui i valori di riferimento.
 
 ### CMS (`cms/.env`)
 
