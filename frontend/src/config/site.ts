@@ -15,7 +15,7 @@ export interface SiteConfig {
   locale: string;
   nav: NavItem[];
   footer: {
-    columns: { title: string; items: NavItem[] }[];
+    columns: { title: string; links: NavItem[] }[];
     legal: string;
   };
 }
@@ -35,14 +35,14 @@ export const site: SiteConfig = {
     columns: [
       {
         title: "Navigazione",
-        items: [
+        links: [
           { label: "Home", href: "/" },
           { label: "Pagine", href: "/pagine" },
         ],
       },
       {
         title: "Risorse",
-        items: [
+        links: [
           {
             label: "Documentazione",
             href: "https://docs.astro.build",
