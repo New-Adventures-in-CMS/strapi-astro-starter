@@ -1,3 +1,5 @@
+import { validateEnv } from "./env";
+
 const STRAPI_URL = import.meta.env.STRAPI_URL ?? "http://localhost:1337";
 
 export function strapiMediaUrl(path: string | null | undefined): string | null {
@@ -47,6 +49,7 @@ export async function strapiFind<T>(
   pluralApiId: string,
   params: Record<string, unknown> = {},
 ): Promise<StrapiListResponse<T>> {
+  validateEnv();
   const qs = buildQs(params);
   const res = await fetch(`${STRAPI_URL}/api/${pluralApiId}${qs}`);
   if (!res.ok)
@@ -58,6 +61,7 @@ export async function strapiFindOne<T>(
   singularApiId: string,
   params: Record<string, unknown> = {},
 ): Promise<StrapiSingleResponse<T>> {
+  validateEnv();
   const qs = buildQs(params);
   const res = await fetch(`${STRAPI_URL}/api/${singularApiId}${qs}`);
   if (!res.ok)
@@ -69,6 +73,7 @@ export async function strapiPost<T>(
   pluralApiId: string,
   data: Record<string, unknown>,
 ): Promise<StrapiSingleResponse<T>> {
+  validateEnv();
   const token = import.meta.env.STRAPI_API_TOKEN;
   const res = await fetch(`${STRAPI_URL}/api/${pluralApiId}`, {
     method: "POST",
