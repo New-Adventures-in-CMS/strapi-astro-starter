@@ -25,6 +25,76 @@ strapi-astro-starter/
 └── frontend/     # Astro 5
 ```
 
+## Layout di default
+
+Il layout è composto da questi file:
+
+| File                                   | Ruolo                                              |
+| -------------------------------------- | -------------------------------------------------- |
+| `frontend/src/config/site.ts`          | Nome sito, nav, footer — unico punto da modificare |
+| `frontend/src/components/Header.astro` | Nav con active state + hamburger mobile            |
+| `frontend/src/components/Footer.astro` | Footer a colonne config-driven                     |
+| `frontend/src/components/SEO.astro`    | `<title>`, description, OG, Twitter                |
+| `frontend/src/layouts/Layout.astro`    | Compone SEO + Header + slot + Footer               |
+| `frontend/src/styles/global.css`       | Tailwind v4 + design token (`--color-brand-*`)     |
+
+Per personalizzare: modifica solo `site.ts`. I componenti leggono da lì.
+
+---
+
+## Content-type Page
+
+Il boilerplate include route SSR `/pagine` e `/pagine/[slug]` che leggono da un content-type `page` in Strapi.
+
+**Campi richiesti:**
+
+| Campo      | Tipo                | Note                                  |
+| ---------- | ------------------- | ------------------------------------- |
+| `title`    | Short text          | required                              |
+| `slug`     | UID (target: title) | required                              |
+| `body`     | Rich text           | corpo pagina                          |
+| `seo_desc` | Long text           | usato per `<meta name="description">` |
+
+**Permessi:** Settings → Users & Permissions → Public → `page` → abilita `find` e `findOne`.
+
+**Nota:** per la home, crea una entry con slug `home`.
+
+---
+
+## i18n (predisposto)
+
+Il multilingua è **predisposto ma non attivo**. Il file `frontend/src/config/i18n.ts` definisce `defaultLocale: "it"` e `locales: ["it"]`.
+
+Per attivare il multilingua:
+
+1. Aggiungi lingue in `i18n.ts`: `locales: ["it", "en"] as const`
+2. Attiva la config `i18n` in `astro.config.mjs`:
+   ```js
+   i18n: {
+     defaultLocale: "it",
+     locales: ["it", "en"],
+   }
+   ```
+3. Crea routing localizzato: sposta le pagine in `src/pages/[lang]/`
+4. Abilita i18n in Strapi: Settings → Internationalization → aggiungi locale
+
+Questo è marcato come **estensione** — non incluso nel boilerplate base.
+
+---
+
+## Estensioni possibili
+
+Non incluse nel boilerplate, documentate qui come punto di partenza:
+
+- **Nav dinamica** — usa `strapi-plugin-navigation` per gestire il menu da Strapi admin
+- **Dynamic zone** — aggiungi un campo `blocchi` al content-type `page` per un page builder
+- **Preview / draft mode** — Strapi 5 supporta il draft mode via API con token dedicato
+- **Immagini ottimizzate** — usa il componente `<Image />` di Astro con `strapiMediaUrl()`
+- **Sitemap dinamica** — aggiungi `customPages` in `astro.config.mjs` per includere le pagine Strapi
+- **i18n attivo** — vedi sezione "i18n (predisposto)" sopra
+
+---
+
 ## Script disponibili (dalla root)
 
 | Comando               | Cosa fa                                                                  |
