@@ -29,7 +29,7 @@ Il sito funziona su `http://localhost:4321`.
 
 | Layer              | Versione                         | Porta |
 | ------------------ | -------------------------------- | ----- |
-| Strapi 5 (CMS)     | 5.50.1                           | 1337  |
+| Strapi 5 (CMS)     | 5.52.1                           | 1337  |
 | Astro 5 (Frontend) | 5.18.2                           | 4321  |
 | Tailwind CSS       | v4                               | —     |
 | Database           | SQLite (dev) / PostgreSQL (prod) | —     |

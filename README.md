@@ -20,7 +20,7 @@ CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 
 | Componente   | Versione                         |
 | ------------ | -------------------------------- |
-| Strapi 5     | 5.50.1                           |
+| Strapi 5     | 5.52.1                           |
 | Astro 5      | 5.18.2                           |
 | Tailwind CSS | v4                               |
 | TypeScript   | ✓                                |
