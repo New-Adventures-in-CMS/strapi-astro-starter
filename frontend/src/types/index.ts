@@ -32,17 +32,12 @@ export interface NavItem {
   items?: NavItem[];
 }
 
-// Aggiungere qui i tipi specifici del progetto.
-// Esempio:
-//
-// export interface Articolo extends StrapiBase {
-//   titolo: string;
-//   slug: string;
-//   corpo: string;
-//   copertina?: StrapiMedia;
-// }
-//
-// export interface Homepage extends StrapiBase {
-//   titolo: string;
-//   sottotitolo?: string;
-// }
+// Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"
+export interface Page {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  body?: string | null;
+  seo_desc?: string | null;
+}

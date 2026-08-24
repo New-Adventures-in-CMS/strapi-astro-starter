@@ -1,0 +1,42 @@
+---
+// frontend/src/components/SEO.astro
+import { site } from "@/config/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path or absolute URL for OG image */
+  image?: string;
+  /** Override canonical; otherwise derived from Astro.url */
+  canonical?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  image,
+  canonical,
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : site.name;
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, site.url).href;
+const ogImage = image ? new URL(image, site.url).href : undefined;
+---
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content={site.name} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}

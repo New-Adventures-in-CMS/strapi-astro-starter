@@ -1,0 +1,112 @@
+---
+// frontend/src/components/Header.astro
+import { site } from "@/config/site";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+---
+<header class="border-b border-gray-200">
+  <nav class="mx-auto max-w-5xl px-4 py-4">
+    <div class="flex items-center justify-between">
+      <a href="/" class="text-lg font-semibold">{site.name}</a>
+
+      <!-- desktop nav (md and up) -->
+      <ul class="hidden gap-6 md:flex">
+        {site.nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              class:list={[
+                "text-sm transition-colors hover:text-black",
+                isActive(item.href)
+                  ? "font-semibold text-black"
+                  : "text-gray-600",
+              ]}
+            >{item.label}</a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- hamburger button (mobile only) -->
+      <button
+        id="nav-toggle"
+        class="rounded p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+        aria-label="Apri menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            id="icon-open"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+          <path
+            id="icon-close"
+            class="hidden"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- mobile nav (hidden by default, toggled by JS) -->
+    <ul
+      id="mobile-nav"
+      class="hidden flex-col gap-2 border-t border-gray-100 pt-4 md:hidden"
+    >
+      {site.nav.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+            class:list={[
+              "block py-2 text-sm",
+              isActive(item.href)
+                ? "font-semibold text-black"
+                : "text-gray-600",
+            ]}
+          >{item.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const menu = document.getElementById("mobile-nav");
+  const iconOpen = document.getElementById("icon-open");
+  const iconClose = document.getElementById("icon-close");
+
+  if (!toggle || !menu || !iconOpen || !iconClose) {
+    console.error("Header: required nav elements not found in DOM");
+  }
+
+  toggle?.addEventListener("click", () => {
+    const isCurrentlyOpen = !menu?.classList.contains("hidden");
+
+    if (isCurrentlyOpen) {
+      menu?.classList.add("hidden");
+      menu?.classList.remove("flex");
+      toggle.setAttribute("aria-expanded", "false");
+      iconOpen?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+    } else {
+      menu?.classList.remove("hidden");
+      menu?.classList.add("flex");
+      toggle.setAttribute("aria-expanded", "true");
+      iconOpen?.classList.add("hidden");
+      iconClose?.classList.remove("hidden");
+    }
+  });
+</script>

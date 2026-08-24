@@ -36,6 +36,7 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 | Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                |
 | Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                            |
 | Adapter produzione    | Frontend       | Pronto per il build con Node.js                                             |
+| Layout di default     | Frontend       | Header, footer e SEO già cablati. Personalizza **un solo file**: `src/config/site.ts` |
 
 > L'elenco puntuale delle versioni e dei plugin installati è in [SETUP.md](SETUP.md#stack).
 
@@ -403,6 +404,31 @@ const navItems = await fetchNav("main");
 Se usi Claude Code, puoi collegarlo direttamente a Strapi per gestire i contenuti in linguaggio naturale — creare voci, aggiornare testi, pubblicare entry — senza aprire il pannello admin.
 
 Lo starter ha già il server MCP abilitato in sviluppo. Per collegarlo ti serve solo creare un Admin token in Strapi e registrare il server in Claude Code. Trovi tutti i passi nella sezione **Server MCP (AI agents)** di [SETUP.md](SETUP.md#server-mcp-ai-agents).
+
+---
+
+## Il layout di default
+
+Il tuo sito parte già con un header, un footer e le meta tag SEO configurate. Per personalizzare nome del sito, voci di menu e colonne del footer, modifica **un solo file**: `frontend/src/config/site.ts`.
+
+```ts
+// frontend/src/config/site.ts
+export const site: SiteConfig = {
+  name: "Il mio sito",          // ← nome che appare nell'header e nel <title>
+  nav: [
+    { label: "Home", href: "/" },
+    { label: "Blog", href: "/blog" }, // ← aggiungi/rimuovi voci qui
+  ],
+  footer: {
+    columns: [
+      { title: "Navigazione", links: [{ label: "Home", href: "/" }] },
+    ],
+    legal: "© 2026 Il mio sito",
+  },
+};
+```
+
+Il CMS non è necessario per il layout: header e footer funzionano anche con Strapi spento. Il contenuto dinamico (pagine, articoli) arriva da Strapi, ma con un fallback pulito se il CMS non risponde.
 
 ---
 
