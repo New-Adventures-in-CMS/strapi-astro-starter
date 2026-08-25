@@ -3,10 +3,7 @@ import type { Core } from "@strapi/strapi";
 // Aggiungere qui i UID delle collection che il ruolo Public deve poter leggere.
 // Formato: "api::[singolarName].[singolarName]"
 // find + findOne vengono abilitati automaticamente al bootstrap.
-const PUBLIC_COLLECTION_UIDS: string[] = [
-  "api::form.form",
-  "api::page.page",
-];
+const PUBLIC_COLLECTION_UIDS: string[] = ["api::form.form", "api::page.page"];
 
 // Single type: solo "find" (non ha findOne)
 const PUBLIC_SINGLE_UIDS: string[] = [
