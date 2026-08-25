@@ -214,10 +214,10 @@ Se il form ha `emailDestinatario` configurato, Strapi invia email notifica al su
 
 ### Campi custom per voce
 
-| Campo | Tipo | Effetto |
-|---|---|---|
-| `showInHeader` | boolean | `true` → la voce appare nell'header |
-| `footerColumn` | select | Se valorizzato, la voce appare nel footer nella colonna scelta |
+| Campo          | Tipo    | Effetto                                                        |
+| -------------- | ------- | -------------------------------------------------------------- |
+| `showInHeader` | boolean | `true` → la voce appare nell'header                            |
+| `footerColumn` | select  | Se valorizzato, la voce appare nel footer nella colonna scelta |
 
 Valori `footerColumn`: `Prodotto`, `Azienda`, `Supporto`, `Legale`.
 
@@ -229,8 +229,11 @@ Una voce può avere entrambi attivi: appare in header E footer.
 
 ### Primo avvio
 
-Dopo aver creato la navigazione `main`, vai in **Settings → Navigation** e clicca **Save**.
-Questo attiva i campi `footerColumn` e `showInHeader` nell'editor delle voci.
+I custom fields (`footerColumn`, `showInHeader`) sono definiti in `cms/config/plugins.ts → navigation.config.additionalFields`. Il bootstrap tenta di materializzarli automaticamente nel DB del plugin al primo avvio (`cms/src/index.ts → ensureNavigationCustomFields`).
+
+**Se i campi non compaiono sulle voci** (es. su un DB vergine in cui l'automazione ha fallito): vai in **Settings → Navigation → Restore configuration** e abilita i campi. È un'operazione una-tantum.
+
+Relazione file ↔ DB: `plugins.ts` è la fonte di verità; "Restore configuration" materializza quella config nel database del plugin.
 
 ### Implementazione
 

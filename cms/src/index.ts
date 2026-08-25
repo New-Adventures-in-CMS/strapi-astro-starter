@@ -1,16 +1,48 @@
 import type { Core } from "@strapi/strapi";
 
-// Aggiungere qui i UID delle collection che il ruolo Public deve poter leggere.
-// Formato: "api::[singolarName].[singolarName]"
-// find + findOne vengono abilitati automaticamente al bootstrap.
 const PUBLIC_COLLECTION_UIDS: string[] = ["api::form.form", "api::page.page"];
 
-// Single type: solo "find" (non ha findOne)
-const PUBLIC_SINGLE_UIDS: string[] = [
-  // Esempi:
-  // "api::homepage.homepage",
-  // "api::configurazione.configurazione",
-];
+const PUBLIC_SINGLE_UIDS: string[] = [];
+
+const MANUAL_HINT =
+  "ℹ️  Navigation: per attivare i campi 'footerColumn' e 'showInHeader' " +
+  "vai in Settings → Navigation → 'Restore configuration', poi abilita i campi. " +
+  "(Passaggio una-tantum al primo avvio.)";
+
+async function ensureNavigationCustomFields(strapi: Core.Strapi) {
+  try {
+    const store = strapi.store({ type: "plugin", name: "navigation" });
+    const current = (await store.get({ key: "config" })) as Record<
+      string,
+      unknown
+    > | null;
+
+    const already =
+      Array.isArray(current?.additionalFields) &&
+      (current.additionalFields as unknown[]).some(
+        (f) =>
+          typeof f === "object" &&
+          f !== null &&
+          (f as Record<string, unknown>).name === "footerColumn",
+      );
+    if (already) return;
+
+    // Strada A: use common service's setDefaultConfig (reads file config, writes to store)
+    const commonSvc = strapi.plugin("navigation")?.service?.("common") as
+      { setDefaultConfig?: () => Promise<unknown> } | undefined;
+    if (commonSvc && typeof commonSvc.setDefaultConfig === "function") {
+      await commonSvc.setDefaultConfig();
+      strapi.log.info(
+        "✅ Navigation: custom fields ripristinati automaticamente.",
+      );
+      return;
+    }
+
+    strapi.log.warn(MANUAL_HINT);
+  } catch {
+    strapi.log.warn(MANUAL_HINT);
+  }
+}
 
 export default {
   register() {},
@@ -82,5 +114,7 @@ export default {
       }
       strapi.log.info("[bootstrap] Seeded 4 default pages");
     }
+
+    await ensureNavigationCustomFields(strapi);
   },
 };

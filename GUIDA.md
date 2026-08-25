@@ -375,7 +375,7 @@ Nel Content Manager, la collection **Page** deve avere almeno alcune entry pubbl
 
 Strapi Admin → **Navigation** → **Add new navigation**: nome `Main`, slug **`main`**.
 
-> **Primo avvio:** dopo aver salvato, vai in **Settings → Navigation** e clicca Save. Questo attiva i campi custom `footerColumn` e `showInHeader` sulle voci.
+> **Primo avvio:** al primo `npm run develop`, il CMS tenta di attivare automaticamente i campi «Colonna footer» e «Mostra nell'header» sulle voci. Se non li vedi, vai in **Settings → Navigation** e clicca **Restore configuration**. È un'operazione da fare una sola volta.
 
 ### 3. Aggiungi le voci
 
