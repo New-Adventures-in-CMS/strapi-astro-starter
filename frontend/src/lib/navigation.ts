@@ -80,9 +80,12 @@ async function getMainNav(): Promise<NavItem[] | null> {
 export async function getHeaderNav(): Promise<NavItem[]> {
   const nav = await getMainNav();
   if (!nav || nav.length === 0) return site.nav;
-  return nav
-    .filter((item) => item.showInHeader)
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  const flagged = nav.filter((item) => item.showInHeader);
+  // If no item has showInHeader set yet (custom fields not enabled), show all.
+  const items = flagged.length > 0 ? flagged : nav;
+
+  return items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
 export async function getFooterNav(): Promise<FooterData> {

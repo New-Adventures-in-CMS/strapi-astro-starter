@@ -379,7 +379,7 @@ Al primo avvio il bootstrap crea già la navigazione `main` con le 4 voci colleg
 2. Attiva il toggle per **`footerColumn`** e per **`showInHeader`**
 3. Salva
 
-> Finché non fai questo passo, le voci esistono ma non mostrano i campi «Mostra nell'header» e «Colonna footer» nell'editor. L'header risulterà vuoto (il sito funziona comunque con le voci statiche di riserva solo se la nav non restituisce elementi).
+> Finché non fai questo passo, le voci esistono ma non mostrano i campi «Mostra nell'header» e «Colonna footer» nell'editor. L'header mostra comunque tutte le voci del menu (comportamento di default finché non inizi a usare il campo «Mostra nell'header»). Appena marchi almeno una voce, solo quelle marcate appaiono nell'header.
 
 > Se i campi non compaiono in Settings, clicca **Restore configuration** — poi torna ad abilitarli.
 

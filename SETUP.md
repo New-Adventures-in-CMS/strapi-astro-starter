@@ -238,7 +238,7 @@ Sequenza automatica al primo `npm run develop`:
 
 **Passo manuale richiesto (una-tantum):** in **Settings → Navigation**, sezione **"Custom fields settings"**, abilita i toggle per `footerColumn` e `showInHeader`. Il bootstrap li scrive nel DB ma il plugin richiede l'abilitazione manuale per campo prima che compaiano nell'editor delle voci.
 
-> ⚠️ Finché i custom fields non sono abilitati e le voci non hanno `showInHeader: true`, l'header mostra una lista vuota (non il fallback statico di `site.ts`, poiché la nav `main` esiste). Il footer usa il fallback statico finché nessuna voce ha `footerColumn` valorizzato.
+> ℹ️ Finché nessuna voce ha `showInHeader: true` (custom fields non ancora abilitati), l'header mostra **tutte le voci** `menuAttached`. Appena almeno una voce è marcata `showInHeader`, il filtro si attiva e mostra solo quelle. Il footer usa il fallback statico finché nessuna voce ha `footerColumn` valorizzato.
 
 **Se i campi non compaiono sulle voci** (es. `ensureNavigationCustomFields` ha fallito): vai in **Settings → Navigation → Restore configuration**. Una-tantum.
 
