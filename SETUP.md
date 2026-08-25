@@ -210,67 +210,97 @@ Se il form ha `emailDestinatario` configurato, Strapi invia email notifica al su
 
 ## Navigazione dinamica
 
-Endpoint del plugin: `GET /api/navigation/render/{slug}?type=TREE`
+**Modello unificato:** una sola navigazione `main` in Strapi; header e footer sono due viste filtrate di essa tramite campi custom per voce.
 
-Slug configurati in `frontend/src/config/site.ts → site.navigation`:
-- `main` → header
-- `footer` → footer
+### Campi custom per voce
+
+| Campo | Tipo | Effetto |
+|---|---|---|
+| `showInHeader` | boolean | `true` → la voce appare nell'header |
+| `footerColumn` | select | Se valorizzato, la voce appare nel footer nella colonna scelta |
+
+Valori `footerColumn`: `Prodotto`, `Azienda`, `Supporto`, `Legale`.
+
+Una voce può avere entrambi attivi: appare in header E footer.
+
+> ⚠️ I valori di `footerColumn` sono definiti in due posti che devono coincidere:
+> `cms/config/plugins.ts` (opzioni del select) e `frontend/src/lib/navigation.ts` (`FOOTER_COLUMNS`).
+> Se aggiungi una colonna, aggiornala in entrambi.
+
+### Primo avvio
+
+Dopo aver creato la navigazione `main`, vai in **Settings → Navigation** e clicca **Save**.
+Questo attiva i campi `footerColumn` e `showInHeader` nell'editor delle voci.
 
 ### Implementazione
+
+Endpoint del plugin: `GET /api/navigation/render/{slug}?type=TREE`
 
 `frontend/src/lib/navigation.ts` centralizza fetch, normalizzazione e fallback:
 
 ```ts
-// Fetch + fallback per header
+// Header: voci con showInHeader === true, ordinate per order
 const navItems = await getHeaderNav(); // NavItem[]
 
-// Fetch + fallback per footer (restituisce { title, links }[])
-const columns = await getFooterNav();
+// Footer: FooterData = { columns: { title, items }[] }, raggruppate per footerColumn
+const footer = await getFooterNav();
 ```
+
+Slug configurato in `frontend/src/config/site.ts → site.navigation.mainSlug` (default: `"main"`).
 
 **Non usare** `strapiFind` per la navigazione — l'endpoint è del plugin, non CRUD.
 
 ### Forma dati del plugin
 
 ```json
-[{
-  "title": "Home",
-  "menuAttached": true,
-  "order": 1,
-  "path": "/",
-  "type": "INTERNAL",
-  "items": []
-}]
+[
+  {
+    "title": "Home",
+    "menuAttached": true,
+    "order": 1,
+    "path": "/",
+    "type": "INTERNAL",
+    "items": [],
+    "additionalFields": {
+      "showInHeader": true,
+      "footerColumn": null
+    }
+  }
+]
 ```
 
 Tipi di voce:
+
 - `INTERNAL` — collegata a una Page; `path` reale (es. `/about`)
 - `EXTERNAL` — URL libero; `external: true` nel NavItem normalizzato
 - `WRAPPER` — voce padre senza href; scartata se non ha figli con `menuAttached: true`
 
-Solo le voci con `menuAttached: true` vengono incluse.
+Solo le voci con `menuAttached: true` vengono normalizzate.
 
 ### Normalizzazione e fallback
 
 `fetchNavigation(slug)` ritorna `NavItem[] | null`. Ritorna `null` su:
+
 - risposta non ok (403, 500, qualsiasi status non-2xx)
 - risposta non-array o array vuoto
 - errore di rete / CMS spento
 
-`getHeaderNav()` → `fetchNavigation("main") ?? site.nav`
+`getHeaderNav()` → filtra per `showInHeader === true`; fallback a `site.nav` solo se nav irraggiungibile.
 
-`getFooterNav()` → mappa le voci di primo livello con figli in colonne `{ title, links }[]`; fallback a `site.footer.columns`
+`getFooterNav()` → raggruppa per `footerColumn` nell'ordine `FOOTER_COLUMNS`; fallback a `site.footer.columns` se nav irraggiungibile o nessuna voce ha `footerColumn`.
+
+Ordine colonne footer: `Prodotto → Azienda → Supporto → Legale` (colonne vuote omesse).
 
 ### Content-type `page`
 
 Schema: `cms/src/api/page/content-types/page/schema.json`
 
-| Campo    | Tipo     | Note                    |
-| -------- | -------- | ----------------------- |
-| title    | string   | required                |
-| slug     | uid      | targetField: title      |
-| body     | richtext | opzionale               |
-| seo_desc | text     | opzionale               |
+| Campo    | Tipo     | Note               |
+| -------- | -------- | ------------------ |
+| title    | string   | required           |
+| slug     | uid      | targetField: title |
+| body     | richtext | opzionale          |
+| seo_desc | text     | opzionale          |
 
 `draftAndPublish: true`. Permessi Public (`find`, `findOne`) abilitati dal bootstrap.
 
@@ -285,16 +315,42 @@ navigation: {
   enabled: true,
   config: {
     contentTypes: ["api::page.page"],
+    defaultContentTypes: "api::page.page",
     contentTypesNameFields: { "api::page.page": ["title"] },
+    pathDefaultFields: { "api::page.page": ["slug"] },
     allowedLevels: 2,
-    gql: { navigationItemRelated: ["Page"] },
+    additionalFields: [
+      {
+        type: "select",
+        name: "footerColumn",
+        label: "Colonna footer",
+        multi: false,
+        options: ["Prodotto", "Azienda", "Supporto", "Legale"],
+        required: false,
+      },
+      {
+        type: "boolean",
+        name: "showInHeader",
+        label: "Mostra nell'header",
+        required: false,
+      },
+    ],
   },
 },
 ```
 
+### Migrazione dati
+
+Se avevi già una navigazione `footer` separata:
+
+1. Eliminare la navigazione `footer` (non più usata).
+2. Spostare le voci footer nella nav `main`, impostando `footerColumn` e `showInHeader: false`.
+3. Voci solo header: `showInHeader: true`, `footerColumn` vuoto.
+4. Voci in entrambi: `showInHeader: true` + `footerColumn` valorizzato.
+
 ### Gotcha
 
-Senza `page` configurato come `contentType` navigabile, l'editor mostra solo **WRAPPER** ed **EXTERNAL** — la voce **INTERNAL** non appare. Il `path` delle voci EXTERNAL sarà `#/` (placeholder) finché non si collega a una pagina reale.
+Senza `page` configurato come `contentType` navigabile, l'editor mostra solo **WRAPPER** ed **EXTERNAL** — la voce **INTERNAL** non appare.
 
 ---
 

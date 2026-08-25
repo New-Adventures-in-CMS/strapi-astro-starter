@@ -3,16 +3,16 @@
 import { getFooterNav } from "@/lib/navigation";
 import { site } from "@/config/site";
 
-const columns = await getFooterNav();
+const footer = await getFooterNav();
 ---
 <footer class="mt-auto border-t border-gray-200">
   <div class="mx-auto max-w-5xl px-4 py-10">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-      {columns.map((col) => (
+      {footer.columns.map((col) => (
         <div>
           <h3 class="mb-4 text-sm font-semibold text-gray-900">{col.title}</h3>
           <ul class="space-y-2">
-            {col.links.map((item) => (
+            {col.items.map((item) => (
               <li>
                 <a
                   href={item.href}

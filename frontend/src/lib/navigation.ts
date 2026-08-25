@@ -7,10 +7,25 @@ interface PluginNavNode {
   menuAttached: boolean;
   order: number;
   items?: PluginNavNode[];
+  additionalFields?: {
+    footerColumn?: string | null;
+    showInHeader?: boolean | null;
+  };
 }
 
-const STRAPI_URL =
-  import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+/** Canonical footer column order — must match options in cms/config/plugins.ts. */
+export const FOOTER_COLUMNS = [
+  "Prodotto",
+  "Azienda",
+  "Supporto",
+  "Legale",
+] as const;
+
+export interface FooterData {
+  columns: { title: string; items: NavItem[] }[];
+}
+
+const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
 
 function normalizeNode(node: PluginNavNode): NavItem | null {
   if (!node.menuAttached) return null;
@@ -20,17 +35,23 @@ function normalizeNode(node: PluginNavNode): NavItem | null {
     .filter((n): n is NavItem => n !== null)
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
+  const base = {
+    label: node.title,
+    order: node.order,
+    footerColumn: node.additionalFields?.footerColumn ?? null,
+    showInHeader: node.additionalFields?.showInHeader ?? false,
+    children: children.length ? children : undefined,
+  };
+
   if (node.type === "WRAPPER") {
     if (children.length === 0) return null;
-    return { label: node.title, href: undefined, children, order: node.order };
+    return { ...base, href: undefined };
   }
 
   return {
-    label: node.title,
+    ...base,
     href: node.path,
     external: node.type === "EXTERNAL",
-    children: children.length ? children : undefined,
-    order: node.order,
   };
 }
 
@@ -52,22 +73,37 @@ export async function fetchNavigation(slug: string): Promise<NavItem[] | null> {
   }
 }
 
-export async function getHeaderNav(): Promise<NavItem[]> {
-  return (await fetchNavigation(site.navigation.headerSlug)) ?? site.nav;
+async function getMainNav(): Promise<NavItem[] | null> {
+  return fetchNavigation(site.navigation.mainSlug);
 }
 
-type FooterColumn = { title: string; links: NavItem[] };
+export async function getHeaderNav(): Promise<NavItem[]> {
+  const nav = await getMainNav();
+  if (!nav || nav.length === 0) return site.nav;
+  return nav
+    .filter((item) => item.showInHeader)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
 
-export async function getFooterNav(): Promise<FooterColumn[]> {
-  const items = await fetchNavigation(site.navigation.footerSlug);
-  if (!items) return site.footer.columns;
+export async function getFooterNav(): Promise<FooterData> {
+  const nav = await getMainNav();
 
-  const columns: FooterColumn[] = items
-    .filter((item) => item.children && item.children.length > 0)
-    .map((item) => ({
-      title: item.label,
-      links: item.children!.filter((c) => c.href !== undefined),
-    }));
+  if (!nav || nav.length === 0) {
+    return { columns: site.footer.columns };
+  }
 
-  return columns.length ? columns : site.footer.columns;
+  const footerItems = nav.filter(
+    (item) => item.footerColumn && item.footerColumn.trim() !== "",
+  );
+
+  const columns = FOOTER_COLUMNS.map((colName) => ({
+    title: colName,
+    items: footerItems
+      .filter((item) => item.footerColumn === colName)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+  })).filter((col) => col.items.length > 0);
+
+  if (columns.length === 0) return { columns: site.footer.columns };
+
+  return { columns };
 }

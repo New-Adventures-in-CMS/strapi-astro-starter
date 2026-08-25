@@ -76,6 +76,25 @@ const config = ({
         "api::page.page": ["slug"],
       },
       allowedLevels: 2,
+      additionalFields: [
+        {
+          type: "select",
+          name: "footerColumn",
+          label: "Colonna footer",
+          description:
+            "Se impostata, la voce appare nel footer in questa colonna.",
+          multi: false,
+          options: ["Prodotto", "Azienda", "Supporto", "Legale"],
+          required: false,
+        },
+        {
+          type: "boolean",
+          name: "showInHeader",
+          label: "Mostra nell'header",
+          description: "Se attivo, la voce appare nel menu principale.",
+          required: false,
+        },
+      ],
     },
   },
   seo: { enabled: true },
