@@ -371,13 +371,19 @@ Per gestire i menu dall'admin Strapi, segui questi passi:
 
 Nel Content Manager, la collection **Page** deve avere almeno alcune entry pubblicate. Se hai avviato il CMS almeno una volta, il bootstrap le ha create automaticamente (Home, Chi siamo, Servizi, Contatti).
 
-### 2. Crea la navigazione in admin
+### 2. Configura i custom fields (una-tantum)
 
-Strapi Admin → **Navigation** → **Add new navigation**: nome `Main`, slug **`main`**.
+Al primo avvio il bootstrap crea già la navigazione `main` con le 4 voci collegate alle pagine. Prima di usarle, devi abilitare i due campi custom:
 
-> **Primo avvio:** al primo `npm run develop`, il CMS tenta di attivare automaticamente i campi «Colonna footer» e «Mostra nell'header» sulle voci. Se non li vedi, vai in **Settings → Navigation** e clicca **Restore configuration**. È un'operazione da fare una sola volta.
+1. Vai in **Settings → Navigation**, sezione **"Custom fields settings"**
+2. Attiva il toggle per **`footerColumn`** e per **`showInHeader`**
+3. Salva
 
-### 3. Aggiungi le voci
+> Finché non fai questo passo, le voci esistono ma non mostrano i campi «Mostra nell'header» e «Colonna footer» nell'editor. L'header risulterà vuoto (il sito funziona comunque con le voci statiche di riserva solo se la nav non restituisce elementi).
+
+> Se i campi non compaiono in Settings, clicca **Restore configuration** — poi torna ad abilitarli.
+
+### 3. Modifica le voci
 
 Dentro la navigazione, clicca **Add item**:
 

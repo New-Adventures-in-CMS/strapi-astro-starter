@@ -5,9 +5,8 @@ const PUBLIC_COLLECTION_UIDS: string[] = ["api::form.form", "api::page.page"];
 const PUBLIC_SINGLE_UIDS: string[] = [];
 
 const MANUAL_HINT =
-  "ℹ️  Navigation: per attivare i campi 'footerColumn' e 'showInHeader' " +
-  "vai in Settings → Navigation → 'Restore configuration', poi abilita i campi. " +
-  "(Passaggio una-tantum al primo avvio.)";
+  "ℹ️  Navigation: i custom fields sono stati scritti nel DB. Per usarli, abilitali " +
+  "in Settings → Navigation (sezione 'Custom fields settings'). Passaggio una-tantum.";
 
 async function ensureNavigationCustomFields(strapi: Core.Strapi) {
   try {
@@ -33,7 +32,7 @@ async function ensureNavigationCustomFields(strapi: Core.Strapi) {
     if (commonSvc && typeof commonSvc.setDefaultConfig === "function") {
       await commonSvc.setDefaultConfig();
       strapi.log.info(
-        "✅ Navigation: custom fields ripristinati automaticamente.",
+        "✅ Navigation: custom fields scritti nel DB. Abilitali in Settings → Navigation → 'Custom fields settings' (una-tantum).",
       );
       return;
     }
@@ -41,6 +40,110 @@ async function ensureNavigationCustomFields(strapi: Core.Strapi) {
     strapi.log.warn(MANUAL_HINT);
   } catch {
     strapi.log.warn(MANUAL_HINT);
+  }
+}
+
+type NavAdminService = {
+  post?: (a: {
+    payload: { name: string; visible: boolean };
+    auditLog: undefined;
+  }) => Promise<{ documentId: string; locale: string }>;
+  put?: (a: {
+    payload: {
+      documentId: string;
+      name: string;
+      visible: boolean;
+      locale: string;
+      items: unknown[];
+    };
+    auditLog: undefined;
+  }) => Promise<unknown>;
+};
+
+async function seedNavigation(strapi: Core.Strapi) {
+  try {
+    const navUid = (
+      strapi.plugin("navigation")?.contentType?.("navigation") as
+        { uid?: string } | undefined
+    )?.uid;
+    if (!navUid) {
+      strapi.log.warn(
+        "[bootstrap] Seed nav: content type non trovato. Crea la nav 'main' manualmente.",
+      );
+      return;
+    }
+
+    // Idempotency: skip if 'main' already exists
+    const existing = await (
+      strapi.documents as (uid: string) => {
+        findMany: (opts: unknown) => Promise<unknown[]>;
+      }
+    )(navUid).findMany({ filters: { slug: "main" }, limit: 1 });
+    if (existing.length > 0) return;
+
+    const adminSvc = strapi.plugin("navigation")?.service?.("admin") as
+      NavAdminService | undefined;
+    if (!adminSvc?.post || !adminSvc?.put) {
+      strapi.log.warn(
+        "[bootstrap] Seed nav: servizio admin plugin non disponibile. Crea la nav 'main' manualmente.",
+      );
+      return;
+    }
+
+    const nav = await adminSvc.post({
+      payload: { name: "Main", visible: true },
+      auditLog: undefined,
+    });
+
+    const pages = await strapi
+      .documents("api::page.page")
+      .findMany({ status: "published" });
+    const bySlug = Object.fromEntries(pages.map((p) => [p.slug as string, p]));
+
+    const seedDefs = [
+      { slug: "home", title: "Home", order: 1 },
+      { slug: "about", title: "Chi siamo", order: 2 },
+      { slug: "services", title: "Servizi", order: 3 },
+      { slug: "contacts", title: "Contatti", order: 4 },
+    ];
+
+    const items = seedDefs
+      .filter((d) => bySlug[d.slug])
+      .map(({ slug, title, order }) => ({
+        title,
+        type: "INTERNAL",
+        uiRouterKey: slug,
+        menuAttached: true,
+        order,
+        collapsed: false,
+        related: {
+          documentId: (bySlug[slug] as { documentId: string }).documentId,
+          __type: "api::page.page",
+        },
+      }));
+
+    if (items.length > 0) {
+      await adminSvc.put({
+        payload: {
+          documentId: nav.documentId,
+          name: "Main",
+          visible: true,
+          locale: nav.locale,
+          items,
+        },
+        auditLog: undefined,
+      });
+    }
+
+    strapi.log.info(
+      `[bootstrap] Seeded 'main' navigation with ${items.length} items`,
+    );
+  } catch (err) {
+    strapi.log.warn(
+      "[bootstrap] Seed navigazione non riuscito: crea la nav 'main' " +
+        "manualmente in Navigation → Add new navigation. Dettaglio: " +
+        String(err),
+    );
   }
 }
 
@@ -116,5 +219,6 @@ export default {
     }
 
     await ensureNavigationCustomFields(strapi);
+    await seedNavigation(strapi);
   },
 };

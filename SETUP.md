@@ -229,11 +229,20 @@ Una voce può avere entrambi attivi: appare in header E footer.
 
 ### Primo avvio
 
-I custom fields (`footerColumn`, `showInHeader`) sono definiti in `cms/config/plugins.ts → navigation.config.additionalFields`. Il bootstrap tenta di materializzarli automaticamente nel DB del plugin al primo avvio (`cms/src/index.ts → ensureNavigationCustomFields`).
+Sequenza automatica al primo `npm run develop`:
 
-**Se i campi non compaiono sulle voci** (es. su un DB vergine in cui l'automazione ha fallito): vai in **Settings → Navigation → Restore configuration** e abilita i campi. È un'operazione una-tantum.
+1. **Permessi Public** — configurati dal bootstrap (7 permessi, incluse render navigation)
+2. **Pagine seed** — Home, Chi siamo, Servizi, Contatti create come published
+3. **Custom fields scritti nel DB** — `footerColumn` e `showInHeader` materializzati nel plugin store (`ensureNavigationCustomFields`)
+4. **Nav `main` seedata** — creata con 4 voci INTERNAL collegate alle pagine seed (`seedNavigation`)
 
-Relazione file ↔ DB: `plugins.ts` è la fonte di verità; "Restore configuration" materializza quella config nel database del plugin.
+**Passo manuale richiesto (una-tantum):** in **Settings → Navigation**, sezione **"Custom fields settings"**, abilita i toggle per `footerColumn` e `showInHeader`. Il bootstrap li scrive nel DB ma il plugin richiede l'abilitazione manuale per campo prima che compaiano nell'editor delle voci.
+
+> ⚠️ Finché i custom fields non sono abilitati e le voci non hanno `showInHeader: true`, l'header mostra una lista vuota (non il fallback statico di `site.ts`, poiché la nav `main` esiste). Il footer usa il fallback statico finché nessuna voce ha `footerColumn` valorizzato.
+
+**Se i campi non compaiono sulle voci** (es. `ensureNavigationCustomFields` ha fallito): vai in **Settings → Navigation → Restore configuration**. Una-tantum.
+
+Relazione file ↔ DB: `plugins.ts` è la fonte di verità; "Restore configuration" materializza quella config nel DB del plugin.
 
 ### Implementazione
 
