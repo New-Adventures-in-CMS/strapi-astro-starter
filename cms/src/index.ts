@@ -5,9 +5,7 @@ import type { Core } from "@strapi/strapi";
 // find + findOne vengono abilitati automaticamente al bootstrap.
 const PUBLIC_COLLECTION_UIDS: string[] = [
   "api::form.form",
-  // Esempi:
-  // "api::articolo.articolo",
-  // "api::servizio.servizio",
+  "api::page.page",
 ];
 
 // Single type: solo "find" (non ha findOne)
@@ -66,6 +64,26 @@ export default {
       strapi.log.info(
         `[bootstrap] Aggiunti ${created} permessi al ruolo Public`,
       );
+    }
+
+    // Seed default pages if none exist
+    const pageCount = await strapi
+      .documents("api::page.page")
+      .count({ status: "published" });
+    if (pageCount === 0) {
+      const seedPages = [
+        { title: "Home", slug: "home" },
+        { title: "Chi siamo", slug: "about" },
+        { title: "Servizi", slug: "services" },
+        { title: "Contatti", slug: "contacts" },
+      ];
+      for (const data of seedPages) {
+        await strapi.documents("api::page.page").create({
+          data,
+          status: "published",
+        });
+      }
+      strapi.log.info("[bootstrap] Seeded 4 default pages");
     }
   },
 };
