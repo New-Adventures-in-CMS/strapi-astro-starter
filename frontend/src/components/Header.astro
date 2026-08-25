@@ -28,7 +28,7 @@ const isActive = (href: string | undefined): boolean =>
                 </svg>
               </button>
               <ul class="absolute left-0 top-full z-10 hidden min-w-max rounded border border-gray-200 bg-white py-1 shadow-md group-hover:block">
-                {item.children.map((child) => (
+                {item.children.filter((child) => child.href !== undefined).map((child) => (
                   <li>
                     <a
                       href={child.href}
@@ -100,7 +100,7 @@ const isActive = (href: string | undefined): boolean =>
                 </svg>
               </summary>
               <ul class="mt-1 pl-4">
-                {item.children.map((child) => (
+                {item.children.filter((child) => child.href !== undefined).map((child) => (
                   <li>
                     <a
                       href={child.href}

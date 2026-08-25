@@ -84,6 +84,26 @@ describe("fetchNavigation", () => {
     expect(result![0].external).toBe(true);
   });
 
+  it("excludes nested WRAPPER children (no href) from result", async () => {
+    mockFetch.mockResolvedValue(okRes([
+      {
+        title: "Products",
+        path: "",
+        type: "WRAPPER",
+        menuAttached: true,
+        order: 1,
+        items: [
+          { title: "Category", path: "", type: "WRAPPER", menuAttached: true, order: 1, items: [] },
+          { title: "Widget", path: "/products/widget", type: "INTERNAL", menuAttached: true, order: 2 },
+        ],
+      },
+    ]));
+    const result = await fetchNavigation("main");
+    // WRAPPER child with no children is excluded; only INTERNAL child survives
+    expect(result![0].children).toHaveLength(1);
+    expect(result![0].children![0].href).toBe("/products/widget");
+  });
+
   it("sorts nodes ascending by order", async () => {
     mockFetch.mockResolvedValue(okRes([
       { title: "B", path: "/b", type: "INTERNAL", menuAttached: true, order: 2 },
