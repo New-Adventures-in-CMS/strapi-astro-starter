@@ -68,11 +68,14 @@ const config = ({
     enabled: true,
     config: {
       contentTypes: ["api::page.page"],
+      defaultContentTypes: "api::page.page",
       contentTypesNameFields: {
         "api::page.page": ["title"],
       },
+      pathDefaultFields: {
+        "api::page.page": ["slug"],
+      },
       allowedLevels: 2,
-      gql: { navigationItemRelated: ["Page"] },
     },
   },
   seo: { enabled: true },
