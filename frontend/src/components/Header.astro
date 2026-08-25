@@ -1,10 +1,12 @@
 ---
 // frontend/src/components/Header.astro
+import { getHeaderNav } from "@/lib/navigation";
 import { site } from "@/config/site";
 
+const navItems = await getHeaderNav();
 const path = Astro.url.pathname;
-const isActive = (href: string) =>
-  href === "/" ? path === "/" : path.startsWith(href);
+const isActive = (href: string | undefined): boolean =>
+  href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
 ---
 <header class="border-b border-gray-200">
   <nav class="mx-auto max-w-5xl px-4 py-4">
@@ -13,20 +15,44 @@ const isActive = (href: string) =>
 
       <!-- desktop nav (md and up) -->
       <ul class="hidden gap-6 md:flex">
-        {site.nav.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-              class:list={[
-                "text-sm transition-colors hover:text-black",
-                isActive(item.href)
-                  ? "font-semibold text-black"
-                  : "text-gray-600",
-              ]}
-            >{item.label}</a>
-          </li>
+        {navItems.map((item) => (
+          item.children?.length ? (
+            <li class="group relative">
+              <button
+                type="button"
+                class="flex cursor-default items-center gap-1 text-sm text-gray-600 transition-colors hover:text-black"
+              >
+                {item.label}
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <ul class="absolute left-0 top-full z-10 hidden min-w-max rounded border border-gray-200 bg-white py-1 shadow-md group-hover:block">
+                {item.children.map((child) => (
+                  <li>
+                    <a
+                      href={child.href}
+                      target={child.external ? "_blank" : undefined}
+                      rel={child.external ? "noopener noreferrer" : undefined}
+                      class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-black"
+                    >{child.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <li>
+              <a
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                class:list={[
+                  "text-sm transition-colors hover:text-black",
+                  isActive(item.href) ? "font-semibold text-black" : "text-gray-600",
+                ]}
+              >{item.label}</a>
+            </li>
+          )
         ))}
       </ul>
 
@@ -63,20 +89,43 @@ const isActive = (href: string) =>
       id="mobile-nav"
       class="hidden flex-col gap-2 border-t border-gray-100 pt-4 md:hidden"
     >
-      {site.nav.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            target={item.external ? "_blank" : undefined}
-            rel={item.external ? "noopener noreferrer" : undefined}
-            class:list={[
-              "block py-2 text-sm",
-              isActive(item.href)
-                ? "font-semibold text-black"
-                : "text-gray-600",
-            ]}
-          >{item.label}</a>
-        </li>
+      {navItems.map((item) => (
+        item.children?.length ? (
+          <li>
+            <details>
+              <summary class="flex cursor-pointer items-center justify-between py-2 text-sm text-gray-600 [&::-webkit-details-marker]:hidden">
+                {item.label}
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <ul class="mt-1 pl-4">
+                {item.children.map((child) => (
+                  <li>
+                    <a
+                      href={child.href}
+                      target={child.external ? "_blank" : undefined}
+                      rel={child.external ? "noopener noreferrer" : undefined}
+                      class="block py-1.5 text-sm text-gray-600 hover:text-black"
+                    >{child.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </li>
+        ) : (
+          <li>
+            <a
+              href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              class:list={[
+                "block py-2 text-sm",
+                isActive(item.href) ? "font-semibold text-black" : "text-gray-600",
+              ]}
+            >{item.label}</a>
+          </li>
+        )
       ))}
     </ul>
   </nav>
