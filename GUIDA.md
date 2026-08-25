@@ -25,17 +25,17 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 
 ## Cosa c'è già incluso
 
-| Cosa                  | Dove           | Descrizione                                                                 |
-| --------------------- | -------------- | --------------------------------------------------------------------------- |
-| Sistema form dinamici | CMS + Frontend | Crei un form in Strapi, lo metti in qualsiasi pagina con una riga di codice |
-| Plugin navigazione    | CMS            | Gestisci il menu del sito dall'admin Strapi                                 |
-| Plugin gruppi         | CMS            | Organizza le collection nella sidebar dell'admin                            |
-| Plugin ordinamento    | CMS            | Riordina le voci con drag-and-drop                                          |
-| Email SMTP            | CMS            | Strapi invia email quando arriva una submission                             |
-| Server MCP            | CMS            | Collega Claude Code (e altri AI agent) a Strapi per gestire contenuti       |
-| Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                |
-| Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                            |
-| Adapter produzione    | Frontend       | Pronto per il build con Node.js                                             |
+| Cosa                  | Dove           | Descrizione                                                                           |
+| --------------------- | -------------- | ------------------------------------------------------------------------------------- |
+| Sistema form dinamici | CMS + Frontend | Crei un form in Strapi, lo metti in qualsiasi pagina con una riga di codice           |
+| Plugin navigazione    | CMS            | Gestisci il menu del sito dall'admin Strapi                                           |
+| Plugin gruppi         | CMS            | Organizza le collection nella sidebar dell'admin                                      |
+| Plugin ordinamento    | CMS            | Riordina le voci con drag-and-drop                                                    |
+| Email SMTP            | CMS            | Strapi invia email quando arriva una submission                                       |
+| Server MCP            | CMS            | Collega Claude Code (e altri AI agent) a Strapi per gestire contenuti                 |
+| Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                          |
+| Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                                      |
+| Adapter produzione    | Frontend       | Pronto per il build con Node.js                                                       |
 | Layout di default     | Frontend       | Header, footer e SEO già cablati. Personalizza **un solo file**: `src/config/site.ts` |
 
 > L'elenco puntuale delle versioni e dei plugin installati è in [SETUP.md](SETUP.md#stack).
@@ -361,41 +361,52 @@ Strapi Admin → **Content Manager** → **Form Submission** — trovi tutte le 
 
 ## Il sistema di navigazione
 
-Il menu del sito si gestisce da Strapi tramite il plugin Navigation.
+Header e footer mostrano di default le voci statiche definite in `site.ts` — funzionano subito, anche senza Strapi.
 
-### Configurare il menu
+C'è un solo menu da compilare nel CMS: la navigazione `main`. Per ogni voce scegli se mostrarla nell'header (campo **«Mostra nell'header»**) e in quale colonna del footer farla apparire (campo **«Colonna footer»**). Se non scegli una colonna, la voce non appare nel footer.
 
-1. Strapi Admin → **Navigation** (nella sidebar)
-2. Seleziona o crea una navigazione con slug `main`
-3. Aggiungi le voci del menu con titolo e URL
-4. Puoi creare sottomenu annidati
+Per gestire i menu dall'admin Strapi, segui questi passi:
 
-### Usare il menu in Astro
+### 1. Assicurati che esistano delle Pagine
 
-```astro
----
-const STRAPI_URL = import.meta.env.STRAPI_URL ?? "http://localhost:1337";
+Nel Content Manager, la collection **Page** deve avere almeno alcune entry pubblicate. Se hai avviato il CMS almeno una volta, il bootstrap le ha create automaticamente (Home, Chi siamo, Servizi, Contatti).
 
-async function fetchNav(slug: string) {
-  try {
-    const res = await fetch(`${STRAPI_URL}/api/navigation/render/${slug}?type=TREE`);
-    return res.ok ? await res.json() : [];
-  } catch {
-    return [];
-  }
-}
+### 2. Configura i custom fields (una-tantum)
 
-const navItems = await fetchNav("main");
----
+Al primo avvio il bootstrap crea già la navigazione `main` con le 4 voci collegate alle pagine. Prima di usarle, devi abilitare i due campi custom:
 
-<nav>
-  {navItems.map((item: any) => (
-    <a href={item.path}>{item.title}</a>
-  ))}
-</nav>
-```
+1. Vai in **Settings → Navigation**, sezione **"Custom fields settings"**
+2. Attiva il toggle per **`footerColumn`** e per **`showInHeader`**
+3. Salva
 
-> Nota importante: non usare `strapiFind` per la navigazione — l'endpoint è del plugin, non CRUD. Vedi [SETUP.md](SETUP.md#pattern-navigazione).
+> Finché non fai questo passo, le voci esistono ma non mostrano i campi «Mostra nell'header» e «Colonna footer» nell'editor. L'header mostra comunque tutte le voci del menu (comportamento di default finché non inizi a usare il campo «Mostra nell'header»). Appena marchi almeno una voce, solo quelle marcate appaiono nell'header.
+
+> Se i campi non compaiono in Settings, clicca **Restore configuration** — poi torna ad abilitarli.
+
+### 3. Modifica le voci
+
+Dentro la navigazione, clicca **Add item**:
+
+- **INTERNAL** — si collega a una Page esistente; il `path` viene generato automaticamente (es. `/about`)
+- **EXTERNAL** — URL libero, apre in nuova scheda
+- **WRAPPER** — voce padre senza link, utile per raggruppare sottovoci. Ha senso solo se ha figli.
+
+Per ogni voce puoi impostare:
+
+- **Mostra nell'header** — attiva l'interruttore per far comparire la voce nel menu principale
+- **Colonna footer** — scegli una colonna (`Prodotto`, `Azienda`, `Supporto`, `Legale`) per far apparire la voce nel footer; lascia vuoto per escluderla dal footer
+
+Una stessa voce può avere entrambi attivi: apparirà nell'header E nel footer.
+
+### 4. Pubblica
+
+Salva le modifiche. L'header e il footer si aggiornano alla prossima richiesta (SSR).
+
+### Come funziona il fallback
+
+Se Strapi è spento, il permesso è revocato (403), o la navigazione è vuota, l'header torna automaticamente alle voci statiche di `site.ts` e il footer alle colonne statiche. Nessun crash, nessun errore visibile all'utente.
+
+> Riferimento tecnico (endpoint, normalizzazione, struttura dati): [SETUP.md](SETUP.md#navigazione-dinamica).
 
 ---
 
@@ -414,15 +425,13 @@ Il tuo sito parte già con un header, un footer e le meta tag SEO configurate. P
 ```ts
 // frontend/src/config/site.ts
 export const site: SiteConfig = {
-  name: "Il mio sito",          // ← nome che appare nell'header e nel <title>
+  name: "Il mio sito", // ← nome che appare nell'header e nel <title>
   nav: [
     { label: "Home", href: "/" },
     { label: "Blog", href: "/blog" }, // ← aggiungi/rimuovi voci qui
   ],
   footer: {
-    columns: [
-      { title: "Navigazione", links: [{ label: "Home", href: "/" }] },
-    ],
+    columns: [{ title: "Navigazione", items: [{ label: "Home", href: "/" }] }],
     legal: "© 2026 Il mio sito",
   },
 };

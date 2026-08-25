@@ -64,7 +64,39 @@ const config = ({
     },
   },
   "sortable-entries": { enabled: true },
-  navigation: { enabled: true },
+  navigation: {
+    enabled: true,
+    config: {
+      contentTypes: ["api::page.page"],
+      defaultContentTypes: "api::page.page",
+      contentTypesNameFields: {
+        "api::page.page": ["title"],
+      },
+      pathDefaultFields: {
+        "api::page.page": ["slug"],
+      },
+      allowedLevels: 2,
+      additionalFields: [
+        {
+          type: "select",
+          name: "footerColumn",
+          label: "Colonna footer",
+          description:
+            "Se impostata, la voce appare nel footer in questa colonna.",
+          multi: false,
+          options: ["Prodotto", "Azienda", "Supporto", "Legale"],
+          required: false,
+        },
+        {
+          type: "boolean",
+          name: "showInHeader",
+          label: "Mostra nell'header",
+          description: "Se attivo, la voce appare nel menu principale.",
+          required: false,
+        },
+      ],
+    },
+  },
   seo: { enabled: true },
   // i18n è bundled con Strapi 5 — abilitare se il sito ha più lingue.
   // IMPORTANTE: attivare subito se serve, non si aggiunge facilmente dopo.

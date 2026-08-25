@@ -2,9 +2,12 @@
 
 export interface NavItem {
   label: string;
-  href: string;
-  /** opens in new tab if true */
+  href?: string;
   external?: boolean;
+  children?: NavItem[];
+  order?: number;
+  footerColumn?: string | null;
+  showInHeader?: boolean;
 }
 
 export interface SiteConfig {
@@ -15,8 +18,11 @@ export interface SiteConfig {
   locale: string;
   nav: NavItem[];
   footer: {
-    columns: { title: string; links: NavItem[] }[];
+    columns: { title: string; items: NavItem[] }[];
     legal: string;
+  };
+  navigation: {
+    mainSlug: string;
   };
 }
 
@@ -35,14 +41,14 @@ export const site: SiteConfig = {
     columns: [
       {
         title: "Navigazione",
-        links: [
+        items: [
           { label: "Home", href: "/" },
           { label: "Pagine", href: "/pagine" },
         ],
       },
       {
         title: "Risorse",
-        links: [
+        items: [
           {
             label: "Documentazione",
             href: "https://docs.astro.build",
@@ -53,5 +59,8 @@ export const site: SiteConfig = {
       },
     ],
     legal: `© ${new Date().getFullYear()} Strapi + Astro Starter. Tutti i diritti riservati.`,
+  },
+  navigation: {
+    mainSlug: "main",
   },
 };

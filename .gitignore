@@ -13,3 +13,6 @@ node_modules/
 # Strapi uploads — versiona solo la cartella, non i file caricati
 /cms/public/uploads/*
 !/cms/public/uploads/.gitkeep
+
+# Superpowers process artifacts (work plans, not part of the starter)
+docs/superpowers/
