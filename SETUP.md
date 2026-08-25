@@ -208,22 +208,93 @@ Se il form ha `emailDestinatario` configurato, Strapi invia email notifica al su
 
 ---
 
-## Pattern Navigazione
+## Navigazione dinamica
 
-Menu gestito da `strapi-plugin-navigation`.
+Endpoint del plugin: `GET /api/navigation/render/{slug}?type=TREE`
 
-```astro
-async function fetchNav(slug: string) {
-  const STRAPI_URL = import.meta.env.STRAPI_URL ?? "http://localhost:1337";
-  try {
-    const res = await fetch(`${STRAPI_URL}/api/navigation/render/${slug}?type=TREE`);
-    return res.ok ? await res.json() : [];
-  } catch { return []; }
-}
-const nav = await fetchNav("main");
+Slug configurati in `frontend/src/config/site.ts → site.navigation`:
+- `main` → header
+- `footer` → footer
+
+### Implementazione
+
+`frontend/src/lib/navigation.ts` centralizza fetch, normalizzazione e fallback:
+
+```ts
+// Fetch + fallback per header
+const navItems = await getHeaderNav(); // NavItem[]
+
+// Fetch + fallback per footer (restituisce { title, links }[])
+const columns = await getFooterNav();
 ```
 
 **Non usare** `strapiFind` per la navigazione — l'endpoint è del plugin, non CRUD.
+
+### Forma dati del plugin
+
+```json
+[{
+  "title": "Home",
+  "menuAttached": true,
+  "order": 1,
+  "path": "/",
+  "type": "INTERNAL",
+  "items": []
+}]
+```
+
+Tipi di voce:
+- `INTERNAL` — collegata a una Page; `path` reale (es. `/about`)
+- `EXTERNAL` — URL libero; `external: true` nel NavItem normalizzato
+- `WRAPPER` — voce padre senza href; scartata se non ha figli con `menuAttached: true`
+
+Solo le voci con `menuAttached: true` vengono incluse.
+
+### Normalizzazione e fallback
+
+`fetchNavigation(slug)` ritorna `NavItem[] | null`. Ritorna `null` su:
+- risposta non ok (403, 500, qualsiasi status non-2xx)
+- risposta non-array o array vuoto
+- errore di rete / CMS spento
+
+`getHeaderNav()` → `fetchNavigation("main") ?? site.nav`
+
+`getFooterNav()` → mappa le voci di primo livello con figli in colonne `{ title, links }[]`; fallback a `site.footer.columns`
+
+### Content-type `page`
+
+Schema: `cms/src/api/page/content-types/page/schema.json`
+
+| Campo    | Tipo     | Note                    |
+| -------- | -------- | ----------------------- |
+| title    | string   | required                |
+| slug     | uid      | targetField: title      |
+| body     | richtext | opzionale               |
+| seo_desc | text     | opzionale               |
+
+`draftAndPublish: true`. Permessi Public (`find`, `findOne`) abilitati dal bootstrap.
+
+### Bootstrap seed
+
+Al primo avvio, `cms/src/index.ts → bootstrap` crea 4 pagine pubblicate se non ne esistono: Home (`home`), Chi siamo (`about`), Servizi (`services`), Contatti (`contacts`).
+
+### Config plugin (cms/config/plugins.ts)
+
+```ts
+navigation: {
+  enabled: true,
+  config: {
+    contentTypes: ["api::page.page"],
+    contentTypesNameFields: { "api::page.page": ["title"] },
+    allowedLevels: 2,
+    gql: { navigationItemRelated: ["Page"] },
+  },
+},
+```
+
+### Gotcha
+
+Senza `page` configurato come `contentType` navigabile, l'editor mostra solo **WRAPPER** ed **EXTERNAL** — la voce **INTERNAL** non appare. Il `path` delle voci EXTERNAL sarà `#/` (placeholder) finché non si collega a una pagina reale.
 
 ---
 

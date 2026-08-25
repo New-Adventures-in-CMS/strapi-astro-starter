@@ -361,41 +361,38 @@ Strapi Admin → **Content Manager** → **Form Submission** — trovi tutte le 
 
 ## Il sistema di navigazione
 
-Il menu del sito si gestisce da Strapi tramite il plugin Navigation.
+Header e footer mostrano di default le voci statiche definite in `site.ts` — funzionano subito, anche senza Strapi.
 
-### Configurare il menu
+Per gestire i menu dall'admin Strapi, segui questi passi:
 
-1. Strapi Admin → **Navigation** (nella sidebar)
-2. Seleziona o crea una navigazione con slug `main`
-3. Aggiungi le voci del menu con titolo e URL
-4. Puoi creare sottomenu annidati
+### 1. Assicurati che esistano delle Pagine
 
-### Usare il menu in Astro
+Nel Content Manager, la collection **Page** deve avere almeno alcune entry pubblicate. Se hai avviato il CMS almeno una volta, il bootstrap le ha create automaticamente (Home, Chi siamo, Servizi, Contatti).
 
-```astro
----
-const STRAPI_URL = import.meta.env.STRAPI_URL ?? "http://localhost:1337";
+### 2. Crea le navigazioni in admin
 
-async function fetchNav(slug: string) {
-  try {
-    const res = await fetch(`${STRAPI_URL}/api/navigation/render/${slug}?type=TREE`);
-    return res.ok ? await res.json() : [];
-  } catch {
-    return [];
-  }
-}
+Strapi Admin → **Navigation** → **Add new navigation**:
 
-const navItems = await fetchNav("main");
----
+- Prima navigazione: nome `Main`, slug **`main`** → verrà usata dall'header
+- Seconda navigazione: nome `Footer`, slug **`footer`** → verrà usata dal footer
 
-<nav>
-  {navItems.map((item: any) => (
-    <a href={item.path}>{item.title}</a>
-  ))}
-</nav>
-```
+### 3. Aggiungi voci di tipo INTERNAL
 
-> Nota importante: non usare `strapiFind` per la navigazione — l'endpoint è del plugin, non CRUD. Vedi [SETUP.md](SETUP.md#pattern-navigazione).
+Dentro ciascuna navigazione, clicca **Add item**:
+
+- **INTERNAL** — si collega a una Page esistente; il `path` viene generato automaticamente (es. `/about`)
+- **EXTERNAL** — URL libero, apre in nuova scheda
+- **WRAPPER** — voce padre senza link, utile per creare sottomenu. Ha senso solo se ha figli.
+
+### 4. Pubblica
+
+Salva le modifiche. L'header e il footer si aggiornano alla prossima richiesta (SSR).
+
+### Come funziona il fallback
+
+Se Strapi è spento, il permesso è revocato (403), o la navigazione è vuota, l'header torna automaticamente alle voci statiche di `site.ts` e il footer alle colonne statiche. Nessun crash, nessun errore visibile all'utente.
+
+> Riferimento tecnico (endpoint, normalizzazione, struttura dati): [SETUP.md](SETUP.md#navigazione-dinamica).
 
 ---
 
