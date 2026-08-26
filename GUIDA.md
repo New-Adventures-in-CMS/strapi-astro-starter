@@ -28,7 +28,7 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 | Cosa                  | Dove           | Descrizione                                                                           |
 | --------------------- | -------------- | ------------------------------------------------------------------------------------- |
 | Sistema form dinamici | CMS + Frontend | Crei un form in Strapi, lo metti in qualsiasi pagina con una riga di codice           |
-| Plugin navigazione    | CMS            | Gestisci il menu del sito dall'admin Strapi                                           |
+| Voci di Menu (nativo) | CMS            | Gestisci header e footer dall'admin Strapi — nessun plugin esterno                    |
 | Plugin gruppi         | CMS            | Organizza le collection nella sidebar dell'admin                                      |
 | Plugin ordinamento    | CMS            | Riordina le voci con drag-and-drop                                                    |
 | Email SMTP            | CMS            | Strapi invia email quando arriva una submission                                       |
@@ -359,54 +359,57 @@ Strapi Admin → **Content Manager** → **Form Submission** — trovi tutte le 
 
 ---
 
-## Il sistema di navigazione
+## Gestire il menu di navigazione
 
-Header e footer mostrano di default le voci statiche definite in `site.ts` — funzionano subito, anche senza Strapi.
+Il menu del sito (header e footer) si gestisce da **Content Manager → Voci di Menu**.
 
-C'è un solo menu da compilare nel CMS: la navigazione `main`. Per ogni voce scegli se mostrarla nell'header (campo **«Mostra nell'header»**) e in quale colonna del footer farla apparire (campo **«Colonna footer»**). Se non scegli una colonna, la voce non appare nel footer.
+### Come creare una voce
 
-Per gestire i menu dall'admin Strapi, segui questi passi:
+1. Apri **Content Manager → Voci di Menu** e clicca **+ Create new entry**.
+2. Compila il campo **Etichetta** — è il testo che appare nel menu.
+3. Scegli **Pagina collegata** OPPURE inserisci un **URL esterno**:
+   - _Pagina collegata_: seleziona una pagina del sito dalla lista.
+   - _URL esterno_: inserisci l'URL completo (es. `https://docs.astro.build`) o un percorso relativo (es. `/privacy`). Se inizia con `http`, il link si apre in nuova scheda.
+   - Se compili entrambi, l'URL esterno ha la precedenza.
+4. Imposta **Dove appare** (campo _Area_):
+   - `header` — solo nel menu in cima alla pagina.
+   - `footer` — solo nel footer in fondo alla pagina.
+   - `both` — in entrambi i posti.
+5. Se la voce va nel footer, compila anche **Colonna footer** — scegli in quale colonna apparirà (`Prodotto`, `Azienda`, `Supporto`, `Legale`). Le voci senza questa colonna non compaiono nel footer anche se Area è `both`.
+6. Imposta **Ordine** — numero intero (più basso = prima nella lista). Default: 0.
+7. Clicca **Save** e poi **Publish** (le voci non pubblicate non compaiono sul sito).
 
-### 1. Assicurati che esistano delle Pagine
+### Come creare un sottomenu (2 livelli)
 
-Nel Content Manager, la collection **Page** deve avere almeno alcune entry pubblicate. Se hai avviato il CMS almeno una volta, il bootstrap le ha create automaticamente (Home, Chi siamo, Servizi, Contatti).
+1. Crea prima la voce padre (es. "Servizi") come descritto sopra.
+2. Crea una voce figlia (es. "Servizio A"):
+   - Imposta **Voce genitore** selezionando la voce padre appena creata.
+   - La voce figlia eredita la visibilità del padre. Puoi avere al massimo 2 livelli (padre → figlio).
+3. Usa il campo **Ordine** per controllare la sequenza dei figli.
 
-### 2. Configura i custom fields (una-tantum)
+### Voci di esempio
 
-Al primo avvio il bootstrap crea già la navigazione `main` con le 4 voci collegate alle pagine. Prima di usarle, devi abilitare i due campi custom:
+All'avvio del progetto vengono create automaticamente 9 voci di esempio che mostrano tutti i casi d'uso:
 
-1. Vai in **Settings → Navigation**, sezione **"Custom fields settings"**
-2. Attiva il toggle per **`footerColumn`** e per **`showInHeader`**
-3. Salva
+| Voce           | Area   | Note                             |
+| -------------- | ------ | -------------------------------- |
+| Home           | both   | Pagina interna, primo livello    |
+| Chi siamo      | header | Pagina interna                   |
+| Servizi        | header | Padre del sottomenu              |
+| ↳ Servizio A   | header | Figlia di Servizi, URL relativo  |
+| ↳ Servizio B   | header | Figlia di Servizi, URL relativo  |
+| Contatti       | both   | Pagina interna                   |
+| Documentazione | header | Link esterno (apre nuova scheda) |
+| Privacy        | footer | Solo footer, colonna Legale      |
+| Termini        | footer | Solo footer, colonna Legale      |
 
-> Finché non fai questo passo, le voci esistono ma non mostrano i campi «Mostra nell'header» e «Colonna footer» nell'editor. L'header mostra comunque tutte le voci del menu (comportamento di default finché non inizi a usare il campo «Mostra nell'header»). Appena marchi almeno una voce, solo quelle marcate appaiono nell'header.
+Studia queste voci come modello prima di modificarle o sostituirle.
 
-> Se i campi non compaiono in Settings, clicca **Restore configuration** — poi torna ad abilitarli.
+### Fallback
 
-### 3. Modifica le voci
+Se Strapi è spento o irraggiungibile, il sito mostra automaticamente le voci statiche definite in `frontend/src/config/site.ts` (header `site.nav`, footer `site.footer.columns`). Nessun crash.
 
-Dentro la navigazione, clicca **Add item**:
-
-- **INTERNAL** — si collega a una Page esistente; il `path` viene generato automaticamente (es. `/about`)
-- **EXTERNAL** — URL libero, apre in nuova scheda
-- **WRAPPER** — voce padre senza link, utile per raggruppare sottovoci. Ha senso solo se ha figli.
-
-Per ogni voce puoi impostare:
-
-- **Mostra nell'header** — attiva l'interruttore per far comparire la voce nel menu principale
-- **Colonna footer** — scegli una colonna (`Prodotto`, `Azienda`, `Supporto`, `Legale`) per far apparire la voce nel footer; lascia vuoto per escluderla dal footer
-
-Una stessa voce può avere entrambi attivi: apparirà nell'header E nel footer.
-
-### 4. Pubblica
-
-Salva le modifiche. L'header e il footer si aggiornano alla prossima richiesta (SSR).
-
-### Come funziona il fallback
-
-Se Strapi è spento, il permesso è revocato (403), o la navigazione è vuota, l'header torna automaticamente alle voci statiche di `site.ts` e il footer alle colonne statiche. Nessun crash, nessun errore visibile all'utente.
-
-> Riferimento tecnico (endpoint, normalizzazione, struttura dati): [SETUP.md](SETUP.md#navigazione-dinamica).
+> Riferimento tecnico (schema, logica href, albero, FOOTER_COLUMNS): [SETUP.md](SETUP.md#content-type-menu-item).
 
 ---
 

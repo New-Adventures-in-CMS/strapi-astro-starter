@@ -86,7 +86,6 @@ Questo è marcato come **estensione** — non incluso nel boilerplate base.
 
 Non incluse nel boilerplate, documentate qui come punto di partenza:
 
-- **Nav dinamica** — usa `strapi-plugin-navigation` per gestire il menu da Strapi admin
 - **Dynamic zone** — aggiungi un campo `blocchi` al content-type `page` per un page builder
 - **Preview / draft mode** — Strapi 5 supporta il draft mode via API con token dedicato
 - **Immagini ottimizzate** — usa il componente `<Image />` di Astro con `strapiMediaUrl()`
@@ -116,7 +115,7 @@ Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
 - **Settings → API Tokens** — crea token `Full access` / `Unlimited`, copialo in `frontend/.env` come `STRAPI_API_TOKEN`, riavvia il frontend
 - **Settings → Users & Permissions → Roles → Public** — i permessi base vengono configurati automaticamente dal bootstrap (`cms/src/index.ts`); aggiungi manualmente eventuali collection extra
-- **Navigation plugin** — crea le voci di menu con slug `main`
+- **Content Manager → Voce di Menu** — al primo avvio il bootstrap crea 9 voci di esempio; puoi modificarle o aggiungerne di nuove
 
 ---
 
@@ -124,7 +123,6 @@ Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
 | Plugin                                  | Stato                 | Funzione                                                                                   |
 | --------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
-| `strapi-plugin-navigation`              | installato            | Gestione menu — endpoint `GET /api/navigation/render/{slug}?type=TREE`                     |
 | `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                    |
 | `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                      |
 | `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                             |
@@ -208,161 +206,90 @@ Se il form ha `emailDestinatario` configurato, Strapi invia email notifica al su
 
 ---
 
-## Navigazione dinamica
+## Content-type Menu Item
 
-**Modello unificato:** una sola navigazione `main` in Strapi; header e footer sono due viste filtrate di essa tramite campi custom per voce.
+La navigazione è gestita tramite il content-type nativo `menu-item` (UID: `api::menu-item.menu-item`). Nessun plugin esterno — dati in SQLite/Postgres come ogni altra collection.
 
-### Campi custom per voce
+### Schema campi
 
-| Campo          | Tipo    | Effetto                                                        |
-| -------------- | ------- | -------------------------------------------------------------- |
-| `showInHeader` | boolean | `true` → la voce appare nell'header                            |
-| `footerColumn` | select  | Se valorizzato, la voce appare nel footer nella colonna scelta |
+| Campo          | Tipo        | Note                                                                 |
+| -------------- | ----------- | -------------------------------------------------------------------- |
+| `label`        | string      | required — testo visibile nel menu                                   |
+| `page`         | relation    | manyToOne → `api::page.page`; se valorizzato determina l'href        |
+| `externalUrl`  | string      | URL libero (relativo o assoluto); priorità su `page`                 |
+| `area`         | enumeration | `header` \| `footer` \| `both`; required, default `header`           |
+| `footerColumn` | enumeration | `Prodotto` \| `Azienda` \| `Supporto` \| `Legale`; null = no footer  |
+| `parent`       | relation    | manyToOne → `api::menu-item.menu-item` (self-referencing, 2 livelli) |
+| `order`        | integer     | ordinamento crescente; default 0                                     |
 
-Valori `footerColumn`: `Prodotto`, `Azienda`, `Supporto`, `Legale`.
+`draftAndPublish: true` — le voci devono essere **published** per apparire nel frontend.
 
-Una voce può avere entrambi attivi: appare in header E footer.
+### Risoluzione href
 
-> ⚠️ I valori di `footerColumn` sono definiti in due posti che devono coincidere:
-> `cms/config/plugins.ts` (opzioni del select) e `frontend/src/lib/navigation.ts` (`FOOTER_COLUMNS`).
-> Se aggiungi una colonna, aggiornala in entrambi.
+Priorità (primo valorizzato vince):
 
-### Primo avvio
+1. `externalUrl` — usato as-is; se inizia con `https?://` → `external: true`
+2. `page.slug` — trasformato in `/${slug}` (eccetto `home` → `/`)
+3. fallback `#`
 
-Sequenza automatica al primo `npm run develop`:
+### Header vs Footer
 
-1. **Permessi Public** — configurati dal bootstrap (7 permessi, incluse render navigation)
-2. **Pagine seed** — Home, Chi siamo, Servizi, Contatti create come published
-3. **Custom fields scritti nel DB** — `footerColumn` e `showInHeader` materializzati nel plugin store (`ensureNavigationCustomFields`)
-4. **Nav `main` seedata** — creata con 4 voci INTERNAL collegate alle pagine seed (`seedNavigation`)
+`getHeaderNav()` — voci con `area === "header"` o `"both"`, albero a 2 livelli (padre/figli via `parent.documentId`), ordinate per `order`.
 
-**Passo manuale richiesto (una-tantum):** in **Settings → Navigation**, sezione **"Custom fields settings"**, abilita i toggle per `footerColumn` e `showInHeader`. Il bootstrap li scrive nel DB ma il plugin richiede l'abilitazione manuale per campo prima che compaiano nell'editor delle voci.
-
-> ℹ️ Finché nessuna voce ha `showInHeader: true` (custom fields non ancora abilitati), l'header mostra **tutte le voci** `menuAttached`. Appena almeno una voce è marcata `showInHeader`, il filtro si attiva e mostra solo quelle. Il footer usa il fallback statico finché nessuna voce ha `footerColumn` valorizzato.
-
-**Se i campi non compaiono sulle voci** (es. `ensureNavigationCustomFields` ha fallito): vai in **Settings → Navigation → Restore configuration**. Una-tantum.
-
-Relazione file ↔ DB: `plugins.ts` è la fonte di verità; "Restore configuration" materializza quella config nel DB del plugin.
-
-### Implementazione
-
-Endpoint del plugin: `GET /api/navigation/render/{slug}?type=TREE`
-
-`frontend/src/lib/navigation.ts` centralizza fetch, normalizzazione e fallback:
+`getFooterNav()` — voci con `area === "footer"` o `"both"` **e** `footerColumn` valorizzato, raggruppate per colonna nell'ordine canonico:
 
 ```ts
-// Header: voci con showInHeader === true, ordinate per order
-const navItems = await getHeaderNav(); // NavItem[]
+export const FOOTER_COLUMNS = [
+  "Prodotto",
+  "Azienda",
+  "Supporto",
+  "Legale",
+] as const;
+```
 
-// Footer: FooterData = { columns: { title, items }[] }, raggruppate per footerColumn
+Colonne senza voci vengono omesse. Un item con `area === "both"` e `footerColumn` valorizzato appare sia in header che in footer.
+
+### Implementazione frontend
+
+`frontend/src/lib/navigation.ts` centralizza fetch e fallback:
+
+```ts
+import { strapiFind } from "@/lib/strapi";
+
+// Header nav — albero NavItem[]
+const navItems = await getHeaderNav();
+
+// Footer nav — { columns: { title, items }[] }
 const footer = await getFooterNav();
 ```
 
-Slug configurato in `frontend/src/config/site.ts → site.navigation.mainSlug` (default: `"main"`).
+Parametri fetch: `populate: ["page", "parent"]`, `pagination: { pageSize: 200 }`.
 
-**Non usare** `strapiFind` per la navigazione — l'endpoint è del plugin, non CRUD.
+### Fallback
 
-### Forma dati del plugin
+Entrambe le funzioni tornano al contenuto statico di `site.ts` se:
 
-```json
-[
-  {
-    "title": "Home",
-    "menuAttached": true,
-    "order": 1,
-    "path": "/",
-    "type": "INTERNAL",
-    "items": [],
-    "additionalFields": {
-      "showInHeader": true,
-      "footerColumn": null
-    }
-  }
-]
-```
+- `strapiFind` lancia eccezione (CMS spento, rete)
+- `data` è vuoto
+- nessuna voce soddisfa i filtri di area/footerColumn
 
-Tipi di voce:
-
-- `INTERNAL` — collegata a una Page; `path` reale (es. `/about`)
-- `EXTERNAL` — URL libero; `external: true` nel NavItem normalizzato
-- `WRAPPER` — voce padre senza href; scartata se non ha figli con `menuAttached: true`
-
-Solo le voci con `menuAttached: true` vengono normalizzate.
-
-### Normalizzazione e fallback
-
-`fetchNavigation(slug)` ritorna `NavItem[] | null`. Ritorna `null` su:
-
-- risposta non ok (403, 500, qualsiasi status non-2xx)
-- risposta non-array o array vuoto
-- errore di rete / CMS spento
-
-`getHeaderNav()` → filtra per `showInHeader === true`; fallback a `site.nav` solo se nav irraggiungibile.
-
-`getFooterNav()` → raggruppa per `footerColumn` nell'ordine `FOOTER_COLUMNS`; fallback a `site.footer.columns` se nav irraggiungibile o nessuna voce ha `footerColumn`.
-
-Ordine colonne footer: `Prodotto → Azienda → Supporto → Legale` (colonne vuote omesse).
-
-### Content-type `page`
-
-Schema: `cms/src/api/page/content-types/page/schema.json`
-
-| Campo    | Tipo     | Note               |
-| -------- | -------- | ------------------ |
-| title    | string   | required           |
-| slug     | uid      | targetField: title |
-| body     | richtext | opzionale          |
-| seo_desc | text     | opzionale          |
-
-`draftAndPublish: true`. Permessi Public (`find`, `findOne`) abilitati dal bootstrap.
+`getHeaderNav()` → `site.nav`; `getFooterNav()` → `site.footer.columns`.
 
 ### Bootstrap seed
 
-Al primo avvio, `cms/src/index.ts → bootstrap` crea 4 pagine pubblicate se non ne esistono: Home (`home`), Chi siamo (`about`), Servizi (`services`), Contatti (`contacts`).
+Al primo avvio `cms/src/index.ts → bootstrap` crea 9 voci published se la collection è vuota:
 
-### Config plugin (cms/config/plugins.ts)
-
-```ts
-navigation: {
-  enabled: true,
-  config: {
-    contentTypes: ["api::page.page"],
-    defaultContentTypes: "api::page.page",
-    contentTypesNameFields: { "api::page.page": ["title"] },
-    pathDefaultFields: { "api::page.page": ["slug"] },
-    allowedLevels: 2,
-    additionalFields: [
-      {
-        type: "select",
-        name: "footerColumn",
-        label: "Colonna footer",
-        multi: false,
-        options: ["Prodotto", "Azienda", "Supporto", "Legale"],
-        required: false,
-      },
-      {
-        type: "boolean",
-        name: "showInHeader",
-        label: "Mostra nell'header",
-        required: false,
-      },
-    ],
-  },
-},
-```
-
-### Migrazione dati
-
-Se avevi già una navigazione `footer` separata:
-
-1. Eliminare la navigazione `footer` (non più usata).
-2. Spostare le voci footer nella nav `main`, impostando `footerColumn` e `showInHeader: false`.
-3. Voci solo header: `showInHeader: true`, `footerColumn` vuoto.
-4. Voci in entrambi: `showInHeader: true` + `footerColumn` valorizzato.
-
-### Gotcha
-
-Senza `page` configurato come `contentType` navigabile, l'editor mostra solo **WRAPPER** ed **EXTERNAL** — la voce **INTERNAL** non appare.
+| Voce           | Area   | footerColumn | Parent  |
+| -------------- | ------ | ------------ | ------- |
+| Home           | both   | —            | —       |
+| Chi siamo      | header | —            | —       |
+| Servizi        | header | —            | —       |
+| Contatti       | both   | —            | —       |
+| Documentazione | header | —            | —       |
+| Servizio A     | header | —            | Servizi |
+| Servizio B     | header | —            | Servizi |
+| Privacy        | footer | Legale       | —       |
+| Termini        | footer | Legale       | —       |
 
 ---
 

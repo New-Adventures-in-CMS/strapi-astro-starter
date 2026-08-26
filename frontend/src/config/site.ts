@@ -6,8 +6,6 @@ export interface NavItem {
   external?: boolean;
   children?: NavItem[];
   order?: number;
-  footerColumn?: string | null;
-  showInHeader?: boolean;
 }
 
 export interface SiteConfig {
@@ -20,9 +18,6 @@ export interface SiteConfig {
   footer: {
     columns: { title: string; items: NavItem[] }[];
     legal: string;
-  };
-  navigation: {
-    mainSlug: string;
   };
 }
 
@@ -59,8 +54,5 @@ export const site: SiteConfig = {
       },
     ],
     legal: `© ${new Date().getFullYear()} Strapi + Astro Starter. Tutti i diritti riservati.`,
-  },
-  navigation: {
-    mainSlug: "main",
   },
 };
