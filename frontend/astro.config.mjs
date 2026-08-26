@@ -13,7 +13,11 @@ export default defineConfig({
   adapter: node({ mode: "standalone" }),
   env: {
     schema: {
-      STRAPI_URL: envField.string({ context: "server", access: "secret" }),
+      STRAPI_URL: envField.string({
+        context: "server",
+        access: "secret",
+        default: "http://localhost:1337",
+      }),
       STRAPI_API_TOKEN: envField.string({
         context: "server",
         access: "secret",
