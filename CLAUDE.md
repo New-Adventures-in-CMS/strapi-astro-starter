@@ -19,8 +19,8 @@ Two processes:
 
 - `cms/` — Strapi 5 backend at `http://localhost:1337`. Owns the content and the
   REST API. Serves no user-facing HTML.
-- `frontend/` — Astro 5. Reads the API and renders the site. *(If the Astro
-  directory in this clone has a different name, read the real one instead.)*
+- `frontend/` — Astro 7. Reads the API and renders the site. _(If the Astro
+  directory in this clone has a different name, read the real one instead.)_
 
 Rule of thumb: change **what data can exist** → backend; change **how it looks**
 → frontend.
@@ -31,32 +31,32 @@ Rule of thumb: change **what data can exist** → backend; change **how it looks
 
 This is the decision you make on almost every task.
 
-- **File hand → structure.** *What kinds of things can exist, and how they
-  render.* Strapi schemas, components, dynamic zones; Astro pages, components,
+- **File hand → structure.** _What kinds of things can exist, and how they
+  render._ Strapi schemas, components, dynamic zones; Astro pages, components,
   layouts; TypeScript types; config. These are files in the repo — versioned and
   reviewable. You edit them directly.
-- **MCP hand → content.** *The actual things.* Entries, their published state,
+- **MCP hand → content.** _The actual things._ Entries, their published state,
   the links between them. You act through the Strapi MCP server, with the same
   permissions a human editor has.
 
 Decision rule: **am I changing the shape, or the data? Shape → file. Data → MCP.**
 
-| Operation | Hand | How |
-|---|---|---|
-| Create/change a content-type, component, dynamic zone | **File** | `cms/src/api/**/schema.json`, `cms/src/components/**`, then restart Strapi |
-| Add or change a field | **File** | edit schema.json → restart → sync Astro types |
-| Pages, components, layouts, styles | **File** | `frontend/` (Astro) |
-| TypeScript types, config | **File** | repo files |
-| **Upload** a media file | **File / manual** | no MCP tool exists — admin panel or filesystem |
-| Create / read / update / delete an entry | **MCP** | `create_* / list_* / get_* / update_* / delete_*` |
-| Publish / unpublish (only if Draft & Publish is on) | **MCP** | `publish_* / unpublish_* / discard_*_draft` |
-| **Link** existing media or relations | **MCP** | `connect / disconnect / set` by `documentId` |
-| Read form submissions (runtime data) | **MCP, read-only** | `list_/get_form-submission` — never fabricate them |
+| Operation                                             | Hand               | How                                                                        |
+| ----------------------------------------------------- | ------------------ | -------------------------------------------------------------------------- |
+| Create/change a content-type, component, dynamic zone | **File**           | `cms/src/api/**/schema.json`, `cms/src/components/**`, then restart Strapi |
+| Add or change a field                                 | **File**           | edit schema.json → restart → sync Astro types                              |
+| Pages, components, layouts, styles                    | **File**           | `frontend/` (Astro)                                                        |
+| TypeScript types, config                              | **File**           | repo files                                                                 |
+| **Upload** a media file                               | **File / manual**  | no MCP tool exists — admin panel or filesystem                             |
+| Create / read / update / delete an entry              | **MCP**            | `create_* / list_* / get_* / update_* / delete_*`                          |
+| Publish / unpublish (only if Draft & Publish is on)   | **MCP**            | `publish_* / unpublish_* / discard_*_draft`                                |
+| **Link** existing media or relations                  | **MCP**            | `connect / disconnect / set` by `documentId`                               |
+| Read form submissions (runtime data)                  | **MCP, read-only** | `list_/get_form-submission` — never fabricate them                         |
 
 Boundary cases worth memorizing:
 
 - **Media is referencing-only.** There is no upload tool over MCP. Uploading a
-  file is a file/manual step; MCP can only *link* an already-uploaded asset to an
+  file is a file/manual step; MCP can only _link_ an already-uploaded asset to an
   entry.
 - **Enumerations** (e.g. `menu-item.area` = `header|footer|both`) are structure →
   file, even though they feel like data.
@@ -73,11 +73,11 @@ The **file hand** always works. The **MCP hand** needs three preconditions.
 Miss any one and it fails the same confusing way — `strapi-mcp failed to
 connect`:
 
-1. **Strapi is running** in dev, in a *separate terminal*, on **Node 22**, and
+1. **Strapi is running** in dev, in a _separate terminal_, on **Node 22**, and
    was started **before** this session.
 2. **This session was launched from the project root.** The MCP registration is
    project-local; a session started elsewhere never loads it.
-3. **The MCP is registered with an Admin API Token** (Settings → *Admin Tokens*),
+3. **The MCP is registered with an Admin API Token** (Settings → _Admin Tokens_),
    **not** a Content API token. A Content API token is rejected with `401`.
 
 **Self-diagnosis rule — do not skip.** `failed to connect` does **not** mean
@@ -101,7 +101,7 @@ Admin), a revoked token, or a session not launched from the project root.
 
 ## File hand — structure
 
-*(Full how-to is in SETUP.md; this is orientation.)*
+_(Full how-to is in SETUP.md; this is orientation.)_
 
 Where things live:
 
@@ -150,12 +150,12 @@ Rules that will bite you if ignored:
 
 ### Shipped content-types (map)
 
-| Content-type | Kind | D&P | Key fields | MCP tools |
-|---|---|---|---|---|
-| `page` | collection | on | title, slug, body, seo_desc | 8 (CRUD + publish trio) |
-| `menu-item` | collection | on | label, page→, externalUrl, area, footerColumn, parent→(self), order | 8 |
-| `form` | collection | off | nome, slug, emailDestinatario, messaggioSuccesso, campi (dynamic zone), submissions→ | 5 (CRUD) |
-| `form-submission` | collection | off | form→, dati, letto | 5 (CRUD) |
+| Content-type      | Kind       | D&P | Key fields                                                                           | MCP tools               |
+| ----------------- | ---------- | --- | ------------------------------------------------------------------------------------ | ----------------------- |
+| `page`            | collection | on  | title, slug, body, seo_desc                                                          | 8 (CRUD + publish trio) |
+| `menu-item`       | collection | on  | label, page→, externalUrl, area, footerColumn, parent→(self), order                  | 8                       |
+| `form`            | collection | off | nome, slug, emailDestinatario, messaggioSuccesso, campi (dynamic zone), submissions→ | 5 (CRUD)                |
+| `form-submission` | collection | off | form→, dati, letto                                                                   | 5 (CRUD)                |
 
 Components ship only under the `form` dynamic zone (`campi`): Checkbox, Email,
 Select, Testo, Textarea. `page` has **no** dynamic zone (SETUP.md documents one

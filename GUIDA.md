@@ -35,6 +35,7 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 | Server MCP            | CMS            | Collega Claude Code (e altri AI agent) a Strapi per gestire contenuti                 |
 | Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                          |
 | Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                                      |
+| Starwind UI           | Frontend       | Componenti Astro nativi (NavigationMenu, Sheet, Card, Badge, Prose…) — nessun React   |
 | Adapter produzione    | Frontend       | Pronto per il build con Node.js                                                       |
 | Layout di default     | Frontend       | Header, footer e SEO già cablati. Personalizza **un solo file**: `src/config/site.ts` |
 
@@ -386,6 +387,8 @@ Il menu del sito (header e footer) si gestisce da **Content Manager → Voci di 
    - Imposta **Voce genitore** selezionando la voce padre appena creata.
    - La voce figlia eredita la visibilità del padre. Puoi avere al massimo 2 livelli (padre → figlio).
 3. Usa il campo **Ordine** per controllare la sequenza dei figli.
+
+> **Convenzione — voci padre come sezioni, non link.** Nel menu desktop, una voce con figli viene resa come trigger del sottomenu, non come link cliccabile. Se imposti una _Pagina collegata_ su una voce padre, quella pagina **non sarà raggiungibile dal trigger** — il trigger apre solo il sottomenu. Usa le voci padre solo come etichette di sezione (es. "Servizi", "Prodotto"); metti i link reali nelle voci figlie.
 
 ### Voci di esempio
 

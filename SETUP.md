@@ -29,16 +29,84 @@ strapi-astro-starter/
 
 Il layout è composto da questi file:
 
-| File                                   | Ruolo                                              |
-| -------------------------------------- | -------------------------------------------------- |
-| `frontend/src/config/site.ts`          | Nome sito, nav, footer — unico punto da modificare |
-| `frontend/src/components/Header.astro` | Nav con active state + hamburger mobile            |
-| `frontend/src/components/Footer.astro` | Footer a colonne config-driven                     |
-| `frontend/src/components/SEO.astro`    | `<title>`, description, OG, Twitter                |
-| `frontend/src/layouts/Layout.astro`    | Compone SEO + Header + slot + Footer               |
-| `frontend/src/styles/global.css`       | Tailwind v4 + design token (`--color-brand-*`)     |
+| File                                   | Ruolo                                                                      |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| `frontend/src/config/site.ts`          | Nome sito, nav, footer — unico punto da modificare                         |
+| `frontend/src/components/Header.astro` | NavigationMenu desktop (Trigger+Content submenu) · Sheet drawer mobile     |
+| `frontend/src/components/Footer.astro` | Footer a colonne config-driven · Separator Starwind prima della riga legal |
+| `frontend/src/components/SEO.astro`    | `<title>`, description, OG, Twitter                                        |
+| `frontend/src/layouts/Layout.astro`    | Compone SEO + Header + slot + Footer                                       |
+| `frontend/src/styles/global.css`       | Tailwind v4 + design token (`--color-brand-*`)                             |
+| `frontend/src/styles/starwind.css`     | Tema CSS Starwind UI (variabili colore, dark mode) — generato da `init`    |
+| `frontend/src/components/starwind/`    | Componenti Starwind — barrel export per cartella (es. `navigation-menu/`)  |
 
 Per personalizzare: modifica solo `site.ts`. I componenti leggono da lì.
+
+---
+
+## UI layer — Starwind UI
+
+L'interfaccia usa [Starwind UI](https://starwind.dev/docs) — componenti `.astro` nativi, Tailwind v4, interattività Runtime-driven (nessuna dipendenza React).
+
+### Componenti installati
+
+| Componente     | Cartella                    | Uso nel progetto                                             |
+| -------------- | --------------------------- | ------------------------------------------------------------ |
+| NavigationMenu | `starwind/navigation-menu/` | Nav desktop — Trigger+Content per sottomenu a 2 livelli      |
+| Sheet          | `starwind/sheet/`           | Drawer mobile — hamburger apre pannello laterale             |
+| Button         | `starwind/button/`          | Pulsanti e CTA                                               |
+| Card           | `starwind/card/`            | Container card (Header, Title, Description, Content, Footer) |
+| Badge          | `starwind/badge/`           | Etichette inline (tone × appearance)                         |
+| Separator      | `starwind/separator/`       | Divisore orizzontale — usato in Footer                       |
+| Prose          | `starwind/prose/`           | Wrapper tipografia per contenuto CMS (markdown, rich text)   |
+
+Tutti i componenti vivono in `frontend/src/components/starwind/<nome>/` con barrel `index.ts`. Dropdown non è installato — NavigationMenu gestisce i sottomenu nativamente.
+
+### Import pattern
+
+```ts
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+} from "@/components/starwind/navigation-menu";
+
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/starwind/sheet";
+```
+
+### Aggiungere un componente
+
+```bash
+cd frontend
+npx starwind@latest add <nome-componente>
+```
+
+Lista componenti disponibili: [starwind.dev/docs/components](https://starwind.dev/docs/components).
+
+### Aggiornare i componenti installati
+
+```bash
+cd frontend
+npx starwind@latest update
+```
+
+Sostituisce i file in `src/components/starwind/` con la versione più recente. Commit prima di aggiornare.
+
+### Come Header e Footer consumano menu-item
+
+`frontend/src/lib/navigation.ts` è l'unico punto di fetch — Header e Footer importano direttamente:
+
+- `getHeaderNav()` → `NavItem[]` albero a 2 livelli (NavigationMenu desktop + Sheet mobile)
+- `getFooterNav()` → `{ columns: { title, items }[] }` per le colonne footer
 
 ---
 
