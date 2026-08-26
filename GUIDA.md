@@ -467,8 +467,8 @@ Le variabili d'ambiente sono valori di configurazione separati dal codice. Servo
 
 - Il file `.env` contiene i valori reali — **non va mai committato su Git**
 - Il file `.env.example` è un template senza valori sensibili — va committato su Git per documentare quali variabili servono
-- In Astro, le variabili si leggono con `import.meta.env.NOME_VARIABILE`
-- Le variabili con prefisso `PUBLIC_` sono accessibili nel browser (JavaScript lato client). Le altre sono solo server-side.
+- In Astro 7, le variabili si leggono tramite il modulo `astro:env`: le variabili server-side (es. `STRAPI_URL`, `STRAPI_API_TOKEN`) vengono importate da `astro:env/server` e lette **a runtime** — non vengono mai incorporate nel codice compilato. Le variabili pubbliche (prefisso `PUBLIC_`, es. `PUBLIC_STRAPI_URL`) vengono importate da `astro:env/client` e sono accessibili anche nel browser.
+- Lo schema delle variabili è definito in `frontend/astro.config.mjs` e viene validato all'avvio del server.
 
 **Nel CMS (`cms/.env`):**
 
