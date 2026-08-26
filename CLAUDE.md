@@ -113,7 +113,7 @@ Where things live:
   evaluated before content-types register and throws
   `Cannot read properties of undefined (reading 'kind')`.
 - Components: `cms/src/components/<namespace>/<name>.json`.
-- Astro types: `frontend/src/types.ts` — keep in sync whenever a schema changes.
+- Astro types: `frontend/src/types/index.ts` — keep in sync whenever a schema changes.
 
 **Golden sequence for a structural change:** edit schema → **restart Strapi**
 (schema discovery happens only at boot) → update Astro types → then fill content.
@@ -168,7 +168,7 @@ specs.
 
 1. Model it in Strapi — new content-type or fields (**file**).
 2. **Restart Strapi.**
-3. Sync `frontend/src/types.ts` (**file**).
+3. Sync `frontend/src/types/index.ts` (**file**).
 4. Create the entries via **MCP**; for Draft & Publish types, `publish` them.
 5. Build the Astro page/component that reads the API (**file**).
 6. Verify against the running frontend.
