@@ -55,6 +55,21 @@ function normalizeNode(node: PluginNavNode): NavItem | null {
   };
 }
 
+function hasAnyShowInHeaderFlag(nodes: PluginNavNode[]): boolean {
+  for (const node of nodes) {
+    if (
+      node.additionalFields?.showInHeader !== null &&
+      node.additionalFields?.showInHeader !== undefined
+    ) {
+      return true;
+    }
+    if (node.items) {
+      if (hasAnyShowInHeaderFlag(node.items)) return true;
+    }
+  }
+  return false;
+}
+
 export async function fetchNavigation(slug: string): Promise<NavItem[] | null> {
   try {
     const res = await fetch(
@@ -73,28 +88,56 @@ export async function fetchNavigation(slug: string): Promise<NavItem[] | null> {
   }
 }
 
-async function getMainNav(): Promise<NavItem[] | null> {
-  return fetchNavigation(site.navigation.mainSlug);
+async function fetchNavigationWithFlags(
+  slug: string,
+): Promise<{ items: NavItem[] | null; hasShowInHeaderFlag: boolean } | null> {
+  try {
+    const res = await fetch(
+      `${STRAPI_URL}/api/navigation/render/${slug}?type=TREE`,
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as PluginNavNode[] | { error?: unknown };
+    if (!Array.isArray(data) || data.length === 0) return null;
+    const hasShowInHeaderFlag = hasAnyShowInHeaderFlag(data);
+    const items = data
+      .map(normalizeNode)
+      .filter((n): n is NavItem => n !== null)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    return { items: items.length ? items : null, hasShowInHeaderFlag };
+  } catch {
+    return null;
+  }
+}
+
+async function getMainNav(): Promise<{
+  items: NavItem[] | null;
+  hasShowInHeaderFlag: boolean;
+} | null> {
+  return fetchNavigationWithFlags(site.navigation.mainSlug);
 }
 
 export async function getHeaderNav(): Promise<NavItem[]> {
-  const nav = await getMainNav();
-  if (!nav || nav.length === 0) return site.nav;
+  const result = await getMainNav();
+  if (!result || !result.items || result.items.length === 0) return site.nav;
 
-  const flagged = nav.filter((item) => item.showInHeader);
-  // If no item has showInHeader set yet (custom fields not enabled), show all.
-  const items = flagged.length > 0 ? flagged : nav;
+  // If custom fields are enabled, filter by showInHeader
+  if (result.hasShowInHeaderFlag) {
+    const flagged = result.items.filter((item) => item.showInHeader);
+    return flagged.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
 
-  return items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  // If no showInHeader flags set yet, show all items
+  return result.items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
 export async function getFooterNav(): Promise<FooterData> {
-  const nav = await getMainNav();
+  const result = await getMainNav();
 
-  if (!nav || nav.length === 0) {
+  if (!result || !result.items || result.items.length === 0) {
     return { columns: site.footer.columns };
   }
 
+  const nav = result.items;
   const footerItems = nav.filter(
     (item) => item.footerColumn && item.footerColumn.trim() !== "",
   );
