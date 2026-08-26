@@ -13,6 +13,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
+      "astro:env/server": resolve(
+        __dirname,
+        "./src/__mocks__/astro-env-server.ts",
+      ),
+      "astro:env/client": resolve(
+        __dirname,
+        "./src/__mocks__/astro-env-client.ts",
+      ),
     },
   },
 });
