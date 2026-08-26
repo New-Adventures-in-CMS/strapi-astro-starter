@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "defaultMode": "default",
+    "deny": [
+      "Read(./.env)",
+      "Write(./.env)",
+      "Edit(./.env)",
+      "Read(./**/.env)",
+      "Write(./**/.env)",
+      "Edit(./**/.env)",
+      "Write(./**/.env.local)",
+      "Edit(./**/.env.local)",
+      "Write(./**/.env.development)",
+      "Edit(./**/.env.development)",
+      "Write(./**/.env.production)",
+      "Edit(./**/.env.production)",
+      "Write(./**/.env.staging)",
+      "Edit(./**/.env.staging)",
+      "Write(./**/.env.test)",
+      "Edit(./**/.env.test)",
+      "Write(./**/.env.*.local)",
+      "Edit(./**/.env.*.local)",
+      "Write(./**/.tmp/**)",
+      "Edit(./**/.tmp/**)",
+      "Write(./.git/**)",
+      "Edit(./.git/**)",
+      "Bash(rm -rf:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "mcp__strapi-mcp__delete_page",
+      "mcp__strapi-mcp__delete_menu-item",
+      "mcp__strapi-mcp__delete_form",
+      "mcp__strapi-mcp__delete_form-submission",
+      "mcp__strapi-mcp__delete_plugin-users-permissions_user",
+      "mcp__strapi-mcp__unpublish_page",
+      "mcp__strapi-mcp__unpublish_menu-item",
+      "mcp__strapi-mcp__discard_page_draft",
+      "mcp__strapi-mcp__discard_menu-item_draft"
+    ],
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run develop:*)",
+      "Read(./**)",
+      "Grep(./**)"
+    ]
+  }
+}
