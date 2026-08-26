@@ -101,6 +101,15 @@ npx starwind@latest update
 
 Sostituisce i file in `src/components/starwind/` con la versione più recente. Commit prima di aggiornare.
 
+### Test keyboard accessibility (e2e)
+
+```bash
+cd frontend
+npm run test:e2e
+```
+
+Suite Playwright per regressione accessibilità da tastiera: verifica apertura/chiusura del sottomenu NavigationMenu (Enter, Space, ArrowDown, Escape + focus-return) e del drawer Sheet mobile (apertura, focus trap, Escape + focus-return). Gira senza Strapi — usa il fallback `site.nav`.
+
 ### Come Header e Footer consumano menu-item
 
 `frontend/src/lib/navigation.ts` è l'unico punto di fetch — Header e Footer importano direttamente:

@@ -29,6 +29,13 @@ export const site: SiteConfig = {
   locale: "it-IT",
   nav: [
     { label: "Home", href: "/" },
+    {
+      label: "Prodotto",
+      children: [
+        { label: "Panoramica", href: "/prodotto/panoramica" },
+        { label: "Funzionalità", href: "/prodotto/funzionalita" },
+      ],
+    },
     { label: "Pagine", href: "/pagine" },
     { label: "Contatti", href: "/contatti" },
   ],

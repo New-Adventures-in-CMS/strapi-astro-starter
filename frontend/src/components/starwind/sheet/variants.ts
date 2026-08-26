@@ -50,25 +50,17 @@ export const sheetCloseButton = tv({
 });
 
 export const sheetDescription = tv({
-  base: [
-    "text-muted-foreground text-sm",
-  ],
+  base: ["text-muted-foreground text-sm"],
 });
 
 export const sheetFooter = tv({
-  base: [
-    "mt-auto flex flex-col gap-2 p-4",
-  ],
+  base: ["mt-auto flex flex-col gap-2 p-4"],
 });
 
 export const sheetHeader = tv({
-  base: [
-    "flex flex-col gap-1.5 p-4",
-  ],
+  base: ["flex flex-col gap-1.5 p-4"],
 });
 
 export const sheetTitle = tv({
-  base: [
-    "text-foreground font-heading font-semibold",
-  ],
+  base: ["text-foreground font-heading font-semibold"],
 });

@@ -31,12 +31,18 @@
    * =================== */
   --sw-prose-color: var(--prose-color, --alpha(var(--foreground) / 80%));
   --sw-prose-heading-color: var(--prose-heading-color, var(--foreground));
-  --sw-prose-list-marker-color: var(--prose-list-marker-color, var(--muted-foreground));
+  --sw-prose-list-marker-color: var(
+    --prose-list-marker-color,
+    var(--muted-foreground)
+  );
 
   /* ===================
    * Headings
    * =================== */
-  --sw-prose-heading-font: var(--prose-heading-font, var(--font-heading, inherit));
+  --sw-prose-heading-font: var(
+    --prose-heading-font,
+    var(--font-heading, inherit)
+  );
   --sw-prose-heading-weight: var(--prose-heading-weight, 600);
   --sw-prose-heading-line-height: var(--prose-heading-line-height, 1.25);
   --sw-prose-h1-size: var(--prose-h1-size, 2.25em);
@@ -56,7 +62,10 @@
     --prose-link-decoration-color,
     var(--primary-accent)
   );
-  --sw-prose-link-hover-color: var(--prose-link-hover-color, var(--primary-accent));
+  --sw-prose-link-hover-color: var(
+    --prose-link-hover-color,
+    var(--primary-accent)
+  );
 
   /* ===================
    * Strong/Bold
@@ -68,7 +77,10 @@
    * Blockquote
    * =================== */
   --sw-prose-blockquote-color: var(--prose-blockquote-color, var(--foreground));
-  --sw-prose-blockquote-border-color: var(--prose-blockquote-border-color, var(--border));
+  --sw-prose-blockquote-border-color: var(
+    --prose-blockquote-border-color,
+    var(--border)
+  );
   --sw-prose-blockquote-border-width: var(--prose-blockquote-border-width, 4px);
 
   /* ===================
@@ -83,12 +95,18 @@
    * Pre / Code Blocks
    * =================== */
   --sw-prose-pre-border-color: var(--prose-pre-border-color, var(--border));
-  --sw-prose-pre-border-radius: var(--prose-pre-border-radius, var(--radius-md));
+  --sw-prose-pre-border-radius: var(
+    --prose-pre-border-radius,
+    var(--radius-md)
+  );
 
   /* ===================
    * Tables
    * =================== */
-  --sw-prose-table-heading-color: var(--prose-table-heading-color, var(--foreground));
+  --sw-prose-table-heading-color: var(
+    --prose-table-heading-color,
+    var(--foreground)
+  );
   --sw-prose-table-border-color: var(--prose-table-border-color, var(--border));
 
   /* ===================
@@ -117,7 +135,18 @@
 /* Vertical rhythm - spacing between block elements */
 .sw-prose
   :not(a, strong, em, del, span, input, code, br, kbd)
-  + :not(a, strong, em, del, span, input, code, br, kbd, :where(.not-sw-prose *)) {
+  + :not(
+    a,
+    strong,
+    em,
+    del,
+    span,
+    input,
+    code,
+    br,
+    kbd,
+    :where(.not-sw-prose *)
+  ) {
   margin-top: var(--sw-prose-spacing);
 }
 
@@ -203,7 +232,10 @@
   text-underline-offset: 0.15em;
   font-weight: 500;
   transition-property: color;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 
@@ -375,11 +407,13 @@
  * Images and Media
  * -------------------------------------------------------------------------- */
 
-.sw-prose :is(img, picture, video, canvas, svg, iframe):not(:where(.not-sw-prose *)) {
+.sw-prose
+  :is(img, picture, video, canvas, svg, iframe):not(:where(.not-sw-prose *)) {
   display: block;
   max-width: 100%;
   height: auto;
-  border: var(--sw-prose-media-border-width) solid var(--sw-prose-media-border-color);
+  border: var(--sw-prose-media-border-width) solid
+    var(--sw-prose-media-border-color);
   border-radius: var(--sw-prose-media-border-radius);
   margin-top: var(--sw-prose-spacing);
   margin-bottom: var(--sw-prose-spacing);
@@ -511,7 +545,10 @@
   margin-top: var(--sw-prose-spacing);
   margin-bottom: var(--sw-prose-spacing);
   transition-property: border-color;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 

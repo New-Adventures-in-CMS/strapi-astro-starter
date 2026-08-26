@@ -16,3 +16,7 @@ node_modules/
 
 # Superpowers process artifacts (work plans, not part of the starter)
 docs/superpowers/
+
+# Playwright
+playwright-report/
+test-results/

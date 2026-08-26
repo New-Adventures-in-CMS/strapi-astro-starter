@@ -29,7 +29,7 @@ const isActive = (href: string | undefined): boolean =>
     <a href="/" class="text-lg font-semibold">{site.name}</a>
 
     <!-- Desktop nav (md and up) -->
-    <div class="hidden md:flex">
+    <nav aria-label="Navigazione principale" class="hidden md:flex">
       <NavigationMenu>
         <NavigationMenuList>
           {navItems.map((item) =>
@@ -70,13 +70,13 @@ const isActive = (href: string | undefined): boolean =>
           )}
         </NavigationMenuList>
       </NavigationMenu>
-    </div>
+    </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->
     <div class="md:hidden">
       <Sheet>
         <SheetTrigger
-          aria-label="Apri menu"
+          aria-label="Apri menu di navigazione"
           class="rounded p-2 text-gray-600 hover:bg-gray-100"
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@ const isActive = (href: string | undefined): boolean =>
           <SheetHeader>
             <SheetTitle class="sr-only">Navigazione</SheetTitle>
           </SheetHeader>
-          <nav class="flex flex-col gap-2 pt-4">
+          <nav aria-label="Navigazione mobile" class="flex flex-col gap-2 pt-4">
             {navItems.map((item) =>
               item.children?.length ? (
                 <details class="group">
