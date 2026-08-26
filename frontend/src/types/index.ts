@@ -19,19 +19,6 @@ export interface StrapiMedia {
   size: number;
 }
 
-// Voce di menu dal plugin Navigation
-export interface NavItem {
-  id: number;
-  title: string;
-  path: string;
-  type: "INTERNAL" | "EXTERNAL" | "WRAPPER";
-  uiRouterKey: string;
-  menuAttached: boolean;
-  order: number;
-  collapsed: boolean;
-  items?: NavItem[];
-}
-
 // Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"
 export interface Page {
   id: number;

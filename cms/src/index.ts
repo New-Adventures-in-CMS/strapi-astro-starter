@@ -1,149 +1,137 @@
 import type { Core } from "@strapi/strapi";
 
-const PUBLIC_COLLECTION_UIDS: string[] = ["api::form.form", "api::page.page"];
+const PUBLIC_COLLECTION_UIDS: string[] = [
+  "api::form.form",
+  "api::page.page",
+  "api::menu-item.menu-item",
+];
 
 const PUBLIC_SINGLE_UIDS: string[] = [];
 
-const MANUAL_HINT =
-  "ℹ️  Navigation: i custom fields sono stati scritti nel DB. Per usarli, abilitali " +
-  "in Settings → Navigation (sezione 'Custom fields settings'). Passaggio una-tantum.";
-
-async function ensureNavigationCustomFields(strapi: Core.Strapi) {
+async function seedMenuItems(strapi: Core.Strapi) {
   try {
-    const store = strapi.store({ type: "plugin", name: "navigation" });
-    const current = (await store.get({ key: "config" })) as Record<
-      string,
-      unknown
-    > | null;
-
-    const already =
-      Array.isArray(current?.additionalFields) &&
-      (current.additionalFields as unknown[]).some(
-        (f) =>
-          typeof f === "object" &&
-          f !== null &&
-          (f as Record<string, unknown>).name === "footerColumn",
-      );
-    if (already) return;
-
-    // Strada A: use common service's setDefaultConfig (reads file config, writes to store)
-    const commonSvc = strapi.plugin("navigation")?.service?.("common") as
-      { setDefaultConfig?: () => Promise<unknown> } | undefined;
-    if (commonSvc && typeof commonSvc.setDefaultConfig === "function") {
-      await commonSvc.setDefaultConfig();
-      strapi.log.info(
-        "✅ Navigation: custom fields scritti nel DB. Abilitali in Settings → Navigation → 'Custom fields settings' (una-tantum).",
-      );
-      return;
-    }
-
-    strapi.log.warn(MANUAL_HINT);
-  } catch {
-    strapi.log.warn(MANUAL_HINT);
-  }
-}
-
-type NavAdminService = {
-  post?: (a: {
-    payload: { name: string; visible: boolean };
-    auditLog: undefined;
-  }) => Promise<{ documentId: string; locale: string }>;
-  put?: (a: {
-    payload: {
-      documentId: string;
-      name: string;
-      visible: boolean;
-      locale: string;
-      items: unknown[];
-    };
-    auditLog: undefined;
-  }) => Promise<unknown>;
-};
-
-async function seedNavigation(strapi: Core.Strapi) {
-  try {
-    const navUid = (
-      strapi.plugin("navigation")?.contentType?.("navigation") as
-        { uid?: string } | undefined
-    )?.uid;
-    if (!navUid) {
-      strapi.log.warn(
-        "[bootstrap] Seed nav: content type non trovato. Crea la nav 'main' manualmente.",
-      );
-      return;
-    }
-
-    // Idempotency: skip if 'main' already exists
-    const existing = await (
-      strapi.documents as (uid: string) => {
-        findMany: (opts: unknown) => Promise<unknown[]>;
-      }
-    )(navUid).findMany({ filters: { slug: "main" }, limit: 1 });
-    if (existing.length > 0) return;
-
-    const adminSvc = strapi.plugin("navigation")?.service?.("admin") as
-      NavAdminService | undefined;
-    if (!adminSvc?.post || !adminSvc?.put) {
-      strapi.log.warn(
-        "[bootstrap] Seed nav: servizio admin plugin non disponibile. Crea la nav 'main' manualmente.",
-      );
-      return;
-    }
-
-    const nav = await adminSvc.post({
-      payload: { name: "Main", visible: true },
-      auditLog: undefined,
-    });
+    const count = await strapi
+      .documents("api::menu-item.menu-item" as any)
+      .count({});
+    if (count > 0) return;
 
     const pages = await strapi
       .documents("api::page.page")
       .findMany({ status: "published" });
-    const bySlug = Object.fromEntries(pages.map((p) => [p.slug as string, p]));
+    const bySlug: Record<string, { documentId: string }> = Object.fromEntries(
+      pages.map((p) => [
+        p.slug as string,
+        { documentId: p.documentId as string },
+      ]),
+    );
 
-    const seedDefs = [
-      { slug: "home", title: "Home", order: 1 },
-      { slug: "about", title: "Chi siamo", order: 2 },
-      { slug: "services", title: "Servizi", order: 3 },
-      { slug: "contacts", title: "Contatti", order: 4 },
-    ];
+    const connectPage = (slug: string) =>
+      bySlug[slug]
+        ? { connect: [{ documentId: bySlug[slug].documentId }] }
+        : undefined;
 
-    const items = seedDefs
-      .filter((d) => bySlug[d.slug])
-      .map(({ slug, title, order }) => ({
-        title,
-        type: "INTERNAL",
-        uiRouterKey: slug,
-        menuAttached: true,
-        order,
-        collapsed: false,
-        related: {
-          documentId: (bySlug[slug] as { documentId: string }).documentId,
-          __type: "api::page.page",
+    // Root items
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Home",
+        area: "both",
+        order: 1,
+        page: connectPage("home"),
+      },
+      status: "published",
+    });
+
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Chi siamo",
+        area: "header",
+        order: 2,
+        page: connectPage("about"),
+      },
+      status: "published",
+    });
+
+    const servizi = await strapi
+      .documents("api::menu-item.menu-item" as any)
+      .create({
+        data: {
+          label: "Servizi",
+          area: "header",
+          order: 3,
+          page: connectPage("services"),
         },
-      }));
-
-    if (items.length > 0) {
-      await adminSvc.put({
-        payload: {
-          documentId: nav.documentId,
-          name: "Main",
-          visible: true,
-          locale: nav.locale,
-          items,
-        },
-        auditLog: undefined,
+        status: "published",
       });
-    }
 
-    strapi.log.info(
-      `[bootstrap] Seeded 'main' navigation with ${items.length} items`,
-    );
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Contatti",
+        area: "both",
+        order: 4,
+        page: connectPage("contacts"),
+      },
+      status: "published",
+    });
+
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Documentazione",
+        area: "header",
+        order: 5,
+        externalUrl: "https://docs.astro.build",
+      },
+      status: "published",
+    });
+
+    // Children of Servizi
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Servizio A",
+        area: "header",
+        order: 1,
+        externalUrl: "/servizi/a",
+        parent: { connect: [{ documentId: servizi.documentId as string }] },
+      },
+      status: "published",
+    });
+
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Servizio B",
+        area: "header",
+        order: 2,
+        externalUrl: "/servizi/b",
+        parent: { connect: [{ documentId: servizi.documentId as string }] },
+      },
+      status: "published",
+    });
+
+    // Footer-only items
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Privacy",
+        area: "footer",
+        order: 1,
+        externalUrl: "/privacy",
+        footerColumn: "Legale",
+      },
+      status: "published",
+    });
+
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Termini",
+        area: "footer",
+        order: 2,
+        externalUrl: "/termini",
+        footerColumn: "Legale",
+      },
+      status: "published",
+    });
+
+    strapi.log.info("[bootstrap] Seeded 9 menu items");
   } catch (err) {
-    strapi.log.warn(
-      "[bootstrap] Seed navigazione non riuscito: crea la nav 'main' " +
-        "manualmente in Navigation → Add new navigation. Dettaglio: " +
-        String(err),
-    );
+    strapi.log.warn("[bootstrap] Seed menu items fallito: " + String(err));
   }
 }
 
@@ -174,12 +162,7 @@ export default {
       desired.push(`${uid}.find`);
     }
 
-    // Form submission: route custom pubblica
     desired.push("api::form-submission.form-submission.submit");
-
-    // Navigation plugin
-    desired.push("plugin::navigation.client.render");
-    desired.push("plugin::navigation.client.renderChild");
 
     let created = 0;
     for (const action of desired) {
@@ -218,7 +201,6 @@ export default {
       strapi.log.info("[bootstrap] Seeded 4 default pages");
     }
 
-    await ensureNavigationCustomFields(strapi);
-    await seedNavigation(strapi);
+    await seedMenuItems(strapi);
   },
 };
