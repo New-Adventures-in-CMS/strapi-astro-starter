@@ -31,17 +31,15 @@ async function seedMenuItems(strapi: Core.Strapi) {
         : undefined;
 
     // Root items
-    const home = await strapi
-      .documents("api::menu-item.menu-item" as any)
-      .create({
-        data: {
-          label: "Home",
-          area: "both",
-          order: 1,
-          page: connectPage("home"),
-        },
-        status: "published",
-      });
+    await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Home",
+        area: "both",
+        order: 1,
+        page: connectPage("home"),
+      },
+      status: "published",
+    });
 
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
