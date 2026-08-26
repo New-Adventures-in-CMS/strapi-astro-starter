@@ -1,4 +1,5 @@
 import { site, type NavItem } from "@/config/site";
+import { STRAPI_URL } from "astro:env/server";
 
 interface PluginNavNode {
   title: string;
@@ -24,8 +25,6 @@ export const FOOTER_COLUMNS = [
 export interface FooterData {
   columns: { title: string; items: NavItem[] }[];
 }
-
-const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
 
 function normalizeNode(node: PluginNavNode): NavItem | null {
   if (!node.menuAttached) return null;

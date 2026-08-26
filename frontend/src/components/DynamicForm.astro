@@ -140,6 +140,8 @@ function getSpan(larghezza?: Larghezza): string {
 )}
 
 <script>
+  import { PUBLIC_STRAPI_URL } from "astro:env/client";
+
   document.querySelectorAll<HTMLFormElement>("form[data-slug]").forEach((form) => {
     const slug = form.dataset.slug!;
     const successMsg = form.dataset.success!;
@@ -163,7 +165,7 @@ function getSpan(larghezza?: Larghezza): string {
       formData.forEach((v, k) => { if (k !== "website") data[k] = String(v); });
 
       try {
-        const strapiUrl = (import.meta as any).env?.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+        const strapiUrl = PUBLIC_STRAPI_URL ?? "http://localhost:1337";
         const res = await fetch(`${strapiUrl}/api/form-submissions/submit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
