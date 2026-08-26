@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "menu_items",
+  "info": {
+    "singularName": "menu-item",
+    "pluralName": "menu-items",
+    "displayName": "Voce di Menu",
+    "description": "Voci del menu di navigazione (header, footer o entrambi)."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "description": "Etichetta — il testo mostrato nel menu"
+    },
+    "page": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::page.page",
+      "description": "Pagina collegata — la pagina interna a cui punta la voce (opzionale)"
+    },
+    "externalUrl": {
+      "type": "string",
+      "description": "URL esterno — usa questo per link esterni; se valorizzato ha precedenza sulla pagina"
+    },
+    "area": {
+      "type": "enumeration",
+      "enum": ["header", "footer", "both"],
+      "required": true,
+      "default": "header",
+      "description": "Dove appare — Header, Footer o Entrambi"
+    },
+    "footerColumn": {
+      "type": "enumeration",
+      "enum": ["Prodotto", "Azienda", "Supporto", "Legale"],
+      "description": "Colonna footer — in quale colonna del footer appare (solo se Area include Footer)"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu-item.menu-item",
+      "description": "Voce genitore — lascia vuoto per le voci di primo livello"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0,
+      "description": "Ordine — numero per ordinare le voci (più basso = prima)"
+    }
+  }
+}
