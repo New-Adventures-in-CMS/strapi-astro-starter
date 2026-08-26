@@ -1,6 +1,6 @@
 # strapi-astro-starter
 
-Starter kit pronto all'uso per [Strapi 5](https://strapi.io) + [Astro 5](https://astro.build). Clone → setup → sito online in quattro comandi.
+Starter kit pronto all'uso per [Strapi 5](https://strapi.io) + [Astro 7](https://astro.build). Clone → setup → sito online in quattro comandi.
 
 ## Quick start
 
@@ -20,7 +20,7 @@ CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 
 Un headless CMS già cablato: Strapi gestisce i contenuti, Astro genera il sito. Include form dinamici gestiti da Strapi, plugin di navigazione, email SMTP, campi SEO, server MCP per gli AI agent e utility API pronte (`strapiFind` / `strapiFindOne`).
 
-Stack: Strapi 5 · Astro 5 · Tailwind CSS v4 · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js ≥ 20. Tabella versioni completa in [SETUP.md](SETUP.md#stack).
+Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js ≥ 22.12. Tabella versioni completa in [SETUP.md](SETUP.md#stack).
 
 ## Documentazione
 
@@ -29,7 +29,7 @@ Stack: Strapi 5 · Astro 5 · Tailwind CSS v4 · TypeScript · SQLite (dev) / Po
 
 ## Requisiti
 
-Node.js ≥ 20
+Node.js ≥ 22.12
 
 ## Licenza
 
