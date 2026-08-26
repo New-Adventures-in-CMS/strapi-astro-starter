@@ -1,4 +1,4 @@
-# Strapi 5 + Astro 5 — Riferimento tecnico
+# Strapi 5 + Astro 7 — Riferimento tecnico
 
 Stack testato e validato su un progetto reale. Questo documento è la reference tecnica: comandi, pattern, gotcha, variabili d'ambiente, MCP.
 
@@ -11,18 +11,18 @@ Per il **setup rapido** vedi il [README](README.md#quick-start). Per una **guida
 | Layer              | Versione                         | Porta |
 | ------------------ | -------------------------------- | ----- |
 | Strapi 5 (CMS)     | 5.52.1                           | 1337  |
-| Astro 5 (Frontend) | 5.18.2                           | 4321  |
+| Astro 7 (Frontend) | 7.2.6                            | 4321  |
 | Tailwind CSS       | v4                               | —     |
 | TypeScript         | ✓                                | —     |
 | Database           | SQLite (dev) / PostgreSQL (prod) | —     |
-| Node.js            | ≥ 20                             | —     |
+| Node.js            | ≥ 22.12                          | —     |
 
 ## Struttura repo
 
 ```
 strapi-astro-starter/
 ├── cms/          # Strapi 5
-└── frontend/     # Astro 5
+└── frontend/     # Astro 7
 ```
 
 ## Layout di default
@@ -418,6 +418,24 @@ PUBLIC_STRAPI_URL=http://localhost:1337
 ```
 
 `PUBLIC_STRAPI_URL` serve per DynamicForm — fetch lato client (browser), richiede prefisso `PUBLIC_`.
+
+### Environment variables — modello `astro:env` (Astro 7)
+
+Le variabili di connessione a Strapi usano `astro:env` (introdotto in Astro 5, obbligatorio da v6+):
+
+- Schema definito in `frontend/astro.config.mjs` → sezione `env.schema`
+- `STRAPI_URL` e `STRAPI_API_TOKEN`: `context:"server", access:"secret"` — letti a **runtime**, mai inlinati nel bundle SSR. Cambiarli e riavviare il server senza rebuild ha effetto immediato.
+- `PUBLIC_STRAPI_URL`: `context:"client", access:"public"` — inlinato al build (corretto per codice browser). Serve al form dinamico per chiamare Strapi direttamente dal browser.
+
+Import nel codice:
+
+```ts
+// Lato server (astro files frontmatter, src/lib/*.ts)
+import { STRAPI_URL, STRAPI_API_TOKEN } from "astro:env/server";
+
+// Lato client (script block in .astro, .ts client-side)
+import { PUBLIC_STRAPI_URL } from "astro:env/client";
+```
 
 ---
 

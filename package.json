@@ -1,7 +1,7 @@
 {
   "name": "strapi-astro-starter",
   "version": "0.1.0",
-  "description": "Production-ready starter kit — Strapi 5 headless CMS + Astro 5 frontend, with dynamic forms, navigation plugin, and Tailwind CSS v4",
+  "description": "Production-ready starter kit — Strapi 5 headless CMS + Astro 7 frontend, with dynamic forms, navigation plugin, and Tailwind CSS v4",
   "license": "MIT",
   "private": true,
   "scripts": {
