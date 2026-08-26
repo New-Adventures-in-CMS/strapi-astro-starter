@@ -1,161 +1,152 @@
 ---
-// frontend/src/components/Header.astro
 import { getHeaderNav } from "@/lib/navigation";
 import { site } from "@/config/site";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+} from "@/components/starwind/navigation-menu";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/starwind/sheet";
 
 const navItems = await getHeaderNav();
 const path = Astro.url.pathname;
 const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
 ---
+
 <header class="border-b border-gray-200">
-  <nav class="mx-auto max-w-5xl px-4 py-4">
-    <div class="flex items-center justify-between">
-      <a href="/" class="text-lg font-semibold">{site.name}</a>
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+    <!-- Brand -->
+    <a href="/" class="text-lg font-semibold">{site.name}</a>
 
-      <!-- desktop nav (md and up) -->
-      <ul class="hidden gap-6 md:flex">
-        {navItems.map((item) => (
-          item.children?.length ? (
-            <li class="group relative">
-              <button
-                type="button"
-                class="flex cursor-default items-center gap-1 text-sm text-gray-600 transition-colors hover:text-black"
-              >
-                {item.label}
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <ul class="absolute left-0 top-full z-10 hidden min-w-max rounded border border-gray-200 bg-white py-1 shadow-md group-hover:block">
-                {item.children.filter((child) => child.href !== undefined).map((child) => (
-                  <li>
-                    <a
-                      href={child.href}
-                      target={child.external ? "_blank" : undefined}
-                      rel={child.external ? "noopener noreferrer" : undefined}
-                      class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-black"
-                    >{child.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ) : (
-            <li>
-              <a
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noopener noreferrer" : undefined}
-                class:list={[
-                  "text-sm transition-colors hover:text-black",
-                  isActive(item.href) ? "font-semibold text-black" : "text-gray-600",
-                ]}
-              >{item.label}</a>
-            </li>
-          )
-        ))}
-      </ul>
-
-      <!-- hamburger button (mobile only) -->
-      <button
-        id="nav-toggle"
-        class="rounded p-2 text-gray-600 hover:bg-gray-100 md:hidden"
-        aria-label="Apri menu"
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-      >
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            id="icon-open"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-          <path
-            id="icon-close"
-            class="hidden"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+    <!-- Desktop nav (md and up) -->
+    <div class="hidden md:flex">
+      <NavigationMenu>
+        <NavigationMenuList>
+          {navItems.map((item) =>
+            item.children?.length ? (
+              <NavigationMenuItem value={item.label}>
+                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul class="min-w-[180px] py-1">
+                    {item.children.map((child) => (
+                      <li>
+                        <NavigationMenuLink
+                          href={child.href}
+                          target={child.external ? "_blank" : undefined}
+                          rel={child.external ? "noopener noreferrer" : undefined}
+                          active={isActive(child.href)}
+                          aria-current={isActive(child.href) ? "page" : undefined}
+                        >
+                          {child.label}
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            ) : (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  active={isActive(item.href)}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )
+          )}
+        </NavigationMenuList>
+      </NavigationMenu>
     </div>
 
-    <!-- mobile nav (hidden by default, toggled by JS) -->
-    <ul
-      id="mobile-nav"
-      class="hidden flex-col gap-2 border-t border-gray-100 pt-4 md:hidden"
-    >
-      {navItems.map((item) => (
-        item.children?.length ? (
-          <li>
-            <details>
-              <summary class="flex cursor-pointer items-center justify-between py-2 text-sm text-gray-600 [&::-webkit-details-marker]:hidden">
-                {item.label}
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <ul class="mt-1 pl-4">
-                {item.children.filter((child) => child.href !== undefined).map((child) => (
-                  <li>
-                    <a
-                      href={child.href}
-                      target={child.external ? "_blank" : undefined}
-                      rel={child.external ? "noopener noreferrer" : undefined}
-                      class="block py-1.5 text-sm text-gray-600 hover:text-black"
-                    >{child.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          </li>
-        ) : (
-          <li>
-            <a
-              href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-              class:list={[
-                "block py-2 text-sm",
-                isActive(item.href) ? "font-semibold text-black" : "text-gray-600",
-              ]}
-            >{item.label}</a>
-          </li>
-        )
-      ))}
-    </ul>
-  </nav>
+    <!-- Mobile hamburger trigger (Sheet drawer) -->
+    <div class="md:hidden">
+      <Sheet>
+        <SheetTrigger
+          aria-label="Apri menu"
+          class="rounded p-2 text-gray-600 hover:bg-gray-100"
+        >
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </SheetTrigger>
+        <SheetContent side="left">
+          <SheetHeader>
+            <SheetTitle class="sr-only">Navigazione</SheetTitle>
+          </SheetHeader>
+          <nav class="flex flex-col gap-2 pt-4">
+            {navItems.map((item) =>
+              item.children?.length ? (
+                <details class="group">
+                  <summary class="flex cursor-pointer items-center justify-between py-2 text-sm text-gray-600 [&::-webkit-details-marker]:hidden">
+                    {item.label}
+                    <svg
+                      class="h-3 w-3 transition-transform group-open:rotate-180"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </summary>
+                  <ul class="mt-1 pl-4">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          target={child.external ? "_blank" : undefined}
+                          rel={child.external ? "noopener noreferrer" : undefined}
+                          aria-current={isActive(child.href) ? "page" : undefined}
+                          class:list={[
+                            "block py-1.5 text-sm",
+                            isActive(child.href)
+                              ? "font-semibold text-black"
+                              : "text-gray-600 hover:text-black",
+                          ]}
+                        >{child.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : (
+                <a
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  class:list={[
+                    "block py-2 text-sm",
+                    isActive(item.href) ? "font-semibold text-black" : "text-gray-600",
+                  ]}
+                >{item.label}</a>
+              )
+            )}
+          </nav>
+        </SheetContent>
+      </Sheet>
+    </div>
+  </div>
 </header>
-
-<script>
-  const toggle = document.getElementById("nav-toggle");
-  const menu = document.getElementById("mobile-nav");
-  const iconOpen = document.getElementById("icon-open");
-  const iconClose = document.getElementById("icon-close");
-
-  if (!toggle || !menu || !iconOpen || !iconClose) {
-    console.error("Header: required nav elements not found in DOM");
-  }
-
-  toggle?.addEventListener("click", () => {
-    const isCurrentlyOpen = !menu?.classList.contains("hidden");
-
-    if (isCurrentlyOpen) {
-      menu?.classList.add("hidden");
-      menu?.classList.remove("flex");
-      toggle.setAttribute("aria-expanded", "false");
-      iconOpen?.classList.remove("hidden");
-      iconClose?.classList.add("hidden");
-    } else {
-      menu?.classList.remove("hidden");
-      menu?.classList.add("flex");
-      toggle.setAttribute("aria-expanded", "true");
-      iconOpen?.classList.add("hidden");
-      iconClose?.classList.remove("hidden");
-    }
-  });
-</script>
