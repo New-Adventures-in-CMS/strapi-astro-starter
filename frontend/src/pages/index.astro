@@ -1,7 +1,9 @@
 ---
 // frontend/src/pages/index.astro
 import Layout from "@/layouts/Layout.astro";
+import { Prose } from "@/components/starwind/prose";
 import { strapiFind } from "@/lib/strapi";
+import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
 let home: Page | null = null;
@@ -15,15 +17,17 @@ try {
 } catch {
   cmsError = true;
 }
+
+const bodyHtml = renderMarkdown(home?.body);
 ---
 <Layout
   title={home?.title}
   description={home?.seo_desc ?? undefined}
 >
   {home ? (
-    <article>
-      <h1 class="text-3xl font-bold">{home.title}</h1>
-      {home.body && <div class="prose mt-4" set:html={home.body} />}
+    <article class="mx-auto max-w-3xl py-12">
+      <h1 class="text-4xl font-bold tracking-tight">{home.title}</h1>
+      {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
     </article>
   ) : (
     <section class="rounded-lg border border-dashed border-gray-300 p-8 text-center">

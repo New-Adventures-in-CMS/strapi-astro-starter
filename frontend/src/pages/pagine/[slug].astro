@@ -1,7 +1,9 @@
 ---
 // frontend/src/pages/pagine/[slug].astro
 import Layout from "@/layouts/Layout.astro";
+import { Prose } from "@/components/starwind/prose";
 import { strapiFind } from "@/lib/strapi";
+import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
 const { slug } = Astro.params;
@@ -19,10 +21,12 @@ try {
 }
 
 if (!page) return Astro.redirect("/404");
+
+const bodyHtml = renderMarkdown(page.body);
 ---
 <Layout title={page.title} description={page.seo_desc ?? undefined}>
-  <article>
-    <h1 class="text-3xl font-bold">{page.title}</h1>
-    {page.body && <div class="prose mt-6" set:html={page.body} />}
+  <article class="mx-auto max-w-3xl py-12">
+    <h1 class="text-4xl font-bold tracking-tight">{page.title}</h1>
+    {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
   </article>
 </Layout>
