@@ -11,7 +11,9 @@
     "dev:web": "npm --prefix frontend run dev",
     "install:all": "npm install && npm --prefix cms install && npm --prefix frontend install",
     "setup": "npm --prefix cms run setup && npm --prefix frontend run setup",
-    "build": "npm --prefix cms run build && npm --prefix frontend run build"
+    "build": "npm --prefix cms run build && npm --prefix frontend run build",
+    "test": "npm --prefix frontend test",
+    "test:e2e": "npm --prefix frontend run test:e2e"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

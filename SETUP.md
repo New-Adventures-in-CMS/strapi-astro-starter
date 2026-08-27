@@ -105,10 +105,20 @@ Sostituisce i file in `src/components/starwind/` con la versione più recente. C
 
 ```bash
 cd frontend
+npx playwright install chromium   # una tantum, ~150 MB
 npm run test:e2e
 ```
 
 Suite Playwright per regressione accessibilità da tastiera: verifica apertura/chiusura del sottomenu NavigationMenu (Enter, Space, ArrowDown, Escape + focus-return) e del drawer Sheet mobile (apertura, focus trap, Escape + focus-return). Gira senza Strapi — usa il fallback `site.nav`.
+
+### Running tests
+
+Dalla root:
+
+```bash
+npm test          # vitest (unit) — no prereq
+npm run test:e2e  # playwright (e2e) — richiede `npx playwright install chromium` una tantum
+```
 
 ### Come Header e Footer consumano menu-item
 
