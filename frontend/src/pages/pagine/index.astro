@@ -14,29 +14,40 @@ try {
   cmsError = true;
 }
 ---
-<Layout title="Pagine">
-  <h1 class="text-3xl font-bold">Pagine</h1>
+<Layout title="Pagine" description="Elenco pagine pubblicate.">
+  <div class="mx-auto max-w-3xl py-12">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Pagine</h1>
 
-  {cmsError && (
-    <p class="mt-4 text-gray-600">Il CMS non è raggiungibile. Avvia Strapi e riprova.</p>
-  )}
+    {cmsError && (
+      <p class="mt-6 text-gray-600">
+        Il CMS non è raggiungibile. Avvia Strapi e ricarica.
+      </p>
+    )}
 
-  {!cmsError && pages.length === 0 && (
-    <p class="mt-4 text-gray-600">Nessuna pagina trovata. Crea delle pagine in Strapi.</p>
-  )}
+    {!cmsError && pages.length === 0 && (
+      <p class="mt-6 text-gray-600">
+        Nessuna pagina pubblicata. Crea una <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">page</code> in Strapi e pubblicala.
+      </p>
+    )}
 
-  {pages.length > 0 && (
-    <ul class="mt-6 space-y-3">
-      {pages.map((page) => (
-        <li>
-          <a
-            href={`/pagine/${page.slug}`}
-            class="text-brand-700 underline hover:text-brand-500"
-          >
-            {page.title}
-          </a>
-        </li>
-      ))}
-    </ul>
-  )}
+    {pages.length > 0 && (
+      <ul class="mt-8 divide-y divide-gray-200 border-y border-gray-200">
+        {pages.map((page) => (
+          <li class="py-4">
+            <a
+              href={`/pagine/${page.slug}`}
+              class="block group"
+            >
+              <span class="text-lg font-semibold text-gray-900 group-hover:text-brand-700">
+                {page.title}
+              </span>
+              {page.seo_desc && (
+                <span class="mt-1 block text-sm text-gray-600">{page.seo_desc}</span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
 </Layout>
