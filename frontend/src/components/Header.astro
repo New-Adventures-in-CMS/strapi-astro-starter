@@ -35,7 +35,7 @@ const isActive = (href: string | undefined): boolean =>
           {navItems.map((item) =>
             item.children?.length ? (
               <NavigationMenuItem value={item.label}>
-                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                <NavigationMenuTrigger class="text-sm">{item.label}</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul class="w-fit min-w-[180px] py-1">
                     {item.children.map((child) => (
