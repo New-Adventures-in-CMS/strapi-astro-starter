@@ -35,7 +35,7 @@ const isActive = (href: string | undefined): boolean =>
           {navItems.map((item) =>
             item.children?.length ? (
               <NavigationMenuItem value={item.label}>
-                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul class="w-fit min-w-[180px] py-1">
                     {item.children.map((child) => (
@@ -62,6 +62,7 @@ const isActive = (href: string | undefined): boolean =>
                   rel={item.external ? "noopener noreferrer" : undefined}
                   active={isActive(item.href)}
                   aria-current={isActive(item.href) ? "page" : undefined}
+                  class="text-sm font-medium"
                 >
                   {item.label}
                 </NavigationMenuLink>
@@ -88,15 +89,15 @@ const isActive = (href: string | undefined): boolean =>
             />
           </svg>
         </SheetTrigger>
-        <SheetContent side="left">
-          <SheetHeader>
+        <SheetContent side="left" class="px-4 pt-4">
+          <SheetHeader class="p-0">
             <SheetTitle class="sr-only">Navigazione</SheetTitle>
           </SheetHeader>
-          <nav aria-label="Navigazione mobile" class="flex flex-col gap-2 pt-4">
+          <nav aria-label="Navigazione mobile" class="mt-8 flex flex-col">
             {navItems.map((item) =>
               item.children?.length ? (
                 <details class="group">
-                  <summary class="flex cursor-pointer items-center justify-between py-2 text-sm text-gray-600 [&::-webkit-details-marker]:hidden">
+                  <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black [&::-webkit-details-marker]:hidden">
                     {item.label}
                     <svg
                       class="h-3 w-3 transition-transform group-open:rotate-180"
@@ -112,7 +113,7 @@ const isActive = (href: string | undefined): boolean =>
                       />
                     </svg>
                   </summary>
-                  <ul class="mt-1 pl-4">
+                  <ul class="mt-1 pl-3">
                     {item.children.map((child) => (
                       <li>
                         <a
@@ -121,10 +122,10 @@ const isActive = (href: string | undefined): boolean =>
                           rel={child.external ? "noopener noreferrer" : undefined}
                           aria-current={isActive(child.href) ? "page" : undefined}
                           class:list={[
-                            "block py-1.5 text-sm",
+                            "block rounded-md px-3 py-1.5 text-sm",
                             isActive(child.href)
-                              ? "font-semibold text-black"
-                              : "text-gray-600 hover:text-black",
+                              ? "bg-gray-100 text-black"
+                              : "text-gray-600 hover:bg-gray-100 hover:text-black",
                           ]}
                         >{child.label}</a>
                       </li>
@@ -138,8 +139,10 @@ const isActive = (href: string | undefined): boolean =>
                   rel={item.external ? "noopener noreferrer" : undefined}
                   aria-current={isActive(item.href) ? "page" : undefined}
                   class:list={[
-                    "block py-2 text-sm",
-                    isActive(item.href) ? "font-semibold text-black" : "text-gray-600",
+                    "block rounded-md px-3 py-2 text-sm",
+                    isActive(item.href)
+                      ? "bg-gray-100 text-black"
+                      : "text-gray-700 hover:bg-gray-100 hover:text-black",
                   ]}
                 >{item.label}</a>
               )
