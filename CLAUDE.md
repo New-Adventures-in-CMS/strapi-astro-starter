@@ -122,8 +122,12 @@ Traps:
 
 - Strapi CLI is `cd cms && npx strapi <cmd>` — there is no root `strapi` script.
 - Node 22 (pinned in `.nvmrc`); Node 24+ → `EBADENGINE`.
-- Dynamic-zone populate from Astro needs `on`:
-  `populate: { blocks: { on: { "ns.component": { … } } } }`.
+- Dynamic-zone populate: this starter uses the flat form
+  `populate: { blocks: { populate: { image: true, cards: { populate: { image: true } } } } }`
+  which works because Strapi 5 merges the child populate across every component
+  in the zone. If you ever need per-component branching (different populate for
+  different `__component`), use the explicit `on` form:
+  `populate: { blocks: { on: { "ns.component": { populate: { … } } } } }`.
 - **Markdown fields (`body` on `page`) are raw Markdown, not HTML.** Render via
   `renderMarkdown(md)` from `@/lib/markdown` → `set:html` inside the Starwind
   `<Prose>` wrapper. Never dump `page.body` straight into the template.
