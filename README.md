@@ -20,7 +20,7 @@ CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 
 Un headless CMS già cablato: Strapi gestisce i contenuti, Astro genera il sito. Include form dinamici gestiti da Strapi, plugin di navigazione, email SMTP, campi SEO, server MCP per gli AI agent e utility API pronte (`strapiFind` / `strapiFindOne`).
 
-Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · Starwind UI · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js ≥ 22.12. Tabella versioni completa in [SETUP.md](SETUP.md#stack).
+Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · Starwind UI · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js 22 LTS (22.x). Tabella versioni completa in [SETUP.md](SETUP.md#stack).
 
 ## Documentazione
 
@@ -29,7 +29,7 @@ Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · Starwind UI · TypeScript · SQ
 
 ## Requisiti
 
-Node.js ≥ 22.12
+Node.js 22 LTS (22.x)
 
 ## Licenza
 

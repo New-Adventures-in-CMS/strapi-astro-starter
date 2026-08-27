@@ -8,14 +8,14 @@ Per il **setup rapido** vedi il [README](README.md#quick-start). Per una **guida
 
 ## Stack
 
-| Layer              | Versione                         | Porta |
-| ------------------ | -------------------------------- | ----- |
-| Strapi 5 (CMS)     | 5.52.1                           | 1337  |
-| Astro 7 (Frontend) | 7.2.6                            | 4321  |
-| Tailwind CSS       | v4                               | —     |
-| TypeScript         | ✓                                | —     |
-| Database           | SQLite (dev) / PostgreSQL (prod) | —     |
-| Node.js            | ≥ 22.12                          | —     |
+| Layer              | Versione                                              | Porta |
+| ------------------ | ----------------------------------------------------- | ----- |
+| Strapi 5 (CMS)     | 5.52.1                                                | 1337  |
+| Astro 7 (Frontend) | 7.2.6                                                 | 4321  |
+| Tailwind CSS       | v4                                                    | —     |
+| TypeScript         | ✓                                                     | —     |
+| Database           | SQLite (dev) / PostgreSQL (prod)                      | —     |
+| Node.js            | 22 LTS (22.x) — Node 23/24 non supportato da Strapi 5 | —     |
 
 ## Struttura repo
 
