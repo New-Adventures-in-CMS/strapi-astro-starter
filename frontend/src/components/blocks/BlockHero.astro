@@ -1,0 +1,70 @@
+---
+import type { StrapiMedia } from "@/types";
+import { Button } from "@/components/starwind/button";
+import { strapiMediaUrl } from "@/lib/strapi";
+
+interface Props {
+  heading: string;
+  subheading?: string | null;
+  cta_text?: string | null;
+  cta_url?: string | null;
+  image?: StrapiMedia | null;
+}
+
+const { heading, subheading, cta_text, cta_url, image } = Astro.props;
+const imageUrl = image ? strapiMediaUrl(image.url) : null;
+const showCta = cta_text && cta_url;
+---
+
+{
+  imageUrl ? (
+    // Hero with background image
+    <section
+      class="relative overflow-hidden py-20 sm:py-28"
+      style={{
+        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('${imageUrl}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div class="relative max-w-3xl mx-auto px-4 text-center text-white">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+          {heading}
+        </h1>
+        {subheading && (
+          <p class="mt-4 text-lg sm:text-xl text-white/80">
+            {subheading}
+          </p>
+        )}
+        {showCta && (
+          <div class="mt-8">
+            <Button variant="default" href={cta_url}>
+              {cta_text}
+            </Button>
+          </div>
+        )}
+      </div>
+    </section>
+  ) : (
+    // Hero without image
+    <section class="py-20 sm:py-28 bg-gradient-to-br from-muted via-background to-muted">
+      <div class="max-w-3xl mx-auto px-4 text-center">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground">
+          {heading}
+        </h1>
+        {subheading && (
+          <p class="mt-4 text-lg sm:text-xl text-muted-foreground">
+            {subheading}
+          </p>
+        )}
+        {showCta && (
+          <div class="mt-8">
+            <Button variant="default" href={cta_url}>
+              {cta_text}
+            </Button>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}

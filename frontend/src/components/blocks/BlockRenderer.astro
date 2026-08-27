@@ -1,0 +1,30 @@
+---
+import type { PageBlock } from "@/types";
+import BlockHero from "./BlockHero.astro";
+import BlockRichText from "./BlockRichText.astro";
+import BlockImageText from "./BlockImageText.astro";
+import BlockCardGrid from "./BlockCardGrid.astro";
+
+interface Props {
+  blocks: PageBlock[];
+}
+
+const { blocks } = Astro.props;
+---
+
+{
+  blocks.map((block) => {
+    switch (block.__component) {
+      case "blocks.hero":
+        return <BlockHero {...block} />;
+      case "blocks.rich-text":
+        return <BlockRichText {...block} />;
+      case "blocks.image-text":
+        return <BlockImageText {...block} />;
+      case "blocks.card-grid":
+        return <BlockCardGrid {...block} />;
+      default:
+        return null;
+    }
+  })
+}
