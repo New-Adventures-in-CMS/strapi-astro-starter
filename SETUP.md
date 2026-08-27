@@ -176,13 +176,13 @@ Non incluse nel boilerplate, documentate qui come punto di partenza:
 | Comando               | Cosa fa                                                                  |
 | --------------------- | ------------------------------------------------------------------------ |
 | `npm run install:all` | Installa dipendenze root + CMS + frontend                                |
-| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env`                 |
+| `npm run setup`       | (Opzionale) Genera `cms/.env` (secrets automatici) + `frontend/.env`     |
 | `npm run dev`         | Avvia CMS e frontend in parallelo (libera porte 1337/4321 in automatico) |
 | `npm run build`       | Build produzione di CMS e frontend                                       |
 
-> Se `.env` esiste già, `npm run setup` si ferma con errore — cancellalo prima di rigenerare.
+> `npm run setup` è opzionale: dalla prima esecuzione di `npm run dev` gli `.env` vengono generati automaticamente se mancanti (`scripts/ensure-env.js`). Se `.env` esistono già non vengono mai sovrascritti.
 
-> `npm run dev` esegue automaticamente `scripts/free-ports.js` prima di partire: termina eventuali processi in ascolto su 1337 e 4321. Nessuna dipendenza esterna — funziona subito dopo il clone.
+> `npm run dev` esegue automaticamente `scripts/ensure-env.js` e `scripts/free-ports.js` prima di partire: genera env mancanti, poi termina eventuali processi in ascolto su 1337 e 4321. Nessuna dipendenza esterna — funziona subito dopo il clone.
 
 ---
 

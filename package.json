@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "predev": "node scripts/free-ports.js",
+    "predev": "node scripts/ensure-env.js && node scripts/free-ports.js",
     "dev": "concurrently --names CMS,WEB --prefix-colors green,blue \"npm run dev:cms\" \"npm run dev:web\"",
     "dev:cms": "npm --prefix cms run develop",
     "dev:web": "npm --prefix frontend run dev",

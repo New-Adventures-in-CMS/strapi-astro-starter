@@ -8,9 +8,10 @@ Starter kit pronto all'uso per [Strapi 5](https://strapi.io) + [Astro 7](https:/
 git clone https://github.com/New-Adventures-in-CMS/strapi-astro-starter.git nome-progetto
 cd nome-progetto
 npm run install:all
-npm run setup
 npm run dev
 ```
+
+Gli `.env` vengono generati automaticamente al primo `dev` (o esplicitamente con `npm run setup`).
 
 CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 

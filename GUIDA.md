@@ -130,13 +130,15 @@ npm run install:all
 
 Scarica tutte le librerie necessarie per CMS e frontend. Può richiedere qualche minuto.
 
-### Passo 4 — Genera i file di configurazione
+### Passo 4 — (Opzionale) Genera i file di configurazione
 
 ```bash
 npm run setup
 ```
 
-Questo comando crea automaticamente `cms/.env` e `frontend/.env` con tutti i valori necessari già compilati — incluse le chiavi crittografiche generate in modo sicuro. Non devi fare nulla a mano.
+Questo comando crea `cms/.env` e `frontend/.env` con tutti i valori necessari già compilati — incluse le chiavi crittografiche generate in modo sicuro.
+
+**Puoi saltare questo passo**: al primo `npm run dev` gli `.env` mancanti vengono generati automaticamente. Se esistono già non vengono mai sovrascritti.
 
 Le variabili d'ambiente sono configurazioni sensibili (password, chiavi) che non si mettono nel codice. I file `.env` non vengono mai caricati su GitHub.
 
