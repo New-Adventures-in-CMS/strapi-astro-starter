@@ -141,12 +141,72 @@ Il boilerplate include route SSR `/pagine` e `/pagine/[slug]` che leggono da un 
 | ---------- | ------------------- | ------------------------------------- |
 | `title`    | Short text          | required                              |
 | `slug`     | UID (target: title) | required                              |
-| `body`     | Rich text           | corpo pagina                          |
+| `body`     | Rich text           | corpo pagina (Markdown)               |
 | `seo_desc` | Long text           | usato per `<meta name="description">` |
+| `blocks`   | Dynamic zone        | page builder (vedi sotto)             |
 
 **Permessi:** Settings → Users & Permissions → Public → `page` → abilita `find` e `findOne`.
 
-**Nota:** per la home, crea una entry con slug `home`.
+**Nota:** per la home, crea una entry con slug `home`. Sul primo avvio il seed
+crea automaticamente `home` e `about` con contenuti demo che usano i blocchi.
+
+---
+
+## Page blocks (Dynamic Zone)
+
+Il content-type `page` espone una Dynamic Zone `blocks` con quattro componenti
+riutilizzabili (namespace `blocks.*`, più `shared.card` come sotto-componente
+di `card-grid`).
+
+| Componente   | UID                 | Attributi                                                         |
+| ------------ | ------------------- | ----------------------------------------------------------------- |
+| Hero         | `blocks.hero`       | heading (req), subheading, cta_text, cta_url, image               |
+| Rich Text    | `blocks.rich-text`  | body (Markdown, req)                                              |
+| Image + Text | `blocks.image-text` | heading, body (Markdown, req), image, image_position (left/right) |
+| Card Grid    | `blocks.card-grid`  | heading, cards (repeatable `shared.card`)                         |
+| Card (sub)   | `shared.card`       | title (req), description, image, link_url, link_text              |
+
+**Rendering (Astro):**
+
+- Renderer dispatcher: `frontend/src/components/blocks/BlockRenderer.astro`
+- Un componente per block: `BlockHero.astro`, `BlockRichText.astro`,
+  `BlockImageText.astro`, `BlockCardGrid.astro`
+- Tipi: `frontend/src/types/index.ts` (`PageBlock` union)
+- Populate deep sempre in fetch (block image + card image):
+  ```ts
+  populate: {
+    blocks: {
+      populate: { image: true, cards: { populate: { image: true } } },
+    },
+  }
+  ```
+
+**Priorità di rendering:** i blocchi si renderizzano per primi; il campo
+`body` Markdown, se presente, viene renderizzato sotto come `<article>` di
+fallback.
+
+**Aggiungere un nuovo block:**
+
+1. Crea `cms/src/components/blocks/<name>.json`
+2. Aggiungilo all'array `components` in `cms/src/api/page/content-types/page/schema.json`
+3. Riavvia Strapi
+4. Aggiungi il tipo in `frontend/src/types/index.ts` (interfaccia + union `PageBlock`)
+5. Crea `frontend/src/components/blocks/Block<Name>.astro`
+6. Aggiungi un `case` in `BlockRenderer.astro`
+
+---
+
+## Seed demo (bootstrap)
+
+Il file `cms/src/index.ts` esegue un seed idempotente al primo avvio se il DB
+non contiene ancora pagine pubblicate:
+
+- Pages: `home` (hero + card grid + rich text), `about` (image+text + rich text),
+  `services` e `contacts` (skeleton per i menu-item)
+- Menu items: header (`Home`, `Chi siamo`, `Servizi` con figli, `Contatti`,
+  `Documentazione`) e footer (`Privacy`, `Termini`)
+
+Per ricreare il contenuto demo: ferma Strapi, `rm cms/.tmp/data.db`, riavvia.
 
 ---
 
