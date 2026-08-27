@@ -4,6 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import { Prose } from "@/components/starwind/prose";
 import { Button } from "@/components/starwind/button";
 import { Badge } from "@/components/starwind/badge";
+import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
 import { strapiFind } from "@/lib/strapi";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
@@ -14,6 +15,18 @@ let cmsError = false;
 try {
   const res = await strapiFind<Page>("pages", {
     filters: { slug: { $eq: "home" } },
+    populate: {
+      blocks: {
+        populate: {
+          image: true,
+          cards: {
+            populate: {
+              image: true,
+            },
+          },
+        },
+      },
+    },
   });
   home = res.data[0] ?? null;
 } catch {
@@ -21,16 +34,27 @@ try {
 }
 
 const bodyHtml = renderMarkdown(home?.body);
+const hasBlocks = home?.blocks && home.blocks.length > 0;
 ---
 <Layout
   title={home?.title ?? "Strapi + Astro Starter"}
   description={home?.seo_desc ?? "Starter kit Strapi 5 + Astro 7 con Tailwind CSS v4 e Starwind UI."}
 >
   {home ? (
-    <article class="mx-auto max-w-3xl py-12">
-      <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{home.title}</h1>
-      {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
-    </article>
+    <>
+      {hasBlocks && <BlockRenderer blocks={home.blocks!} />}
+      {!hasBlocks && (
+        <article class="mx-auto max-w-3xl py-12">
+          <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{home.title}</h1>
+          {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
+        </article>
+      )}
+      {hasBlocks && bodyHtml && (
+        <article class="mx-auto max-w-3xl px-4 py-12">
+          <Prose set:html={bodyHtml} />
+        </article>
+      )}
+    </>
   ) : (
     <div class="mx-auto max-w-3xl py-12">
       <section class="text-center">
