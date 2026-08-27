@@ -30,12 +30,12 @@ const isActive = (href: string | undefined): boolean =>
 
     <!-- Desktop nav (md and up) -->
     <nav aria-label="Navigazione principale" class="hidden md:flex">
-      <NavigationMenu>
+      <NavigationMenu size="sm">
         <NavigationMenuList>
           {navItems.map((item) =>
             item.children?.length ? (
               <NavigationMenuItem value={item.label}>
-                <NavigationMenuTrigger class="text-sm">{item.label}</NavigationMenuTrigger>
+                <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul class="w-fit min-w-[180px] py-1">
                     {item.children.map((child) => (
