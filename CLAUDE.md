@@ -124,6 +124,12 @@ Traps:
 - Node 22 (pinned in `.nvmrc`); Node 24+ → `EBADENGINE`.
 - Dynamic-zone populate from Astro needs `on`:
   `populate: { blocks: { on: { "ns.component": { … } } } }`.
+- **Markdown fields (`body` on `page`) are raw Markdown, not HTML.** Render via
+  `renderMarkdown(md)` from `@/lib/markdown` → `set:html` inside the Starwind
+  `<Prose>` wrapper. Never dump `page.body` straight into the template.
+- **Env files auto-generate on first `npm run dev`** (`scripts/ensure-env.js`).
+  Never overwrite an existing `.env` — if secrets need rotating, delete the file
+  by hand first.
 
 ---
 
