@@ -37,7 +37,7 @@ const isActive = (href: string | undefined): boolean =>
               <NavigationMenuItem value={item.label}>
                 <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul class="min-w-[180px] py-1">
+                  <ul class="w-fit min-w-[180px] py-1">
                     {item.children.map((child) => (
                       <li>
                         <NavigationMenuLink
