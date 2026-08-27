@@ -17,8 +17,7 @@
     "image": {
       "type": "media",
       "allowedTypes": ["images"],
-      "multiple": false,
-      "required": true
+      "multiple": false
     },
     "image_position": {
       "type": "enumeration",

@@ -39,7 +39,7 @@ export interface BlockImageText {
   __component: "blocks.image-text";
   heading?: string | null;
   body: string;
-  image: StrapiMedia;
+  image?: StrapiMedia | null;
   image_position: "left" | "right";
 }
 
