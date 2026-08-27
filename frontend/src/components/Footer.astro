@@ -1,11 +1,12 @@
 ---
-// frontend/src/components/Footer.astro
 import { getFooterNav } from "@/lib/navigation";
 import { site } from "@/config/site";
+import { Separator } from "@/components/starwind/separator";
 
 const footer = await getFooterNav();
 ---
-<footer class="mt-auto border-t border-gray-200">
+
+<footer class="mt-auto">
   <div class="mx-auto max-w-5xl px-4 py-10">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       {footer.columns.map((col) => (
@@ -26,8 +27,7 @@ const footer = await getFooterNav();
         </div>
       ))}
     </div>
-    <div class="mt-8 border-t border-gray-100 pt-6">
-      <p class="text-xs text-gray-500">{site.footer.legal}</p>
-    </div>
+    <Separator class="my-8" />
+    <p class="text-xs text-gray-500">{site.footer.legal}</p>
   </div>
 </footer>

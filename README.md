@@ -8,9 +8,10 @@ Starter kit pronto all'uso per [Strapi 5](https://strapi.io) + [Astro 7](https:/
 git clone https://github.com/New-Adventures-in-CMS/strapi-astro-starter.git nome-progetto
 cd nome-progetto
 npm run install:all
-npm run setup
 npm run dev
 ```
+
+Gli `.env` vengono generati automaticamente al primo `dev` (o esplicitamente con `npm run setup`).
 
 CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 
@@ -20,7 +21,7 @@ CMS su `http://localhost:1337/admin` · Sito su `http://localhost:4321`
 
 Un headless CMS già cablato: Strapi gestisce i contenuti, Astro genera il sito. Include form dinamici gestiti da Strapi, plugin di navigazione, email SMTP, campi SEO, server MCP per gli AI agent e utility API pronte (`strapiFind` / `strapiFindOne`).
 
-Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js ≥ 22.12. Tabella versioni completa in [SETUP.md](SETUP.md#stack).
+Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · Starwind UI · TypeScript · SQLite (dev) / PostgreSQL (prod) · Node.js 22 LTS (22.x). Tabella versioni completa in [SETUP.md](SETUP.md#stack).
 
 ## Documentazione
 
@@ -29,7 +30,7 @@ Stack: Strapi 5 · Astro 7 · Tailwind CSS v4 · TypeScript · SQLite (dev) / Po
 
 ## Requisiti
 
-Node.js ≥ 22.12
+Node.js 22 LTS (22.x)
 
 ## Licenza
 

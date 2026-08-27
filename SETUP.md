@@ -8,14 +8,16 @@ Per il **setup rapido** vedi il [README](README.md#quick-start). Per una **guida
 
 ## Stack
 
-| Layer              | Versione                         | Porta |
-| ------------------ | -------------------------------- | ----- |
-| Strapi 5 (CMS)     | 5.52.1                           | 1337  |
-| Astro 7 (Frontend) | 7.2.6                            | 4321  |
-| Tailwind CSS       | v4                               | —     |
-| TypeScript         | ✓                                | —     |
-| Database           | SQLite (dev) / PostgreSQL (prod) | —     |
-| Node.js            | ≥ 22.12                          | —     |
+| Layer              | Versione                                                     | Porta |
+| ------------------ | ------------------------------------------------------------ | ----- |
+| Strapi 5 (CMS)     | 5.52.1                                                       | 1337  |
+| Astro 7 (Frontend) | 7.2.6                                                        | 4321  |
+| Tailwind CSS       | v4                                                           | —     |
+| Starwind UI        | Prose, NavigationMenu, Sheet, Button, Card, Badge, Separator | —     |
+| Markdown           | `marked` (via `@/lib/markdown` → `renderMarkdown`)           | —     |
+| TypeScript         | ✓                                                            | —     |
+| Database           | SQLite (dev) / PostgreSQL (prod)                             | —     |
+| Node.js            | 22 LTS (22.x) — Node 23/24 non supportato da Strapi 5        | —     |
 
 ## Struttura repo
 
@@ -29,16 +31,103 @@ strapi-astro-starter/
 
 Il layout è composto da questi file:
 
-| File                                   | Ruolo                                              |
-| -------------------------------------- | -------------------------------------------------- |
-| `frontend/src/config/site.ts`          | Nome sito, nav, footer — unico punto da modificare |
-| `frontend/src/components/Header.astro` | Nav con active state + hamburger mobile            |
-| `frontend/src/components/Footer.astro` | Footer a colonne config-driven                     |
-| `frontend/src/components/SEO.astro`    | `<title>`, description, OG, Twitter                |
-| `frontend/src/layouts/Layout.astro`    | Compone SEO + Header + slot + Footer               |
-| `frontend/src/styles/global.css`       | Tailwind v4 + design token (`--color-brand-*`)     |
+| File                                   | Ruolo                                                                      |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| `frontend/src/config/site.ts`          | Nome sito, nav, footer — unico punto da modificare                         |
+| `frontend/src/components/Header.astro` | NavigationMenu desktop (Trigger+Content submenu) · Sheet drawer mobile     |
+| `frontend/src/components/Footer.astro` | Footer a colonne config-driven · Separator Starwind prima della riga legal |
+| `frontend/src/components/SEO.astro`    | `<title>`, description, OG, Twitter                                        |
+| `frontend/src/layouts/Layout.astro`    | Compone SEO + Header + slot + Footer                                       |
+| `frontend/src/styles/global.css`       | Tailwind v4 + design token (`--color-brand-*`)                             |
+| `frontend/src/styles/starwind.css`     | Tema CSS Starwind UI (variabili colore, dark mode) — generato da `init`    |
+| `frontend/src/components/starwind/`    | Componenti Starwind — barrel export per cartella (es. `navigation-menu/`)  |
 
 Per personalizzare: modifica solo `site.ts`. I componenti leggono da lì.
+
+---
+
+## UI layer — Starwind UI
+
+L'interfaccia usa [Starwind UI](https://starwind.dev/docs) — componenti `.astro` nativi, Tailwind v4, interattività Runtime-driven (nessuna dipendenza React).
+
+### Componenti installati
+
+| Componente     | Cartella                    | Uso nel progetto                                             |
+| -------------- | --------------------------- | ------------------------------------------------------------ |
+| NavigationMenu | `starwind/navigation-menu/` | Nav desktop — Trigger+Content per sottomenu a 2 livelli      |
+| Sheet          | `starwind/sheet/`           | Drawer mobile — hamburger apre pannello laterale             |
+| Button         | `starwind/button/`          | Pulsanti e CTA                                               |
+| Card           | `starwind/card/`            | Container card (Header, Title, Description, Content, Footer) |
+| Badge          | `starwind/badge/`           | Etichette inline (tone × appearance)                         |
+| Separator      | `starwind/separator/`       | Divisore orizzontale — usato in Footer                       |
+| Prose          | `starwind/prose/`           | Wrapper tipografia per contenuto CMS (markdown, rich text)   |
+
+Tutti i componenti vivono in `frontend/src/components/starwind/<nome>/` con barrel `index.ts`. Dropdown non è installato — NavigationMenu gestisce i sottomenu nativamente.
+
+### Import pattern
+
+```ts
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+} from "@/components/starwind/navigation-menu";
+
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/starwind/sheet";
+```
+
+### Aggiungere un componente
+
+```bash
+cd frontend
+npx starwind@latest add <nome-componente>
+```
+
+Lista componenti disponibili: [starwind.dev/docs/components](https://starwind.dev/docs/components).
+
+### Aggiornare i componenti installati
+
+```bash
+cd frontend
+npx starwind@latest update
+```
+
+Sostituisce i file in `src/components/starwind/` con la versione più recente. Commit prima di aggiornare.
+
+### Test keyboard accessibility (e2e)
+
+```bash
+cd frontend
+npx playwright install chromium   # una tantum, ~150 MB
+npm run test:e2e
+```
+
+Suite Playwright per regressione accessibilità da tastiera: verifica apertura/chiusura del sottomenu NavigationMenu (Enter, Space, ArrowDown, Escape + focus-return) e del drawer Sheet mobile (apertura, focus trap, Escape + focus-return). Gira senza Strapi — usa il fallback `site.nav`.
+
+### Running tests
+
+Dalla root:
+
+```bash
+npm test          # vitest (unit) — no prereq
+npm run test:e2e  # playwright (e2e) — richiede `npx playwright install chromium` una tantum
+```
+
+### Come Header e Footer consumano menu-item
+
+`frontend/src/lib/navigation.ts` è l'unico punto di fetch — Header e Footer importano direttamente:
+
+- `getHeaderNav()` → `NavItem[]` albero a 2 livelli (NavigationMenu desktop + Sheet mobile)
+- `getFooterNav()` → `{ columns: { title, items }[] }` per le colonne footer
 
 ---
 
@@ -99,13 +188,13 @@ Non incluse nel boilerplate, documentate qui come punto di partenza:
 | Comando               | Cosa fa                                                                  |
 | --------------------- | ------------------------------------------------------------------------ |
 | `npm run install:all` | Installa dipendenze root + CMS + frontend                                |
-| `npm run setup`       | Genera `cms/.env` (secrets automatici) + `frontend/.env`                 |
+| `npm run setup`       | (Opzionale) Genera `cms/.env` (secrets automatici) + `frontend/.env`     |
 | `npm run dev`         | Avvia CMS e frontend in parallelo (libera porte 1337/4321 in automatico) |
 | `npm run build`       | Build produzione di CMS e frontend                                       |
 
-> Se `.env` esiste già, `npm run setup` si ferma con errore — cancellalo prima di rigenerare.
+> `npm run setup` è opzionale: dalla prima esecuzione di `npm run dev` gli `.env` vengono generati automaticamente se mancanti (`scripts/ensure-env.js`). Se `.env` esistono già non vengono mai sovrascritti.
 
-> `npm run dev` esegue automaticamente `scripts/free-ports.js` prima di partire: termina eventuali processi in ascolto su 1337 e 4321. Nessuna dipendenza esterna — funziona subito dopo il clone.
+> `npm run dev` esegue automaticamente `scripts/ensure-env.js` e `scripts/free-ports.js` prima di partire: genera env mancanti, poi termina eventuali processi in ascolto su 1337 e 4321. Nessuna dipendenza esterna — funziona subito dopo il clone.
 
 ---
 

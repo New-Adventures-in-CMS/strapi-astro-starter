@@ -35,6 +35,7 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 | Server MCP            | CMS            | Collega Claude Code (e altri AI agent) a Strapi per gestire contenuti                 |
 | Utility API           | Frontend       | Funzioni pronte per chiamare Strapi da Astro                                          |
 | Tailwind CSS v4       | Frontend       | Sistema di stili già configurato                                                      |
+| Starwind UI           | Frontend       | Componenti Astro nativi (NavigationMenu, Sheet, Card, Badge, Prose…) — nessun React   |
 | Adapter produzione    | Frontend       | Pronto per il build con Node.js                                                       |
 | Layout di default     | Frontend       | Header, footer e SEO già cablati. Personalizza **un solo file**: `src/config/site.ts` |
 
@@ -46,15 +47,17 @@ Questo approccio si chiama **headless CMS**: il CMS gestisce solo i dati, mentre
 
 Prima di iniziare devi avere installato sul computer:
 
-### Node.js (versione 22.12 o superiore)
+### Node.js 22 LTS (linea 22.x)
 
 Node.js è l'ambiente che permette di eseguire JavaScript fuori dal browser. Sia Strapi che Astro girano su Node.js.
+
+Usa **Node 22 LTS** (qualsiasi versione della linea 22.x, es. 22.12, 22.16…). Strapi 5 non supporta Node 23 o 24: usa una versione diversa e il CMS potrebbe non avviarsi.
 
 - Scarica da [nodejs.org](https://nodejs.org) — scegli la versione **LTS**
 - Verifica l'installazione aprendo il terminale e scrivendo:
   ```bash
   node --version
-  # deve mostrare v22.12.0 o superiore
+  # deve mostrare una versione v22.x
   ```
 
 ### Un editor di codice
@@ -109,7 +112,17 @@ cd nome-progetto
 
 Sostituisci `nome-progetto` con il nome del tuo sito.
 
-### Passo 2 — Installa le dipendenze
+### Passo 2 — Seleziona Node 22
+
+Il progetto include un file `.nvmrc` che indica la versione Node corretta. Se usi **nvm**, esegui:
+
+```bash
+nvm use
+```
+
+Questo legge `.nvmrc` e attiva Node 22. Se nvm non è installato, assicurati manualmente che `node --version` mostri una versione `v22.x` prima di procedere.
+
+### Passo 3 — Installa le dipendenze
 
 ```bash
 npm run install:all
@@ -117,17 +130,19 @@ npm run install:all
 
 Scarica tutte le librerie necessarie per CMS e frontend. Può richiedere qualche minuto.
 
-### Passo 3 — Genera i file di configurazione
+### Passo 4 — (Opzionale) Genera i file di configurazione
 
 ```bash
 npm run setup
 ```
 
-Questo comando crea automaticamente `cms/.env` e `frontend/.env` con tutti i valori necessari già compilati — incluse le chiavi crittografiche generate in modo sicuro. Non devi fare nulla a mano.
+Questo comando crea `cms/.env` e `frontend/.env` con tutti i valori necessari già compilati — incluse le chiavi crittografiche generate in modo sicuro.
+
+**Puoi saltare questo passo**: al primo `npm run dev` gli `.env` mancanti vengono generati automaticamente. Se esistono già non vengono mai sovrascritti.
 
 Le variabili d'ambiente sono configurazioni sensibili (password, chiavi) che non si mettono nel codice. I file `.env` non vengono mai caricati su GitHub.
 
-### Passo 4 — Avvia tutto
+### Passo 5 — Avvia tutto
 
 ```bash
 npm run dev
@@ -141,11 +156,11 @@ Avvia CMS e frontend insieme. Al primo avvio Strapi costruisce l'interfaccia adm
 
 il CMS è pronto.
 
-### Passo 5 — Crea l'account admin in Strapi
+### Passo 6 — Crea l'account admin in Strapi
 
 Apri `http://localhost:1337/admin` nel browser e registra il tuo account amministratore (email + password).
 
-### Passo 6 — Crea un API Token e collegalo al frontend
+### Passo 7 — Crea un API Token e collegalo al frontend
 
 Il frontend usa un token segreto per comunicare con Strapi in modo sicuro.
 
@@ -160,7 +175,7 @@ Il frontend usa un token segreto per comunicare con Strapi in modo sicuro.
    ```
 7. Salva il file
 
-### Passo 7 — Riavvia e verifica
+### Passo 8 — Riavvia e verifica
 
 Ferma il dev server (Ctrl+C nel terminale) e riavvia:
 
@@ -386,6 +401,8 @@ Il menu del sito (header e footer) si gestisce da **Content Manager → Voci di 
    - Imposta **Voce genitore** selezionando la voce padre appena creata.
    - La voce figlia eredita la visibilità del padre. Puoi avere al massimo 2 livelli (padre → figlio).
 3. Usa il campo **Ordine** per controllare la sequenza dei figli.
+
+> **Convenzione — voci padre come sezioni, non link.** Nel menu desktop, una voce con figli viene resa come trigger del sottomenu, non come link cliccabile. Se imposti una _Pagina collegata_ su una voce padre, quella pagina **non sarà raggiungibile dal trigger** — il trigger apre solo il sottomenu. Usa le voci padre solo come etichette di sezione (es. "Servizi", "Prodotto"); metti i link reali nelle voci figlie.
 
 ### Voci di esempio
 

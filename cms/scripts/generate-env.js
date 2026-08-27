@@ -8,10 +8,8 @@ const src = join(root, ".env.example");
 const dest = join(root, ".env");
 
 if (existsSync(dest)) {
-  console.error(
-    "❌  cms/.env esiste già — cancellalo manualmente prima di rigenerarlo.",
-  );
-  process.exit(1);
+  console.log("ℹ️   cms/.env già presente — skip generazione.");
+  process.exit(0);
 }
 
 const b64 = () => randomBytes(32).toString("base64");
@@ -25,6 +23,7 @@ content = content
   .replace(/^APP_KEYS=.*/m, `APP_KEYS=${appKeys}`)
   .replace(/^API_TOKEN_SALT=.*/m, `API_TOKEN_SALT=${b64()}`)
   .replace(/^ADMIN_JWT_SECRET=.*/m, `ADMIN_JWT_SECRET=${b64()}`)
+  .replace(/^JWT_SECRET=.*/m, `JWT_SECRET=${b64()}`)
   .replace(/^TRANSFER_TOKEN_SALT=.*/m, `TRANSFER_TOKEN_SALT=${b64()}`)
   .replace(/^ENCRYPTION_KEY=.*/m, `ENCRYPTION_KEY=${hex()}`);
 

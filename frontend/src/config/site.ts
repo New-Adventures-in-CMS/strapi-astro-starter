@@ -24,11 +24,18 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: "Strapi + Astro Starter",
   description:
-    "Boilerplate Strapi 5 + Astro 5 con layout, SEO e fetch CMS già cablati.",
+    "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
   locale: "it-IT",
   nav: [
     { label: "Home", href: "/" },
+    {
+      label: "Prodotto",
+      children: [
+        { label: "Panoramica", href: "/prodotto/panoramica" },
+        { label: "Funzionalità", href: "/prodotto/funzionalita" },
+      ],
+    },
     { label: "Pagine", href: "/pagine" },
     { label: "Contatti", href: "/contatti" },
   ],
