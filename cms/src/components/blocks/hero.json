@@ -27,6 +27,10 @@
       "type": "media",
       "allowedTypes": ["images"],
       "multiple": false
+    },
+    "immersive": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
