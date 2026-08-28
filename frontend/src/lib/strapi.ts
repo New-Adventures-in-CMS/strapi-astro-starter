@@ -6,6 +6,23 @@ export function strapiMediaUrl(path: string | null | undefined): string | null {
   return `${STRAPI_URL}${path}`;
 }
 
+// Populate config for `page.blocks` (Dynamic Zone) via REST.
+// REST rejects the flat `populate: { blocks: { populate: {...} } }` form
+// on dynamic zones with `Invalid key populate at blocks` (400) — the `on:`
+// form (per-component populate) is required.
+export const pageBlocksPopulate = {
+  blocks: {
+    on: {
+      "blocks.hero": { populate: { image: true } },
+      "blocks.rich-text": true,
+      "blocks.image-text": { populate: { image: true } },
+      "blocks.card-grid": {
+        populate: { cards: { populate: { image: true } } },
+      },
+    },
+  },
+} as const;
+
 type StrapiListResponse<T> = {
   data: T[];
   meta: {

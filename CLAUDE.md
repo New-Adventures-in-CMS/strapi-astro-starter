@@ -122,8 +122,24 @@ Traps:
 
 - Strapi CLI is `cd cms && npx strapi <cmd>` — there is no root `strapi` script.
 - Node 22 (pinned in `.nvmrc`); Node 24+ → `EBADENGINE`.
-- Dynamic-zone populate from Astro needs `on`:
-  `populate: { blocks: { on: { "ns.component": { … } } } }`.
+- **Dynamic-zone populate over REST needs the `on` form.** The flat form
+  `populate: { blocks: { populate: { image: true } } }` returns HTTP 400
+  `Invalid key populate at blocks`. Populate each component explicitly:
+  ```ts
+  populate: {
+    blocks: {
+      on: {
+        "blocks.hero":       { populate: { image: true } },
+        "blocks.rich-text":  true,
+        "blocks.image-text": { populate: { image: true } },
+        "blocks.card-grid":  { populate: { cards: { populate: { image: true } } } },
+      },
+    },
+  }
+  ```
+  A ready-made `pageBlocksPopulate` const in `@/lib/strapi` covers the four
+  shipped block types. (Server-side Document Service accepts the flat form —
+  this is REST-only.)
 - **Markdown fields (`body` on `page`) are raw Markdown, not HTML.** Render via
   `renderMarkdown(md)` from `@/lib/markdown` → `set:html` inside the Starwind
   `<Prose>` wrapper. Never dump `page.body` straight into the template.
@@ -158,15 +174,30 @@ Rules that will bite you if ignored:
 
 | Content-type      | Kind       | D&P | Key fields                                                                           | MCP tools               |
 | ----------------- | ---------- | --- | ------------------------------------------------------------------------------------ | ----------------------- |
-| `page`            | collection | on  | title, slug, body, seo_desc                                                          | 8 (CRUD + publish trio) |
+| `page`            | collection | on  | title, slug, body, seo_desc, blocks (dynamic zone)                                   | 8 (CRUD + publish trio) |
 | `menu-item`       | collection | on  | label, page→, externalUrl, area, footerColumn, parent→(self), order                  | 8                       |
 | `form`            | collection | off | nome, slug, emailDestinatario, messaggioSuccesso, campi (dynamic zone), submissions→ | 5 (CRUD)                |
 | `form-submission` | collection | off | form→, dati, letto                                                                   | 5 (CRUD)                |
 
-Components ship only under the `form` dynamic zone (`campi`): Checkbox, Email,
-Select, Testo, Textarea. `page` has **no** dynamic zone (SETUP.md documents one
-as an extension, not implemented here). SETUP.md is authoritative for full field
-specs.
+Components ship under two dynamic zones:
+
+- `form.campi` — form field types: Checkbox, Email, Select, Testo, Textarea.
+- `page.blocks` — page-builder blocks: `blocks.hero`, `blocks.rich-text`,
+  `blocks.image-text`, `blocks.card-grid`. `blocks.card-grid.cards` is a
+  repeatable `shared.card` component.
+
+Astro renderers live at `frontend/src/components/blocks/` (`BlockHero.astro`,
+`BlockRichText.astro`, `BlockImageText.astro`, `BlockCardGrid.astro`) and are
+dispatched by `BlockRenderer.astro` on `__component`. Page templates render
+blocks first, then `body` Markdown below as a fallback article.
+
+**Bootstrap seed:** on empty DB, `cms/src/index.ts` seeds demo pages (home,
+about, services, contacts) plus a set of menu items. Home + about include
+block content so the starter looks like a real site on first `npm run dev`.
+Seed is idempotent — subsequent boots skip if any published page exists. To
+recreate demo content, stop Strapi, `rm cms/.tmp/data.db`, restart.
+
+SETUP.md is authoritative for full field specs.
 
 ---
 

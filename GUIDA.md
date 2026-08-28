@@ -333,6 +333,40 @@ const urlFoto = strapiMediaUrl(articolo.copertina?.url);
 
 ---
 
+## Il page builder (blocchi)
+
+Il content-type **Page** ha un campo **Blocks** (Dynamic Zone) per costruire
+la pagina componendo blocchi riutilizzabili. Ogni blocco ha il suo layout in
+Astro; l'ordine dei blocchi nell'admin corrisponde all'ordine di rendering.
+
+Blocchi disponibili:
+
+- **Hero** — banner con titolo, sottotitolo, CTA opzionale, immagine di sfondo.
+- **Rich Text** — blocco di testo Markdown.
+- **Image + Text** — immagine e testo affiancati, con posizione immagine
+  (sinistra/destra).
+- **Card Grid** — griglia di card con titolo, descrizione, immagine e link
+  opzionali.
+
+Come usarli:
+
+1. Content Manager → Page → apri (o crea) una pagina.
+2. Sul campo **Blocks** clicca **+ Add a component to Blocks** e scegli il
+   tipo.
+3. Compila i campi e **Publish**.
+4. Se un blocco richiede un'immagine, caricala prima in **Media Library** e
+   collegala dal campo `image` del blocco.
+
+**Nota:** i blocchi si renderizzano per primi; se la pagina ha anche il
+campo **Body** compilato, quel Markdown viene mostrato sotto come articolo di
+fallback.
+
+**Il contenuto demo viene creato automaticamente al primo avvio.** Se il DB
+è vuoto, Strapi popola `home` e `about` con blocchi già configurati. Per
+resettare: ferma Strapi, `rm cms/.tmp/data.db`, riavvia.
+
+---
+
 ## Il sistema form dinamici
 
 Questo starter include un sistema per creare form direttamente da Strapi, senza scrivere codice.

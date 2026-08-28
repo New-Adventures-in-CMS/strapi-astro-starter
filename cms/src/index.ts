@@ -8,6 +8,103 @@ const PUBLIC_COLLECTION_UIDS: string[] = [
 
 const PUBLIC_SINGLE_UIDS: string[] = [];
 
+async function seedDemoPages(strapi: Core.Strapi) {
+  try {
+    // Home — hero + card grid + rich text
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Home",
+        slug: "home",
+        seo_desc:
+          "A production-ready starter kit combining Strapi 5 (headless CMS) with Astro 7 (server-rendered frontend).",
+        blocks: [
+          {
+            __component: "blocks.hero",
+            heading: "Build faster with Strapi + Astro",
+            subheading:
+              "A production-ready starter kit with headless CMS, server-rendered pages, and a block-based page builder.",
+            cta_text: "Explore components",
+            cta_url: "/esempio",
+          },
+          {
+            __component: "blocks.card-grid",
+            heading: "Everything you need",
+            cards: [
+              {
+                title: "Headless CMS",
+                description:
+                  "Manage content from Strapi's intuitive admin panel. Create pages, menus, and forms without touching code.",
+              },
+              {
+                title: "Block Page Builder",
+                description:
+                  "Compose pages with reusable blocks — hero banners, rich text, image sections, and card grids.",
+              },
+              {
+                title: "Ready to Deploy",
+                description:
+                  "Astro SSR, Tailwind CSS, TypeScript — built for production from day one.",
+              },
+            ],
+          },
+          {
+            __component: "blocks.rich-text",
+            body: "## Get started\n\nThis demo content was seeded automatically. Edit it in the Strapi admin panel at [localhost:1337/admin](http://localhost:1337/admin), or delete it and start fresh.\n\nNeed help? Check the [setup guide](https://github.com/New-Adventures-in-CMS/strapi-astro-starter).",
+          },
+        ],
+      } as any,
+      status: "published",
+    });
+
+    // About — image+text + rich text
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Chi siamo",
+        slug: "about",
+        seo_desc:
+          "Extracted from production work and designed to save the first 40 hours of every CMS project.",
+        blocks: [
+          {
+            __component: "blocks.image-text",
+            heading: "Built for real projects",
+            body: "This starter isn't a toy. It's extracted from production work and designed to save you the first 40 hours of every CMS project.\n\nStrapi handles content. Astro handles rendering. You handle the creative part.",
+            image_position: "left",
+          },
+          {
+            __component: "blocks.rich-text",
+            body: "## What's included\n\n- **Dynamic navigation** — header and footer menus managed from Strapi\n- **Page builder** — compose pages with blocks from the admin\n- **Form system** — dynamic forms with email notifications\n- **Markdown support** — rich text rendered beautifully with typography styles\n- **Developer experience** — TypeScript, hot reload, auto-generated env files",
+          },
+        ],
+      } as any,
+      status: "published",
+    });
+
+    // Skeletons for menu targets
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Servizi",
+        slug: "services",
+        body: "Placeholder page. Replace with your own content.",
+      },
+      status: "published",
+    });
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Contatti",
+        slug: "contacts",
+        body: "Placeholder page. Replace with your own content.",
+      },
+      status: "published",
+    });
+
+    strapi.log.info(
+      "[bootstrap] Seeded demo pages (home, about, services, contacts)",
+    );
+  } catch (err) {
+    strapi.log.warn("[bootstrap] Seed demo pages fallito: " + String(err));
+  }
+}
+
 async function seedMenuItems(strapi: Core.Strapi) {
   try {
     const count = await strapi
@@ -186,19 +283,7 @@ export default {
       .documents("api::page.page")
       .count({ status: "published" });
     if (pageCount === 0) {
-      const seedPages = [
-        { title: "Home", slug: "home" },
-        { title: "Chi siamo", slug: "about" },
-        { title: "Servizi", slug: "services" },
-        { title: "Contatti", slug: "contacts" },
-      ];
-      for (const data of seedPages) {
-        await strapi.documents("api::page.page").create({
-          data,
-          status: "published",
-        });
-      }
-      strapi.log.info("[bootstrap] Seeded 4 default pages");
+      await seedDemoPages(strapi);
     }
 
     await seedMenuItems(strapi);

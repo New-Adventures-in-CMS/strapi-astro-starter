@@ -2,7 +2,8 @@
 // frontend/src/pages/pagine/[slug].astro
 import Layout from "@/layouts/Layout.astro";
 import { Prose } from "@/components/starwind/prose";
-import { strapiFind } from "@/lib/strapi";
+import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
+import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
@@ -14,6 +15,7 @@ let page: Page | null = null;
 try {
   const res = await strapiFind<Page>("pages", {
     filters: { slug: { $eq: slug } },
+    populate: pageBlocksPopulate,
   });
   page = res.data[0] ?? null;
 } catch {
@@ -23,10 +25,19 @@ try {
 if (!page) return Astro.redirect("/404");
 
 const bodyHtml = renderMarkdown(page.body);
+const hasBlocks = page.blocks && page.blocks.length > 0;
 ---
 <Layout title={page.title} description={page.seo_desc ?? undefined}>
-  <article class="mx-auto max-w-3xl py-12">
-    <h1 class="text-4xl font-bold tracking-tight">{page.title}</h1>
-    {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
-  </article>
+  {hasBlocks && <BlockRenderer blocks={page.blocks!} />}
+  {!hasBlocks && (
+    <article class="mx-auto max-w-3xl py-12">
+      <h1 class="text-4xl font-bold tracking-tight">{page.title}</h1>
+      {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
+    </article>
+  )}
+  {hasBlocks && bodyHtml && (
+    <article class="mx-auto max-w-3xl px-4 py-12">
+      <Prose set:html={bodyHtml} />
+    </article>
+  )}
 </Layout>

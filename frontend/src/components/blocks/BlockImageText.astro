@@ -1,0 +1,49 @@
+---
+import type { StrapiMedia } from "@/types";
+import { Prose } from "@/components/starwind/prose";
+import { renderMarkdown } from "@/lib/markdown";
+import { strapiMediaUrl } from "@/lib/strapi";
+
+interface Props {
+  heading?: string | null;
+  body: string;
+  image?: StrapiMedia | null;
+  image_position: "left" | "right";
+}
+
+const { heading, body, image, image_position } = Astro.props;
+const imageUrl = image ? strapiMediaUrl(image.url) : null;
+const html = renderMarkdown(body);
+const isImageLeft = image_position === "left";
+---
+
+<section class="py-16 px-4">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+    {/* Image column */}
+    <div class={isImageLeft ? "md:order-1" : "md:order-2"}>
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={image?.alternativeText || heading || "Image"}
+          class="w-full rounded-lg object-cover aspect-[4/3]"
+          width={image?.width}
+          height={image?.height}
+        />
+      ) : (
+        <div class="w-full aspect-[4/3] rounded-lg bg-gradient-to-br from-muted to-muted/40 border border-border/40" />
+      )}
+    </div>
+
+    {/* Text column */}
+    <div class={isImageLeft ? "md:order-2" : "md:order-1"}>
+      {heading && (
+        <h2 class="text-2xl sm:text-3xl font-semibold mb-4 text-foreground">
+          {heading}
+        </h2>
+      )}
+      <Prose>
+        <div set:html={html} />
+      </Prose>
+    </div>
+  </div>
+</section>

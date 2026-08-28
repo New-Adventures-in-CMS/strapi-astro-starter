@@ -1,0 +1,19 @@
+---
+import { Prose } from "@/components/starwind/prose";
+import { renderMarkdown } from "@/lib/markdown";
+
+interface Props {
+  body: string;
+}
+
+const { body } = Astro.props;
+const html = renderMarkdown(body);
+---
+
+<section class="py-16 px-4">
+  <div class="max-w-3xl mx-auto">
+    <Prose>
+      <div set:html={html} />
+    </Prose>
+  </div>
+</section>
