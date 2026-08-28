@@ -258,3 +258,43 @@
     color: var(--color-muted-foreground);
   }
 }
+
+@layer components {
+  /* Header overlay mode — data-state transitions between transparent and solid */
+  header[data-overlay="true"][data-state="transparent"] {
+    background: transparent;
+    color: var(--section-dark-fg);
+    border-bottom-color: transparent;
+  }
+
+  header[data-overlay="true"][data-state="transparent"] a {
+    color: var(--section-dark-fg);
+  }
+
+  header[data-overlay="true"][data-state="transparent"] [data-sw-nav-menu-trigger] {
+    color: var(--section-dark-fg);
+  }
+
+  /* Hamburger/Sheet trigger in overlay transparent state */
+  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"] {
+    color: var(--section-dark-fg);
+  }
+
+  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"]:hover {
+    background: var(--section-dark-fg-subtle);
+  }
+
+  header[data-overlay="true"][data-state="solid"] {
+    background: var(--background);
+    color: var(--foreground);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"] {
+    color: var(--foreground);
+  }
+
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"]:hover {
+    background: var(--muted);
+  }
+}

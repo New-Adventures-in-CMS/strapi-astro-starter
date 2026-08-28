@@ -18,13 +18,26 @@ import {
   SheetTitle,
 } from "@/components/starwind/sheet";
 
+interface Props {
+  overlay?: boolean;
+}
+
+const { overlay = false } = Astro.props;
+
 const navItems = await getHeaderNav();
 const path = Astro.url.pathname;
 const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
 ---
 
-<header class="border-b border-border">
+<header
+  class:list={[
+    overlay && "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+    !overlay && "border-b border-border",
+  ]}
+  data-overlay={overlay ? "true" : "false"}
+  data-state={overlay ? "transparent" : undefined}
+>
   <Container width="wide" class="flex items-center justify-between py-5">
     <!-- Brand -->
     <a href="/" class="text-lg font-semibold">{site.name}</a>
@@ -79,7 +92,10 @@ const isActive = (href: string | undefined): boolean =>
       <Sheet>
         <SheetTrigger
           aria-label="Apri menu di navigazione"
-          class="rounded p-2 text-gray-600 hover:bg-gray-100"
+          class:list={[
+            "rounded p-2 transition-colors",
+            !overlay && "text-gray-600 hover:bg-gray-100",
+          ]}
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -153,4 +169,22 @@ const isActive = (href: string | undefined): boolean =>
       </Sheet>
     </div>
   </Container>
+
+  {overlay && (
+    <script>
+      const sentinel = document.getElementById("header-overlay-sentinel");
+      const header = document.querySelector("header[data-overlay='true']");
+      if (sentinel && header) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              header.setAttribute("data-state", e.isIntersecting ? "transparent" : "solid");
+            });
+          },
+          { root: null, threshold: 0 }
+        );
+        io.observe(sentinel);
+      }
+    </script>
+  )}
 </header>
