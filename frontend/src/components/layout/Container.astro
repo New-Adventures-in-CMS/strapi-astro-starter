@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { container } from "./variants";
+
+type Width = "prose" | "default" | "wide" | "full";
+
+interface Props extends HTMLAttributes<"div"> {
+  width?: Width;
+  class?: string;
+}
+
+const { width = "default", class: className, ...rest } = Astro.props;
+---
+
+<div class={container({ width, class: className })} {...rest}>
+  <slot />
+</div>

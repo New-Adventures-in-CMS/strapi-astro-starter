@@ -1,6 +1,7 @@
 ---
 import { getHeaderNav } from "@/lib/navigation";
 import { site } from "@/config/site";
+import { Container } from "@/components/layout";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -23,8 +24,8 @@ const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
 ---
 
-<header class="border-b border-gray-200">
-  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+<header class="border-b border-border">
+  <Container width="wide" class="flex items-center justify-between py-5">
     <!-- Brand -->
     <a href="/" class="text-lg font-semibold">{site.name}</a>
 
@@ -151,5 +152,5 @@ const isActive = (href: string | undefined): boolean =>
         </SheetContent>
       </Sheet>
     </div>
-  </div>
+  </Container>
 </header>

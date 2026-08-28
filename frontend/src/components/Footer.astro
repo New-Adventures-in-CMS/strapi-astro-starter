@@ -1,13 +1,14 @@
 ---
 import { getFooterNav } from "@/lib/navigation";
 import { site } from "@/config/site";
+import { Container } from "@/components/layout";
 import { Separator } from "@/components/starwind/separator";
 
 const footer = await getFooterNav();
 ---
 
 <footer class="mt-auto">
-  <div class="mx-auto max-w-5xl px-4 py-10">
+  <Container width="wide" class="py-16 md:py-20">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       {footer.columns.map((col) => (
         <div>
@@ -29,5 +30,5 @@ const footer = await getFooterNav();
     </div>
     <Separator class="my-8" />
     <p class="text-xs text-gray-500">{site.footer.legal}</p>
-  </div>
+  </Container>
 </footer>
