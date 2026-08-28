@@ -5,7 +5,7 @@ import { Prose } from "@/components/starwind/prose";
 import { Button } from "@/components/starwind/button";
 import { Badge } from "@/components/starwind/badge";
 import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
-import { strapiFind } from "@/lib/strapi";
+import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
@@ -15,18 +15,7 @@ let cmsError = false;
 try {
   const res = await strapiFind<Page>("pages", {
     filters: { slug: { $eq: "home" } },
-    populate: {
-      blocks: {
-        populate: {
-          image: true,
-          cards: {
-            populate: {
-              image: true,
-            },
-          },
-        },
-      },
-    },
+    populate: pageBlocksPopulate,
   });
   home = res.data[0] ?? null;
 } catch {

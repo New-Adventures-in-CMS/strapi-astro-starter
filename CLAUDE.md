@@ -122,12 +122,24 @@ Traps:
 
 - Strapi CLI is `cd cms && npx strapi <cmd>` — there is no root `strapi` script.
 - Node 22 (pinned in `.nvmrc`); Node 24+ → `EBADENGINE`.
-- Dynamic-zone populate: this starter uses the flat form
-  `populate: { blocks: { populate: { image: true, cards: { populate: { image: true } } } } }`
-  which works because Strapi 5 merges the child populate across every component
-  in the zone. If you ever need per-component branching (different populate for
-  different `__component`), use the explicit `on` form:
-  `populate: { blocks: { on: { "ns.component": { populate: { … } } } } }`.
+- **Dynamic-zone populate over REST needs the `on` form.** The flat form
+  `populate: { blocks: { populate: { image: true } } }` returns HTTP 400
+  `Invalid key populate at blocks`. Populate each component explicitly:
+  ```ts
+  populate: {
+    blocks: {
+      on: {
+        "blocks.hero":       { populate: { image: true } },
+        "blocks.rich-text":  true,
+        "blocks.image-text": { populate: { image: true } },
+        "blocks.card-grid":  { populate: { cards: { populate: { image: true } } } },
+      },
+    },
+  }
+  ```
+  A ready-made `pageBlocksPopulate` const in `@/lib/strapi` covers the four
+  shipped block types. (Server-side Document Service accepts the flat form —
+  this is REST-only.)
 - **Markdown fields (`body` on `page`) are raw Markdown, not HTML.** Render via
   `renderMarkdown(md)` from `@/lib/markdown` → `set:html` inside the Starwind
   `<Prose>` wrapper. Never dump `page.body` straight into the template.

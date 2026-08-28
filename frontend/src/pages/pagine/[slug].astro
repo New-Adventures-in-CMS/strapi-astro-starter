@@ -3,7 +3,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { Prose } from "@/components/starwind/prose";
 import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
-import { strapiFind } from "@/lib/strapi";
+import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
@@ -15,18 +15,7 @@ let page: Page | null = null;
 try {
   const res = await strapiFind<Page>("pages", {
     filters: { slug: { $eq: slug } },
-    populate: {
-      blocks: {
-        populate: {
-          image: true,
-          cards: {
-            populate: {
-              image: true,
-            },
-          },
-        },
-      },
-    },
+    populate: pageBlocksPopulate,
   });
   page = res.data[0] ?? null;
 } catch {

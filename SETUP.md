@@ -172,14 +172,19 @@ di `card-grid`).
 - Un componente per block: `BlockHero.astro`, `BlockRichText.astro`,
   `BlockImageText.astro`, `BlockCardGrid.astro`
 - Tipi: `frontend/src/types/index.ts` (`PageBlock` union)
-- Populate deep sempre in fetch (block image + card image):
+- Populate REST richiede la forma `on:` per Dynamic Zone (la forma flat
+  restituisce 400 `Invalid key populate at blocks`). Usa la costante
+  `pageBlocksPopulate` da `@/lib/strapi`:
   ```ts
-  populate: {
-    blocks: {
-      populate: { image: true, cards: { populate: { image: true } } },
-    },
-  }
+  import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
+  await strapiFind<Page>("pages", {
+    filters: { slug: { $eq: "home" } },
+    populate: pageBlocksPopulate,
+  });
   ```
+  Estende `pageBlocksPopulate` (`frontend/src/lib/strapi.ts`) quando aggiungi
+  un nuovo block: aggiungi la sua chiave in `on:` con l'eventuale populate
+  delle relazioni interne.
 
 **Priorità di rendering:** i blocchi si renderizzano per primi; il campo
 `body` Markdown, se presente, viene renderizzato sotto come `<article>` di
@@ -193,6 +198,7 @@ fallback.
 4. Aggiungi il tipo in `frontend/src/types/index.ts` (interfaccia + union `PageBlock`)
 5. Crea `frontend/src/components/blocks/Block<Name>.astro`
 6. Aggiungi un `case` in `BlockRenderer.astro`
+7. Aggiungi una chiave al `on:` di `pageBlocksPopulate` in `frontend/src/lib/strapi.ts`
 
 ---
 
