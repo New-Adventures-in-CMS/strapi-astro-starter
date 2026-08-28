@@ -298,6 +298,15 @@
     border-bottom: 1px solid var(--border);
   }
 
+  /* Symmetric with transparent: explicit color on links + nav trigger */
+  header[data-overlay="true"][data-state="solid"] a {
+    color: var(--foreground);
+  }
+
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"] {
+    color: var(--foreground);
+  }
+
   header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"] {
     color: var(--foreground);
   }
