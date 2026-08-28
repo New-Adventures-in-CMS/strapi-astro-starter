@@ -13,9 +13,10 @@ interface Props {
   image?: string;
   canonical?: string;
   noindex?: boolean;
+  headerOverlay?: boolean;
 }
 
-const { title, description, image, canonical, noindex } = Astro.props;
+const { title, description, image, canonical, noindex, headerOverlay = false } = Astro.props;
 ---
 <!doctype html>
 <html lang={site.locale.split("-")[0]}>
@@ -28,8 +29,8 @@ const { title, description, image, canonical, noindex } = Astro.props;
     <SEO {title} {description} {image} {canonical} {noindex} />
   </head>
   <body class="flex min-h-screen flex-col">
-    <Header />
-    <main class="flex-1">
+    <Header overlay={headerOverlay} />
+    <main class:list={[headerOverlay ? "" : "", "flex-1"]}>
       <slot />
     </main>
     <Footer />

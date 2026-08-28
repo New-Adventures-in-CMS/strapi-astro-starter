@@ -26,8 +26,10 @@ if (!page) return Astro.redirect("/404");
 
 const bodyHtml = renderMarkdown(page.body);
 const hasBlocks = page.blocks && page.blocks.length > 0;
+const firstBlock = page.blocks?.[0];
+const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.immersive === true;
 ---
-<Layout title={page.title} description={page.seo_desc ?? undefined}>
+<Layout title={page.title} description={page.seo_desc ?? undefined} headerOverlay={headerOverlay}>
   {hasBlocks && <BlockRenderer blocks={page.blocks!} />}
   {!hasBlocks && (
     <article class="mx-auto max-w-3xl py-12">

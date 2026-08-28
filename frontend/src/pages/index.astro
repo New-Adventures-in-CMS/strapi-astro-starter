@@ -24,10 +24,13 @@ try {
 
 const bodyHtml = renderMarkdown(home?.body);
 const hasBlocks = home?.blocks && home.blocks.length > 0;
+const firstBlock = home?.blocks?.[0];
+const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.immersive === true;
 ---
 <Layout
   title={home?.title ?? "Strapi + Astro Starter"}
   description={home?.seo_desc ?? "Starter kit Strapi 5 + Astro 7 con Tailwind CSS v4 e Starwind UI."}
+  headerOverlay={headerOverlay}
 >
   {home ? (
     <>
