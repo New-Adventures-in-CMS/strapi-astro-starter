@@ -27,6 +27,19 @@
 }
 
 @theme inline {
+  /* Typography: font families and scale */
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-sora), var(--font-sans);
+
+  /* Fluid type scale */
+  --fs-display: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  --fs-h1: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  --fs-h2: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-lead: 1.125rem;
+  --fs-body: 1rem;
+
+  /* Color tokens */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -71,6 +84,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-outline: var(--sidebar-outline);
+
+  /* Section tones */
+  --section-dark-bg: var(--color-neutral-950);
+  --section-dark-fg: var(--color-neutral-50);
 }
 
 :root {
@@ -80,9 +97,9 @@
   --card-foreground: var(--color-neutral-950);
   --popover: var(--color-white);
   --popover-foreground: var(--color-neutral-950);
-  --primary: var(--color-blue-700);
+  --primary: var(--color-neutral-950);
   --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-700);
+  --primary-accent: var(--color-neutral-950);
   --secondary: var(--color-neutral-200);
   --secondary-foreground: var(--color-neutral-950);
   --secondary-accent: var(--color-neutral-950);
@@ -106,7 +123,7 @@
   /* sidebar variables */
   --sidebar-background: var(--color-neutral-50);
   --sidebar-foreground: var(--color-neutral-950);
-  --sidebar-primary: var(--color-blue-700);
+  --sidebar-primary: var(--color-neutral-950);
   --sidebar-primary-foreground: var(--color-neutral-50);
   --sidebar-accent: var(--color-neutral-100);
   --sidebar-accent-foreground: var(--color-neutral-900);
@@ -121,9 +138,9 @@
   --card-foreground: var(--color-neutral-50);
   --popover: var(--color-neutral-900);
   --popover-foreground: var(--color-neutral-50);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-400);
+  --primary: var(--color-neutral-50);
+  --primary-foreground: var(--color-neutral-950);
+  --primary-accent: var(--color-neutral-300);
   --secondary: var(--color-neutral-800);
   --secondary-foreground: var(--color-neutral-50);
   --secondary-accent: var(--color-neutral-50);
@@ -146,8 +163,8 @@
   /* sidebars variables */
   --sidebar-background: var(--color-neutral-900);
   --sidebar-foreground: var(--color-neutral-50);
-  --sidebar-primary: var(--color-blue-700);
-  --sidebar-primary-foreground: var(--color-neutral-50);
+  --sidebar-primary: var(--color-neutral-50);
+  --sidebar-primary-foreground: var(--color-neutral-950);
   --sidebar-accent: var(--color-neutral-800);
   --sidebar-accent-foreground: var(--color-neutral-100);
   --sidebar-border: var(--color-neutral-800);
@@ -155,13 +172,73 @@
 }
 
 @layer base {
+  /* Global reset */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground scheme-light dark:scheme-dark;
+    margin: 0;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Starwind base */
   * {
     @apply border-border outline-outline/50;
   }
-  body {
-    @apply bg-background text-foreground scheme-light dark:scheme-dark;
-  }
+
   button {
     @apply cursor-pointer;
+  }
+
+  /* Typography scale */
+  h1,
+  .h1 {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h1);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  h2,
+  .h2 {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  h3,
+  .h3 {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  p,
+  li {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+  }
+
+  .lead {
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--color-muted-foreground);
   }
 }

@@ -1,5 +1,5 @@
 // frontend/astro.config.mjs
-import { defineConfig, envField } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
@@ -11,6 +11,24 @@ export default defineConfig({
   site: SITE_URL,
   output: "server",
   adapter: node({ mode: "standalone" }),
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Sora",
+      cssVariable: "--font-sora",
+      weights: ["500", "800"],
+      styles: ["normal"],
+      subsets: ["latin"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      weights: ["400", "600"],
+      styles: ["normal"],
+      subsets: ["latin"],
+    },
+  ],
   env: {
     schema: {
       STRAPI_URL: envField.string({

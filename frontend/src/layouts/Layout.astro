@@ -4,8 +4,8 @@ import "@/styles/starwind.css";
 import SEO from "@/components/SEO.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import { Font } from "astro:assets";
 import { site } from "@/config/site";
-import "@/styles/global.css";
 
 interface Props {
   title?: string;
@@ -23,6 +23,8 @@ const { title, description, image, canonical, noindex } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Font cssVariable="--font-sora" preload />
+    <Font cssVariable="--font-inter" preload />
     <SEO {title} {description} {image} {canonical} {noindex} />
   </head>
   <body class="flex min-h-screen flex-col">
