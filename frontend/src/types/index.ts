@@ -24,6 +24,7 @@ export interface StrapiMedia {
 export interface BlockHero {
   __component: "blocks.hero";
   heading: string;
+  eyebrow?: string | null;
   subheading?: string | null;
   cta_text?: string | null;
   cta_url?: string | null;
@@ -38,6 +39,7 @@ export interface BlockRichText {
 export interface BlockImageText {
   __component: "blocks.image-text";
   heading?: string | null;
+  eyebrow?: string | null;
   body: string;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
@@ -54,6 +56,9 @@ export interface SharedCard {
 export interface BlockCardGrid {
   __component: "blocks.card-grid";
   heading?: string | null;
+  eyebrow?: string | null;
+  lead?: string | null;
+  tone?: "light" | "dark" | null;
   cards: SharedCard[];
 }
 

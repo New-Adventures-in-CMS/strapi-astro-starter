@@ -10,6 +10,17 @@
     "heading": {
       "type": "string"
     },
+    "eyebrow": {
+      "type": "string"
+    },
+    "lead": {
+      "type": "text"
+    },
+    "tone": {
+      "type": "enumeration",
+      "enum": ["light", "dark"],
+      "default": "light"
+    },
     "cards": {
       "type": "component",
       "repeatable": true,

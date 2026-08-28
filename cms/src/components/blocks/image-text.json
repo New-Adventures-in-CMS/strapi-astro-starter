@@ -10,6 +10,9 @@
     "heading": {
       "type": "string"
     },
+    "eyebrow": {
+      "type": "string"
+    },
     "body": {
       "type": "richtext",
       "required": true

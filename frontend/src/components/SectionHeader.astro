@@ -1,0 +1,64 @@
+---
+interface Props {
+  eyebrow?: string | null;
+  heading?: string | null;
+  lead?: string | null;
+  align?: "left" | "center";
+  onDark?: boolean;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  heading,
+  lead,
+  align = "left",
+  onDark = false,
+  class: className,
+} = Astro.props;
+
+const alignClass =
+  align === "center" ? "text-center mx-auto max-w-3xl" : "text-left";
+const eyebrowColor = onDark
+  ? "text-[var(--section-dark-fg-subtle)]"
+  : "text-muted-foreground";
+const headingColor = onDark
+  ? "text-[var(--section-dark-fg)]"
+  : "text-foreground";
+const leadColor = onDark
+  ? "text-[var(--section-dark-fg-muted)]"
+  : "text-muted-foreground";
+---
+
+{
+  (eyebrow || heading || lead) && (
+    <header class:list={[alignClass, "mb-12 md:mb-16", className]}>
+      {eyebrow && (
+        <p
+          class:list={[
+            "text-xs uppercase tracking-[0.2em] mb-4",
+            eyebrowColor,
+          ]}
+        >
+          {"{" + eyebrow + "}"}
+        </p>
+      )}
+      {heading && (
+        <h2 class:list={["font-heading text-balance", headingColor]}>
+          {heading}
+        </h2>
+      )}
+      {lead && (
+        <p
+          class:list={[
+            "mt-6 text-lg md:text-xl leading-relaxed max-w-2xl",
+            align === "center" ? "mx-auto" : "",
+            leadColor,
+          ]}
+        >
+          {lead}
+        </p>
+      )}
+    </header>
+  )
+}
