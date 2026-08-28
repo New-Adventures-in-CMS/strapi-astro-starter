@@ -29,6 +29,7 @@ export interface BlockHero {
   cta_text?: string | null;
   cta_url?: string | null;
   image?: StrapiMedia | null;
+  immersive?: boolean | null;
 }
 
 export interface BlockRichText {

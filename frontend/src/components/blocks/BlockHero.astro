@@ -11,9 +11,10 @@ interface Props {
   cta_url?: string | null;
   image?: StrapiMedia | null;
   eyebrow?: string | null;
+  immersive?: boolean | null;
 }
 
-const { heading, subheading, cta_text, cta_url, image, eyebrow } = Astro.props;
+const { heading, subheading, cta_text, cta_url, image, eyebrow, immersive } = Astro.props;
 const imageUrl = image ? strapiMediaUrl(image.url) : null;
 const showCta = cta_text && cta_url;
 const altText = image?.alternativeText || "";
@@ -22,7 +23,10 @@ const altText = image?.alternativeText || "";
 <Section
   tone="dark"
   spacing="none"
-  class="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] flex items-center justify-center"
+  class:list={[
+    "relative overflow-hidden flex items-center justify-center",
+    immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
+  ]}
 >
   {imageUrl ? (
     <>
@@ -68,4 +72,8 @@ const altText = image?.alternativeText || "";
       </div>
     )}
   </Container>
+
+  {immersive && (
+    <div id="header-overlay-sentinel" class="pointer-events-none absolute bottom-0 h-px w-full" aria-hidden="true"></div>
+  )}
 </Section>
