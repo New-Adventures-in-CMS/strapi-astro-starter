@@ -19,90 +19,53 @@ const showCta = cta_text && cta_url;
 const altText = image?.alternativeText || "";
 ---
 
-{
-  imageUrl ? (
-    // Hero with background image — full-bleed with overlay
-    <Section
-      tone="dark"
-      spacing="none"
-      class="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] flex items-center justify-center"
-    >
-      {/* Full-width background image */}
+<Section
+  tone="dark"
+  spacing="none"
+  class="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] flex items-center justify-center"
+>
+  {imageUrl ? (
+    <>
       <img
         src={imageUrl}
         alt={altText}
-        class="absolute inset-0 h-full w-full object-cover -z-10"
+        class="absolute inset-0 h-full w-full object-cover"
       />
-      {/* Gradient overlay for text readability */}
-      <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
-
-      {/* Text content in centered container */}
-      <Container width="default" class="relative text-center text-white">
-        {eyebrow && (
-          <p class="mb-4 text-xs uppercase tracking-[0.2em] text-white/70">
-            {"{" + eyebrow + "}"}
-          </p>
-        )}
-        <h1 class="font-heading uppercase text-balance">
-          {heading}
-        </h1>
-        {subheading && (
-          <p class="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            {subheading}
-          </p>
-        )}
-        {showCta && (
-          <div class="mt-10">
-            <Button
-              variant="default"
-              size="lg"
-              href={cta_url}
-              class="bg-white text-black hover:bg-white/90"
-            >
-              {cta_text}
-            </Button>
-          </div>
-        )}
-      </Container>
-    </Section>
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]"
+      />
+    </>
   ) : (
-    // Hero without image — dark tone band with subtle gradient accent
-    <Section
-      tone="dark"
-      spacing="none"
-      class="relative overflow-hidden min-h-[70vh] md:min-h-[80vh] flex items-center justify-center"
-    >
-      {/* Subtle radial gradient accent for visual interest */}
-      <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.08),transparent)]" />
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+    />
+  )}
 
-      {/* Text content in centered container */}
-      <Container width="default" class="relative text-center text-white">
-        {eyebrow && (
-          <p class="mb-4 text-xs uppercase tracking-[0.2em] text-white/70">
-            {"{" + eyebrow + "}"}
-          </p>
-        )}
-        <h1 class="font-heading uppercase text-balance">
-          {heading}
-        </h1>
-        {subheading && (
-          <p class="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            {subheading}
-          </p>
-        )}
-        {showCta && (
-          <div class="mt-10">
-            <Button
-              variant="default"
-              size="lg"
-              href={cta_url}
-              class="bg-white text-black hover:bg-white/90"
-            >
-              {cta_text}
-            </Button>
-          </div>
-        )}
-      </Container>
-    </Section>
-  )
-}
+  <Container width="default" class="relative z-10 text-center">
+    {eyebrow && (
+      <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+        {"{" + eyebrow + "}"}
+      </p>
+    )}
+    <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+      {heading}
+    </h1>
+    {subheading && (
+      <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
+        {subheading}
+      </p>
+    )}
+    {showCta && (
+      <div class="mt-10">
+        <Button
+          variant="default"
+          size="lg"
+          href={cta_url}
+          class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+        >
+          {cta_text}
+        </Button>
+      </div>
+    )}
+  </Container>
+</Section>

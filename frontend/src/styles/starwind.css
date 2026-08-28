@@ -85,9 +85,25 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-outline: var(--sidebar-outline);
 
+  /* ------------------------------------------------------------------
+   * SEMANTIC TOKEN MAPPING (raw palette → semantic role)
+   * Refactored components MUST reference the semantic token, never the
+   * raw palette color (e.g. use var(--section-dark-fg), not neutral-50).
+   * A future repoint to Radix Colors is values-only, no component churn.
+   * ------------------------------------------------------------------ */
+
   /* Section tones */
   --section-dark-bg: var(--color-neutral-950);
   --section-dark-fg: var(--color-neutral-50);
+  --section-dark-fg-muted: color-mix(in srgb, var(--color-neutral-50) 80%, transparent);
+  --section-dark-fg-subtle: color-mix(in srgb, var(--color-neutral-50) 70%, transparent);
+  --section-dark-cta-bg: var(--color-neutral-50);
+  --section-dark-cta-fg: var(--color-neutral-950);
+  --section-dark-cta-bg-hover: color-mix(in srgb, var(--color-neutral-50) 90%, transparent);
+  --section-dark-overlay-from: color-mix(in srgb, var(--color-neutral-950) 70%, transparent);
+  --section-dark-overlay-via: color-mix(in srgb, var(--color-neutral-950) 50%, transparent);
+  --section-dark-overlay-to: color-mix(in srgb, var(--color-neutral-950) 30%, transparent);
+  --section-dark-accent: color-mix(in srgb, var(--color-neutral-50) 8%, transparent);
 }
 
 :root {
