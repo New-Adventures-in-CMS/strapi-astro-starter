@@ -1,6 +1,7 @@
 ---
 // frontend/src/pages/pagine/index.astro
 import Layout from "@/layouts/Layout.astro";
+import { Section, Container } from "@/components/layout";
 import { strapiFind } from "@/lib/strapi";
 import type { Page } from "@/types";
 
@@ -15,39 +16,41 @@ try {
 }
 ---
 <Layout title="Pagine" description="Elenco pagine pubblicate.">
-  <div class="mx-auto max-w-3xl py-12">
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Pagine</h1>
+  <Section spacing="default">
+    <Container width="prose">
+      <h1>Pagine</h1>
 
-    {cmsError && (
-      <p class="mt-6 text-gray-600">
-        Il CMS non è raggiungibile. Avvia Strapi e ricarica.
-      </p>
-    )}
+      {cmsError && (
+        <p class="mt-6 text-muted-foreground">
+          Il CMS non è raggiungibile. Avvia Strapi e ricarica.
+        </p>
+      )}
 
-    {!cmsError && pages.length === 0 && (
-      <p class="mt-6 text-gray-600">
-        Nessuna pagina pubblicata. Crea una <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">page</code> in Strapi e pubblicala.
-      </p>
-    )}
+      {!cmsError && pages.length === 0 && (
+        <p class="mt-6 text-muted-foreground">
+          Nessuna pagina pubblicata. Crea una <code class="rounded bg-muted px-1.5 py-0.5 text-sm">page</code> in Strapi e pubblicala.
+        </p>
+      )}
 
-    {pages.length > 0 && (
-      <ul class="mt-8 divide-y divide-gray-200 border-y border-gray-200">
-        {pages.map((page) => (
-          <li class="py-4">
-            <a
-              href={`/pagine/${page.slug}`}
-              class="block group"
-            >
-              <span class="text-lg font-semibold text-gray-900 group-hover:text-primary">
-                {page.title}
-              </span>
-              {page.seo_desc && (
-                <span class="mt-1 block text-sm text-gray-600">{page.seo_desc}</span>
-              )}
-            </a>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
+      {pages.length > 0 && (
+        <ul class="mt-8 divide-y divide-border border-y border-border">
+          {pages.map((page) => (
+            <li class="py-4">
+              <a
+                href={`/pagine/${page.slug}`}
+                class="block group"
+              >
+                <span class="text-lg font-semibold text-foreground group-hover:text-primary">
+                  {page.title}
+                </span>
+                {page.seo_desc && (
+                  <span class="mt-1 block text-sm text-muted-foreground">{page.seo_desc}</span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Container>
+  </Section>
 </Layout>

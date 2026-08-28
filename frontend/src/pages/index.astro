@@ -1,9 +1,11 @@
 ---
 // frontend/src/pages/index.astro
 import Layout from "@/layouts/Layout.astro";
+import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import { Button } from "@/components/starwind/button";
 import { Badge } from "@/components/starwind/badge";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/starwind/card";
 import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
 import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
 import { renderMarkdown } from "@/lib/markdown";
@@ -36,75 +38,88 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
     <>
       {hasBlocks && <BlockRenderer blocks={home.blocks!} />}
       {!hasBlocks && (
-        <article class="mx-auto max-w-3xl py-12">
-          <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{home.title}</h1>
-          {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
-        </article>
+        <Section spacing="default">
+          <Container width="prose">
+            <article>
+              <h1>{home.title}</h1>
+              {bodyHtml && <Prose class="mt-6" set:html={bodyHtml} />}
+            </article>
+          </Container>
+        </Section>
       )}
       {hasBlocks && bodyHtml && (
-        <article class="mx-auto max-w-3xl px-4 py-12">
-          <Prose set:html={bodyHtml} />
-        </article>
+        <Section spacing="default">
+          <Container width="prose">
+            <article>
+              <Prose set:html={bodyHtml} />
+            </article>
+          </Container>
+        </Section>
       )}
     </>
   ) : (
-    <div class="mx-auto max-w-3xl py-12">
-      <section class="text-center">
-        <Badge tone={cmsError ? "warning" : "info"} appearance="soft" size="sm">
-          {cmsError ? "CMS non raggiungibile" : "Home page non ancora creata"}
-        </Badge>
-        <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-          Strapi + Astro Starter
-        </h1>
-        <p class="mx-auto mt-4 max-w-xl text-lg text-gray-600">
-          Headless CMS (Strapi 5) + frontend Astro 7 con Tailwind CSS v4 e Starwind UI.
-          Clone → <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">install:all</code> → <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">dev</code> e via.
-        </p>
-      </section>
+    <Section spacing="default">
+      <Container width="default">
+        <section class="text-center">
+          <Badge tone={cmsError ? "warning" : "info"} appearance="soft" size="sm">
+            {cmsError ? "CMS non raggiungibile" : "Home page non ancora creata"}
+          </Badge>
+          <h1 class="mt-4 text-balance">
+            Strapi + Astro Starter
+          </h1>
+          <p class="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+            Headless CMS (Strapi 5) + frontend Astro 7 con Tailwind CSS v4 e Starwind UI.
+            Clone → <code class="rounded bg-muted px-1.5 py-0.5 text-sm">install:all</code> → <code class="rounded bg-muted px-1.5 py-0.5 text-sm">dev</code> e via.
+          </p>
+        </section>
 
-      <section class="mt-10 rounded-xl border border-gray-200 bg-white p-6 sm:p-8">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500">
-          Prossimi passi
-        </h2>
-        <ol class="mt-4 space-y-4">
-          <li class="flex gap-3">
-            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">1</span>
-            <div>
-              <p class="font-medium text-gray-900">Avvia Strapi</p>
-              <p class="text-sm text-gray-600">
-                Se stai leggendo questa pagina il frontend gira. Manca il CMS: <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">npm run dev</code> dalla root li avvia entrambi.
-              </p>
+        <Card class="mt-10">
+          <CardHeader>
+            <CardTitle>Prossimi passi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol class="mt-4 space-y-4">
+              <li class="flex gap-3">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">1</span>
+                <div>
+                  <p class="font-medium text-foreground">Avvia Strapi</p>
+                  <p class="text-sm text-muted-foreground">
+                    Se stai leggendo questa pagina il frontend gira. Manca il CMS: <code class="rounded bg-muted px-1.5 py-0.5 text-sm">npm run dev</code> dalla root li avvia entrambi.
+                  </p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">2</span>
+                <div>
+                  <p class="font-medium text-foreground">Crea l'account admin</p>
+                  <p class="text-sm text-muted-foreground">
+                    Vai su <a class="text-primary underline hover:text-primary/80" href="http://localhost:1337/admin">localhost:1337/admin</a> e registra email + password.
+                  </p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">3</span>
+                <div>
+                  <p class="font-medium text-foreground">Crea una pagina "home"</p>
+                  <p class="text-sm text-muted-foreground">
+                    Content Manager → Page → New entry. Slug <code class="rounded bg-muted px-1.5 py-0.5 text-sm">home</code>, compila <code class="rounded bg-muted px-1.5 py-0.5 text-sm">body</code> in Markdown, <strong>Publish</strong>. Ricarica questa pagina.
+                  </p>
+                </div>
+              </li>
+            </ol>
+          </CardContent>
+          <CardFooter>
+            <div class="flex flex-wrap gap-3">
+              <Button href="http://localhost:1337/admin" variant="default">
+                Apri Strapi admin
+              </Button>
+              <Button href="/esempio" variant="outline">
+                Vedi /esempio (design system)
+              </Button>
             </div>
-          </li>
-          <li class="flex gap-3">
-            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">2</span>
-            <div>
-              <p class="font-medium text-gray-900">Crea l'account admin</p>
-              <p class="text-sm text-gray-600">
-                Vai su <a class="text-primary underline hover:text-primary/80" href="http://localhost:1337/admin">localhost:1337/admin</a> e registra email + password.
-              </p>
-            </div>
-          </li>
-          <li class="flex gap-3">
-            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">3</span>
-            <div>
-              <p class="font-medium text-gray-900">Crea una pagina "home"</p>
-              <p class="text-sm text-gray-600">
-                Content Manager → Page → New entry. Slug <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">home</code>, compila <code class="rounded bg-gray-100 px-1.5 py-0.5 text-sm">body</code> in Markdown, <strong>Publish</strong>. Ricarica questa pagina.
-              </p>
-            </div>
-          </li>
-        </ol>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <Button href="http://localhost:1337/admin" variant="default">
-            Apri Strapi admin
-          </Button>
-          <Button href="/esempio" variant="outline">
-            Vedi /esempio (design system)
-          </Button>
-        </div>
-      </section>
-    </div>
+          </CardFooter>
+        </Card>
+      </Container>
+    </Section>
   )}
 </Layout>
