@@ -25,6 +25,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
               "A production-ready starter kit with headless CMS, server-rendered pages, and a block-based page builder.",
             cta_text: "Explore components",
             cta_url: "/esempio",
+            immersive: true,
           },
           {
             __component: "blocks.card-grid",

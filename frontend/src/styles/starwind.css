@@ -271,7 +271,15 @@
     color: var(--section-dark-fg);
   }
 
-  header[data-overlay="true"][data-state="transparent"] [data-sw-nav-menu-trigger] {
+  /* Nav trigger + hover/focus/open in overlay transparent: keep on-dark, no light patch */
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"] {
+    color: var(--section-dark-fg);
+  }
+
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:hover,
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:focus,
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"][data-state="open"] {
+    background: var(--section-dark-accent);
     color: var(--section-dark-fg);
   }
 
@@ -281,7 +289,7 @@
   }
 
   header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"]:hover {
-    background: var(--section-dark-fg-subtle);
+    background: var(--section-dark-accent);
   }
 
   header[data-overlay="true"][data-state="solid"] {

@@ -12,7 +12,7 @@ const footer = await getFooterNav();
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       {footer.columns.map((col) => (
         <div>
-          <h3 class="mb-4 text-sm font-semibold text-gray-900">{col.title}</h3>
+          <h3 class="mb-4 text-sm font-semibold text-foreground">{col.title}</h3>
           <ul class="space-y-2">
             {col.items.map((item) => (
               <li>
@@ -20,7 +20,7 @@ const footer = await getFooterNav();
                   href={item.href}
                   target={item.external ? "_blank" : undefined}
                   rel={item.external ? "noopener noreferrer" : undefined}
-                  class="text-sm text-gray-600 hover:text-black"
+                  class="text-sm text-muted-foreground hover:text-foreground"
                 >{item.label}</a>
               </li>
             ))}
@@ -29,6 +29,6 @@ const footer = await getFooterNav();
       ))}
     </div>
     <Separator class="my-8" />
-    <p class="text-xs text-gray-500">{site.footer.legal}</p>
+    <p class="text-xs text-muted-foreground">{site.footer.legal}</p>
   </Container>
 </footer>

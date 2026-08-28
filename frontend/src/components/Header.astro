@@ -94,7 +94,7 @@ const isActive = (href: string | undefined): boolean =>
           aria-label="Apri menu di navigazione"
           class:list={[
             "rounded p-2 transition-colors",
-            !overlay && "text-gray-600 hover:bg-gray-100",
+            !overlay && "text-muted-foreground hover:bg-muted hover:text-foreground",
           ]}
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,7 @@ const isActive = (href: string | undefined): boolean =>
             {navItems.map((item) =>
               item.children?.length ? (
                 <details class="group">
-                  <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black [&::-webkit-details-marker]:hidden">
+                  <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground [&::-webkit-details-marker]:hidden">
                     {item.label}
                     <svg
                       class="h-3 w-3 transition-transform group-open:rotate-180"
@@ -141,8 +141,8 @@ const isActive = (href: string | undefined): boolean =>
                           class:list={[
                             "block rounded-md px-3 py-1.5 text-sm",
                             isActive(child.href)
-                              ? "bg-gray-100 text-black"
-                              : "text-gray-600 hover:bg-gray-100 hover:text-black",
+                              ? "bg-muted text-foreground"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
                           ]}
                         >{child.label}</a>
                       </li>
@@ -158,8 +158,8 @@ const isActive = (href: string | undefined): boolean =>
                   class:list={[
                     "block rounded-md px-3 py-2 text-sm",
                     isActive(item.href)
-                      ? "bg-gray-100 text-black"
-                      : "text-gray-700 hover:bg-gray-100 hover:text-black",
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   ]}
                 >{item.label}</a>
               )
