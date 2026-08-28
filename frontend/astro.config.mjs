@@ -16,7 +16,7 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: "Sora",
       cssVariable: "--font-sora",
-      weights: ["500", "800"],
+      weights: ["500", "700", "800"],
       styles: ["normal"],
       subsets: ["latin"],
     },
