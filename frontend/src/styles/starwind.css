@@ -136,6 +136,9 @@
   --outline: var(--color-neutral-400);
   --radius: 0.625rem;
 
+  /* Header sizing: py-5 + line-height for brand text */
+  --header-h: 4.5rem;
+
   /* sidebar variables */
   --sidebar-background: var(--color-neutral-50);
   --sidebar-foreground: var(--color-neutral-950);
@@ -260,7 +263,27 @@
 }
 
 @layer components {
-  /* Header overlay mode — data-state transitions between transparent and solid */
+  /* ========================================================================
+   * HEADER AUTO-HIDE (Presence Axis A - global, independent of overlay)
+   * ======================================================================== */
+
+  /* Transform for hidden state */
+  header[data-hidden="true"] {
+    transform: translateY(-100%);
+  }
+
+  header[data-hidden="false"] {
+    transform: translateY(0);
+  }
+
+  /* ========================================================================
+   * HEADER OVERLAY MODE (Axis B - transparent/solid state transitions)
+   * Overlay transparent: on-dark over hero
+   * Overlay solid: past hero or non-immersive
+   * Non-overlay (data-overlay="false"): always solid (no transparent state)
+   * ======================================================================== */
+
+  /* Transparent state: on-dark styling */
   header[data-overlay="true"][data-state="transparent"] {
     background: transparent;
     color: var(--section-dark-fg);
@@ -271,47 +294,108 @@
     color: var(--section-dark-fg);
   }
 
-  /* Nav trigger + hover/focus/open in overlay transparent: keep on-dark, no light patch */
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"] {
-    color: var(--section-dark-fg);
-  }
-
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:hover,
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:focus,
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"][data-state="open"] {
-    background: var(--section-dark-accent);
-    color: var(--section-dark-fg);
-  }
-
-  /* Hamburger/Sheet trigger in overlay transparent state */
-  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"] {
-    color: var(--section-dark-fg);
-  }
-
-  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"]:hover {
-    background: var(--section-dark-accent);
-  }
-
-  header[data-overlay="true"][data-state="solid"] {
+  /* Solid state: standard light styling (immersive scrolled past hero OR non-immersive) */
+  header[data-overlay="true"][data-state="solid"],
+  header[data-overlay="false"] {
     background: var(--background);
     color: var(--foreground);
     border-bottom: 1px solid var(--border);
   }
 
-  /* Symmetric with transparent: explicit color on links + nav trigger */
-  header[data-overlay="true"][data-state="solid"] a {
+  header[data-overlay="true"][data-state="solid"] a,
+  header[data-overlay="false"] a {
     color: var(--foreground);
   }
 
-  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"] {
+  /* ========================================================================
+   * NAV TRIGGER STYLING (Asse B - underline on hover/focus/open, NO bg fill)
+   * Transparent state triggers: on-dark underline
+   * Solid state triggers: standard light underline
+   * !important on background overrides Starwind's base hover:bg-muted utility
+   * ======================================================================== */
+
+  /* Transparent state: on-dark triggers */
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"] {
+    color: var(--section-dark-fg);
+    background: transparent !important;
+  }
+
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:hover,
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:focus,
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"][data-state="open"] {
+    background: transparent !important;
+    color: var(--section-dark-fg);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+
+  /* Solid state: standard light triggers */
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"],
+  header[data-overlay="false"] [data-slot="navigation-menu-trigger"] {
+    color: var(--foreground);
+    background: transparent !important;
+  }
+
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"]:hover,
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"]:focus,
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"][data-state="open"],
+  header[data-overlay="false"] [data-slot="navigation-menu-trigger"]:hover,
+  header[data-overlay="false"] [data-slot="navigation-menu-trigger"]:focus,
+  header[data-overlay="false"] [data-slot="navigation-menu-trigger"][data-state="open"] {
+    background: transparent !important;
+    color: var(--foreground);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+
+  /* Active nav link: persistent underline (both states) */
+  header [data-slot="navigation-menu-link"][data-active] {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+
+  /* ========================================================================
+   * HAMBURGER BUTTON STYLING
+   * ======================================================================== */
+
+  /* Transparent state: on-dark hamburger */
+  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"] {
+    color: var(--section-dark-fg);
+  }
+
+  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"]:hover {
+    background: transparent;
+    text-decoration: underline;
+  }
+
+  /* Solid state: standard light hamburger */
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"],
+  header[data-overlay="false"] button[aria-label="Apri menu di navigazione"] {
     color: var(--foreground);
   }
 
-  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"] {
-    color: var(--foreground);
-  }
-
-  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"]:hover {
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"]:hover,
+  header[data-overlay="false"] button[aria-label="Apri menu di navigazione"]:hover {
     background: var(--muted);
+  }
+
+  /* ========================================================================
+   * MOTION PREFERENCES
+   * Transition for auto-hide; respects prefers-reduced-motion
+   * ======================================================================== */
+
+  @media (prefers-reduced-motion: no-preference) {
+    header[data-hidden] {
+      transition: transform 300ms ease, background 300ms ease, color 300ms ease;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    header[data-hidden] {
+      transition: none;
+    }
   }
 }
