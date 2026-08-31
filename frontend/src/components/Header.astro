@@ -195,11 +195,11 @@ const isActive = (href: string | undefined): boolean =>
 
   <!-- Auto-hide script: directional scroll detection with focus reveal -->
   <script>
-    const header = document.querySelector("header[data-hidden]");
-    if (header) {
+    const el = document.querySelector<HTMLElement>("header[data-hidden]");
+    if (el) {
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (prefersReducedMotion) {
-        header.style.transition = "none";
+        el.style.transition = "none";
       }
 
       let lastY = window.scrollY;
@@ -212,12 +212,12 @@ const isActive = (href: string | undefined): boolean =>
         const delta = y - lastY;
 
         if (y <= TOP_THRESHOLD) {
-          header.setAttribute("data-hidden", "false");
+          el!.setAttribute("data-hidden", "false");
         } else if (Math.abs(delta) >= THRESHOLD) {
           if (delta > 0) {
-            header.setAttribute("data-hidden", "true");
+            el!.setAttribute("data-hidden", "true");
           } else {
-            header.setAttribute("data-hidden", "false");
+            el!.setAttribute("data-hidden", "false");
           }
           lastY = y;
         }
@@ -232,8 +232,8 @@ const isActive = (href: string | undefined): boolean =>
       }, { passive: true });
 
       // Focus reveal
-      header.addEventListener("focusin", () => {
-        header.setAttribute("data-hidden", "false");
+      el.addEventListener("focusin", () => {
+        el.setAttribute("data-hidden", "false");
       });
     }
   </script>
