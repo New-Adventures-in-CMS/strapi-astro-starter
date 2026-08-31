@@ -48,11 +48,7 @@ const showIndex = cards.length >= 3;
             )}
             <CardHeader>
               {showIndex && (
-                <p
-                  class={onDark
-                    ? "text-xs tracking-[0.2em] text-[var(--section-dark-fg-subtle)] mb-2"
-                    : "text-xs tracking-[0.2em] text-muted-foreground mb-2"}
-                >
+                <p class="text-xs tracking-[0.2em] text-muted-foreground mb-2">
                   ({idx})
                 </p>
               )}
