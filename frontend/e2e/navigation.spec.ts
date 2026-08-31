@@ -242,3 +242,168 @@ test.describe("Layout overflow — no horizontal scroll", () => {
     });
   }
 });
+
+// ---------------------------------------------------------------------------
+// Header v2 — Auto-hide (Presence Axis A)
+// Directional scroll detection with throttled rAF, focus reveal, motion-safe
+// ---------------------------------------------------------------------------
+
+test.describe("Header v2 — auto-hide directional", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("header visible at page top (data-hidden=false)", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+
+  test("header hidden after scrolling down significantly (data-hidden=true)", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll down past threshold (300px > 40px top-threshold, >8px delta per frame)
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(100); // Allow rAF to process
+
+    await expect(header).toHaveAttribute("data-hidden", "true");
+  });
+
+  test("header reappears when scrolling up", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll down
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(100);
+    await expect(header).toHaveAttribute("data-hidden", "true");
+
+    // Scroll up
+    await page.evaluate(() => window.scrollBy(0, -100));
+    await page.waitForTimeout(100);
+
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+
+  test("header always visible when near top", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll just to the threshold
+    await page.evaluate(() => window.scrollBy(0, 30));
+    await page.waitForTimeout(100);
+
+    // Should still be visible (top threshold = 40px)
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+
+  test("focus on nav reveals header even if hidden", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll down to hide
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(100);
+    await expect(header).toHaveAttribute("data-hidden", "true");
+
+    // Focus on first nav link
+    const firstLink = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+    await firstLink.focus();
+
+    // Header should be revealed
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Header v2 — Underline styling (Asse B - nav hover/focus/open/active)
+// Applied to both transparent and solid states, no background fill
+// ---------------------------------------------------------------------------
+
+test.describe("Header v2 — underline nav styling", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("nav trigger has underline on hover", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.hover();
+    const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
+
+    // Check for underline decoration
+    expect(styles.textDecoration).toContain("underline");
+  });
+
+  test("nav trigger has underline on focus", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.focus();
+    const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
+
+    expect(styles.textDecoration).toContain("underline");
+  });
+
+  test("nav trigger has underline when open", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+
+    await expect(trigger).toHaveAttribute("data-state", "open");
+    const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
+
+    expect(styles.textDecoration).toContain("underline");
+  });
+
+  test("active nav link has persistent underline", async ({ page }) => {
+    await page.goto("/");
+
+    // Find active link (home page, so first top-level link with data-active)
+    const activeLink = page.locator(
+      "header [data-slot='navigation-menu-link'][data-active]"
+    );
+
+    // There should be at least one active link on homepage
+    const count = await activeLink.count();
+    if (count > 0) {
+      const styles = await activeLink.first().evaluate((el) => window.getComputedStyle(el));
+      expect(styles.textDecoration).toContain("underline");
+    }
+  });
+
+  test("nav trigger background is transparent (no hover bg)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.hover();
+    const bgColor = await trigger.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      return style.backgroundColor;
+    });
+
+    // Should be transparent or rgba with alpha 0 or rgb(0,0,0,0)
+    const isTransparent =
+      bgColor === "rgba(0, 0, 0, 0)" ||
+      bgColor === "rgb(0, 0, 0, 0)" ||
+      bgColor === "transparent";
+    expect(isTransparent).toBe(true);
+  });
+});
