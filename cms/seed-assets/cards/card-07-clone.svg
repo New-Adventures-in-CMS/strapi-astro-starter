@@ -1,0 +1,22 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg7" x1="50%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0e0e0e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="noise7">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+    </filter>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg7)"/>
+
+  <!-- Duplicated/mirrored composition -->
+  <polygon points="0,50 150,30 180,180 0,200" fill="#242424" opacity="0.6"/>
+  <polygon points="150,50 300,30 330,200 200,220" fill="#1f1f1f" opacity="0.5"/>
+  <polygon points="300,150 450,100 500,280 350,320" fill="#2a2a2a" opacity="0.7"/>
+  <polygon points="0,250 600,200 600,400 0,400" fill="#2f2f2f" opacity="0.4"/>
+
+  <!-- Subtle noise overlay -->
+  <rect width="600" height="400" fill="#1a1a1a" opacity="0.05" filter="url(#noise7)"/>
+</svg>

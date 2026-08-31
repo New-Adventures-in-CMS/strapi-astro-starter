@@ -19,6 +19,24 @@ license concerns.
   `blocks.image-text` illustration column. 800×600, gradients + angular
   polygons.
 
+### Cards (6 light grid + 3 dark grid)
+
+Card grid backgrounds, 600×400 each, used in `blocks.card-grid` repeatable
+component. Light grid (feature cards "Everything a modern content site needs"):
+
+- `cards/card-01-cms.svg` — diagonal angular composition
+- `cards/card-02-blocks.svg` — vertical stripe accent
+- `cards/card-03-design.svg` — grid-inspired diamond
+- `cards/card-04-forms.svg` — horizontal band layers
+- `cards/card-05-seo.svg` — triangular multi-plane
+- `cards/card-06-deploy.svg` — staggered parallel planes
+
+Dark grid (statement cards "Skip the first forty hours…"):
+
+- `cards/card-07-clone.svg` — duplicated/mirrored composition
+- `cards/card-08-editorial.svg` — left-right split
+- `cards/card-09-tokens.svg` — radial token-inspired composition
+
 ## Regenerating / replacing
 
 If you want to swap in your own photography:
