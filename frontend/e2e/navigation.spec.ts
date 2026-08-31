@@ -325,7 +325,7 @@ test.describe("Header v2 — auto-hide directional", () => {
 test.describe("Header v2 — underline nav styling", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("nav trigger has underline on hover", async ({ page }) => {
+  test("nav trigger has animated underline on hover (pseudo-element scaleX)", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -333,13 +333,18 @@ test.describe("Header v2 — underline nav styling", () => {
       .first();
 
     await trigger.hover();
-    const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
 
-    // Check for underline decoration
-    expect(styles.textDecoration).toContain("underline");
+    // Check pseudo-element ::after has scaleX(1) transform
+    const pseudoTransform = await trigger.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    expect(pseudoTransform).not.toContain("matrix(0");
   });
 
-  test("nav trigger has underline on focus", async ({ page }) => {
+  test("nav trigger text-decoration is none (not text-decoration underline)", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -349,10 +354,30 @@ test.describe("Header v2 — underline nav styling", () => {
     await trigger.focus();
     const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
 
-    expect(styles.textDecoration).toContain("underline");
+    // text-decoration should be "none" because underline is via ::after pseudo-element
+    expect(styles.textDecoration).toContain("none");
   });
 
-  test("nav trigger has underline when open", async ({ page }) => {
+  test("nav trigger has underline on focus via pseudo-element", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.focus();
+
+    // Check pseudo-element ::after is visible (scaleX(1))
+    const pseudoTransform = await trigger.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    expect(pseudoTransform).not.toContain("matrix(0");
+  });
+
+  test("nav trigger has underline when open via pseudo-element", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -363,12 +388,17 @@ test.describe("Header v2 — underline nav styling", () => {
     await page.keyboard.press("Enter");
 
     await expect(trigger).toHaveAttribute("data-state", "open");
-    const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
 
-    expect(styles.textDecoration).toContain("underline");
+    const pseudoTransform = await trigger.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    expect(pseudoTransform).not.toContain("matrix(0");
   });
 
-  test("active nav link has persistent underline", async ({ page }) => {
+  test("active nav link has persistent underline via pseudo-element", async ({ page }) => {
     await page.goto("/");
 
     // Find active link (home page, so first top-level link with data-active)
@@ -379,8 +409,12 @@ test.describe("Header v2 — underline nav styling", () => {
     // There should be at least one active link on homepage
     const count = await activeLink.count();
     if (count > 0) {
-      const styles = await activeLink.first().evaluate((el) => window.getComputedStyle(el));
-      expect(styles.textDecoration).toContain("underline");
+      const pseudoTransform = await activeLink.first().evaluate((el) => {
+        const pseudo = window.getComputedStyle(el, "::after");
+        return pseudo.transform;
+      });
+      expect(pseudoTransform).toContain("matrix");
+      expect(pseudoTransform).not.toContain("matrix(0");
     }
   });
 
@@ -405,5 +439,23 @@ test.describe("Header v2 — underline nav styling", () => {
       bgColor === "rgb(0, 0, 0, 0)" ||
       bgColor === "transparent";
     expect(isTransparent).toBe(true);
+  });
+
+  test("nav links (not inside dropdown) have underline on hover", async ({ page }) => {
+    await page.goto("/");
+    const link = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']")
+      .first();
+
+    await link.hover();
+
+    const pseudoTransform = await link.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    expect(pseudoTransform).not.toContain("matrix(0");
   });
 });

@@ -308,53 +308,71 @@
   }
 
   /* ========================================================================
-   * NAV TRIGGER STYLING (Asse B - underline on hover/focus/open, NO bg fill)
-   * Transparent state triggers: on-dark underline
-   * Solid state triggers: standard light underline
-   * !important on background overrides Starwind's base hover:bg-muted utility
+   * NAV ITEM STYLING (ALL FIRST-LEVEL ITEMS — TRIGGERS + LINKS)
+   * Underline on hover/focus/open/active via animated ::after pseudo-element
+   * NO background fill in any state
+   * Scope: header nav > * > [data-slot="navigation-menu-link|trigger"]
+   * (excludes links inside dropdown popup which are not direct children of list items)
    * ======================================================================== */
 
-  /* Transparent state: on-dark triggers */
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"] {
+  /* Base state — all first-level items: position for pseudo-element */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+    position: relative;
+    text-decoration: none !important;
+    background: transparent !important;
+  }
+
+  /* Transparent state: on-dark items */
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
     color: var(--section-dark-fg);
-    background: transparent !important;
   }
 
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:hover,
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"]:focus,
-  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-trigger"][data-state="open"] {
-    background: transparent !important;
-    color: var(--section-dark-fg);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
-  }
-
-  /* Solid state: standard light triggers */
-  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"],
-  header[data-overlay="false"] [data-slot="navigation-menu-trigger"] {
+  /* Solid state: standard light items */
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"],
+  header[data-overlay="false"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header[data-overlay="false"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
     color: var(--foreground);
-    background: transparent !important;
   }
 
-  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"]:hover,
-  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"]:focus,
-  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-trigger"][data-state="open"],
-  header[data-overlay="false"] [data-slot="navigation-menu-trigger"]:hover,
-  header[data-overlay="false"] [data-slot="navigation-menu-trigger"]:focus,
-  header[data-overlay="false"] [data-slot="navigation-menu-trigger"][data-state="open"] {
-    background: transparent !important;
-    color: var(--foreground);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
+  /* Animated underline pseudo-element: ::after on all first-level items */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
+    content: "";
+    position: absolute;
+    left: 0.625rem;
+    right: 0.625rem;
+    bottom: 0.25rem;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 200ms ease-out;
   }
 
-  /* Active nav link: persistent underline (both states) */
-  header [data-slot="navigation-menu-link"][data-active] {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
+  /* Hover / focus / open — animate underline to full width */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:hover::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:focus::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"][data-state="open"]::after {
+    transform: scaleX(1);
+  }
+
+  /* Active nav link: persistent underline (no animation on persistent state) */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"][data-active]::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  /* Reduced motion: disable animation */
+  @media (prefers-reduced-motion: reduce) {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
+      transition: none;
+    }
   }
 
   /* ========================================================================
