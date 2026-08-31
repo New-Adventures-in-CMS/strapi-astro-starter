@@ -2,6 +2,7 @@
 import { getHeaderNav } from "@/lib/navigation";
 import { site } from "@/config/site";
 import { Container } from "@/components/layout";
+import Logo from "@/components/Logo.astro";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -32,15 +33,19 @@ const isActive = (href: string | undefined): boolean =>
 
 <header
   class:list={[
-    overlay && "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-    !overlay && "border-b border-border",
+    "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
+    !overlay && "bg-background text-foreground border-b border-border",
   ]}
   data-overlay={overlay ? "true" : "false"}
   data-state={overlay ? "transparent" : undefined}
+  data-hidden="false"
 >
   <Container width="wide" class="flex items-center justify-between py-5">
     <!-- Brand -->
-    <a href="/" class="text-lg font-semibold">{site.name}</a>
+    <a href="/" class="flex items-center gap-2" aria-label={site.name}>
+      <Logo class="h-6 w-6" />
+      <span class="text-lg font-semibold">{site.name}</span>
+    </a>
 
     <!-- Desktop nav (md and up) -->
     <nav aria-label="Navigazione principale" class="hidden md:flex">
@@ -187,4 +192,49 @@ const isActive = (href: string | undefined): boolean =>
       }
     </script>
   )}
+
+  <!-- Auto-hide script: directional scroll detection with focus reveal -->
+  <script>
+    const header = document.querySelector("header[data-hidden]");
+    if (header) {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) {
+        header.style.transition = "none";
+      }
+
+      let lastY = window.scrollY;
+      let ticking = false;
+      const THRESHOLD = 8;
+      const TOP_THRESHOLD = 40;
+
+      function update() {
+        const y = window.scrollY;
+        const delta = y - lastY;
+
+        if (y <= TOP_THRESHOLD) {
+          header.setAttribute("data-hidden", "false");
+        } else if (Math.abs(delta) >= THRESHOLD) {
+          if (delta > 0) {
+            header.setAttribute("data-hidden", "true");
+          } else {
+            header.setAttribute("data-hidden", "false");
+          }
+          lastY = y;
+        }
+        ticking = false;
+      }
+
+      window.addEventListener("scroll", () => {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      }, { passive: true });
+
+      // Focus reveal
+      header.addEventListener("focusin", () => {
+        header.setAttribute("data-hidden", "false");
+      });
+    }
+  </script>
 </header>

@@ -1,0 +1,32 @@
+---
+/**
+ * Placeholder inline SVG logo.
+ *
+ * Uses `fill="currentColor"` so the logo inherits the parent text color
+ * (Header swaps between on-dark and on-light states without extra logic).
+ *
+ * To replace with a multi-color brand mark, keep this component's contract
+ * (renders <svg role="img">, sizes via `class` prop) and either:
+ *   1) Keep a single-color SVG that inherits currentColor (simplest, works
+ *      across states)
+ *   2) Ship two variants (logo-on-light.svg, logo-on-dark.svg) and switch
+ *      via a CSS attribute selector on the header state (see Header.astro).
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = "h-6 w-6" } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  fill="currentColor"
+  role="img"
+  aria-hidden="true"
+  class={className}
+>
+  <path d="M4 4h10v10H4V4zm14 0h10v10H18V4zM4 18h10v10H4V18zm14 0h10v10H18V18z" opacity="0.85" />
+  <path d="M14 14h4v4h-4z" />
+</svg>
