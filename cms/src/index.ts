@@ -23,9 +23,10 @@ async function uploadSeedImage(
   alt: string,
 ): Promise<{ id: number; documentId: string } | null> {
   try {
-    // Idempotence: check if a media with this name already exists.
+    // Idempotence: use basename for lookup (subpaths not stored in name)
+    const basename = path.basename(filename);
     const existing = await strapi.db.query("plugin::upload.file").findOne({
-      where: { name: filename },
+      where: { name: basename },
     });
     if (existing) {
       strapi.log.debug(`[seed] Reusing existing media: ${filename}`);
@@ -57,12 +58,12 @@ async function uploadSeedImage(
         fileInfo: {
           alternativeText: alt,
           caption: alt,
-          name: filename,
+          name: basename,
         },
       },
       files: {
         filepath: fullPath,
-        originalFilename: filename,
+        originalFilename: basename,
         mimetype: mime,
         size,
       },
@@ -91,6 +92,55 @@ async function seedDemoPages(strapi: Core.Strapi) {
       "image-text-about.svg",
       "Abstract dark editorial illustration",
     );
+
+    // Upload card images (light grid + dark grid)
+    const cardImgs = {
+      cms: await uploadSeedImage(
+        strapi,
+        "cards/card-01-cms.svg",
+        "Headless CMS abstract illustration",
+      ),
+      blocks: await uploadSeedImage(
+        strapi,
+        "cards/card-02-blocks.svg",
+        "Block builder abstract illustration",
+      ),
+      design: await uploadSeedImage(
+        strapi,
+        "cards/card-03-design.svg",
+        "Design system abstract illustration",
+      ),
+      forms: await uploadSeedImage(
+        strapi,
+        "cards/card-04-forms.svg",
+        "Dynamic forms abstract illustration",
+      ),
+      seo: await uploadSeedImage(
+        strapi,
+        "cards/card-05-seo.svg",
+        "SEO sitemap abstract illustration",
+      ),
+      deploy: await uploadSeedImage(
+        strapi,
+        "cards/card-06-deploy.svg",
+        "Deploy abstract illustration",
+      ),
+      clone: await uploadSeedImage(
+        strapi,
+        "cards/card-07-clone.svg",
+        "Clone-and-run abstract illustration",
+      ),
+      editorial: await uploadSeedImage(
+        strapi,
+        "cards/card-08-editorial.svg",
+        "Editorial-by-default abstract illustration",
+      ),
+      tokens: await uploadSeedImage(
+        strapi,
+        "cards/card-09-tokens.svg",
+        "Repointable tokens abstract illustration",
+      ),
+    };
 
     // Home — immersive hero with image + two card grids (light + dark statement) + rich text
     await strapi.documents("api::page.page").create({
@@ -122,31 +172,37 @@ async function seedDemoPages(strapi: Core.Strapi) {
                 title: "Headless CMS",
                 description:
                   "Manage pages, navigation, and forms from Strapi's admin. Content-types and components are versioned as JSON — no vendor UI.",
+                image: cardImgs.cms?.id ?? undefined,
               },
               {
                 title: "Block page builder",
                 description:
                   "Compose pages with reusable blocks — hero, rich text, image + text, card grids — and add new ones by dropping a schema + an Astro renderer.",
+                image: cardImgs.blocks?.id ?? undefined,
               },
               {
                 title: "Design system built in",
                 description:
                   "Section and Container primitives, a fluid type scale, semantic tokens ready for a Radix repoint. Change the accent in one place, everywhere follows.",
+                image: cardImgs.design?.id ?? undefined,
               },
               {
                 title: "Dynamic forms",
                 description:
                   "Form definitions live in the CMS. Submissions land in the admin, honeypots and Turnstile-ready validation on the frontend.",
+                image: cardImgs.forms?.id ?? undefined,
               },
               {
                 title: "SEO and sitemap",
                 description:
                   "Server-rendered pages, per-page canonical + description fields, sitemap generated at build time.",
+                image: cardImgs.seo?.id ?? undefined,
               },
               {
                 title: "Ready to deploy",
                 description:
                   "Astro SSR on Node, TypeScript everywhere, environment scaffolding on first run. Ship it to any Node host.",
+                image: cardImgs.deploy?.id ?? undefined,
               },
             ],
           },
@@ -161,16 +217,19 @@ async function seedDemoPages(strapi: Core.Strapi) {
                 title: "Clone and run",
                 description:
                   "install:all, dev, done. No manual env plumbing, no missing steps.",
+                image: cardImgs.clone?.id ?? undefined,
               },
               {
                 title: "Editorial by default",
                 description:
                   "Dark statement bands, uppercase display headlines, generous rhythm — tuned, not vanilla.",
+                image: cardImgs.editorial?.id ?? undefined,
               },
               {
                 title: "Repointable tokens",
                 description:
                   "Semantic color layer isolated from Tailwind palette — swap to Radix Colors without touching components.",
+                image: cardImgs.tokens?.id ?? undefined,
               },
             ],
           },
