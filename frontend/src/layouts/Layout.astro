@@ -30,7 +30,7 @@ const { title, description, image, canonical, noindex, headerOverlay = false } =
   </head>
   <body class="flex min-h-screen flex-col">
     <Header overlay={headerOverlay} />
-    <main class:list={[headerOverlay ? "" : "", "flex-1"]}>
+    <main class:list={[!headerOverlay && "pt-[var(--header-h)]", "flex-1"]}>
       <slot />
     </main>
     <Footer />
