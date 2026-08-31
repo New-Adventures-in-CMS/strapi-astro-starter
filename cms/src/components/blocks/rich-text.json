@@ -3,13 +3,18 @@
   "info": {
     "displayName": "Rich Text",
     "icon": "file-text",
-    "description": "Markdown text block"
+    "description": "Markdown text block with optional alignment"
   },
   "options": {},
   "attributes": {
     "body": {
       "type": "richtext",
       "required": true
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": ["left", "center"],
+      "default": "left"
     }
   }
 }

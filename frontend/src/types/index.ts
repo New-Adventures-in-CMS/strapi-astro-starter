@@ -35,6 +35,7 @@ export interface BlockHero {
 export interface BlockRichText {
   __component: "blocks.rich-text";
   body: string;
+  align?: "left" | "center" | null;
 }
 
 export interface BlockImageText {

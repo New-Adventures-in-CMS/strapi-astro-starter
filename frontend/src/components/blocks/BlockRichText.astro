@@ -5,15 +5,17 @@ import { renderMarkdown } from "@/lib/markdown";
 
 interface Props {
   body: string;
+  align?: "left" | "center" | null;
 }
 
-const { body } = Astro.props;
+const { body, align } = Astro.props;
 const html = renderMarkdown(body);
+const isCenter = align === "center";
 ---
 
 <Section spacing="default">
-  <Container width="prose">
-    <Prose>
+  <Container width="prose" class={isCenter ? "text-center" : undefined}>
+    <Prose class={isCenter ? "text-center [&_h2]:text-center [&_h3]:text-center [&_p]:text-center" : undefined}>
       <div set:html={html} />
     </Prose>
   </Container>
