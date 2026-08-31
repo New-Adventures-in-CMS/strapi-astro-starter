@@ -1,32 +1,49 @@
 ---
 /**
- * Placeholder inline SVG logo.
+ * Logo lockup: single SVG combining mark (symbol) + wordmark (text).
  *
- * Uses `fill="currentColor"` so the logo inherits the parent text color
- * (Header swaps between on-dark and on-light states without extra logic).
+ * Uses `fill="currentColor"` so colors inherit from header state
+ * (transparent on-dark vs solid on-light).
  *
- * To replace with a multi-color brand mark, keep this component's contract
- * (renders <svg role="img">, sizes via `class` prop) and either:
- *   1) Keep a single-color SVG that inherits currentColor (simplest, works
- *      across states)
- *   2) Ship two variants (logo-on-light.svg, logo-on-dark.svg) and switch
- *      via a CSS attribute selector on the header state (see Header.astro).
+ * To replace: edit the SVG path / text content below, or import an external
+ * SVG file. Keep the component contract (renders <svg role="img">, sized
+ * via class prop). The <text> element uses system fonts; for exact type
+ * control, path-outline the wordmark or inject a web font.
+ *
+ * ViewBox: 160 x 40 (aspect 4:1, wide lockup format)
  */
 interface Props {
   class?: string;
 }
 
-const { class: className = "h-6 w-6" } = Astro.props;
+const { class: className = "h-8 w-auto" } = Astro.props;
 ---
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 32 32"
+  viewBox="0 0 160 40"
   fill="currentColor"
   role="img"
   aria-hidden="true"
   class={className}
 >
-  <path d="M4 4h10v10H4V4zm14 0h10v10H18V4zM4 18h10v10H4V18zm14 0h10v10H18V18z" opacity="0.85" />
-  <path d="M14 14h4v4h-4z" />
+  <!-- Mark: 4-square + inner square pattern (0–40px wide) -->
+  <rect x="0" y="0" width="8" height="8" opacity="0.85" />
+  <rect x="12" y="0" width="8" height="8" opacity="0.85" />
+  <rect x="0" y="12" width="8" height="8" opacity="0.85" />
+  <rect x="12" y="12" width="8" height="8" opacity="0.85" />
+  <rect x="9" y="9" width="2" height="2" />
+
+  <!-- Wordmark: "STARTER" text, sans-serif bold (56–160px wide) -->
+  <text
+    x="48"
+    y="28"
+    font-family="var(--font-sans, Inter, system-ui, sans-serif)"
+    font-weight="700"
+    font-size="16"
+    letter-spacing="0.5"
+    fill="currentColor"
+  >
+    STARTER
+  </text>
 </svg>
