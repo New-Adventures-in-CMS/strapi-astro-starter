@@ -27,6 +27,19 @@
 }
 
 @theme inline {
+  /* Typography: font families and scale */
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-sora), var(--font-sans);
+
+  /* Fluid type scale */
+  --fs-display: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  --fs-h1: var(--fs-display);
+  --fs-h2: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  --fs-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
+  --fs-lead: 1.125rem;
+  --fs-body: 1rem;
+
+  /* Color tokens */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -71,6 +84,26 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-outline: var(--sidebar-outline);
+
+  /* ------------------------------------------------------------------
+   * SEMANTIC TOKEN MAPPING (raw palette → semantic role)
+   * Refactored components MUST reference the semantic token, never the
+   * raw palette color (e.g. use var(--section-dark-fg), not neutral-50).
+   * A future repoint to Radix Colors is values-only, no component churn.
+   * ------------------------------------------------------------------ */
+
+  /* Section tones */
+  --section-dark-bg: var(--color-neutral-950);
+  --section-dark-fg: var(--color-neutral-50);
+  --section-dark-fg-muted: color-mix(in srgb, var(--color-neutral-50) 80%, transparent);
+  --section-dark-fg-subtle: color-mix(in srgb, var(--color-neutral-50) 70%, transparent);
+  --section-dark-cta-bg: var(--color-neutral-50);
+  --section-dark-cta-fg: var(--color-neutral-950);
+  --section-dark-cta-bg-hover: color-mix(in srgb, var(--color-neutral-50) 90%, transparent);
+  --section-dark-overlay-from: color-mix(in srgb, var(--color-neutral-950) 70%, transparent);
+  --section-dark-overlay-via: color-mix(in srgb, var(--color-neutral-950) 50%, transparent);
+  --section-dark-overlay-to: color-mix(in srgb, var(--color-neutral-950) 30%, transparent);
+  --section-dark-accent: color-mix(in srgb, var(--color-neutral-50) 8%, transparent);
 }
 
 :root {
@@ -80,9 +113,9 @@
   --card-foreground: var(--color-neutral-950);
   --popover: var(--color-white);
   --popover-foreground: var(--color-neutral-950);
-  --primary: var(--color-blue-700);
+  --primary: var(--color-neutral-950);
   --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-700);
+  --primary-accent: var(--color-neutral-950);
   --secondary: var(--color-neutral-200);
   --secondary-foreground: var(--color-neutral-950);
   --secondary-accent: var(--color-neutral-950);
@@ -103,10 +136,13 @@
   --outline: var(--color-neutral-400);
   --radius: 0.625rem;
 
+  /* Header sizing: py-5 + line-height for brand text */
+  --header-h: 4.5rem;
+
   /* sidebar variables */
   --sidebar-background: var(--color-neutral-50);
   --sidebar-foreground: var(--color-neutral-950);
-  --sidebar-primary: var(--color-blue-700);
+  --sidebar-primary: var(--color-neutral-950);
   --sidebar-primary-foreground: var(--color-neutral-50);
   --sidebar-accent: var(--color-neutral-100);
   --sidebar-accent-foreground: var(--color-neutral-900);
@@ -121,9 +157,9 @@
   --card-foreground: var(--color-neutral-50);
   --popover: var(--color-neutral-900);
   --popover-foreground: var(--color-neutral-50);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-400);
+  --primary: var(--color-neutral-50);
+  --primary-foreground: var(--color-neutral-950);
+  --primary-accent: var(--color-neutral-300);
   --secondary: var(--color-neutral-800);
   --secondary-foreground: var(--color-neutral-50);
   --secondary-accent: var(--color-neutral-50);
@@ -146,8 +182,8 @@
   /* sidebars variables */
   --sidebar-background: var(--color-neutral-900);
   --sidebar-foreground: var(--color-neutral-50);
-  --sidebar-primary: var(--color-blue-700);
-  --sidebar-primary-foreground: var(--color-neutral-50);
+  --sidebar-primary: var(--color-neutral-50);
+  --sidebar-primary-foreground: var(--color-neutral-950);
   --sidebar-accent: var(--color-neutral-800);
   --sidebar-accent-foreground: var(--color-neutral-100);
   --sidebar-border: var(--color-neutral-800);
@@ -155,13 +191,229 @@
 }
 
 @layer base {
+  /* Global reset */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground scheme-light dark:scheme-dark;
+    margin: 0;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Starwind base */
   * {
     @apply border-border outline-outline/50;
   }
-  body {
-    @apply bg-background text-foreground scheme-light dark:scheme-dark;
-  }
+
   button {
     @apply cursor-pointer;
+  }
+
+  /* Typography scale */
+  h1,
+  .h1 {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h1);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  h2,
+  .h2 {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  h3,
+  .h3 {
+    font-family: var(--font-heading);
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  p,
+  li {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+  }
+
+  .lead {
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--color-muted-foreground);
+  }
+}
+
+@layer components {
+  /* ========================================================================
+   * HEADER AUTO-HIDE (Presence Axis A - global, independent of overlay)
+   * ======================================================================== */
+
+  /* Transform for hidden state */
+  header[data-hidden="true"] {
+    transform: translateY(-100%);
+  }
+
+  header[data-hidden="false"] {
+    transform: translateY(0);
+  }
+
+  /* ========================================================================
+   * HEADER OVERLAY MODE (Axis B - transparent/solid state transitions)
+   * Overlay transparent: on-dark over hero
+   * Overlay solid: past hero or non-immersive
+   * Non-overlay (data-overlay="false"): always solid (no transparent state)
+   * ======================================================================== */
+
+  /* Transparent state: on-dark styling */
+  header[data-overlay="true"][data-state="transparent"] {
+    background: transparent;
+    color: var(--section-dark-fg);
+    border-bottom-color: transparent;
+  }
+
+  header[data-overlay="true"][data-state="transparent"] a {
+    color: var(--section-dark-fg);
+  }
+
+  /* Solid state: standard light styling (immersive scrolled past hero OR non-immersive) */
+  header[data-overlay="true"][data-state="solid"],
+  header[data-overlay="false"] {
+    background: var(--background);
+    color: var(--foreground);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header[data-overlay="true"][data-state="solid"] a,
+  header[data-overlay="false"] a {
+    color: var(--foreground);
+  }
+
+  /* ========================================================================
+   * NAV ITEM STYLING (ALL FIRST-LEVEL ITEMS — TRIGGERS + LINKS)
+   * Underline on hover/focus/open/active via animated ::after pseudo-element
+   * NO background fill in any state
+   * Scope: header nav > * > [data-slot="navigation-menu-link|trigger"]
+   * (excludes links inside dropdown popup which are not direct children of list items)
+   * ======================================================================== */
+
+  /* Base state — all first-level items: position for pseudo-element */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+    position: relative;
+    text-decoration: none !important;
+    background: transparent !important;
+  }
+
+  /* Transparent state: on-dark items */
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header[data-overlay="true"][data-state="transparent"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+    color: var(--section-dark-fg);
+  }
+
+  /* Solid state: standard light items */
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header[data-overlay="true"][data-state="solid"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"],
+  header[data-overlay="false"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header[data-overlay="false"] [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+    color: var(--foreground);
+  }
+
+  /* Animated underline pseudo-element: ::after on all first-level items */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
+    content: "";
+    position: absolute;
+    left: 0.625rem;
+    right: 0.625rem;
+    bottom: 0.25rem;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 200ms ease-out;
+  }
+
+  /* Hover / focus / open — animate underline to full width */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:hover::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:focus::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"][data-state="open"]::after {
+    transform: scaleX(1);
+  }
+
+  /* Active nav link: persistent underline (no animation on persistent state) */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"][data-active]::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  /* Reduced motion: disable animation */
+  @media (prefers-reduced-motion: reduce) {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
+      transition: none;
+    }
+  }
+
+  /* ========================================================================
+   * HAMBURGER BUTTON STYLING
+   * ======================================================================== */
+
+  /* Transparent state: on-dark hamburger */
+  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"] {
+    color: var(--section-dark-fg);
+  }
+
+  header[data-overlay="true"][data-state="transparent"] button[aria-label="Apri menu di navigazione"]:hover {
+    background: transparent;
+    text-decoration: underline;
+  }
+
+  /* Solid state: standard light hamburger */
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"],
+  header[data-overlay="false"] button[aria-label="Apri menu di navigazione"] {
+    color: var(--foreground);
+  }
+
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"]:hover,
+  header[data-overlay="false"] button[aria-label="Apri menu di navigazione"]:hover {
+    background: var(--muted);
+  }
+
+  /* ========================================================================
+   * MOTION PREFERENCES
+   * Transition for auto-hide; respects prefers-reduced-motion
+   * ======================================================================== */
+
+  @media (prefers-reduced-motion: no-preference) {
+    header[data-hidden] {
+      transition: transform 300ms ease, background 300ms ease, color 300ms ease;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    header[data-hidden] {
+      transition: none;
+    }
   }
 }

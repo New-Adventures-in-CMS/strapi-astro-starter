@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import { Button } from "@/components/starwind/button";
 import { Separator } from "@/components/starwind/separator";
@@ -52,77 +53,83 @@ const cards = [
   description="Pagina placeholder che mostra i componenti di base di Starwind UI."
 >
   <!-- Hero -->
-  <section class="py-12">
-    <Prose>
-      <h1>Design System — Starwind UI</h1>
-      <p>
-        Questa pagina dimostra i componenti di base disponibili in questo starter.
-        Tutti i contenuti sono fittizi: sostituiscili con dati reali dal CMS.
-      </p>
-    </Prose>
-    <div class="mt-6 flex flex-wrap gap-3">
-      <Button variant="default" href="/pagine">Esplora le pagine</Button>
-      <Button variant="outline" href="https://starwind.dev/docs" target="_blank" rel="noopener noreferrer">
-        Documentazione Starwind
-      </Button>
-    </div>
-  </section>
+  <Section spacing="sm">
+    <Container width="wide">
+      <Prose>
+        <h1>Design System — Starwind UI</h1>
+        <p>
+          Questa pagina dimostra i componenti di base disponibili in questo starter.
+          Tutti i contenuti sono fittizi: sostituiscili con dati reali dal CMS.
+        </p>
+      </Prose>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <Button variant="default" href="/pagine">Esplora le pagine</Button>
+        <Button variant="outline" href="https://starwind.dev/docs" target="_blank" rel="noopener noreferrer">
+          Documentazione Starwind
+        </Button>
+      </div>
+    </Container>
+  </Section>
 
   <Separator class="my-2" />
 
   <!-- Card grid -->
-  <section class="py-12">
-    <h2 class="mb-6 text-xl font-semibold text-gray-900">Componenti Card</h2>
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {cards.map((c) => (
-        <Card size="md">
-          <CardHeader>
-            <div class="flex items-start justify-between gap-2">
-              <CardTitle>{c.title}</CardTitle>
-              <Badge tone={c.badge.tone} appearance="soft" size="sm">
-                {c.badge.label}
-              </Badge>
-            </div>
-            <CardDescription>{c.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p class="text-sm text-gray-500">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore.
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button variant="ghost" size="sm">Dettagli</Button>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
-  </section>
+  <Section spacing="sm">
+    <Container width="wide">
+      <h2 class="mb-6 text-foreground">Componenti Card</h2>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map((c) => (
+          <Card size="md">
+            <CardHeader>
+              <div class="flex items-start justify-between gap-2">
+                <CardTitle>{c.title}</CardTitle>
+                <Badge tone={c.badge.tone} appearance="soft" size="sm">
+                  {c.badge.label}
+                </Badge>
+              </div>
+              <CardDescription>{c.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p class="text-sm text-muted-foreground">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button variant="ghost" size="sm">Dettagli</Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </Container>
+  </Section>
 
   <Separator class="my-2" />
 
   <!-- Typography demo -->
-  <section class="py-12">
-    <h2 class="mb-6 text-xl font-semibold text-gray-900">Tipografia (Prose)</h2>
-    <Prose>
-      <h2>Titolo di secondo livello</h2>
-      <p>
-        Paragrafo di esempio con testo lorem ipsum. Qui puoi inserire contenuti
-        provenienti dal CMS, come il campo <code>body</code> di una pagina Strapi.
-      </p>
-      <ul>
-        <li>Voce di lista uno</li>
-        <li>Voce di lista due</li>
-        <li>Voce di lista tre</li>
-      </ul>
-      <blockquote>
-        Questa è una citazione di esempio per verificare lo stile del blocco
-        blockquote nel design system.
-      </blockquote>
-      <p>
-        Testo con <strong>grassetto</strong>, <em>corsivo</em> e
-        <a href="#">link di esempio</a>.
-      </p>
-    </Prose>
-  </section>
+  <Section spacing="sm">
+    <Container width="wide">
+      <h2 class="mb-6 text-foreground">Tipografia (Prose)</h2>
+      <Prose>
+        <h2>Titolo di secondo livello</h2>
+        <p>
+          Paragrafo di esempio con testo lorem ipsum. Qui puoi inserire contenuti
+          provenienti dal CMS, come il campo <code>body</code> di una pagina Strapi.
+        </p>
+        <ul>
+          <li>Voce di lista uno</li>
+          <li>Voce di lista due</li>
+          <li>Voce di lista tre</li>
+        </ul>
+        <blockquote>
+          Questa è una citazione di esempio per verificare lo stile del blocco
+          blockquote nel design system.
+        </blockquote>
+        <p>
+          Testo con <strong>grassetto</strong>, <em>corsivo</em> e
+          <a href="#">link di esempio</a>.
+        </p>
+      </Prose>
+    </Container>
+  </Section>
 </Layout>

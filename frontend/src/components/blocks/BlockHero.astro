@@ -1,5 +1,6 @@
 ---
 import type { StrapiMedia } from "@/types";
+import { Section, Container } from "@/components/layout";
 import { Button } from "@/components/starwind/button";
 import { strapiMediaUrl } from "@/lib/strapi";
 
@@ -9,62 +10,70 @@ interface Props {
   cta_text?: string | null;
   cta_url?: string | null;
   image?: StrapiMedia | null;
+  eyebrow?: string | null;
+  immersive?: boolean | null;
 }
 
-const { heading, subheading, cta_text, cta_url, image } = Astro.props;
+const { heading, subheading, cta_text, cta_url, image, eyebrow, immersive } = Astro.props;
 const imageUrl = image ? strapiMediaUrl(image.url) : null;
 const showCta = cta_text && cta_url;
+const altText = image?.alternativeText || "";
 ---
 
-{
-  imageUrl ? (
-    // Hero with background image
-    <section
-      class="relative overflow-hidden py-20 sm:py-28"
-      style={{
-        backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('${imageUrl}')`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div class="relative max-w-3xl mx-auto px-4 text-center text-white">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-          {heading}
-        </h1>
-        {subheading && (
-          <p class="mt-4 text-lg sm:text-xl text-white/80">
-            {subheading}
-          </p>
-        )}
-        {showCta && (
-          <div class="mt-8">
-            <Button variant="default" href={cta_url}>
-              {cta_text}
-            </Button>
-          </div>
-        )}
-      </div>
-    </section>
+<Section
+  tone="dark"
+  spacing="none"
+  class:list={[
+    "relative overflow-hidden flex items-center justify-center",
+    immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
+  ]}
+>
+  {imageUrl ? (
+    <>
+      <img
+        src={imageUrl}
+        alt={altText}
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]"
+      />
+    </>
   ) : (
-    // Hero without image
-    <section class="py-20 sm:py-28 bg-gradient-to-br from-muted via-background to-muted">
-      <div class="max-w-3xl mx-auto px-4 text-center">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-          {heading}
-        </h1>
-        {subheading && (
-          <p class="mt-4 text-lg sm:text-xl text-muted-foreground">
-            {subheading}
-          </p>
-        )}
-        {showCta && (
-          <div class="mt-8">
-            <Button variant="default" href={cta_url}>
-              {cta_text}
-            </Button>
-          </div>
-        )}
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+    />
+  )}
+
+  <Container width="default" class="relative z-10 text-center">
+    {eyebrow && (
+      <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+        {eyebrow}
+      </p>
+    )}
+    <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+      {heading}
+    </h1>
+    {subheading && (
+      <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
+        {subheading}
+      </p>
+    )}
+    {showCta && (
+      <div class="mt-10">
+        <Button
+          variant="default"
+          size="lg"
+          href={cta_url}
+          class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+        >
+          {cta_text}
+        </Button>
       </div>
-    </section>
-  )
-}
+    )}
+  </Container>
+
+  {immersive && (
+    <div id="header-overlay-sentinel" class="pointer-events-none absolute bottom-0 h-px w-full" aria-hidden="true"></div>
+  )}
+</Section>

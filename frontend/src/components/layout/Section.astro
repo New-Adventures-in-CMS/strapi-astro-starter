@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { section } from "./variants";
+
+type Tone = "default" | "muted" | "dark";
+type Spacing = "default" | "sm" | "none";
+
+interface Props extends HTMLAttributes<"section"> {
+  tone?: Tone;
+  spacing?: Spacing;
+  as?: keyof HTMLElementTagNameMap;
+  class?: string;
+}
+
+const {
+  tone = "default",
+  spacing = "default",
+  as: Tag = "section",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Tag class={section({ tone, spacing, class: className })} {...rest}>
+  <slot />
+</Tag>

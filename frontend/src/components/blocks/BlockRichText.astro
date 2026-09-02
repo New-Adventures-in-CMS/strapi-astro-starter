@@ -1,19 +1,27 @@
 ---
 import { Prose } from "@/components/starwind/prose";
+import { Section, Container } from "@/components/layout";
 import { renderMarkdown } from "@/lib/markdown";
 
 interface Props {
   body: string;
+  align?: "left" | "center" | "right" | null;
 }
 
-const { body } = Astro.props;
+const { body, align } = Astro.props;
 const html = renderMarkdown(body);
+const alignClass =
+  align === "center"
+    ? "text-center [&_h1]:text-center [&_h2]:text-center [&_h3]:text-center [&_p]:text-center [&_li]:text-center"
+    : align === "right"
+      ? "text-right [&_h1]:text-right [&_h2]:text-right [&_h3]:text-right [&_p]:text-right [&_li]:text-right"
+      : undefined;
 ---
 
-<section class="py-16 px-4">
-  <div class="max-w-3xl mx-auto">
-    <Prose>
+<Section spacing="default">
+  <Container width="prose" class={alignClass}>
+    <Prose class={alignClass}>
       <div set:html={html} />
     </Prose>
-  </div>
-</section>
+  </Container>
+</Section>

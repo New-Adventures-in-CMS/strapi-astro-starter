@@ -1,4 +1,6 @@
 import type { Core } from "@strapi/strapi";
+import fs from "node:fs";
+import path from "node:path";
 
 const PUBLIC_COLLECTION_UIDS: string[] = [
   "api::form.form",
@@ -8,48 +10,233 @@ const PUBLIC_COLLECTION_UIDS: string[] = [
 
 const PUBLIC_SINGLE_UIDS: string[] = [];
 
+const SEED_ASSETS_DIR = path.join(process.cwd(), "seed-assets");
+
+/**
+ * Upload a seed image from the seed-assets directory.
+ * Idempotent — skips if a media file with the same name already exists.
+ * Returns { id, documentId } for attachment to content, or null if failed.
+ */
+async function uploadSeedImage(
+  strapi: Core.Strapi,
+  filename: string,
+  alt: string,
+): Promise<{ id: number; documentId: string } | null> {
+  try {
+    // Idempotence: use basename for lookup (subpaths not stored in name)
+    const basename = path.basename(filename);
+    const existing = await strapi.db.query("plugin::upload.file").findOne({
+      where: { name: basename },
+    });
+    if (existing) {
+      strapi.log.debug(`[seed] Reusing existing media: ${filename}`);
+      return { id: existing.id, documentId: existing.documentId };
+    }
+
+    const fullPath = path.join(SEED_ASSETS_DIR, filename);
+    if (!fs.existsSync(fullPath)) {
+      strapi.log.warn(`[seed] Asset not found: ${fullPath}`);
+      return null;
+    }
+
+    const size = fs.statSync(fullPath).size;
+    const ext = path.extname(filename).toLowerCase();
+    const mime =
+      ext === ".svg"
+        ? "image/svg+xml"
+        : ext === ".png"
+          ? "image/png"
+          : ext === ".jpg" || ext === ".jpeg"
+            ? "image/jpeg"
+            : ext === ".webp"
+              ? "image/webp"
+              : "application/octet-stream";
+
+    const uploadService = strapi.plugin("upload").service("upload");
+    const [uploaded] = await uploadService.upload({
+      data: {
+        fileInfo: {
+          alternativeText: alt,
+          caption: alt,
+          name: basename,
+        },
+      },
+      files: {
+        filepath: fullPath,
+        originalFilename: basename,
+        mimetype: mime,
+        size,
+      },
+    });
+
+    strapi.log.info(`[seed] Uploaded: ${filename} → ${uploaded.id}`);
+    return { id: uploaded.id, documentId: uploaded.documentId };
+  } catch (err) {
+    strapi.log.error(
+      `[seed] Upload failed for ${filename}: ${String(err)}`,
+    );
+    return null;
+  }
+}
+
 async function seedDemoPages(strapi: Core.Strapi) {
   try {
-    // Home — hero + card grid + rich text
+    // Upload seed images (idempotent)
+    const heroImg = await uploadSeedImage(
+      strapi,
+      "hero-home.svg",
+      "Abstract dark editorial hero background",
+    );
+    const aboutImg = await uploadSeedImage(
+      strapi,
+      "image-text-about.svg",
+      "Abstract dark editorial illustration",
+    );
+
+    // Upload card images (light grid + dark grid)
+    const cardImgs = {
+      cms: await uploadSeedImage(
+        strapi,
+        "cards/card-01-cms.svg",
+        "Headless CMS abstract illustration",
+      ),
+      blocks: await uploadSeedImage(
+        strapi,
+        "cards/card-02-blocks.svg",
+        "Block builder abstract illustration",
+      ),
+      design: await uploadSeedImage(
+        strapi,
+        "cards/card-03-design.svg",
+        "Design system abstract illustration",
+      ),
+      forms: await uploadSeedImage(
+        strapi,
+        "cards/card-04-forms.svg",
+        "Dynamic forms abstract illustration",
+      ),
+      seo: await uploadSeedImage(
+        strapi,
+        "cards/card-05-seo.svg",
+        "SEO sitemap abstract illustration",
+      ),
+      deploy: await uploadSeedImage(
+        strapi,
+        "cards/card-06-deploy.svg",
+        "Deploy abstract illustration",
+      ),
+      clone: await uploadSeedImage(
+        strapi,
+        "cards/card-07-clone.svg",
+        "Clone-and-run abstract illustration",
+      ),
+      editorial: await uploadSeedImage(
+        strapi,
+        "cards/card-08-editorial.svg",
+        "Editorial-by-default abstract illustration",
+      ),
+      tokens: await uploadSeedImage(
+        strapi,
+        "cards/card-09-tokens.svg",
+        "Repointable tokens abstract illustration",
+      ),
+    };
+
+    // Home — immersive hero with image + two card grids (light + dark statement) + rich text
     await strapi.documents("api::page.page").create({
       data: {
         title: "Home",
         slug: "home",
         seo_desc:
-          "A production-ready starter kit combining Strapi 5 (headless CMS) with Astro 7 (server-rendered frontend).",
+          "Production-ready starter kit combining Strapi 5 headless CMS with Astro 7 server-rendered pages, a block-based page builder, dynamic forms, and a design system tuned for editorial layouts.",
         blocks: [
           {
             __component: "blocks.hero",
-            heading: "Build faster with Strapi + Astro",
+            eyebrow: "STARTER KIT",
+            heading: "Ship editorial content, fast.",
             subheading:
-              "A production-ready starter kit with headless CMS, server-rendered pages, and a block-based page builder.",
-            cta_text: "Explore components",
+              "A production-ready foundation for content-driven sites: Strapi handles the CMS, Astro renders on the server, the design system carries the taste.",
+            cta_text: "Explore the design system",
             cta_url: "/esempio",
+            immersive: true,
+            image: heroImg ? heroImg.id : undefined,
           },
           {
             __component: "blocks.card-grid",
-            heading: "Everything you need",
+            eyebrow: "WHAT'S INSIDE",
+            heading: "Everything a modern content site needs",
+            lead: "Batteries included, no lock-in: swap fonts, tokens, or blocks without unwiring the stack.",
+            tone: "light",
             cards: [
               {
                 title: "Headless CMS",
                 description:
-                  "Manage content from Strapi's intuitive admin panel. Create pages, menus, and forms without touching code.",
+                  "Manage pages, navigation, and forms from Strapi's admin. Content-types and components are versioned as JSON — no vendor UI.",
+                image: cardImgs.cms?.id ?? undefined,
               },
               {
-                title: "Block Page Builder",
+                title: "Block page builder",
                 description:
-                  "Compose pages with reusable blocks — hero banners, rich text, image sections, and card grids.",
+                  "Compose pages with reusable blocks — hero, rich text, image + text, card grids — and add new ones by dropping a schema + an Astro renderer.",
+                image: cardImgs.blocks?.id ?? undefined,
               },
               {
-                title: "Ready to Deploy",
+                title: "Design system built in",
                 description:
-                  "Astro SSR, Tailwind CSS, TypeScript — built for production from day one.",
+                  "Section and Container primitives, a fluid type scale, semantic tokens ready for a Radix repoint. Change the accent in one place, everywhere follows.",
+                image: cardImgs.design?.id ?? undefined,
+              },
+              {
+                title: "Dynamic forms",
+                description:
+                  "Form definitions live in the CMS. Submissions land in the admin, honeypots and Turnstile-ready validation on the frontend.",
+                image: cardImgs.forms?.id ?? undefined,
+              },
+              {
+                title: "SEO and sitemap",
+                description:
+                  "Server-rendered pages, per-page canonical + description fields, sitemap generated at build time.",
+                image: cardImgs.seo?.id ?? undefined,
+              },
+              {
+                title: "Ready to deploy",
+                description:
+                  "Astro SSR on Node, TypeScript everywhere, environment scaffolding on first run. Ship it to any Node host.",
+                image: cardImgs.deploy?.id ?? undefined,
+              },
+            ],
+          },
+          {
+            __component: "blocks.card-grid",
+            eyebrow: "FOR AGENCIES AND SOLO BUILDERS",
+            heading: "Skip the first forty hours of every project.",
+            lead: "This is the boilerplate we wish we had on the last five sites.",
+            tone: "dark",
+            cards: [
+              {
+                title: "Clone and run",
+                description:
+                  "install:all, dev, done. No manual env plumbing, no missing steps.",
+                image: cardImgs.clone?.id ?? undefined,
+              },
+              {
+                title: "Editorial by default",
+                description:
+                  "Dark statement bands, uppercase display headlines, generous rhythm — tuned, not vanilla.",
+                image: cardImgs.editorial?.id ?? undefined,
+              },
+              {
+                title: "Repointable tokens",
+                description:
+                  "Semantic color layer isolated from Tailwind palette — swap to Radix Colors without touching components.",
+                image: cardImgs.tokens?.id ?? undefined,
               },
             ],
           },
           {
             __component: "blocks.rich-text",
-            body: "## Get started\n\nThis demo content was seeded automatically. Edit it in the Strapi admin panel at [localhost:1337/admin](http://localhost:1337/admin), or delete it and start fresh.\n\nNeed help? Check the [setup guide](https://github.com/New-Adventures-in-CMS/strapi-astro-starter).",
+            body:
+              "## Where to go next\n\nEdit this page from the Strapi admin at [localhost:1337/admin](http://localhost:1337/admin), or start fresh by removing the seeded pages and creating your own. The [setup guide](https://github.com/New-Adventures-in-CMS/strapi-astro-starter) walks through the block system, seed, and deployment.",
           },
         ],
       } as any,
@@ -62,46 +249,68 @@ async function seedDemoPages(strapi: Core.Strapi) {
         title: "Chi siamo",
         slug: "about",
         seo_desc:
-          "Extracted from production work and designed to save the first 40 hours of every CMS project.",
+          "Extracted from real production work — this starter exists so the next site can begin with the interesting problems, not the plumbing.",
         blocks: [
           {
             __component: "blocks.image-text",
-            heading: "Built for real projects",
-            body: "This starter isn't a toy. It's extracted from production work and designed to save you the first 40 hours of every CMS project.\n\nStrapi handles content. Astro handles rendering. You handle the creative part.",
+            eyebrow: "BEHIND THE STARTER",
+            heading: "Built from real production work.",
+            body:
+              "This starter isn't a demo. It's what we wish we'd had on the last five content-driven projects — extracted, cleaned up, and shared.\n\nStrapi handles the content model. Astro renders it. The design system carries the taste so day-one pages already read like a magazine, not a template.",
             image_position: "left",
+            image: aboutImg ? aboutImg.id : undefined,
           },
           {
             __component: "blocks.rich-text",
-            body: "## What's included\n\n- **Dynamic navigation** — header and footer menus managed from Strapi\n- **Page builder** — compose pages with blocks from the admin\n- **Form system** — dynamic forms with email notifications\n- **Markdown support** — rich text rendered beautifully with typography styles\n- **Developer experience** — TypeScript, hot reload, auto-generated env files",
+            body:
+              "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
           },
         ],
       } as any,
       status: "published",
     });
 
-    // Skeletons for menu targets
+    // Services — replace placeholder with sensible skeleton
     await strapi.documents("api::page.page").create({
       data: {
         title: "Servizi",
         slug: "services",
-        body: "Placeholder page. Replace with your own content.",
-      },
+        seo_desc:
+          "The starter ships with a page skeleton at /pagine/services — use it as a template for landing pages, product pages, or service breakdowns.",
+        blocks: [
+          {
+            __component: "blocks.rich-text",
+            body:
+              "## Services\n\nThis page is a skeleton, ready to be replaced. Drop in blocks from the Strapi admin — hero banners, card grids, image + text sections — to describe what you offer.\n\nDelete this content and start fresh, or duplicate the structure for other landing pages.",
+          },
+        ],
+      } as any,
       status: "published",
     });
+
+    // Contacts — replace placeholder with sensible skeleton
     await strapi.documents("api::page.page").create({
       data: {
         title: "Contatti",
         slug: "contacts",
-        body: "Placeholder page. Replace with your own content.",
-      },
+        seo_desc:
+          "Contact page skeleton. Pair it with a dynamic form from the Strapi admin to collect enquiries.",
+        blocks: [
+          {
+            __component: "blocks.rich-text",
+            body:
+              "## Get in touch\n\nReplace this content with a contact form (see `DynamicForm.astro` and the `form` content-type) or a plain description of how to reach you.\n\nForm submissions land in the Strapi admin under **Content Manager → Form submission**.",
+          },
+        ],
+      } as any,
       status: "published",
     });
 
     strapi.log.info(
-      "[bootstrap] Seeded demo pages (home, about, services, contacts)",
+      "[seed] Seeded demo pages: home, about, services, contacts",
     );
   } catch (err) {
-    strapi.log.warn("[bootstrap] Seed demo pages fallito: " + String(err));
+    strapi.log.error("[seed] Seeding demo pages failed: " + String(err));
   }
 }
 

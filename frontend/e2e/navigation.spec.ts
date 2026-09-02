@@ -242,3 +242,290 @@ test.describe("Layout overflow — no horizontal scroll", () => {
     });
   }
 });
+
+// ---------------------------------------------------------------------------
+// Header v2 — Auto-hide (Presence Axis A)
+// Directional scroll detection with throttled rAF, focus reveal, motion-safe
+// ---------------------------------------------------------------------------
+
+test.describe("Header v2 — auto-hide directional", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("header visible at page top (data-hidden=false)", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+
+  test("header hidden after scrolling down significantly (data-hidden=true)", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll down past threshold (300px > 40px top-threshold, >8px delta per frame)
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(100); // Allow rAF to process
+
+    await expect(header).toHaveAttribute("data-hidden", "true");
+  });
+
+  test("header reappears when scrolling up", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll down
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(100);
+    await expect(header).toHaveAttribute("data-hidden", "true");
+
+    // Scroll up
+    await page.evaluate(() => window.scrollBy(0, -100));
+    await page.waitForTimeout(100);
+
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+
+  test("header always visible when near top", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll just to the threshold
+    await page.evaluate(() => window.scrollBy(0, 30));
+    await page.waitForTimeout(100);
+
+    // Should still be visible (top threshold = 40px)
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+
+  test("focus on nav reveals header even if hidden", async ({ page }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-hidden]");
+
+    // Scroll down to hide
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(100);
+    await expect(header).toHaveAttribute("data-hidden", "true");
+
+    // Focus on first nav link
+    const firstLink = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+    await firstLink.focus();
+
+    // Header should be revealed
+    await expect(header).toHaveAttribute("data-hidden", "false");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Header v2 — Underline styling (Asse B - nav hover/focus/open/active)
+// Applied to both transparent and solid states, no background fill
+// ---------------------------------------------------------------------------
+
+test.describe("Header v2 — underline nav styling", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("nav trigger has animated underline on hover (pseudo-element scaleX)", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.hover();
+
+    // Check pseudo-element ::after has scaleX(1) transform (scale X axis should be ~1)
+    const pseudoTransform = await trigger.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    // Extract the first matrix value (scale X); if it's visible, it should be > 0.1 (not scaleX(0))
+    const match = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleX = match ? parseFloat(match[1]) : 0;
+    expect(scaleX).toBeGreaterThan(0.1);
+  });
+
+  test("nav trigger text-decoration is none (not text-decoration underline)", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.focus();
+    const styles = await trigger.evaluate((el) => window.getComputedStyle(el));
+
+    // text-decoration should be "none" because underline is via ::after pseudo-element
+    expect(styles.textDecoration).toContain("none");
+  });
+
+  test("nav trigger has underline on focus via pseudo-element", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.focus();
+
+    // Check pseudo-element ::after is visible (scaleX > 0)
+    const pseudoTransform = await trigger.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    // Extract the first matrix value (scale X); if it's visible, it should be > 0.1 (not scaleX(0))
+    const match = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleX = match ? parseFloat(match[1]) : 0;
+    expect(scaleX).toBeGreaterThan(0.1);
+  });
+
+  test("nav trigger has underline when open via pseudo-element", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    const pseudoTransform = await trigger.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    // Use numeric extraction: "matrix(0.68...)" matches "matrix(0" even when mid-animation
+    const matchOpen = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleXOpen = matchOpen ? parseFloat(matchOpen[1]) : 0;
+    expect(scaleXOpen).toBeGreaterThan(0.1);
+  });
+
+  test("active nav link has persistent underline via pseudo-element", async ({ page }) => {
+    await page.goto("/");
+
+    // Find active link (home page, so first top-level link with data-active)
+    const activeLink = page.locator(
+      "header [data-slot='navigation-menu-link'][data-active]"
+    );
+
+    // There should be at least one active link on homepage
+    const count = await activeLink.count();
+    if (count > 0) {
+      const pseudoTransform = await activeLink.first().evaluate((el) => {
+        const pseudo = window.getComputedStyle(el, "::after");
+        return pseudo.transform;
+      });
+      expect(pseudoTransform).toContain("matrix");
+      // Numeric extraction avoids false match on "matrix(0.N...)" strings
+      const matchActive = pseudoTransform.match(/matrix\(([^,]+)/);
+      const scaleXActive = matchActive ? parseFloat(matchActive[1]) : 0;
+      expect(scaleXActive).toBeGreaterThan(0.1);
+    }
+  });
+
+  test("nav trigger background is transparent (no hover bg)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-trigger']")
+      .first();
+
+    await trigger.hover();
+    const bgColor = await trigger.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      return style.backgroundColor;
+    });
+
+    // Should be transparent or rgba with alpha 0 or rgb(0,0,0,0)
+    const isTransparent =
+      bgColor === "rgba(0, 0, 0, 0)" ||
+      bgColor === "rgb(0, 0, 0, 0)" ||
+      bgColor === "transparent";
+    expect(isTransparent).toBe(true);
+  });
+
+  test("nav links (not inside dropdown) have underline on hover", async ({ page }) => {
+    await page.goto("/");
+    const link = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']")
+      .first();
+
+    await link.hover();
+
+    const pseudoTransform = await link.evaluate((el) => {
+      const pseudo = window.getComputedStyle(el, "::after");
+      return pseudo.transform;
+    });
+
+    expect(pseudoTransform).toContain("matrix");
+    expect(pseudoTransform).not.toContain("matrix(0");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tablet: breakpoint lg (820px) — hamburger visible, desktop nav hidden
+// At 820px the site is below lg breakpoint (1024px), so:
+//   - hamburger (Sheet trigger) must be visible
+//   - desktop NavigationMenu nav must NOT be visible
+//   - Sheet opens on Enter, Escape returns focus to hamburger
+// ---------------------------------------------------------------------------
+
+test.describe("Tablet nav — breakpoint lg (820×1180)", () => {
+  test.use({ viewport: { width: 820, height: 1180 } });
+
+  test("hamburger is visible at 820px (below lg breakpoint)", async ({ page }) => {
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {
+      name: "Apri menu di navigazione",
+    });
+    await expect(hamburger).toBeVisible();
+  });
+
+  test("desktop nav is hidden at 820px", async ({ page }) => {
+    await page.goto("/");
+    const desktopNav = page.getByRole("navigation", {
+      name: "Navigazione principale",
+    });
+    await expect(desktopNav).not.toBeVisible();
+  });
+
+  test("Enter opens Sheet at tablet viewport", async ({ page }) => {
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {
+      name: "Apri menu di navigazione",
+    });
+    await hamburger.focus();
+    await page.keyboard.press("Enter");
+
+    const sheet = page.locator("dialog[data-sw-drawer-popup]");
+    await expect(sheet).toHaveAttribute("data-state", "open");
+    await expect(sheet).toBeVisible();
+  });
+
+  test("Escape closes Sheet and returns focus to hamburger at tablet viewport", async ({ page }) => {
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {
+      name: "Apri menu di navigazione",
+    });
+    await hamburger.focus();
+    await page.keyboard.press("Enter");
+
+    const sheet = page.locator("dialog[data-sw-drawer-popup]");
+    await expect(sheet).toHaveAttribute("data-state", "open");
+
+    await page.keyboard.press("Escape");
+
+    await expect(sheet).toHaveAttribute("data-state", "closed");
+    await expect(hamburger).toBeFocused();
+  });
+});

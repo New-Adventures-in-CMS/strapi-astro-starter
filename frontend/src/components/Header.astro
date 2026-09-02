@@ -1,6 +1,8 @@
 ---
 import { getHeaderNav } from "@/lib/navigation";
 import { site } from "@/config/site";
+import { Container } from "@/components/layout";
+import Logo from "@/components/Logo.astro";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -17,19 +19,35 @@ import {
   SheetTitle,
 } from "@/components/starwind/sheet";
 
+interface Props {
+  overlay?: boolean;
+}
+
+const { overlay = false } = Astro.props;
+
 const navItems = await getHeaderNav();
 const path = Astro.url.pathname;
 const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
 ---
 
-<header class="border-b border-gray-200">
-  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-    <!-- Brand -->
-    <a href="/" class="text-lg font-semibold">{site.name}</a>
+<header
+  class:list={[
+    "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
+    !overlay && "bg-background text-foreground border-b border-border",
+  ]}
+  data-overlay={overlay ? "true" : "false"}
+  data-state={overlay ? "transparent" : undefined}
+  data-hidden="false"
+>
+  <Container width="wide" class="flex items-center justify-between py-5">
+    <!-- Brand —logo lockup contains both mark and wordmark -->
+    <a href="/" aria-label={site.name}>
+      <Logo class="h-8 w-auto" />
+    </a>
 
     <!-- Desktop nav (md and up) -->
-    <nav aria-label="Navigazione principale" class="hidden md:flex">
+    <nav aria-label="Navigazione principale" class="hidden lg:flex">
       <NavigationMenu size="sm">
         <NavigationMenuList>
           {navItems.map((item) =>
@@ -74,11 +92,14 @@ const isActive = (href: string | undefined): boolean =>
     </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->
-    <div class="md:hidden">
+    <div class="lg:hidden">
       <Sheet>
         <SheetTrigger
           aria-label="Apri menu di navigazione"
-          class="rounded p-2 text-gray-600 hover:bg-gray-100"
+          class:list={[
+            "rounded p-2 transition-colors",
+            !overlay && "text-muted-foreground hover:bg-muted hover:text-foreground",
+          ]}
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -97,7 +118,7 @@ const isActive = (href: string | undefined): boolean =>
             {navItems.map((item) =>
               item.children?.length ? (
                 <details class="group">
-                  <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black [&::-webkit-details-marker]:hidden">
+                  <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground [&::-webkit-details-marker]:hidden">
                     {item.label}
                     <svg
                       class="h-3 w-3 transition-transform group-open:rotate-180"
@@ -124,8 +145,8 @@ const isActive = (href: string | undefined): boolean =>
                           class:list={[
                             "block rounded-md px-3 py-1.5 text-sm",
                             isActive(child.href)
-                              ? "bg-gray-100 text-black"
-                              : "text-gray-600 hover:bg-gray-100 hover:text-black",
+                              ? "bg-muted text-foreground"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
                           ]}
                         >{child.label}</a>
                       </li>
@@ -141,8 +162,8 @@ const isActive = (href: string | undefined): boolean =>
                   class:list={[
                     "block rounded-md px-3 py-2 text-sm",
                     isActive(item.href)
-                      ? "bg-gray-100 text-black"
-                      : "text-gray-700 hover:bg-gray-100 hover:text-black",
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   ]}
                 >{item.label}</a>
               )
@@ -151,5 +172,68 @@ const isActive = (href: string | undefined): boolean =>
         </SheetContent>
       </Sheet>
     </div>
-  </div>
+  </Container>
+
+  {overlay && (
+    <script>
+      const sentinel = document.getElementById("header-overlay-sentinel");
+      const header = document.querySelector("header[data-overlay='true']");
+      if (sentinel && header) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              header.setAttribute("data-state", e.isIntersecting ? "transparent" : "solid");
+            });
+          },
+          { root: null, threshold: 0 }
+        );
+        io.observe(sentinel);
+      }
+    </script>
+  )}
+
+  <!-- Auto-hide script: directional scroll detection with focus reveal -->
+  <script>
+    const el = document.querySelector<HTMLElement>("header[data-hidden]");
+    if (el) {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) {
+        el.style.transition = "none";
+      }
+
+      let lastY = window.scrollY;
+      let ticking = false;
+      const THRESHOLD = 8;
+      const TOP_THRESHOLD = 40;
+
+      function update() {
+        const y = window.scrollY;
+        const delta = y - lastY;
+
+        if (y <= TOP_THRESHOLD) {
+          el!.setAttribute("data-hidden", "false");
+        } else if (Math.abs(delta) >= THRESHOLD) {
+          if (delta > 0) {
+            el!.setAttribute("data-hidden", "true");
+          } else {
+            el!.setAttribute("data-hidden", "false");
+          }
+          lastY = y;
+        }
+        ticking = false;
+      }
+
+      window.addEventListener("scroll", () => {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      }, { passive: true });
+
+      // Focus reveal
+      el.addEventListener("focusin", () => {
+        el.setAttribute("data-hidden", "false");
+      });
+    }
+  </script>
 </header>

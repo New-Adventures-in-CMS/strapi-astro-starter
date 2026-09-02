@@ -1,45 +1,63 @@
 ---
 import type { SharedCard } from "@/types";
+import { Section, Container } from "@/components/layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/starwind/card";
 import { Button } from "@/components/starwind/button";
+import SectionHeader from "@/components/SectionHeader.astro";
 import { strapiMediaUrl } from "@/lib/strapi";
 
 interface Props {
   heading?: string | null;
+  eyebrow?: string | null;
+  lead?: string | null;
+  tone?: "light" | "dark" | null;
   cards: SharedCard[];
 }
 
-const { heading, cards } = Astro.props;
+const { heading, eyebrow, lead, tone, cards } = Astro.props;
+const sectionTone = tone === "dark" ? "dark" : "default";
+const onDark = sectionTone === "dark";
+const showIndex = cards.length >= 3;
 ---
 
-<section class="py-16 px-4">
-  <div class="max-w-6xl mx-auto">
-    {heading && (
-      <h2 class="text-2xl sm:text-3xl font-semibold text-center mb-10 text-foreground">
-        {heading}
-      </h2>
-    )}
+<Section tone={sectionTone} spacing="default">
+  <Container width="wide">
+    <SectionHeader
+      eyebrow={eyebrow}
+      heading={heading}
+      lead={lead}
+      align="center"
+      onDark={onDark}
+    />
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {cards.map((card) => {
+      {cards.map((card, i) => {
         const imageUrl = card.image ? strapiMediaUrl(card.image.url) : null;
+        const idx = String(i + 1).padStart(2, "0");
         return (
-          <Card>
+          <Card
+            class={onDark ? "bg-background/80 border-border/50" : ""}
+          >
             {imageUrl && (
               <img
                 src={imageUrl}
-                alt={card.image?.alternativeText || card.title || "Card image"}
+                alt={card.image?.alternativeText || card.title || ""}
                 class="w-full rounded-t-lg object-cover aspect-video"
                 width={card.image?.width}
                 height={card.image?.height}
               />
             )}
             <CardHeader>
+              {showIndex && (
+                <p class="text-xs tracking-[0.2em] text-muted-foreground mb-2">
+                  ({idx})
+                </p>
+              )}
               <CardTitle>{card.title}</CardTitle>
               {card.description && (
                 <CardDescription>{card.description}</CardDescription>
               )}
             </CardHeader>
-            {(card.link_url && card.link_text) && (
+            {card.link_url && card.link_text && (
               <CardFooter>
                 <Button variant="ghost" size="sm" href={card.link_url}>
                   {card.link_text}
@@ -50,5 +68,5 @@ const { heading, cards } = Astro.props;
         );
       })}
     </div>
-  </div>
-</section>
+  </Container>
+</Section>

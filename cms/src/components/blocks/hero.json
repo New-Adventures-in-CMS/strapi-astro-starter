@@ -11,6 +11,9 @@
       "type": "string",
       "required": true
     },
+    "eyebrow": {
+      "type": "string"
+    },
     "subheading": {
       "type": "text"
     },
@@ -24,6 +27,10 @@
       "type": "media",
       "allowedTypes": ["images"],
       "multiple": false
+    },
+    "immersive": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
