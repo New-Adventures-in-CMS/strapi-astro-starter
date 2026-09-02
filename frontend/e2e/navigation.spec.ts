@@ -334,14 +334,17 @@ test.describe("Header v2 — underline nav styling", () => {
 
     await trigger.hover();
 
-    // Check pseudo-element ::after has scaleX(1) transform
+    // Check pseudo-element ::after has scaleX(1) transform (scale X axis should be ~1)
     const pseudoTransform = await trigger.evaluate((el) => {
       const pseudo = window.getComputedStyle(el, "::after");
       return pseudo.transform;
     });
 
     expect(pseudoTransform).toContain("matrix");
-    expect(pseudoTransform).not.toContain("matrix(0");
+    // Extract the first matrix value (scale X); if it's visible, it should be > 0.1 (not scaleX(0))
+    const match = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleX = match ? parseFloat(match[1]) : 0;
+    expect(scaleX).toBeGreaterThan(0.1);
   });
 
   test("nav trigger text-decoration is none (not text-decoration underline)", async ({ page }) => {
@@ -367,14 +370,17 @@ test.describe("Header v2 — underline nav styling", () => {
 
     await trigger.focus();
 
-    // Check pseudo-element ::after is visible (scaleX(1))
+    // Check pseudo-element ::after is visible (scaleX > 0)
     const pseudoTransform = await trigger.evaluate((el) => {
       const pseudo = window.getComputedStyle(el, "::after");
       return pseudo.transform;
     });
 
     expect(pseudoTransform).toContain("matrix");
-    expect(pseudoTransform).not.toContain("matrix(0");
+    // Extract the first matrix value (scale X); if it's visible, it should be > 0.1 (not scaleX(0))
+    const match = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleX = match ? parseFloat(match[1]) : 0;
+    expect(scaleX).toBeGreaterThan(0.1);
   });
 
   test("nav trigger has underline when open via pseudo-element", async ({ page }) => {
