@@ -334,6 +334,8 @@ Tutti i link e trigger di primo livello nel nav desktop hanno un `::after` pseud
 - Link attivo (`data-active`): `scaleX(1)` persistente, senza animazione.
 - Il colore del `::after` è `currentColor` — eredita automaticamente dallo stato transparent/solid.
 
+**Nota `!important`:** gli override CSS che azzerano bg/hover sul trigger e sui link di primo livello usano `!important` scoped in `starwind.css`. Starwind non espone una variante ghost nativa per questi elementi — l'override è l'approccio più sicuro. Da rimuovere solo se Starwind aggiunge la variante ghost.
+
 ---
 
 ### Logo

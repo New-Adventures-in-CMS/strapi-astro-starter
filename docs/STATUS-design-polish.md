@@ -1,7 +1,7 @@
 # STATUS / TODO — `feat/design-polish`
 
 Tracker unico per chiudere il branch. Rif: `CC-spec-design-polish.md` (intento/valori), `CC-exec-design-polish.md` (esecuzione).
-HEAD: `221683a` · 35 commit su main · **nessun merge** (decide Andrea).
+HEAD: `5548c18` · 36+ commit su main · **nessun merge** (decide Andrea).
 
 **Gate 1**: ✅ passato · **Gate 2**: 🟡 in attesa re-review visiva (Andrea) + pass responsive manuale.
 
@@ -22,6 +22,7 @@ HEAD: `221683a` · 35 commit su main · **nessun merge** (decide Andrea).
 - [x] **T9** Header v2 — auto-hide direzionale globale (asse presenza) + content offset + logo inline
 - [x] **T10** Immagini su tutte le 9 card (seed) + fix contrasto indice numerico + rich-text `align`
 - [x] **T11** Fix nav underline su TUTTE le voci + underline animato scaleX + logo lockup unico + align `right`
+- [x] **T12** Breakpoint nav `md`→`lg` (chirurgico: solo 2 classi in Header.astro) + copertura e2e tablet 820×1180 (35/35 pass) + `!important` exception documentata
 
 ---
 
@@ -58,7 +59,7 @@ HEAD: `221683a` · 35 commit su main · **nessun merge** (decide Andrea).
 
 ## 🔧 Debito / decisioni da prendere prima del merge
 
-- [ ] **`!important` scoped** (bg trigger + link nav): Starwind non ha variante ghost → override CSS. Decidere: accettare come eccezione documentata, oppure ripulire se emerge un override più pulito
+- [x] **`!important` scoped** (bg trigger + link nav): Starwind non ha variante ghost → override CSS scoped in `starwind.css`. **Decisione: eccezione accettata e documentata** (SETUP.md → Header v2). Da rimuovere solo se Starwind aggiunge variante ghost nativa.
 - [x] **Logo placeholder**: era `<text>` — ora outlined SVG paths (`51fff82`). Documentato in SETUP.md → "Logo".
 - [x] **MCP guardrails**: aggiunti solo _campi_, non nuovi content-type → nessun aggiornamento `.claude/settings.json` necessario.
 

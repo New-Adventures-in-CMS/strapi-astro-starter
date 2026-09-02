@@ -471,3 +471,61 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(pseudoTransform).not.toContain("matrix(0");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Tablet: breakpoint lg (820px) — hamburger visible, desktop nav hidden
+// At 820px the site is below lg breakpoint (1024px), so:
+//   - hamburger (Sheet trigger) must be visible
+//   - desktop NavigationMenu nav must NOT be visible
+//   - Sheet opens on Enter, Escape returns focus to hamburger
+// ---------------------------------------------------------------------------
+
+test.describe("Tablet nav — breakpoint lg (820×1180)", () => {
+  test.use({ viewport: { width: 820, height: 1180 } });
+
+  test("hamburger is visible at 820px (below lg breakpoint)", async ({ page }) => {
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {
+      name: "Apri menu di navigazione",
+    });
+    await expect(hamburger).toBeVisible();
+  });
+
+  test("desktop nav is hidden at 820px", async ({ page }) => {
+    await page.goto("/");
+    const desktopNav = page.getByRole("navigation", {
+      name: "Navigazione principale",
+    });
+    await expect(desktopNav).not.toBeVisible();
+  });
+
+  test("Enter opens Sheet at tablet viewport", async ({ page }) => {
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {
+      name: "Apri menu di navigazione",
+    });
+    await hamburger.focus();
+    await page.keyboard.press("Enter");
+
+    const sheet = page.locator("dialog[data-sw-drawer-popup]");
+    await expect(sheet).toHaveAttribute("data-state", "open");
+    await expect(sheet).toBeVisible();
+  });
+
+  test("Escape closes Sheet and returns focus to hamburger at tablet viewport", async ({ page }) => {
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {
+      name: "Apri menu di navigazione",
+    });
+    await hamburger.focus();
+    await page.keyboard.press("Enter");
+
+    const sheet = page.locator("dialog[data-sw-drawer-popup]");
+    await expect(sheet).toHaveAttribute("data-state", "open");
+
+    await page.keyboard.press("Escape");
+
+    await expect(sheet).toHaveAttribute("data-state", "closed");
+    await expect(hamburger).toBeFocused();
+  });
+});

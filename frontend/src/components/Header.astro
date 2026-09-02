@@ -47,7 +47,7 @@ const isActive = (href: string | undefined): boolean =>
     </a>
 
     <!-- Desktop nav (md and up) -->
-    <nav aria-label="Navigazione principale" class="hidden md:flex">
+    <nav aria-label="Navigazione principale" class="hidden lg:flex">
       <NavigationMenu size="sm">
         <NavigationMenuList>
           {navItems.map((item) =>
@@ -92,7 +92,7 @@ const isActive = (href: string | undefined): boolean =>
     </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->
-    <div class="md:hidden">
+    <div class="lg:hidden">
       <Sheet>
         <SheetTrigger
           aria-label="Apri menu di navigazione"
