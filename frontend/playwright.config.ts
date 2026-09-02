@@ -21,7 +21,7 @@ export default defineConfig({
     url: "http://localhost:4321",
     // Force Strapi unreachable so rendered nav is always site.nav fallback
     env: { STRAPI_URL: "http://localhost:9999" },
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });

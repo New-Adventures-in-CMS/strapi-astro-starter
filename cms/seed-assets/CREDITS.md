@@ -44,8 +44,9 @@ If you want to swap in your own photography:
 1. Drop new files in this directory (any format Strapi accepts).
 2. Update `cms/src/index.ts` → `seedDemoPages` to reference the new filenames
    in the `uploadSeedImage(...)` calls.
-3. Wipe the DB: `rm cms/.tmp/data.db` and re-run `npm run dev` so the seed
-   uploads and attaches your assets.
+3. Wipe the DB: run `npm run db:reset` from the project root (do **not** use
+   `rm cms/.tmp/data.db` — the DB path varies by compiled config), then
+   re-run `npm run dev` so the seed uploads and attaches your assets.
 
 ## Why SVG?
 

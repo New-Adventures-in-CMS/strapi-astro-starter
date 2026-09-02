@@ -401,7 +401,10 @@ test.describe("Header v2 — underline nav styling", () => {
     });
 
     expect(pseudoTransform).toContain("matrix");
-    expect(pseudoTransform).not.toContain("matrix(0");
+    // Use numeric extraction: "matrix(0.68...)" matches "matrix(0" even when mid-animation
+    const matchOpen = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleXOpen = matchOpen ? parseFloat(matchOpen[1]) : 0;
+    expect(scaleXOpen).toBeGreaterThan(0.1);
   });
 
   test("active nav link has persistent underline via pseudo-element", async ({ page }) => {
@@ -420,7 +423,10 @@ test.describe("Header v2 — underline nav styling", () => {
         return pseudo.transform;
       });
       expect(pseudoTransform).toContain("matrix");
-      expect(pseudoTransform).not.toContain("matrix(0");
+      // Numeric extraction avoids false match on "matrix(0.N...)" strings
+      const matchActive = pseudoTransform.match(/matrix\(([^,]+)/);
+      const scaleXActive = matchActive ? parseFloat(matchActive[1]) : 0;
+      expect(scaleXActive).toBeGreaterThan(0.1);
     }
   });
 
