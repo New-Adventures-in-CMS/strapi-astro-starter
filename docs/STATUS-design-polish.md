@@ -1,9 +1,9 @@
 # STATUS / TODO — `feat/design-polish`
 
 Tracker unico per chiudere il branch. Rif: `CC-spec-design-polish.md` (intento/valori), `CC-exec-design-polish.md` (esecuzione).
-HEAD: `eb58436` · 24 commit su main · **nessun merge** (decide Andrea).
+HEAD: `221683a` · 35 commit su main · **nessun merge** (decide Andrea).
 
-**Gate 1**: ✅ passato · **Gate 2**: 🟡 sostanzialmente passato, in attesa re-review visiva di Task 11.
+**Gate 1**: ✅ passato · **Gate 2**: 🟡 in attesa re-review visiva (Andrea) + pass responsive manuale.
 
 ---
 
@@ -42,12 +42,12 @@ HEAD: `eb58436` · 24 commit su main · **nessun merge** (decide Andrea).
 
 ### T8 — Verifica finale
 
-- [ ] **Hardening e2e**: `reuseExistingServer:false` (o kill server prima) → i 2 fail submenu-within-viewport devono sparire; suite piena verde su run pulito
-- [ ] Confermare che i test overlay/auto-hide siano **reali e committati** (fixture route-mock), non scratch
-- [ ] astro check 0 · vitest · build · e2e — tutti verdi
-- [ ] Pass responsive manuale (≈380 / tablet / desktop-wide) su home + una pagina a blocchi
-- [ ] **Clean-clone** end-to-end col reset DB corretto
-- [ ] Report finale: `git log --oneline main..feat/design-polish`, output check, push confermato
+- [x] **Hardening e2e**: `reuseExistingServer:false` → submit-within-viewport fail spariti; assertion `matrix(0` fix (scaleX numerico); **31/31 pass** su server fresco
+- [x] Test overlay/auto-hide/underline **reali e committati** in `frontend/e2e/navigation.spec.ts` (nessun scratch)
+- [x] `astro check` 0 errori · `vitest` 27/27 · `build` ok · `test:e2e` 31/31
+- [ ] **Pass responsive manuale** (≈380 / tablet / desktop-wide) su home immersive + pagina a blocchi — **da fare: Andrea**
+- [ ] **Clean-clone** end-to-end con `npm run db:reset` — **da fare: Andrea**
+- [x] Report finale: `git log --oneline main..feat/design-polish` — 35 commit, push `221683a` confermato
 
 ### Gate finale
 
@@ -59,8 +59,8 @@ HEAD: `eb58436` · 24 commit su main · **nessun merge** (decide Andrea).
 ## 🔧 Debito / decisioni da prendere prima del merge
 
 - [ ] **`!important` scoped** (bg trigger + link nav): Starwind non ha variante ghost → override CSS. Decidere: accettare come eccezione documentata, oppure ripulire se emerge un override più pulito
-- [ ] **Logo placeholder** = `<text>` vivo: ok come segnaposto, ma documentare che il lockup reale va outlined
-- [ ] **MCP guardrails**: abbiamo aggiunto solo _campi_ (immersive/eyebrow/lead/tone/align), non nuovi content-type → probabilmente nessun aggiornamento; verificare comunque
+- [x] **Logo placeholder**: era `<text>` — ora outlined SVG paths (`51fff82`). Documentato in SETUP.md → "Logo".
+- [x] **MCP guardrails**: aggiunti solo _campi_, non nuovi content-type → nessun aggiornamento `.claude/settings.json` necessario.
 
 ---
 
