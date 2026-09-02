@@ -363,7 +363,7 @@ fallback.
 
 **Il contenuto demo viene creato automaticamente al primo avvio.** Se il DB
 è vuoto, Strapi popola `home` e `about` con blocchi già configurati. Per
-resettare: ferma Strapi, `rm cms/.tmp/data.db`, riavvia.
+resettare: ferma Strapi, esegui `npm run db:reset`, riavvia.
 
 ---
 

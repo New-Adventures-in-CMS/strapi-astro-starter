@@ -131,6 +131,296 @@ npm run test:e2e  # playwright (e2e) — richiede `npx playwright install chromi
 
 ---
 
+## Design system
+
+Il frontend usa un design system a layer: token semantici → primitives layout → componenti. Tutto è derivato dai file sorgente — non duplicare valori, leggi da lì.
+
+### Font (Astro Fonts API)
+
+Due famiglie self-hosted via Astro Fonts API — nessuna richiesta CDN a runtime:
+
+| Variabile CSS  | Famiglia | Pesi          | Ruolo                       |
+| -------------- | -------- | ------------- | --------------------------- |
+| `--font-inter` | Inter    | 400, 600      | Body copy (`--font-sans`)   |
+| `--font-sora`  | Sora     | 500, 700, 800 | Headings (`--font-heading`) |
+
+**Unico punto per swappare un font — due righe:**
+
+1. `frontend/astro.config.mjs` → array `fonts`: cambia `name` (nome Google Fonts) e `cssVariable`.
+2. `frontend/src/styles/starwind.css` → `@theme inline`: aggiorna `--font-sans` o `--font-heading` con la nuova `cssVariable`.
+
+```ts
+// astro.config.mjs — esempio swap Inter → Geist
+{
+  provider: fontProviders.google(),
+  name: "Geist",
+  cssVariable: "--font-geist",
+  weights: ["400", "600"],
+  styles: ["normal"],
+  subsets: ["latin"],
+}
+```
+
+```css
+/* starwind.css → @theme inline */
+--font-sans:
+  var(--font-geist), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+```
+
+### Scala tipografica fluida
+
+Definita in `frontend/src/styles/starwind.css` → `@theme inline`. Tutti i valori fluidi usano `clamp()`:
+
+| Token          | Formula                                    | Range      |
+| -------------- | ------------------------------------------ | ---------- |
+| `--fs-display` | `clamp(2.5rem, 1.5rem + 4vw, 4.5rem)`      | 40 → 72 px |
+| `--fs-h1`      | alias di `--fs-display`                    | 40 → 72 px |
+| `--fs-h2`      | `clamp(2rem, 1.4rem + 2.4vw, 3rem)`        | 32 → 48 px |
+| `--fs-h3`      | `clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem)` | 22 → 28 px |
+| `--fs-lead`    | `1.125rem` (fisso)                         | 18 px      |
+| `--fs-body`    | `1rem` (fisso)                             | 16 px      |
+
+Le heading (`h1`–`h3`) nel `@layer base` referenziano i token: `font-size: var(--fs-h1); font-weight: 800;` ecc.
+
+### Primitives — Section, Container, SectionHeader
+
+**Misure canoniche:** `frontend/src/components/layout/variants.ts`
+
+```ts
+import { Section, Container } from "@/components/layout";
+import SectionHeader from "@/components/SectionHeader.astro";
+```
+
+#### Container — larghezze
+
+| `width`   | Classe Tailwind          | Uso tipico                          |
+| --------- | ------------------------ | ----------------------------------- |
+| `prose`   | `max-w-[70ch]`           | Colonne di testo                    |
+| `default` | `max-w-[1200px]`         | Pagine standard (valore di default) |
+| `wide`    | `max-w-[1400px]`         | Layout a più colonne                |
+| `full`    | `max-w-none`, no padding | Sezioni full-bleed con media        |
+
+Padding laterale base: `px-6 md:px-8 lg:px-12` (azzerato su `full`).
+
+#### Section — toni di sfondo
+
+| `tone`    | Background                        | Foreground                       |
+| --------- | --------------------------------- | -------------------------------- |
+| `default` | `bg-background` (bianco in light) | `text-foreground` (neutral-950)  |
+| `muted`   | `bg-muted` (neutral-100)          | `text-foreground`                |
+| `dark`    | `--section-dark-bg` (neutral-950) | `--section-dark-fg` (neutral-50) |
+
+Token semantici del tono dark (tutti in `starwind.css` → `@theme inline`):
+
+| Token                      | Valore                                            |
+| -------------------------- | ------------------------------------------------- |
+| `--section-dark-bg`        | `var(--color-neutral-950)`                        |
+| `--section-dark-fg`        | `var(--color-neutral-50)`                         |
+| `--section-dark-fg-muted`  | `color-mix(in srgb, neutral-50 80%, transparent)` |
+| `--section-dark-fg-subtle` | `color-mix(in srgb, neutral-50 70%, transparent)` |
+| `--section-dark-cta-bg`    | `var(--color-neutral-50)`                         |
+| `--section-dark-cta-fg`    | `var(--color-neutral-950)`                        |
+| `--section-dark-overlay-*` | gradient stops per l'overlay dell'immagine hero   |
+
+#### Section — spaziatura verticale
+
+| `spacing` | Padding verticale               |
+| --------- | ------------------------------- |
+| `default` | `py-24 md:py-32 lg:py-40`       |
+| `sm`      | `py-16 md:py-20`                |
+| `none`    | `py-0` (hero full-bleed, media) |
+
+#### Esempi d'uso
+
+```astro
+<!-- Sezione muted con intestazione centrata -->
+<Section tone="muted" spacing="sm">
+  <Container width="default">
+    <SectionHeader eyebrow="Feature" heading="Titolo" align="center" />
+    <!-- contenuto -->
+  </Container>
+</Section>
+
+<!-- Sezione dark con testo on-dark -->
+<Section tone="dark">
+  <Container width="default">
+    <SectionHeader heading="Call to action" lead="Paragrafo." onDark align="center" />
+  </Container>
+</Section>
+```
+
+#### Aggiungere un nuovo tono
+
+1. Aggiungi token semantici in `starwind.css` → `@theme inline`:
+   ```css
+   --section-brand-bg: var(--color-brand-500);
+   --section-brand-fg: var(--color-white);
+   ```
+2. Aggiungi la variante in `variants.ts` → oggetto `tone`:
+   ```ts
+   brand: "bg-[var(--section-brand-bg)] text-[var(--section-brand-fg)]",
+   ```
+3. Aggiorna il tipo `Tone` in `frontend/src/components/layout/Section.astro`.
+
+#### SectionHeader — props
+
+| Prop      | Tipo                 | Note                                       |
+| --------- | -------------------- | ------------------------------------------ |
+| `eyebrow` | `string \| null`     | Testo uppercase sopra il titolo            |
+| `heading` | `string \| null`     | `<h2>` della sezione                       |
+| `lead`    | `string \| null`     | Paragrafo descrittivo sotto il titolo      |
+| `align`   | `"left" \| "center"` | Default `"left"`                           |
+| `onDark`  | `boolean`            | Usa la palette on-dark (per `tone="dark"`) |
+
+---
+
+### Header v2
+
+L'header ha **due assi ortogonali**, controllati da attributi data sul `<header>`:
+
+#### Asse A — auto-hide direzionale (globale, sempre attivo)
+
+L'header è `position: fixed; inset-x-0; top-0`. Un `IntersectionObserver`-free scroll listener aggiorna `data-hidden`:
+
+| Condizione                            | `data-hidden` | Effetto CSS                    |
+| ------------------------------------- | ------------- | ------------------------------ |
+| `scrollY ≤ 40 px`                     | `"false"`     | `transform: translateY(0)`     |
+| Scroll verso il basso > 8 px di delta | `"true"`      | `transform: translateY(-100%)` |
+| Scroll verso l'alto > 8 px di delta   | `"false"`     | `transform: translateY(0)`     |
+| Focus dentro l'header                 | `"false"`     | sempre visibile                |
+
+CSS in `starwind.css` → `@layer components`:
+
+```css
+header[data-hidden="true"] {
+  transform: translateY(-100%);
+}
+header[data-hidden="false"] {
+  transform: translateY(0);
+}
+```
+
+Transizione `300ms ease` su `transform` (disabilitata con `prefers-reduced-motion: reduce`).
+
+Il contenuto non-immersive compensa l'altezza con `pt-[var(--header-h)]` su `<main>`. `--header-h: 4.5rem` — definito in `:root` di `starwind.css`.
+
+#### Asse B — transparent/solid (per-pagina, solo su hero immersive)
+
+Attivato via prop `overlay?: boolean` su `<Header>`, propagato da `<Layout headerOverlay>`.
+
+| `data-state`    | Condizione                                  | Aspetto                                    |
+| --------------- | ------------------------------------------- | ------------------------------------------ |
+| `"transparent"` | Hero immersive visibile nel viewport        | Trasparente, testo `--section-dark-fg`     |
+| `"solid"`       | Scroll oltre l'hero, o pagina non-immersive | `bg-background`, `text-foreground`, border |
+
+Un `IntersectionObserver` monitora `#header-overlay-sentinel` (div `h-px absolute bottom-0` in fondo al blocco hero) e aggiorna `data-state` in real-time. Colore logo e link nav seguono automaticamente.
+
+**Come si propaga il flag:**
+
+```astro
+<!-- Layout.astro — prop headerOverlay -->
+<Layout headerOverlay={true}>
+
+<!-- pages/index.astro — rilevamento automatico -->
+const headerOverlay =
+  firstBlock?.__component === "blocks.hero" && firstBlock.immersive === true;
+```
+
+#### Nav underline animato
+
+Tutti i link e trigger di primo livello nel nav desktop hanno un `::after` pseudo-element:
+
+- `transform: scaleX(0)` → `scaleX(1)` (200 ms ease-out) su hover / focus / trigger open.
+- Link attivo (`data-active`): `scaleX(1)` persistente, senza animazione.
+- Il colore del `::after` è `currentColor` — eredita automaticamente dallo stato transparent/solid.
+
+---
+
+### Logo
+
+`frontend/src/components/Logo.astro` — lockup SVG singolo (mark + wordmark), tutti path outlined.
+
+`fill="currentColor"` sulla root SVG propaga il colore a tutti i path figli via ereditarietà CSS. L'header gestisce il colore tramite `data-state`; il logo non ha logica propria.
+
+**Sostituire il logo:**
+
+- **Monocolore:** sostituisci il body `<svg>` in `Logo.astro`; mantieni `fill="currentColor"` sulla root; rimuovi qualsiasi `fill=""` hardcoded sugli inner path (o impostali a `currentColor`). Usa **path outlined**, mai `<text>` (il testo SVG richiede font embedded per renderizzare correttamente).
+- **Multicolore (due varianti):** crea `logo-light.svg` e `logo-dark.svg` da importare come componenti separati, poi switcha via CSS attribute selector:
+  ```css
+  header[data-state="transparent"] .logo-dark {
+    display: none;
+  }
+  header[data-state="solid"] .logo-light {
+    display: none;
+  }
+  ```
+  Se i file sono soggetti a copyright, documentane la licenza in `cms/seed-assets/CREDITS.md`.
+
+---
+
+### Hero immersive
+
+Campo `immersive` (boolean) sul blocco `blocks.hero` in Strapi.
+
+| `immersive` | Altezza hero                   | Effetto header                          |
+| ----------- | ------------------------------ | --------------------------------------- |
+| `true`      | `min-h-[100svh]` (full-screen) | Overlay transparent → solid allo scroll |
+| `false`     | `min-h-[70vh] md:min-h-[80vh]` | Nessun overlay (header sempre solid)    |
+
+Quando `immersive: true`, `BlockHero.astro` inietta `#header-overlay-sentinel` in fondo alla sezione. La home page e le pagine dinamiche rilevano automaticamente il flag per passare `headerOverlay` al layout.
+
+---
+
+### Rich-text align
+
+Campo `align` (enum `left | center | right`) sul blocco `blocks.rich-text`.
+
+Il valore è applicato sia al wrapper `<Container>` sia al componente `<Prose>` con classi Tailwind arbitrarie che forzano l'allineamento anche sugli elementi interni (`[&_h2]:text-center` ecc.).
+
+---
+
+### Contenuto e immagini demo
+
+`cms/seed-assets/` contiene SVG CC0 (vedi `cms/seed-assets/CREDITS.md`):
+
+- `hero-home.svg` — hero home page, 1600×1000
+- `image-text-about.svg` — illustrazione about, 800×600
+- `cards/card-01..09.svg` — immagini card grid, 600×400 (6 light + 3 dark)
+
+Il seed (`cms/src/index.ts`) carica le immagini via upload service con idempotenza: se un file con lo stesso nome esiste già, viene riutilizzato senza re-upload. Le entry vengono poi collegate tramite relation.
+
+**Per ricreare o sostituire le immagini:**
+
+1. Copia nuovi file in `cms/seed-assets/` (qualsiasi formato Strapi accetta).
+2. Aggiorna i filename nelle chiamate `uploadSeedImage(...)` dentro `seedDemoPages` in `cms/src/index.ts`.
+3. Reset DB e riavvia (vedi sotto).
+
+---
+
+### Reset DB
+
+Il file del database può trovarsi in `.tmp/data.db` (root) **o** `cms/.tmp/data.db` a seconda di come è compilata la config. **Non assumere il path** — usa sempre:
+
+```bash
+npm run db:reset          # definito in package.json
+# equivalente a:
+find . -path '*/.tmp/data.db' -delete
+```
+
+> **Non usare** `rm cms/.tmp/data.db` o `rm .tmp/data.db` — questi path hardcoded possono fallire silenziosamente se la config è compilata diversamente.
+
+Dopo il reset, riavvia `npm run dev`: il seed parte da zero e ricarica tutte le immagini.
+
+---
+
+### Worktree convention
+
+Usa worktree **esterno alla directory del progetto** (skill `superpowers:using-git-worktrees`). I watcher di Strapi e Astro monitorano l'intera directory — un worktree interno può innescare rebuild/restart indesiderati.
+
+**Un solo `npm run dev` alla volta.** CMS (:1337) e frontend (:4321) occupano porte fisse. Due istanze parallele (es. main + worktree) causano collisioni di porta.
+
+---
+
 ## Content-type Page
 
 Il boilerplate include route SSR `/pagine` e `/pagine/[slug]` che leggono da un content-type `page` in Strapi.
@@ -212,7 +502,7 @@ non contiene ancora pagine pubblicate:
 - Menu items: header (`Home`, `Chi siamo`, `Servizi` con figli, `Contatti`,
   `Documentazione`) e footer (`Privacy`, `Termini`)
 
-Per ricreare il contenuto demo: ferma Strapi, `rm cms/.tmp/data.db`, riavvia.
+Per ricreare il contenuto demo: ferma Strapi, poi `npm run db:reset` (o `find . -path '*/.tmp/data.db' -delete`), riavvia.
 
 ---
 
@@ -251,12 +541,13 @@ Non incluse nel boilerplate, documentate qui come punto di partenza:
 
 ## Script disponibili (dalla root)
 
-| Comando               | Cosa fa                                                                  |
-| --------------------- | ------------------------------------------------------------------------ |
-| `npm run install:all` | Installa dipendenze root + CMS + frontend                                |
-| `npm run setup`       | (Opzionale) Genera `cms/.env` (secrets automatici) + `frontend/.env`     |
-| `npm run dev`         | Avvia CMS e frontend in parallelo (libera porte 1337/4321 in automatico) |
-| `npm run build`       | Build produzione di CMS e frontend                                       |
+| Comando               | Cosa fa                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `npm run install:all` | Installa dipendenze root + CMS + frontend                                                   |
+| `npm run setup`       | (Opzionale) Genera `cms/.env` (secrets automatici) + `frontend/.env`                        |
+| `npm run dev`         | Avvia CMS e frontend in parallelo (libera porte 1337/4321 in automatico)                    |
+| `npm run build`       | Build produzione di CMS e frontend                                                          |
+| `npm run db:reset`    | Cancella il DB SQLite (`find . -path '*/.tmp/data.db' -delete`) — ricrea il seed al riavvio |
 
 > `npm run setup` è opzionale: dalla prima esecuzione di `npm run dev` gli `.env` vengono generati automaticamente se mancanti (`scripts/ensure-env.js`). Se `.env` esistono già non vengono mai sovrascritti.
 

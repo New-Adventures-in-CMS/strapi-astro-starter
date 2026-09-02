@@ -7,8 +7,8 @@ traps specific to this stack. It deliberately does not repeat the reference
 docs:
 
 - **SETUP.md** — authoritative technical reference (install, config, MCP
-  enablement, full field specs). On any technical detail, SETUP.md wins over
-  this file.
+  enablement, full field specs, **design system**). On any technical detail,
+  SETUP.md wins over this file.
 - **GUIDA.md** — Italian tutorial for humans onboarding.
 
 ---
@@ -114,6 +114,17 @@ Where things live:
   `Cannot read properties of undefined (reading 'kind')`.
 - Components: `cms/src/components/<namespace>/<name>.json`.
 - Astro types: `frontend/src/types/index.ts` — keep in sync whenever a schema changes.
+- **Layout primitives:** `frontend/src/components/layout/` (`Section.astro`,
+  `Container.astro`, barrel `index.ts`). **Canonical measures** (widths, tones,
+  spacing) live in `frontend/src/components/layout/variants.ts` — always read
+  there, never hardcode values.
+- **SectionHeader:** `frontend/src/components/SectionHeader.astro` — eyebrow /
+  heading / lead with `align` and `onDark` props.
+- **Logo:** `frontend/src/components/Logo.astro` — single SVG lockup,
+  `fill="currentColor"`, all paths outlined. Replace the SVG body to swap brand;
+  keep `fill="currentColor"` on the root. See SETUP.md → "Logo".
+- **Design tokens / type scale / font swap / Header v2 / Hero immersive /
+  Rich-text align / seed assets / Reset DB:** all in SETUP.md → "Design system".
 
 **Golden sequence for a structural change:** edit schema → **restart Strapi**
 (schema discovery happens only at boot) → update Astro types → then fill content.
@@ -182,9 +193,12 @@ Rules that will bite you if ignored:
 Components ship under two dynamic zones:
 
 - `form.campi` — form field types: Checkbox, Email, Select, Testo, Textarea.
-- `page.blocks` — page-builder blocks: `blocks.hero`, `blocks.rich-text`,
-  `blocks.image-text`, `blocks.card-grid`. `blocks.card-grid.cards` is a
-  repeatable `shared.card` component.
+- `page.blocks` — page-builder blocks: `blocks.hero` (heading, subheading,
+  cta_text, cta_url, image, eyebrow, **immersive**), `blocks.rich-text` (body,
+  eyebrow, **align**: left|center|right), `blocks.image-text` (heading, body,
+  image, image_position, eyebrow, **tone**), `blocks.card-grid` (heading,
+  cards, eyebrow, **tone**). `blocks.card-grid.cards` is a repeatable
+  `shared.card` component.
 
 Astro renderers live at `frontend/src/components/blocks/` (`BlockHero.astro`,
 `BlockRichText.astro`, `BlockImageText.astro`, `BlockCardGrid.astro`) and are
@@ -192,10 +206,12 @@ dispatched by `BlockRenderer.astro` on `__component`. Page templates render
 blocks first, then `body` Markdown below as a fallback article.
 
 **Bootstrap seed:** on empty DB, `cms/src/index.ts` seeds demo pages (home,
-about, services, contacts) plus a set of menu items. Home + about include
-block content so the starter looks like a real site on first `npm run dev`.
-Seed is idempotent — subsequent boots skip if any published page exists. To
-recreate demo content, stop Strapi, `rm cms/.tmp/data.db`, restart.
+about, services, contacts) plus a set of menu items and CC0 SVG images from
+`cms/seed-assets/`. Home uses an immersive hero; all cards have images. Seed
+is idempotent — subsequent boots skip if any published page exists. To
+recreate demo content, stop Strapi, run `npm run db:reset` (or
+`find . -path '*/.tmp/data.db' -delete`), restart. **Do not** use
+`rm cms/.tmp/data.db` — the DB path varies by compiled config.
 
 SETUP.md is authoritative for full field specs.
 
@@ -226,6 +242,11 @@ Structure before content — you can't fill fields that don't exist yet.
   add a content-type, add its destructive tools to that `ask` list too.**
 - **Branch discipline:** work on a dedicated branch; a clean-clone check is the
   gate before merging.
+- **Worktree:** always create worktrees **outside** the project directory (skill
+  `superpowers:using-git-worktrees`). CMS and frontend watcher cover the whole
+  tree — an internal worktree triggers spurious rebuilds. Run **one `npm run
+dev` at a time** — ports 1337 and 4321 are fixed; two parallel dev processes
+  collide.
 - **Stay generic:** `page` / `menu-item` / `form` are examples to build on or
   replace, not a fixed model. Prefer generic additions unless the site you're
   building needs otherwise.
