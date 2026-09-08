@@ -80,6 +80,14 @@ connect`:
 3. **The MCP is registered with an Admin API Token** (Settings → _Admin Tokens_),
    **not** a Content API token. A Content API token is rejected with `401`.
 
+**Registration is a one-time human step — not something you do.** `claude mcp add` is
+treated as self-modification and is blocked in an autonomous session: an agent cannot,
+and should not, register the MCP itself. If the MCP hand is unavailable, do not try to
+add it. Ask the human to register it once, from the project root, with an Admin token —
+`claude mcp add strapi-mcp --transport http http://localhost:1337/mcp -H "Authorization: Bearer <ADMIN_TOKEN>"`
+then verify with `claude mcp list` (never `claude mcp get` — it prints the token) — and
+relaunch the session. Until it's registered, use the file hand or stop and report.
+
 **Self-diagnosis rule — do not skip.** `failed to connect` does **not** mean
 "Strapi is down." Before concluding anything, check in this order:
 
