@@ -176,64 +176,25 @@ const isActive = (href: string | undefined): boolean =>
 
   {overlay && (
     <script>
+      import { initScrollState } from "@skeleton/scroll-state.js";
       const sentinel = document.getElementById("header-overlay-sentinel");
-      const header = document.querySelector("header[data-overlay='true']");
+      const header = document.querySelector<HTMLElement>("header[data-overlay='true']");
       if (sentinel && header) {
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              header.setAttribute("data-state", e.isIntersecting ? "transparent" : "solid");
-            });
-          },
-          { root: null, threshold: 0 }
-        );
-        io.observe(sentinel);
+        initScrollState(header, sentinel);
       }
     </script>
   )}
 
-  <!-- Auto-hide script: directional scroll detection with focus reveal -->
+  <!-- Auto-hide: directional scroll detection with focus reveal -->
   <script>
+    import { initHideOnScroll } from "@skeleton/hide-on-scroll.js";
     const el = document.querySelector<HTMLElement>("header[data-hidden]");
     if (el) {
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (prefersReducedMotion) {
         el.style.transition = "none";
       }
-
-      let lastY = window.scrollY;
-      let ticking = false;
-      const THRESHOLD = 8;
-      const TOP_THRESHOLD = 40;
-
-      function update() {
-        const y = window.scrollY;
-        const delta = y - lastY;
-
-        if (y <= TOP_THRESHOLD) {
-          el!.setAttribute("data-hidden", "false");
-        } else if (Math.abs(delta) >= THRESHOLD) {
-          if (delta > 0) {
-            el!.setAttribute("data-hidden", "true");
-          } else {
-            el!.setAttribute("data-hidden", "false");
-          }
-          lastY = y;
-        }
-        ticking = false;
-      }
-
-      window.addEventListener("scroll", () => {
-        if (!ticking) {
-          window.requestAnimationFrame(update);
-          ticking = true;
-        }
-      }, { passive: true });
-
-      // Focus reveal
-      el.addEventListener("focusin", () => {
-        el.setAttribute("data-hidden", "false");
-      });
+      initHideOnScroll(el);
     }
   </script>
 </header>
