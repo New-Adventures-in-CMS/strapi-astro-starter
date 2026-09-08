@@ -9,12 +9,13 @@ const { slides } = Astro.props;
 <div
   class="relative overflow-hidden rounded-xl bg-muted"
   data-demo-carousel
+  tabindex="0"
 >
   <!-- Viewport: Embla attaches here -->
   <div class="overflow-hidden" data-carousel-viewport>
     <div class="flex touch-pan-y">
       {slides.map((text) => (
-        <div class="min-w-0 flex-[0_0_100%]">
+        <div class="basis-full shrink-0 grow-0 min-w-0">
           <div class="flex h-48 items-center justify-center text-lg font-semibold text-foreground">
             {text}
           </div>
@@ -52,7 +53,7 @@ const { slides } = Astro.props;
   ></div>
 </div>
 
-<style>
+<style is:global>
   /* Dots: skeleton sets [data-active] and aria-current="true" on active dot */
   [data-carousel-dots] button {
     width: 8px;

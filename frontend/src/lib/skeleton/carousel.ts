@@ -120,7 +120,12 @@ export function createCarousel(
     updateNav();
     updateLive();
   });
-  embla.on("init", () => {
+  embla.on("reInit", () => {
+    updateDots();
+    updateNav();
+  });
+  // Init state: call after one rAF so Embla has measured slide widths
+  window.requestAnimationFrame(() => {
     updateDots();
     updateNav();
   });
