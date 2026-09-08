@@ -257,7 +257,9 @@ test.describe("Header v2 — auto-hide directional", () => {
     await expect(header).toHaveAttribute("data-hidden", "false");
   });
 
-  test("header hidden after scrolling down significantly (data-hidden=true)", async ({ page }) => {
+  test("header hidden after scrolling down significantly (data-hidden=true)", async ({
+    page,
+  }) => {
     await page.goto("/");
     const header = page.locator("header[data-hidden]");
 
@@ -325,7 +327,9 @@ test.describe("Header v2 — auto-hide directional", () => {
 test.describe("Header v2 — underline nav styling", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("nav trigger has animated underline on hover (pseudo-element scaleX)", async ({ page }) => {
+  test("nav trigger has animated underline on hover (pseudo-element scaleX)", async ({
+    page,
+  }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -347,7 +351,9 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleX).toBeGreaterThan(0.1);
   });
 
-  test("nav trigger text-decoration is none (not text-decoration underline)", async ({ page }) => {
+  test("nav trigger text-decoration is none (not text-decoration underline)", async ({
+    page,
+  }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -361,7 +367,9 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(styles.textDecoration).toContain("none");
   });
 
-  test("nav trigger has underline on focus via pseudo-element", async ({ page }) => {
+  test("nav trigger has underline on focus via pseudo-element", async ({
+    page,
+  }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -383,7 +391,9 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleX).toBeGreaterThan(0.1);
   });
 
-  test("nav trigger has underline when open via pseudo-element", async ({ page }) => {
+  test("nav trigger has underline when open via pseudo-element", async ({
+    page,
+  }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -407,12 +417,14 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleXOpen).toBeGreaterThan(0.1);
   });
 
-  test("active nav link has persistent underline via pseudo-element", async ({ page }) => {
+  test("active nav link has persistent underline via pseudo-element", async ({
+    page,
+  }) => {
     await page.goto("/");
 
     // Find active link (home page, so first top-level link with data-active)
     const activeLink = page.locator(
-      "header [data-slot='navigation-menu-link'][data-active]"
+      "header [data-slot='navigation-menu-link'][data-active]",
     );
 
     // There should be at least one active link on homepage
@@ -453,11 +465,15 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(isTransparent).toBe(true);
   });
 
-  test("nav links (not inside dropdown) have underline on hover", async ({ page }) => {
+  test("nav links (not inside dropdown) have underline on hover", async ({
+    page,
+  }) => {
     await page.goto("/");
     const link = page
       .getByRole("navigation", { name: "Navigazione principale" })
-      .locator("[data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']")
+      .locator(
+        "[data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']",
+      )
       .first();
 
     await link.hover();
@@ -483,7 +499,9 @@ test.describe("Header v2 — underline nav styling", () => {
 test.describe("Tablet nav — breakpoint lg (820×1180)", () => {
   test.use({ viewport: { width: 820, height: 1180 } });
 
-  test("hamburger is visible at 820px (below lg breakpoint)", async ({ page }) => {
+  test("hamburger is visible at 820px (below lg breakpoint)", async ({
+    page,
+  }) => {
     await page.goto("/");
     const hamburger = page.getByRole("button", {
       name: "Apri menu di navigazione",
@@ -512,7 +530,9 @@ test.describe("Tablet nav — breakpoint lg (820×1180)", () => {
     await expect(sheet).toBeVisible();
   });
 
-  test("Escape closes Sheet and returns focus to hamburger at tablet viewport", async ({ page }) => {
+  test("Escape closes Sheet and returns focus to hamburger at tablet viewport", async ({
+    page,
+  }) => {
     await page.goto("/");
     const hamburger = page.getByRole("button", {
       name: "Apri menu di navigazione",
@@ -527,5 +547,59 @@ test.describe("Tablet nav — breakpoint lg (820×1180)", () => {
 
     await expect(sheet).toHaveAttribute("data-state", "closed");
     await expect(hamburger).toBeFocused();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Header v2 — Scroll state (overlay → solid sentinel)
+// Only applies to pages that render Header with overlay=true (home page,
+// which has an immersive hero and renders #header-overlay-sentinel).
+// ---------------------------------------------------------------------------
+
+test.describe("Header v2 — scroll-state overlay sentinel", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("header starts transparent when sentinel is visible (data-state=transparent)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-overlay='true']");
+    const sentinelCount = await page
+      .locator("#header-overlay-sentinel")
+      .count();
+    if (sentinelCount === 0) {
+      test.skip(
+        true,
+        "No overlay sentinel on this page — overlay mode not active",
+      );
+      return;
+    }
+    await expect(header).toHaveAttribute("data-state", "transparent");
+  });
+
+  test("header becomes solid after scrolling past sentinel (data-state=solid)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-overlay='true']");
+    const sentinelCount = await page
+      .locator("#header-overlay-sentinel")
+      .count();
+    if (sentinelCount === 0) {
+      test.skip(
+        true,
+        "No overlay sentinel on this page — overlay mode not active",
+      );
+      return;
+    }
+
+    await page.evaluate(() => window.scrollBy(0, 600));
+    await page.waitForTimeout(150);
+
+    await expect(header).toHaveAttribute("data-state", "solid");
+
+    const box = await header.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.y).toBeLessThan(100);
   });
 });
