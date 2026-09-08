@@ -1,0 +1,89 @@
+---
+// frontend/src/components/DemoCarousel.astro
+interface Props {
+  slides: string[];
+}
+const { slides } = Astro.props;
+---
+
+<div
+  class="relative overflow-hidden rounded-xl bg-muted"
+  data-demo-carousel
+>
+  <!-- Viewport: Embla attaches here -->
+  <div class="overflow-hidden" data-carousel-viewport>
+    <div class="flex touch-pan-y">
+      {slides.map((text) => (
+        <div class="min-w-0 flex-[0_0_100%]">
+          <div class="flex h-48 items-center justify-center text-lg font-semibold text-foreground">
+            {text}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Prev / Next -->
+  <button
+    class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 shadow hover:bg-background disabled:opacity-40"
+    data-carousel-prev
+    type="button"
+    aria-label="Precedente"
+  >
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+  <button
+    class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 shadow hover:bg-background disabled:opacity-40"
+    data-carousel-next
+    type="button"
+    aria-label="Successivo"
+  >
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+
+  <!-- Dots container: skeleton generates bare <button> elements here -->
+  <div
+    class="absolute bottom-3 left-0 right-0 flex justify-center gap-2"
+    data-carousel-dots
+  ></div>
+</div>
+
+<style>
+  /* Dots: skeleton sets [data-active] and aria-current="true" on active dot */
+  [data-carousel-dots] button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-muted-foreground);
+    opacity: 0.4;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  [data-carousel-dots] button[data-active] {
+    opacity: 1;
+    transform: scale(1.25);
+    background: var(--color-foreground);
+  }
+</style>
+
+<script>
+  import { createCarousel } from "@skeleton/carousel.js";
+
+  document.querySelectorAll<HTMLElement>("[data-demo-carousel]").forEach((root) => {
+    const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
+    const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
+    const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
+
+    createCarousel(root, {
+      loop: false,
+      prevBtn,
+      nextBtn,
+      dots,
+    });
+  });
+</script>
