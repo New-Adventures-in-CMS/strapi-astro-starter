@@ -1,0 +1,5 @@
+{
+  "source": "https://github.com/NSP-Design-System-Tokens/nsp-ds-tokens.git",
+  "ref": "v0.4.2",
+  "target": "frontend/src/styles/starwind.css"
+}
