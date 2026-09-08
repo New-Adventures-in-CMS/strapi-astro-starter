@@ -63,8 +63,6 @@ const config = ({
       },
     },
   },
-  "sortable-entries": { enabled: true },
-  seo: { enabled: true },
   // i18n è bundled con Strapi 5 — abilitare se il sito ha più lingue.
   // IMPORTANTE: attivare subito se serve, non si aggiunge facilmente dopo.
   // i18n: { enabled: true },
