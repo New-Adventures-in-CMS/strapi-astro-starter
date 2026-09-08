@@ -14,7 +14,8 @@
     "build": "npm --prefix cms run build && npm --prefix frontend run build",
     "test": "npm --prefix frontend test",
     "test:e2e": "npm --prefix frontend run test:e2e",
-    "db:reset": "find . -path '*/.tmp/data.db' -delete"
+    "db:reset": "find . -path '*/.tmp/data.db' -delete",
+    "tokens:sync": "node scripts/tokens-sync.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

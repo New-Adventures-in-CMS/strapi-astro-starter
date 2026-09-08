@@ -89,6 +89,7 @@
 
 :root {
   /* ── RAW LAYER — Radix ramps (light), inlined. Do NOT expose as utilities. ── */
+  /* >>> tokens:sync START — generated from nsp-ds-tokens core/color.json — DO NOT EDIT */
   --gray-1: #fcfcfc;
   --gray-2: #f9f9f9;
   --gray-3: #f0f0f0;
@@ -101,12 +102,13 @@
   --gray-10: #838383;
   --gray-11: #646464;
   --gray-12: #202020;
-  --gray-a2: #0000001a; /* black-alpha a2 — flat both modes */
+  --gray-a2: #0000001a;
   --white: #ffffff;
-  --black: #000000; /* flat, non-moded */
+  --black: #000000;
   --red-9: #e5484d;
   --green-9: #30a46c;
-  --orange-9: #f76b15; /* status anchors (mode-invariant) */
+  --orange-9: #f76b15;
+  /* <<< tokens:sync END */
   --blue-9: #0090ff; /* info — starter-local extension, outside NSP base */
 
   /* ── SEMANTIC LAYER — single-mode; flips via primitive ── */
@@ -174,6 +176,7 @@
 
 .dark {
   /* Only the primitive ramp flips. Everything semantic cascades. */
+  /* >>> tokens:sync START (dark) — generated from nsp-ds-tokens core/color.json — DO NOT EDIT */
   --gray-1: #111111;
   --gray-2: #191919;
   --gray-3: #222222;
@@ -186,6 +189,7 @@
   --gray-10: #7b7b7b;
   --gray-11: #b4b4b4;
   --gray-12: #eeeeee;
+  /* <<< tokens:sync END (dark) */
   /* --gray-a2 stays #0000001a (NSP divider is flat); status-9 identical both modes */
 
   /* the single dual-step semantic token */

@@ -133,6 +133,14 @@ Where things live:
   keep `fill="currentColor"` on the root. See SETUP.md → "Logo".
 - **Design tokens / type scale / font swap / Header v2 / Hero immersive /
   Rich-text align / seed assets / Reset DB:** all in SETUP.md → "Design system".
+- **Primitive color sync (maintainer-only):** `frontend/src/styles/starwind.css` contains
+  the committed primitive values between `tokens:sync` sentinel comments. To regenerate from
+  source, run `npm run tokens:sync` (requires access to NSP-Design-System-Tokens; the ref is
+  in `tokens.sync.json`). This is a **maintainer operation — not part of clone-and-run**;
+  the committed values are the source of truth for everyday dev. Note: `--red-9`, `--green-9`,
+  `--orange-9` are treated as flat (mode-invariant) because Radix status anchors are identical
+  in light and dark modes (`modes.light === modes.dark`); the script asserts this and stops if it
+  diverges.
 
 **Golden sequence for a structural change:** edit schema → **restart Strapi**
 (schema discovery happens only at boot) → update Astro types → then fill content.
