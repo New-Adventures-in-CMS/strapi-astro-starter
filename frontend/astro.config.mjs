@@ -60,5 +60,10 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        "@skeleton": new URL("./src/lib/skeleton", import.meta.url).pathname,
+      },
+    },
   },
 });
