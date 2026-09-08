@@ -19,3 +19,6 @@ Thumbs.db
 
 # TypeScript
 .tsbuildinfo
+
+# Visual audit screenshots (one-off evidence, not baseline)
+e2e/screenshots/

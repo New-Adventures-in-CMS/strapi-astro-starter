@@ -1,0 +1,24 @@
+---
+// frontend/src/pages/dev/carousel.astro
+// Dev fixture — not linked in nav. Tests the carousel skeleton collaudo.
+import DemoCarousel from "@/components/DemoCarousel.astro";
+import "@/styles/starwind.css";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carousel Dev Fixture</title>
+  </head>
+  <body class="bg-background p-8">
+    <h1 class="mb-6 text-2xl font-bold">Carousel Skeleton Collaudo</h1>
+
+    <div class="mx-auto max-w-xl">
+      <DemoCarousel
+        slides={["Slide uno", "Slide due", "Slide tre", "Slide quattro", "Slide cinque"]}
+      />
+    </div>
+  </body>
+</html>
