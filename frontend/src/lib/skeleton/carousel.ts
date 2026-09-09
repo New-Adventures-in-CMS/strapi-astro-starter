@@ -23,7 +23,9 @@ export type CarouselAPI = {
   scrollPrev(): void;
   scrollTo(i: number): void;
   selectedIndex(): number;
-  on(evt: "select", cb: () => void): () => void;
+  scrollProgress(): number;
+  slidesInView(): number[];
+  on(evt: "select" | "scroll" | "reInit", cb: () => void): () => void;
   destroy(): void;
 };
 
@@ -196,6 +198,8 @@ export function createCarousel(
     scrollPrev: () => embla.scrollPrev(),
     scrollTo: (i) => embla.scrollTo(i),
     selectedIndex: () => embla.selectedScrollSnap(),
+    scrollProgress: () => embla.scrollProgress(),
+    slidesInView: () => embla.slidesInView(),
     on(evt, cb) {
       embla.on(evt, cb);
       return () => embla.off(evt, cb);
