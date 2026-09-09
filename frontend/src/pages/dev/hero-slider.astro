@@ -1,0 +1,69 @@
+---
+// frontend/src/pages/dev/hero-slider.astro
+// Dev fixture — not linked in nav. Tests BlockHero as second createCarousel consumer.
+import BlockHero from "@/components/blocks/BlockHero.astro";
+import "@/styles/starwind.css";
+
+const THREE_SLIDES = [
+  {
+    eyebrow: "SLIDE ONE",
+    heading: "Ship editorial content, fast.",
+    subheading: "A production-ready foundation for content-driven sites.",
+    cta_text: "Explore",
+    cta_url: "#",
+    image: null,
+  },
+  {
+    eyebrow: "SLIDE TWO",
+    heading: "Compose pages without code.",
+    subheading: "Hero, rich text, image + text, card grids.",
+    cta_text: "See blocks",
+    cta_url: "#",
+    image: null,
+  },
+  {
+    eyebrow: "SLIDE THREE",
+    heading: "Taste included, not bolted on.",
+    subheading: "Semantic tokens, fluid type scale, dark bands.",
+    cta_text: "Read guide",
+    cta_url: "#",
+    image: null,
+  },
+];
+
+const ONE_SLIDE = [
+  {
+    eyebrow: "SINGLE",
+    heading: "Static single slide.",
+    subheading: "No carousel controls should appear.",
+    cta_text: null,
+    cta_url: null,
+    image: null,
+  },
+];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero Slider Dev Fixture</title>
+  </head>
+  <body>
+    <!-- Multi-slide carousel (3000ms autoplay for faster tests) -->
+    <BlockHero
+      heading="Ship editorial content, fast."
+      slides={THREE_SLIDES}
+      autoplayDelay={3000}
+    />
+
+    <!-- Single-slide static degradation -->
+    <div data-hero-single>
+      <BlockHero
+        heading="Static single slide."
+        slides={ONE_SLIDE}
+      />
+    </div>
+  </body>
+</html>

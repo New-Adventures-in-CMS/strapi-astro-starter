@@ -72,9 +72,7 @@ async function uploadSeedImage(
     strapi.log.info(`[seed] Uploaded: ${filename} → ${uploaded.id}`);
     return { id: uploaded.id, documentId: uploaded.documentId };
   } catch (err) {
-    strapi.log.error(
-      `[seed] Upload failed for ${filename}: ${String(err)}`,
-    );
+    strapi.log.error(`[seed] Upload failed for ${filename}: ${String(err)}`);
     return null;
   }
 }
@@ -160,6 +158,35 @@ async function seedDemoPages(strapi: Core.Strapi) {
             cta_url: "/esempio",
             immersive: true,
             image: heroImg ? heroImg.id : undefined,
+            slides: [
+              {
+                eyebrow: "STARTER KIT",
+                heading: "Ship editorial content, fast.",
+                subheading:
+                  "A production-ready foundation for content-driven sites: Strapi handles the CMS, Astro renders on the server, the design system carries the taste.",
+                cta_text: "Explore the design system",
+                cta_url: "/esempio",
+                image: heroImg ? heroImg.id : undefined,
+              },
+              {
+                eyebrow: "BLOCK PAGE BUILDER",
+                heading: "Compose pages without code.",
+                subheading:
+                  "Hero, rich text, image + text, card grids — add new blocks by dropping a schema and an Astro renderer.",
+                cta_text: "See what's inside",
+                cta_url: "/about",
+                image: heroImg ? heroImg.id : undefined,
+              },
+              {
+                eyebrow: "DESIGN SYSTEM",
+                heading: "Taste included, not bolted on.",
+                subheading:
+                  "Semantic token layer, fluid type scale, dark statement bands out of the box. Swap the accent in one variable.",
+                cta_text: "Read the guide",
+                cta_url: "/about",
+                image: heroImg ? heroImg.id : undefined,
+              },
+            ],
           },
           {
             __component: "blocks.card-grid",
@@ -235,8 +262,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
           },
           {
             __component: "blocks.rich-text",
-            body:
-              "## Where to go next\n\nEdit this page from the Strapi admin at [localhost:1337/admin](http://localhost:1337/admin), or start fresh by removing the seeded pages and creating your own. The [setup guide](https://github.com/New-Adventures-in-CMS/strapi-astro-starter) walks through the block system, seed, and deployment.",
+            body: "## Where to go next\n\nEdit this page from the Strapi admin at [localhost:1337/admin](http://localhost:1337/admin), or start fresh by removing the seeded pages and creating your own. The [setup guide](https://github.com/New-Adventures-in-CMS/strapi-astro-starter) walks through the block system, seed, and deployment.",
           },
         ],
       } as any,
@@ -255,15 +281,13 @@ async function seedDemoPages(strapi: Core.Strapi) {
             __component: "blocks.image-text",
             eyebrow: "BEHIND THE STARTER",
             heading: "Built from real production work.",
-            body:
-              "This starter isn't a demo. It's what we wish we'd had on the last five content-driven projects — extracted, cleaned up, and shared.\n\nStrapi handles the content model. Astro renders it. The design system carries the taste so day-one pages already read like a magazine, not a template.",
+            body: "This starter isn't a demo. It's what we wish we'd had on the last five content-driven projects — extracted, cleaned up, and shared.\n\nStrapi handles the content model. Astro renders it. The design system carries the taste so day-one pages already read like a magazine, not a template.",
             image_position: "left",
             image: aboutImg ? aboutImg.id : undefined,
           },
           {
             __component: "blocks.rich-text",
-            body:
-              "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
+            body: "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
           },
         ],
       } as any,
@@ -280,8 +304,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
         blocks: [
           {
             __component: "blocks.rich-text",
-            body:
-              "## Services\n\nThis page is a skeleton, ready to be replaced. Drop in blocks from the Strapi admin — hero banners, card grids, image + text sections — to describe what you offer.\n\nDelete this content and start fresh, or duplicate the structure for other landing pages.",
+            body: "## Services\n\nThis page is a skeleton, ready to be replaced. Drop in blocks from the Strapi admin — hero banners, card grids, image + text sections — to describe what you offer.\n\nDelete this content and start fresh, or duplicate the structure for other landing pages.",
           },
         ],
       } as any,
@@ -298,8 +321,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
         blocks: [
           {
             __component: "blocks.rich-text",
-            body:
-              "## Get in touch\n\nReplace this content with a contact form (see `DynamicForm.astro` and the `form` content-type) or a plain description of how to reach you.\n\nForm submissions land in the Strapi admin under **Content Manager → Form submission**.",
+            body: "## Get in touch\n\nReplace this content with a contact form (see `DynamicForm.astro` and the `form` content-type) or a plain description of how to reach you.\n\nForm submissions land in the Strapi admin under **Content Manager → Form submission**.",
           },
         ],
       } as any,

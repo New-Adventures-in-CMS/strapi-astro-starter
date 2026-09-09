@@ -13,7 +13,9 @@ export function strapiMediaUrl(path: string | null | undefined): string | null {
 export const pageBlocksPopulate = {
   blocks: {
     on: {
-      "blocks.hero": { populate: { image: true } },
+      "blocks.hero": {
+        populate: { image: true, slides: { populate: { image: true } } },
+      },
       "blocks.rich-text": true,
       "blocks.image-text": { populate: { image: true } },
       "blocks.card-grid": {
