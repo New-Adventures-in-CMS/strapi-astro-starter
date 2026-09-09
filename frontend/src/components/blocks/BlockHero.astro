@@ -64,18 +64,22 @@ function slideImageUrl(s: HeroSlide) {
             const imgUrl = slideImageUrl(slide);
             const showCta = slide.cta_text && slide.cta_url;
             return (
-              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center">
+              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center" data-hero-slide>
                 {imgUrl ? (
                   <>
-                    <img
-                      src={imgUrl}
-                      alt={slide.image?.alternativeText || ""}
-                      class="absolute inset-0 h-full w-full object-cover"
-                    />
+                    <div class="hero-slide__parallax" data-parallax-layer>
+                      <img
+                        src={imgUrl}
+                        alt={slide.image?.alternativeText || ""}
+                        class="absolute inset-0 h-full w-full object-cover"
+                      />
+                    </div>
                     <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
                   </>
                 ) : (
-                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                  <div class="hero-slide__parallax" data-parallax-layer>
+                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                  </div>
                 )}
                 <Container width="default" class="relative z-10 text-center py-24">
                   {slide.eyebrow && (
@@ -190,6 +194,14 @@ function slideImageUrl(s: HeroSlide) {
 </Section>
 
 <style is:global>
+  .hero-slide__parallax {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -10%;
+    right: -10%;
+    will-change: transform;
+  }
   .hero-carousel-arrow {
     background: color-mix(in srgb, var(--section-dark-fg) 15%, transparent);
     color: var(--section-dark-fg);
@@ -221,6 +233,7 @@ function slideImageUrl(s: HeroSlide) {
 
 <script>
   import { createCarousel } from "@skeleton/carousel.js";
+  import { setupHeroParallax } from "@/lib/hero-parallax.js";
 
   document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
@@ -228,12 +241,15 @@ function slideImageUrl(s: HeroSlide) {
     const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
 
-    createCarousel(root, {
+    const api = createCarousel(root, {
       loop: true,
       autoplay: { delayMs: delay },
       prevBtn,
       nextBtn,
       dots,
     });
+
+    const cleanupParallax = setupHeroParallax(api, root);
+    document.addEventListener("astro:before-swap", cleanupParallax, { once: true });
   });
 </script>
