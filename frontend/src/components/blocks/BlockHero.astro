@@ -45,26 +45,26 @@ function slideImageUrl(s: HeroSlide) {
   tone="dark"
   spacing="none"
   class:list={[
-    "relative overflow-hidden",
+    "relative overflow-hidden flex items-center justify-center",
     immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
   ]}
 >
   {multiSlide ? (
     /* ── CAROUSEL MODE ──────────────────────────────────────── */
     <div
-      class="absolute inset-0 flex flex-col"
+      class="absolute inset-0"
       data-hero-carousel
       data-autoplay-delay={autoplayDelay}
       tabindex="0"
     >
-      {/* Embla viewport */}
-      <div class="overflow-hidden flex-1" data-carousel-viewport>
-        <div class="flex touch-pan-y h-full">
+      {/* Embla viewport — overflow:hidden + explicit h-full so Embla can measure */}
+      <div class="overflow-hidden h-full" data-carousel-viewport>
+        <div class="flex h-full touch-pan-y">
           {slides.map((slide) => {
             const imgUrl = slideImageUrl(slide);
             const showCta = slide.cta_text && slide.cta_url;
             return (
-              <div class="basis-full shrink-0 grow-0 min-w-0 relative flex items-center justify-center">
+              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center">
                 {imgUrl ? (
                   <>
                     <img
