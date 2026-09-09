@@ -1,9 +1,9 @@
 {
-  "collectionName": "components_blocks_heroes",
+  "collectionName": "components_hero_slides",
   "info": {
-    "displayName": "Hero",
-    "icon": "picture",
-    "description": "Full-width hero banner with heading, text, and optional CTA"
+    "displayName": "Hero Slide",
+    "icon": "layer",
+    "description": "Single slide in a hero carousel"
   },
   "options": {},
   "attributes": {
@@ -27,15 +27,6 @@
       "type": "media",
       "allowedTypes": ["images"],
       "multiple": false
-    },
-    "immersive": {
-      "type": "boolean",
-      "default": false
-    },
-    "slides": {
-      "type": "component",
-      "repeatable": true,
-      "component": "hero.slide"
     }
   }
 }

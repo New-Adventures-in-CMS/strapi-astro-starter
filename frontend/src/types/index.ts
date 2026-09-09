@@ -21,6 +21,16 @@ export interface StrapiMedia {
 }
 
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
+export interface HeroSlide {
+  id?: number;
+  heading: string;
+  eyebrow?: string | null;
+  subheading?: string | null;
+  cta_text?: string | null;
+  cta_url?: string | null;
+  image?: StrapiMedia | null;
+}
+
 export interface BlockHero {
   __component: "blocks.hero";
   heading: string;
@@ -30,6 +40,7 @@ export interface BlockHero {
   cta_url?: string | null;
   image?: StrapiMedia | null;
   immersive?: boolean | null;
+  slides?: HeroSlide[] | null;
 }
 
 export interface BlockRichText {

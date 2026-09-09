@@ -1,5 +1,5 @@
 ---
-import type { StrapiMedia } from "@/types";
+import type { HeroSlide, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Button } from "@/components/starwind/button";
 import { strapiMediaUrl } from "@/lib/strapi";
@@ -12,12 +12,33 @@ interface Props {
   image?: StrapiMedia | null;
   eyebrow?: string | null;
   immersive?: boolean | null;
+  slides?: HeroSlide[] | null;
+  autoplayDelay?: number;
 }
 
-const { heading, subheading, cta_text, cta_url, image, eyebrow, immersive } = Astro.props;
-const imageUrl = image ? strapiMediaUrl(image.url) : null;
-const showCta = cta_text && cta_url;
-const altText = image?.alternativeText || "";
+const {
+  heading,
+  subheading,
+  cta_text,
+  cta_url,
+  image,
+  eyebrow,
+  immersive,
+  slides,
+  autoplayDelay = 5000,
+} = Astro.props;
+
+const multiSlide = slides && slides.length >= 2;
+
+// Static display: first slide content or top-level fields
+const staticSlide: HeroSlide =
+  slides && slides.length >= 1
+    ? slides[0]
+    : { heading, eyebrow, subheading, cta_text, cta_url, image };
+
+function slideImageUrl(s: HeroSlide) {
+  return s.image ? strapiMediaUrl(s.image.url) : null;
+}
 ---
 
 <Section
@@ -28,52 +49,191 @@ const altText = image?.alternativeText || "";
     immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
   ]}
 >
-  {imageUrl ? (
-    <>
-      <img
-        src={imageUrl}
-        alt={altText}
-        class="absolute inset-0 h-full w-full object-cover"
-      />
-      <div
-        class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]"
-      />
-    </>
-  ) : (
+  {multiSlide ? (
+    /* ── CAROUSEL MODE ──────────────────────────────────────── */
     <div
-      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
-    />
-  )}
-
-  <Container width="default" class="relative z-10 text-center">
-    {eyebrow && (
-      <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
-        {eyebrow}
-      </p>
-    )}
-    <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
-      {heading}
-    </h1>
-    {subheading && (
-      <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
-        {subheading}
-      </p>
-    )}
-    {showCta && (
-      <div class="mt-10">
-        <Button
-          variant="default"
-          size="lg"
-          href={cta_url}
-          class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
-        >
-          {cta_text}
-        </Button>
+      class="absolute inset-0"
+      data-hero-carousel
+      data-autoplay-delay={autoplayDelay}
+      tabindex="0"
+    >
+      {/* Embla viewport — overflow:hidden + explicit h-full so Embla can measure */}
+      <div class="overflow-hidden h-full" data-carousel-viewport>
+        <div class="flex h-full touch-pan-y">
+          {slides.map((slide) => {
+            const imgUrl = slideImageUrl(slide);
+            const showCta = slide.cta_text && slide.cta_url;
+            return (
+              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center">
+                {imgUrl ? (
+                  <>
+                    <img
+                      src={imgUrl}
+                      alt={slide.image?.alternativeText || ""}
+                      class="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
+                  </>
+                ) : (
+                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                )}
+                <Container width="default" class="relative z-10 text-center py-24">
+                  {slide.eyebrow && (
+                    <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+                      {slide.eyebrow}
+                    </p>
+                  )}
+                  <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+                    {slide.heading}
+                  </h1>
+                  {slide.subheading && (
+                    <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
+                      {slide.subheading}
+                    </p>
+                  )}
+                  {showCta && (
+                    <div class="mt-10">
+                      <Button
+                        variant="default"
+                        size="lg"
+                        href={slide.cta_url}
+                        class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+                      >
+                        {slide.cta_text}
+                      </Button>
+                    </div>
+                  )}
+                </Container>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    )}
-  </Container>
+
+      {/* Prev arrow */}
+      <button
+        class="hero-carousel-arrow absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-2"
+        data-carousel-prev
+        type="button"
+      >
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      {/* Next arrow */}
+      <button
+        class="hero-carousel-arrow absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-2"
+        data-carousel-next
+        type="button"
+      >
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Dots container — skeleton populates with <button> elements */}
+      <div
+        class="absolute bottom-8 left-0 right-0 z-20 flex justify-center gap-3"
+        data-carousel-dots
+      ></div>
+    </div>
+  ) : (
+    /* ── STATIC MODE (single slide or top-level fields) ─────── */
+    <>
+      {slideImageUrl(staticSlide) ? (
+        <>
+          <img
+            src={slideImageUrl(staticSlide)!}
+            alt={staticSlide.image?.alternativeText || ""}
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
+        </>
+      ) : (
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+      )}
+
+      <Container width="default" class="relative z-10 text-center">
+        {staticSlide.eyebrow && (
+          <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+            {staticSlide.eyebrow}
+          </p>
+        )}
+        <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+          {staticSlide.heading}
+        </h1>
+        {staticSlide.subheading && (
+          <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
+            {staticSlide.subheading}
+          </p>
+        )}
+        {staticSlide.cta_text && staticSlide.cta_url && (
+          <div class="mt-10">
+            <Button
+              variant="default"
+              size="lg"
+              href={staticSlide.cta_url}
+              class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+            >
+              {staticSlide.cta_text}
+            </Button>
+          </div>
+        )}
+      </Container>
+    </>
+  )}
 
   {immersive && (
-    <div id="header-overlay-sentinel" class="pointer-events-none absolute bottom-0 h-px w-full" aria-hidden="true"></div>
+    <div id="header-overlay-sentinel" class="pointer-events-none absolute bottom-0 h-px w-full z-30" aria-hidden="true"></div>
   )}
 </Section>
+
+<style is:global>
+  .hero-carousel-arrow {
+    background: color-mix(in srgb, var(--section-dark-fg) 15%, transparent);
+    color: var(--section-dark-fg);
+    backdrop-filter: blur(4px);
+    transition: background 0.15s;
+  }
+  .hero-carousel-arrow:hover {
+    background: color-mix(in srgb, var(--section-dark-fg) 30%, transparent);
+  }
+  .hero-carousel-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  [data-hero-carousel] [data-carousel-dots] button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--section-dark-fg);
+    opacity: 0.4;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  [data-hero-carousel] [data-carousel-dots] button[data-active] {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+</style>
+
+<script>
+  import { createCarousel } from "@skeleton/carousel.js";
+
+  document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
+    const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
+    const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
+    const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
+    const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
+
+    createCarousel(root, {
+      loop: true,
+      autoplay: { delayMs: delay },
+      prevBtn,
+      nextBtn,
+      dots,
+    });
+  });
+</script>
