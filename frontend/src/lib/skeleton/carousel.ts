@@ -47,6 +47,11 @@ export function createCarousel(
   const emblaOpts: EmblaOptionsType = {
     loop: opts.loop ?? false,
     ...(useFade ? { watchDrag: false } : {}),
+    // Fade duration variants — pick the one that feels snappiest at visual QA:
+    //   snappy:  { duration: 8 }
+    //   default: { duration: 12 }  ← active
+    //   gentle:  { duration: 16 }
+    ...(useFade && !reducedMotion ? { duration: 12 } : {}),
     ...(useFade && reducedMotion ? { duration: 0 } : {}),
   };
   const embla: EmblaCarouselType = useFade
