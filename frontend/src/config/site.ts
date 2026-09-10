@@ -26,7 +26,7 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
   name: "Strapi + Astro Starter",
-  heroTransition: "fade",
+  heroTransition: "slide",
   description:
     "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
