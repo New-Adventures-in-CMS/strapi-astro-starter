@@ -2,13 +2,16 @@
 // frontend/src/components/DemoCarousel.astro
 interface Props {
   slides: string[];
+  transition?: "slide" | "fade";
 }
-const { slides } = Astro.props;
+const { slides, transition = "slide" } = Astro.props;
+const isFade = transition === "fade";
 ---
 
 <div
   class="relative overflow-hidden rounded-xl bg-muted"
-  data-demo-carousel
+  data-demo-carousel={!isFade || undefined}
+  data-demo-carousel-fade={isFade || undefined}
   tabindex="0"
 >
   <!-- Viewport: Embla attaches here -->
@@ -80,11 +83,14 @@ const { slides } = Astro.props;
     const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
     const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
 
-    createCarousel(root, {
-      loop: false,
-      prevBtn,
-      nextBtn,
-      dots,
-    });
+    createCarousel(root, { loop: false, prevBtn, nextBtn, dots });
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-demo-carousel-fade]").forEach((root) => {
+    const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
+    const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
+    const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
+
+    createCarousel(root, { loop: false, prevBtn, nextBtn, dots, transition: "fade" });
   });
 </script>
