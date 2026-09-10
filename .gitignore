@@ -17,6 +17,10 @@ node_modules/
 # Superpowers process artifacts (work plans, not part of the starter)
 docs/superpowers/
 
+# Local STATUS docs (branch/phase tracking — never ship with clones)
+STATUS-*.md
+docs/STATUS-*.md
+
 # Playwright
 playwright-report/
 test-results/
