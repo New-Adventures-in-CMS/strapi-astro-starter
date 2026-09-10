@@ -1,5 +1,7 @@
 // frontend/src/config/site.ts
 
+export type HeroTransition = "parallax" | "fade" | "slide";
+
 export interface NavItem {
   label: string;
   href?: string;
@@ -14,6 +16,7 @@ export interface SiteConfig {
   /** Production URL — used for canonical, OG, sitemap */
   url: string;
   locale: string;
+  heroTransition: HeroTransition;
   nav: NavItem[];
   footer: {
     columns: { title: string; items: NavItem[] }[];
@@ -23,6 +26,7 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
   name: "Strapi + Astro Starter",
+  heroTransition: "fade",
   description:
     "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
