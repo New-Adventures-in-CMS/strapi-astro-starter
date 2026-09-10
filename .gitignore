@@ -14,12 +14,11 @@ node_modules/
 /cms/public/uploads/*
 !/cms/public/uploads/.gitkeep
 
-# Superpowers process artifacts (work plans, not part of the starter)
-docs/superpowers/
-
 # Local STATUS docs (branch/phase tracking — never ship with clones)
 STATUS-*.md
-docs/STATUS-*.md
+
+# Process playbook — lives in its own private repo
+docs/
 
 # Playwright
 playwright-report/
