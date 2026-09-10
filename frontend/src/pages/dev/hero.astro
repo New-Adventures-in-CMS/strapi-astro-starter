@@ -1,6 +1,7 @@
 ---
-// frontend/src/pages/dev/hero-slider.astro
-// Dev fixture — not linked in nav. Tests BlockHero as second createCarousel consumer.
+// frontend/src/pages/dev/hero.astro
+// Dev fixture — not linked in nav. Tests BlockHero transition strategies.
+// Three labeled sections (parallax / fade / slide) + single-slide static.
 import BlockHero from "@/components/blocks/BlockHero.astro";
 import "@/styles/starwind.css";
 
@@ -48,16 +49,38 @@ const ONE_SLIDE = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hero Slider Dev Fixture</title>
+    <title>Hero Transition Strategy Fixture</title>
   </head>
   <body>
-    <!-- Multi-slide carousel (3000ms autoplay for faster tests) -->
-    <BlockHero
-      heading="Ship editorial content, fast."
-      slides={THREE_SLIDES}
-      autoplayDelay={3000}
-      transition="parallax"
-    />
+    <!-- Parallax strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="parallax">
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="parallax"
+      />
+    </div>
+
+    <!-- Fade strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="fade">
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="fade"
+      />
+    </div>
+
+    <!-- Slide strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="slide">
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="slide"
+      />
+    </div>
 
     <!-- Single-slide static degradation -->
     <div data-hero-single>

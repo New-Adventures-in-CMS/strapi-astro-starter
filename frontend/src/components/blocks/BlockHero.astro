@@ -3,6 +3,8 @@ import type { HeroSlide, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Button } from "@/components/starwind/button";
 import { strapiMediaUrl } from "@/lib/strapi";
+import { site } from "@/config/site";
+import type { HeroTransition } from "@/config/site";
 
 interface Props {
   heading: string;
@@ -14,6 +16,7 @@ interface Props {
   immersive?: boolean | null;
   slides?: HeroSlide[] | null;
   autoplayDelay?: number;
+  transition?: HeroTransition;
 }
 
 const {
@@ -26,8 +29,11 @@ const {
   immersive,
   slides,
   autoplayDelay = 5000,
+  transition,
 } = Astro.props;
 
+const strategy: HeroTransition = transition ?? site.heroTransition;
+const isParallax = strategy === "parallax";
 const multiSlide = slides && slides.length >= 2;
 
 // Static display: first slide content or top-level fields
@@ -55,6 +61,7 @@ function slideImageUrl(s: HeroSlide) {
       class="absolute inset-0"
       data-hero-carousel
       data-autoplay-delay={autoplayDelay}
+      data-hero-strategy={strategy}
       tabindex="0"
     >
       {/* Embla viewport — overflow:hidden + explicit h-full so Embla can measure */}
@@ -67,19 +74,29 @@ function slideImageUrl(s: HeroSlide) {
               <div class="relative flex-[0_0_100%] h-full flex items-center justify-center" data-hero-slide>
                 {imgUrl ? (
                   <>
-                    <div class="hero-slide__parallax" data-parallax-layer>
+                    {isParallax ? (
+                      <div class="hero-slide__parallax" data-parallax-layer>
+                        <img
+                          src={imgUrl}
+                          alt={slide.image?.alternativeText || ""}
+                          class="absolute inset-0 h-full w-full object-cover"
+                        />
+                      </div>
+                    ) : (
                       <img
                         src={imgUrl}
                         alt={slide.image?.alternativeText || ""}
                         class="absolute inset-0 h-full w-full object-cover"
                       />
-                    </div>
+                    )}
                     <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
                   </>
-                ) : (
+                ) : isParallax ? (
                   <div class="hero-slide__parallax" data-parallax-layer>
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
                   </div>
+                ) : (
+                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
                 )}
                 <Container width="default" class="relative z-10 text-center py-24">
                   {slide.eyebrow && (
@@ -240,6 +257,7 @@ function slideImageUrl(s: HeroSlide) {
     const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
     const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
+    const strategy = (root.dataset.heroStrategy ?? "fade") as "parallax" | "fade" | "slide";
 
     const api = createCarousel(root, {
       loop: true,
@@ -247,9 +265,12 @@ function slideImageUrl(s: HeroSlide) {
       prevBtn,
       nextBtn,
       dots,
+      ...(strategy === "fade" ? { transition: "fade" } : {}),
     });
 
-    const cleanupParallax = setupHeroParallax(api, root);
-    document.addEventListener("astro:before-swap", cleanupParallax, { once: true });
+    if (strategy === "parallax") {
+      const cleanupParallax = setupHeroParallax(api, root);
+      document.addEventListener("astro:before-swap", cleanupParallax, { once: true });
+    }
   });
 </script>
