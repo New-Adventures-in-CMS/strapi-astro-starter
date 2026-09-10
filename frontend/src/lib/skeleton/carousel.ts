@@ -49,7 +49,7 @@ export function createCarousel(
     ...(useFade ? { watchDrag: false } : {}),
     ...(useFade && reducedMotion ? { duration: 0 } : {}),
   };
-  const embla: EmblaCarouselType = useFade && !reducedMotion
+  const embla: EmblaCarouselType = useFade
     ? EmblaCarousel(viewport, emblaOpts, [Fade()])
     : EmblaCarousel(viewport, emblaOpts);
 

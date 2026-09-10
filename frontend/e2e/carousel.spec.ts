@@ -269,7 +269,9 @@ test.describe("Carousel fade — drag no-op", () => {
 test.describe("Carousel fade — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("fade with reduced-motion: next/prev change slide instantly", async ({ page }) => {
+  test("fade + reduced-motion: slide changes instantly (dot updates within 50ms)", async ({
+    page,
+  }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/carousel");
     const root = page.locator("[data-demo-carousel-fade]");
@@ -277,13 +279,13 @@ test.describe("Carousel fade — reduced motion", () => {
     const dots = root.locator("[data-carousel-dots] button");
 
     await nextBtn.click();
-    // Instant: no crossfade animation, change happens in one rAF
+    // duration:0 + Fade plugin → fadeToSelectedSnapInstantly fires in select handler
     await page.waitForTimeout(50);
 
     await expect(dots.nth(1)).toHaveAttribute("aria-current", "true");
   });
 
-  test("fade + reduced-motion: no opacity transition observed (slides stack, instant snap)", async ({
+  test("fade + reduced-motion: slides remain STACKED (same boundingBox as non-reduced fade)", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -291,22 +293,21 @@ test.describe("Carousel fade — reduced motion", () => {
     const root = page.locator("[data-demo-carousel-fade]");
     await expect(root).toBeVisible();
 
+    const slideContainer = root.locator("[data-carousel-viewport] > div");
+
+    // Capture slide 0 position before navigation (Fade plugin stacks it at x=0 within viewport)
+    const box0 = await slideContainer.locator("> div").nth(0).boundingBox();
+
     const nextBtn = root.locator("[data-carousel-next]");
     await nextBtn.click();
-    // With duration:0 and no Fade plugin, transition is immediate — snapshot opacity right after click
-    const opacities = await page.evaluate(() => {
-      const slideContainer = document.querySelector(
-        "[data-demo-carousel-fade] [data-carousel-viewport] > div",
-      );
-      if (!slideContainer) return [];
-      return Array.from(slideContainer.children).map(
-        (el) => (el as HTMLElement).style.opacity,
-      );
-    });
+    await page.waitForTimeout(50);
 
-    // Without Fade plugin, slides have no inline opacity set by the plugin → all empty/unset
-    for (const op of opacities) {
-      expect(["", "1", "0"]).toContain(op);
-    }
+    // Slide 1 is now active — Fade plugin (still mounted) positions it at the same x as slide 0 was.
+    // If Fade() were skipped, Embla would use slide transport and slide 1 would be offset by ~slideWidth.
+    const box1 = await slideContainer.locator("> div").nth(1).boundingBox();
+
+    expect(box0).not.toBeNull();
+    expect(box1).not.toBeNull();
+    expect(box1!.x).toBeCloseTo(box0!.x, 0);
   });
 });
