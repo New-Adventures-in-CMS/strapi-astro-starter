@@ -4,6 +4,7 @@ import EmblaCarousel, {
   type EmblaCarouselType,
   type EmblaOptionsType,
 } from "embla-carousel";
+import Fade from "embla-carousel-fade";
 
 export type CarouselOpts = {
   loop?: boolean;
@@ -16,6 +17,7 @@ export type CarouselOpts = {
     next?: string;
     slide?: (i: number) => string;
   };
+  transition?: "slide" | "fade";
 };
 
 export type CarouselAPI = {
@@ -41,8 +43,15 @@ export function createCarousel(
   if (!viewport)
     throw new Error("createCarousel: missing [data-carousel-viewport]");
 
-  const emblaOpts: EmblaOptionsType = { loop: opts.loop ?? false };
-  const embla: EmblaCarouselType = EmblaCarousel(viewport, emblaOpts);
+  const useFade = opts.transition === "fade";
+  const emblaOpts: EmblaOptionsType = {
+    loop: opts.loop ?? false,
+    ...(useFade ? { watchDrag: false } : {}),
+    ...(useFade && reducedMotion ? { duration: 0 } : {}),
+  };
+  const embla: EmblaCarouselType = useFade
+    ? EmblaCarousel(viewport, emblaOpts, [Fade()])
+    : EmblaCarousel(viewport, emblaOpts);
 
   // A11y: set roles on root and slides
   root.setAttribute("role", "region");
