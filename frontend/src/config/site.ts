@@ -2,12 +2,26 @@
 
 export type HeroTransition = "parallax" | "fade" | "slide";
 
+export type MegamenuLayout = "band" | "dropdown";
+
 export interface NavItem {
   label: string;
   href?: string;
   external?: boolean;
   children?: NavItem[];
   order?: number;
+  /** Optional secondary line rendered in the megamenu band. */
+  description?: string;
+}
+
+export interface NavConfig {
+  /**
+   * Megamenu layout. Only `band` is wired; `dropdown` is reserved as a config
+   * seam and not implemented — the Header throws when it encounters it.
+   */
+  megamenuLayout: MegamenuLayout;
+  /** Fallback header items when the CMS is unreachable. */
+  items: NavItem[];
 }
 
 export interface SiteConfig {
@@ -17,7 +31,7 @@ export interface SiteConfig {
   url: string;
   locale: string;
   heroTransition: HeroTransition;
-  nav: NavItem[];
+  nav: NavConfig;
   footer: {
     columns: { title: string; items: NavItem[] }[];
     legal: string;
@@ -31,18 +45,29 @@ export const site: SiteConfig = {
     "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
   locale: "it-IT",
-  nav: [
-    { label: "Home", href: "/" },
-    {
-      label: "Prodotto",
-      children: [
-        { label: "Panoramica", href: "/prodotto/panoramica" },
-        { label: "Funzionalità", href: "/prodotto/funzionalita" },
-      ],
-    },
-    { label: "Pagine", href: "/pagine" },
-    { label: "Contatti", href: "/contatti" },
-  ],
+  nav: {
+    megamenuLayout: "band",
+    items: [
+      { label: "Home", href: "/" },
+      {
+        label: "Prodotto",
+        children: [
+          {
+            label: "Panoramica",
+            href: "/prodotto/panoramica",
+            description: "Cosa è, a chi serve, come è fatto.",
+          },
+          {
+            label: "Funzionalità",
+            href: "/prodotto/funzionalita",
+            description: "Le capacità principali in una schermata.",
+          },
+        ],
+      },
+      { label: "Pagine", href: "/pagine" },
+      { label: "Contatti", href: "/contatti" },
+    ],
+  },
   footer: {
     columns: [
       {

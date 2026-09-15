@@ -84,17 +84,15 @@ test.describe("Desktop nav submenu", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Desktop: NavigationMenu submenu layout bounds
-// Playwright's toBeVisible() passes for off-screen-translated elements, so we
-// must use boundingBox() containment to guard against the full-width blowout
-// where the 1920px-wide positioner pushes content off the left edge.
+// Desktop: NavigationMenu banda full-bleed (Stadio 3)
+// The band composition wraps Root with a shared inline Popup>Viewport.
+// Popup is fixed under the header spanning 100vw; assert boundingBox().width
+// ≈ viewport width (not just toBeVisible, which passes for off-screen items).
 // ---------------------------------------------------------------------------
 
-test.describe("Desktop nav submenu — layout bounds", () => {
+test.describe("Desktop nav — banda full-bleed", () => {
   for (const width of [1920, 1280]) {
-    test(`submenu panel is within viewport at ${width}px width`, async ({
-      page,
-    }) => {
+    test(`banda spans full viewport at ${width}px width`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
       await page.goto("/");
 
@@ -112,14 +110,14 @@ test.describe("Desktop nav submenu — layout bounds", () => {
 
       const box = await popup.boundingBox();
       expect(box).not.toBeNull();
-      // Left edge must be within viewport
-      expect(box!.x).toBeGreaterThanOrEqual(0);
-      // Right edge must not exceed viewport
-      expect(box!.x + box!.width).toBeLessThanOrEqual(width);
-      // Width must be content-sized, not full-window-width
-      expect(box!.width).toBeLessThan(400);
+      // Left edge anchored to viewport left
+      expect(box!.x).toBeLessThanOrEqual(1);
+      // Right edge reaches viewport right (allow 1px rounding)
+      expect(box!.x + box!.width).toBeGreaterThanOrEqual(width - 1);
+      // Width ≈ viewport width (band, not content-sized dropdown)
+      expect(box!.width).toBeGreaterThanOrEqual(width - 1);
 
-      // Both child links must be within viewport bounds
+      // Child links remain within viewport bounds
       for (const name of ["Panoramica", "Funzionalità"]) {
         const link = page.getByRole("link", { name });
         const linkBox = await link.boundingBox();
@@ -129,6 +127,93 @@ test.describe("Desktop nav submenu — layout bounds", () => {
       }
     });
   }
+});
+
+// ---------------------------------------------------------------------------
+// Desktop: banda dismiss + focus-restore (delegated to Runtime)
+// ---------------------------------------------------------------------------
+
+test.describe("Desktop nav — banda dismiss & focus", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("Escape closes banda and restores focus to trigger", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    await page.keyboard.press("Escape");
+    await expect(trigger).toHaveAttribute("data-state", "closed");
+    await expect(trigger).toBeFocused();
+  });
+
+  test("Outside click closes banda", async ({ page }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    // Click far outside the header & popup
+    await page.mouse.click(50, 700);
+    await expect(trigger).toHaveAttribute("data-state", "closed");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Desktop: banda morph — only one shared popup, not per-item panels
+// ---------------------------------------------------------------------------
+
+test.describe("Desktop nav — banda description row", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("child link renders description as secondary line when present", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    // Fallback site.nav puts a description under the first child ("Panoramica").
+    const desc = page
+      .locator("[data-sw-nav-menu-content]")
+      .getByText("Cosa è, a chi serve, come è fatto.");
+    await expect(desc).toBeVisible();
+  });
+});
+
+test.describe("Desktop nav — banda morph", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("only one [data-sw-nav-menu-popup] regardless of active trigger", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    const popups = page.locator("[data-sw-nav-menu-popup]");
+    await expect(popups).toHaveCount(1);
+  });
 });
 
 // ---------------------------------------------------------------------------

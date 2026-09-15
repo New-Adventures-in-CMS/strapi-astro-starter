@@ -114,12 +114,12 @@ describe("resolveHref — via getHeaderNav", () => {
 describe("getHeaderNav", () => {
   it("returns site.nav fallback when strapiFind throws", async () => {
     mockFind.mockRejectedValue(new Error("Network error"));
-    expect(await getHeaderNav()).toEqual(site.nav);
+    expect(await getHeaderNav()).toEqual(site.nav.items);
   });
 
   it("returns site.nav fallback when data is empty", async () => {
     mockFind.mockResolvedValue(apiResponse([]));
-    expect(await getHeaderNav()).toEqual(site.nav);
+    expect(await getHeaderNav()).toEqual(site.nav.items);
   });
 
   it("returns items with area header", async () => {
