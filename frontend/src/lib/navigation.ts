@@ -18,6 +18,7 @@ export interface MenuItem {
   footerColumn?: "Prodotto" | "Azienda" | "Supporto" | "Legale" | null;
   parent?: { documentId: string } | null;
   order: number;
+  description?: string | null;
 }
 
 export interface FooterData {
@@ -56,13 +57,19 @@ function buildTree(
 ): NavItem[] {
   const relevant = items.filter((i) => filterArea(i.area));
   const roots = relevant.filter((i) => !i.parent);
-  const childrenOf = (docId: string) =>
+  const childrenOf = (docId: string): NavItem[] =>
     relevant
       .filter((i) => i.parent?.documentId === docId)
       .sort((a, b) => a.order - b.order)
       .map((c) => {
         const { href, external } = resolveHref(c);
-        return { label: c.label, href, external, order: c.order };
+        return {
+          label: c.label,
+          href,
+          external,
+          order: c.order,
+          description: c.description ?? undefined,
+        };
       });
   return roots
     .sort((a, b) => a.order - b.order)
@@ -74,6 +81,7 @@ function buildTree(
         href,
         external,
         order: r.order,
+        description: r.description ?? undefined,
         children: children.length ? children : undefined,
       };
     });
@@ -81,9 +89,9 @@ function buildTree(
 
 export async function getHeaderNav(): Promise<NavItem[]> {
   const items = await fetchMenuItems();
-  if (!items) return site.nav;
+  if (!items) return site.nav.items;
   const nav = buildTree(items, (a) => a === "header" || a === "both");
-  return nav.length ? nav : site.nav;
+  return nav.length ? nav : site.nav.items;
 }
 
 export async function getFooterNav(): Promise<FooterData> {
