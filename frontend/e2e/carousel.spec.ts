@@ -216,7 +216,9 @@ test.describe("Carousel fade — navigation (crossfade)", () => {
 test.describe("Carousel fade — slides stacked (same boundingBox)", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("active slide always appears at the same position after navigation", async ({ page }) => {
+  test("active slide always appears at the same position after navigation", async ({
+    page,
+  }) => {
     await page.goto("/dev/carousel");
     const root = page.locator("[data-demo-carousel-fade]");
     await expect(root).toBeVisible();
