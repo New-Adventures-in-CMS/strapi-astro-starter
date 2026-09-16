@@ -1,5 +1,4 @@
 import NavigationMenu from "./NavigationMenu.astro";
-import NavigationMenuBand from "./NavigationMenuBand.astro";
 import NavigationMenuContent from "./NavigationMenuContent.astro";
 import NavigationMenuIndicator from "./NavigationMenuIndicator.astro";
 import NavigationMenuItem from "./NavigationMenuItem.astro";
@@ -21,17 +20,11 @@ import {
   navigationMenuTrigger,
   navigationMenuViewport,
 } from "./variants";
-import {
-  navigationMenuBandPopup,
-  navigationMenuBandViewport,
-} from "./band-variants";
 
 const navigationMenuTriggerStyle = navigationMenuTrigger;
 
 const NavigationMenuVariants = {
   navigationMenu,
-  navigationMenuBandPopup,
-  navigationMenuBandViewport,
   navigationMenuContent,
   navigationMenuIndicator,
   navigationMenuItem,
@@ -45,7 +38,6 @@ const NavigationMenuVariants = {
 
 const NavigationMenuParts = {
   Root: NavigationMenu,
-  Band: NavigationMenuBand,
   List: NavigationMenuList,
   Item: NavigationMenuItem,
   Trigger: NavigationMenuTrigger,
@@ -59,7 +51,6 @@ const NavigationMenuParts = {
 
 export {
   NavigationMenu,
-  NavigationMenuBand,
   NavigationMenuContent,
   NavigationMenuIndicator,
   NavigationMenuItem,
