@@ -331,6 +331,25 @@
     color: var(--foreground);
   }
 
+  /* Nav items (trigger + first-level link) need explicit override: the
+     transparent-state rule below targets `[data-slot=...]` directly with
+     higher specificity than `header ... a`, so :has() must match the same
+     selector shape to flip color when a megamenu is open. */
+  header[data-overlay="true"][data-state="transparent"]:has(
+      [data-slot="navigation-menu-trigger"][data-state="open"]
+    )
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-trigger"],
+  header[data-overlay="true"][data-state="transparent"]:has(
+      [data-slot="navigation-menu-trigger"][data-state="open"]
+    )
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-link"] {
+    color: var(--foreground);
+  }
+
   /* Unified transition on overlay header: preserve auto-hide (transform) while
      smoothly virating background/color/border on open/close. */
   header[data-overlay="true"] {
