@@ -54,24 +54,26 @@ const {
 >
   <slot />
 
-  <NavigationMenuPrimitive.Positioner
-    class={navigationMenuBandPositioner()}
-    side="bottom"
-    align="start"
-    sideOffset={0}
-    alignOffset={0}
-    avoidCollisions={false}
-    collisionPadding={0}
-    data-slot="navigation-menu-positioner"
-  >
-    <NavigationMenuPrimitive.Popup
-      class={navigationMenuBandPopup()}
-      data-slot="navigation-menu-popup"
+  <NavigationMenuPrimitive.Portal disabled={true} data-slot="navigation-menu-portal">
+    <NavigationMenuPrimitive.Positioner
+      class={navigationMenuBandPositioner()}
+      side="bottom"
+      align="start"
+      sideOffset={0}
+      alignOffset={0}
+      avoidCollisions={false}
+      collisionPadding={0}
+      data-slot="navigation-menu-positioner"
     >
-      <NavigationMenuPrimitive.Viewport
-        class={navigationMenuBandViewport()}
-        data-slot="navigation-menu-viewport"
-      />
-    </NavigationMenuPrimitive.Popup>
-  </NavigationMenuPrimitive.Positioner>
+      <NavigationMenuPrimitive.Popup
+        class={navigationMenuBandPopup()}
+        data-slot="navigation-menu-popup"
+      >
+        <NavigationMenuPrimitive.Viewport
+          class={navigationMenuBandViewport()}
+          data-slot="navigation-menu-viewport"
+        />
+      </NavigationMenuPrimitive.Popup>
+    </NavigationMenuPrimitive.Positioner>
+  </NavigationMenuPrimitive.Portal>
 </NavigationMenuPrimitive.Root>

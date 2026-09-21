@@ -10,7 +10,9 @@ export const navigationMenuBandPositioner = tv({
     // absolute! → keeps Positioner out of the header's flex flow so the nav
     // list doesn't wrap. Sibling of List inside Root; combined with `static!`
     // on Root, its containing-block resolves up to <header> (fixed = a CB).
-    "absolute! left-0! w-screen! max-w-none! z-40",
+    // top-full! (top: 100%) with CB=header lands the popup at header.bottom;
+    // overrides the Runtime's inline `top` (trigger-bottom via floating-ui).
+    "absolute! left-0! top-full! w-screen! max-w-none! z-40",
     "pointer-events-none",
   ],
 });
