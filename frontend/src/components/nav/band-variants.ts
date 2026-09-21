@@ -1,16 +1,23 @@
 import { tv } from "tailwind-variants";
 
-// Full-bleed banda: popup is absolute inside the header, anchored to its bottom edge (top-full),
-// spanning 100vw. Because the header carries a `transform` (auto-hide translateY), it establishes
-// the containing block for the popup — so the banda follows the header's transform and stays
-// glued to its bottom edge regardless of scroll or auto-hide state. Zero diagonal-gap by
-// construction. Runtime writes inline `style.width`/`height` on both popup and viewport for morph;
-// we override the width side with `!important` (Tailwind v4 trailing `!`) so the banda stays
-// full-bleed regardless of content width, while letting the runtime drive height animation.
+// Full-bleed banda via Positioner: Runtime places the Positioner under the trigger
+// (side=bottom, sideOffset=0); we force it edge-to-edge (left:0, w:100vw, no max)
+// so the popup extends across the whole viewport. Popup fills the Positioner (w-full),
+// Viewport is the height-animated container that morphs between panels.
+
+export const navigationMenuBandPositioner = tv({
+  base: [
+    // absolute! → keeps Positioner out of the header's flex flow so the nav
+    // list doesn't wrap. Sibling of List inside Root; combined with `static!`
+    // on Root, its containing-block resolves up to <header> (fixed = a CB).
+    "absolute! left-0! w-screen! max-w-none! z-40",
+    "pointer-events-none",
+  ],
+});
 
 export const navigationMenuBandPopup = tv({
   base: [
-    "absolute! left-0! top-full! w-screen! z-40",
+    "pointer-events-auto w-full!",
     "bg-background text-foreground shadow-lg",
     "data-[state=closed]:pointer-events-none",
     "data-starting-style:opacity-0 data-ending-style:opacity-0",

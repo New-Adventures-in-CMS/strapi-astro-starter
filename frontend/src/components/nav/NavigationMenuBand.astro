@@ -1,17 +1,17 @@
 ---
 import NavigationMenuPrimitive from "@starwind-ui/astro/navigation-menu";
 import type { HTMLAttributes } from "astro/types";
-import NavigationMenuPopup from "../starwind/navigation-menu/NavigationMenuPopup.astro";
-import NavigationMenuViewport from "../starwind/navigation-menu/NavigationMenuViewport.astro";
 import { navigationMenu } from "../starwind/navigation-menu/variants";
 import {
+  navigationMenuBandPositioner,
   navigationMenuBandPopup,
   navigationMenuBandViewport,
 } from "./band-variants";
 
-// Band-composition wrapper: Root + shared inline Popup>Viewport, no Portal/Positioner.
-// Runtime requires only [data-sw-nav-menu-popup] and [data-sw-nav-menu-viewport];
-// omitting Positioner disables floating placement (band is fixed-under-header, not anchored).
+// Band-composition wrapper: Root + Positioner > Popup > Viewport (no Portal —
+// popup stays inside the header so :has() on the header can react to open state).
+// Runtime places the Positioner via floating-ui; band variants force it full-bleed
+// (left:0, w:100vw, max-w:none). Popup and Viewport fill the Positioner width.
 
 type Props = Omit<HTMLAttributes<"nav">, "defaultValue" | "onChange" | "value"> & {
   defaultValue?: string | null;
@@ -54,13 +54,24 @@ const {
 >
   <slot />
 
-  <NavigationMenuPopup
-    class={navigationMenuBandPopup()}
-    data-slot="navigation-menu-popup"
+  <NavigationMenuPrimitive.Positioner
+    class={navigationMenuBandPositioner()}
+    side="bottom"
+    align="start"
+    sideOffset={0}
+    alignOffset={0}
+    avoidCollisions={false}
+    collisionPadding={0}
+    data-slot="navigation-menu-positioner"
   >
-    <NavigationMenuViewport
-      class={navigationMenuBandViewport()}
-      data-slot="navigation-menu-viewport"
-    />
-  </NavigationMenuPopup>
+    <NavigationMenuPrimitive.Popup
+      class={navigationMenuBandPopup()}
+      data-slot="navigation-menu-popup"
+    >
+      <NavigationMenuPrimitive.Viewport
+        class={navigationMenuBandViewport()}
+        data-slot="navigation-menu-viewport"
+      />
+    </NavigationMenuPrimitive.Popup>
+  </NavigationMenuPrimitive.Positioner>
 </NavigationMenuPrimitive.Root>

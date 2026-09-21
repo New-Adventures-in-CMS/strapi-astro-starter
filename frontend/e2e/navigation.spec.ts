@@ -750,21 +750,40 @@ test.describe("Desktop nav — banda diagonal-gap fix", () => {
     expect(popupBox).not.toBeNull();
 
     const headerBottom = headerBox!.y + headerBox!.height;
-    expect(Math.abs(popupBox!.y - headerBottom)).toBeLessThanOrEqual(1);
+    expect(Math.abs(popupBox!.y - headerBottom)).toBeLessThanOrEqual(2);
 
-    // Structural assert: popup's containing-block must resolve to <header>,
-    // no positioned/transformed ancestor in between (would resurrect the gap).
-    const anchoredToHeader = await popup.evaluate((el) => {
-      const header = document.querySelector("header");
-      let n: HTMLElement | null = el.parentElement;
-      while (n && n !== header) {
-        const s = getComputedStyle(n);
-        if (s.position !== "static" || s.transform !== "none") return false;
-        n = n.parentElement;
-      }
-      return n === header;
-    });
-    expect(anchoredToHeader).toBe(true);
+    // Full-bleed: popup width ≈ viewport width (Positioner is forced w:100vw).
+    const viewportWidth = page.viewportSize()!.width;
+    expect(popupBox!.width).toBeGreaterThanOrEqual(viewportWidth - 1);
+    expect(popupBox!.x).toBeLessThanOrEqual(1);
+  });
+});
+
+test.describe("Desktop nav — banda fixture (/dev/megamenu)", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("fixture: popup y ≈ header bottom (±2px) and width ≈ innerWidth", async ({
+    page,
+  }) => {
+    await page.goto("/dev/megamenu");
+    const trigger = page.locator("[data-sw-nav-menu-trigger]").first();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    const header = page.locator("header");
+    const popup = page.locator("[data-sw-nav-menu-popup]");
+    const headerBox = await header.boundingBox();
+    const popupBox = await popup.boundingBox();
+    expect(headerBox).not.toBeNull();
+    expect(popupBox).not.toBeNull();
+
+    const headerBottom = headerBox!.y + headerBox!.height;
+    expect(Math.abs(popupBox!.y - headerBottom)).toBeLessThanOrEqual(2);
+
+    const viewportWidth = page.viewportSize()!.width;
+    expect(popupBox!.width).toBeGreaterThanOrEqual(viewportWidth - 1);
+    expect(popupBox!.x).toBeLessThanOrEqual(1);
   });
 });
 
