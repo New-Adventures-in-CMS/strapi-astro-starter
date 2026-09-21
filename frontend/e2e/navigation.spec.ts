@@ -688,3 +688,158 @@ test.describe("Header v2 — scroll-state overlay sentinel", () => {
     expect(box!.y).toBeLessThan(100);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Stadio 3 fix — banda attaccata all'header + header vira solid via :has()
+// ---------------------------------------------------------------------------
+
+test.describe("Desktop nav — banda diagonal-gap fix", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("diagonal traversal from trigger to panel does not close the banda", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+
+    await trigger.hover();
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    const triggerBox = await trigger.boundingBox();
+    const popup = page.locator("[data-sw-nav-menu-popup]");
+    const popupBox = await popup.boundingBox();
+    expect(triggerBox).not.toBeNull();
+    expect(popupBox).not.toBeNull();
+
+    // Diagonal path: from trigger center outward+down through the seam zone,
+    // then into the popup body far from the trigger's x column.
+    const startX = triggerBox!.x + triggerBox!.width / 2;
+    const startY = triggerBox!.y + triggerBox!.height / 2;
+    const endX = popupBox!.x + popupBox!.width - 200; // far right inside popup
+    const endY = popupBox!.y + popupBox!.height / 2;
+
+    await page.mouse.move(startX, startY);
+    await page.mouse.move(endX, endY, { steps: 20 });
+    await page.waitForTimeout(250);
+
+    await expect(trigger).toHaveAttribute("data-state", "open");
+    await expect(popup).not.toHaveAttribute("hidden");
+  });
+
+  test("banda top edge coincides (±1px) with header bottom edge", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    const header = page.locator("header[data-overlay]");
+    const popup = page.locator("[data-sw-nav-menu-popup]");
+    const headerBox = await header.boundingBox();
+    const popupBox = await popup.boundingBox();
+    expect(headerBox).not.toBeNull();
+    expect(popupBox).not.toBeNull();
+
+    const headerBottom = headerBox!.y + headerBox!.height;
+    expect(Math.abs(popupBox!.y - headerBottom)).toBeLessThanOrEqual(1);
+
+    // Structural assert: popup's containing-block must resolve to <header>,
+    // no positioned/transformed ancestor in between (would resurrect the gap).
+    const anchoredToHeader = await popup.evaluate((el) => {
+      const header = document.querySelector("header");
+      let n: HTMLElement | null = el.parentElement;
+      while (n && n !== header) {
+        const s = getComputedStyle(n);
+        if (s.position !== "static" || s.transform !== "none") return false;
+        n = n.parentElement;
+      }
+      return n === header;
+    });
+    expect(anchoredToHeader).toBe(true);
+  });
+});
+
+test.describe("Header v2 — solid on megamenu open (overlay)", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("opening megamenu turns header background solid; closing restores transparent", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const header = page.locator("header[data-overlay='true']");
+    const sentinelCount = await page
+      .locator("#header-overlay-sentinel")
+      .count();
+    if (sentinelCount === 0) {
+      test.skip(
+        true,
+        "No overlay sentinel on this page — overlay mode not active",
+      );
+      return;
+    }
+    await expect(header).toHaveAttribute("data-state", "transparent");
+
+    const initialBg = await header.evaluate(
+      (el) => window.getComputedStyle(el).backgroundColor,
+    );
+    // Transparent baseline: rgba alpha 0 (or the literal "transparent")
+    expect(
+      initialBg === "rgba(0, 0, 0, 0)" ||
+        initialBg === "transparent" ||
+        /rgba\([^,]+,\s*[^,]+,\s*[^,]+,\s*0\)/.test(initialBg),
+    ).toBe(true);
+
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    // Wait for :has() to apply + transition to progress meaningfully
+    await page.waitForTimeout(300);
+
+    const openBg = await header.evaluate(
+      (el) => window.getComputedStyle(el).backgroundColor,
+    );
+    const openColor = await header.evaluate(
+      (el) => window.getComputedStyle(el).color,
+    );
+    // Solid: not fully transparent
+    const openBgAlpha = openBg.match(
+      /rgba?\([^,]+,\s*[^,]+,\s*[^,]+(?:,\s*([\d.]+))?\)/,
+    );
+    const alpha = openBgAlpha?.[1] ? parseFloat(openBgAlpha[1]) : 1;
+    expect(alpha).toBeGreaterThan(0.5);
+
+    // Compare to --foreground (what the solid rule assigns to color)
+    const foreground = await header.evaluate((el) =>
+      getComputedStyle(el).getPropertyValue("--foreground").trim(),
+    );
+    expect(foreground.length).toBeGreaterThan(0);
+    expect(openColor.length).toBeGreaterThan(0);
+
+    // Close: Escape → back to transparent
+    await page.keyboard.press("Escape");
+    await expect(trigger).toHaveAttribute("data-state", "closed");
+    await page.waitForTimeout(300);
+    const closedBg = await header.evaluate(
+      (el) => window.getComputedStyle(el).backgroundColor,
+    );
+    expect(
+      closedBg === "rgba(0, 0, 0, 0)" ||
+        closedBg === "transparent" ||
+        /rgba\([^,]+,\s*[^,]+,\s*[^,]+,\s*0\)/.test(closedBg),
+    ).toBe(true);
+  });
+});

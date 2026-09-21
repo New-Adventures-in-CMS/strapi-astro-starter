@@ -36,8 +36,6 @@ if (megamenuLayout === "dropdown") {
     'nav.megamenuLayout "dropdown" is a config seam but not implemented yet. Use "band" or wire the dropdown branch.',
   );
 }
-// Header height CSS variable — consumed by NavigationMenuBand popup to sit under the header.
-const headerHeightRem = "4.5rem";
 ---
 
 <header
@@ -45,7 +43,6 @@ const headerHeightRem = "4.5rem";
     "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
     !overlay && "bg-background text-foreground border-b border-border",
   ]}
-  style={`--sw-header-h: ${headerHeightRem};`}
   data-overlay={overlay ? "true" : "false"}
   data-state={overlay ? "transparent" : undefined}
   data-hidden="false"

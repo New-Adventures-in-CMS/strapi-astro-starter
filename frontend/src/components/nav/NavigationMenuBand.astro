@@ -28,7 +28,7 @@ const {
   defaultValue = null,
   value,
   openDelay = 50,
-  closeDelay = 50,
+  closeDelay = 150,
   closeOnEscape = true,
   closeOnOutsideInteract = true,
   orientation = "horizontal",
@@ -39,7 +39,7 @@ const {
 ---
 
 <NavigationMenuPrimitive.Root
-  class={navigationMenu({ class: className })}
+  class={navigationMenu({ class: ["static!", className].filter(Boolean).join(" ") })}
   defaultValue={defaultValue}
   value={value}
   openDelay={openDelay}
