@@ -1,0 +1,79 @@
+---
+import NavigationMenuPrimitive from "@starwind-ui/astro/navigation-menu";
+import type { HTMLAttributes } from "astro/types";
+import { navigationMenu } from "../starwind/navigation-menu/variants";
+import {
+  navigationMenuBandPositioner,
+  navigationMenuBandPopup,
+  navigationMenuBandViewport,
+} from "./band-variants";
+
+// Band-composition wrapper: Root + Positioner > Popup > Viewport (no Portal —
+// popup stays inside the header so :has() on the header can react to open state).
+// Runtime places the Positioner via floating-ui; band variants force it full-bleed
+// (left:0, w:100vw, max-w:none). Popup and Viewport fill the Positioner width.
+
+type Props = Omit<HTMLAttributes<"nav">, "defaultValue" | "onChange" | "value"> & {
+  defaultValue?: string | null;
+  value?: string | null;
+  openDelay?: number;
+  closeDelay?: number;
+  closeOnEscape?: boolean;
+  closeOnOutsideInteract?: boolean;
+  orientation?: "horizontal" | "vertical";
+  size?: "sm" | "md";
+};
+
+const {
+  defaultValue = null,
+  value,
+  openDelay = 50,
+  closeDelay = 150,
+  closeOnEscape = true,
+  closeOnOutsideInteract = true,
+  orientation = "horizontal",
+  size = "md",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<NavigationMenuPrimitive.Root
+  class={navigationMenu({ class: ["static!", className].filter(Boolean).join(" ") })}
+  defaultValue={defaultValue}
+  value={value}
+  openDelay={openDelay}
+  closeDelay={closeDelay}
+  closeOnEscape={closeOnEscape}
+  closeOnOutsideInteract={closeOnOutsideInteract}
+  orientation={orientation}
+  {...rest}
+  data-size={size}
+  data-slot="navigation-menu"
+  data-layout="band"
+>
+  <slot />
+
+  <NavigationMenuPrimitive.Portal disabled={true} data-slot="navigation-menu-portal">
+    <NavigationMenuPrimitive.Positioner
+      class={navigationMenuBandPositioner()}
+      side="bottom"
+      align="start"
+      sideOffset={0}
+      alignOffset={0}
+      avoidCollisions={false}
+      collisionPadding={0}
+      data-slot="navigation-menu-positioner"
+    >
+      <NavigationMenuPrimitive.Popup
+        class={navigationMenuBandPopup()}
+        data-slot="navigation-menu-popup"
+      >
+        <NavigationMenuPrimitive.Viewport
+          class={navigationMenuBandViewport()}
+          data-slot="navigation-menu-viewport"
+        />
+      </NavigationMenuPrimitive.Popup>
+    </NavigationMenuPrimitive.Positioner>
+  </NavigationMenuPrimitive.Portal>
+</NavigationMenuPrimitive.Root>

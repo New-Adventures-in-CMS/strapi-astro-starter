@@ -3,8 +3,8 @@ import { getHeaderNav } from "@/lib/navigation";
 import { site } from "@/config/site";
 import { Container } from "@/components/layout";
 import Logo from "@/components/Logo.astro";
+import NavigationMenuBand from "@/components/nav/NavigationMenuBand.astro";
 import {
-  NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuTrigger,
@@ -29,6 +29,13 @@ const navItems = await getHeaderNav();
 const path = Astro.url.pathname;
 const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
+
+const megamenuLayout = site.nav.megamenuLayout;
+if (megamenuLayout === "dropdown") {
+  throw new Error(
+    'nav.megamenuLayout "dropdown" is a config seam but not implemented yet. Use "band" or wire the dropdown branch.',
+  );
+}
 ---
 
 <header
@@ -39,6 +46,7 @@ const isActive = (href: string | undefined): boolean =>
   data-overlay={overlay ? "true" : "false"}
   data-state={overlay ? "transparent" : undefined}
   data-hidden="false"
+  data-megamenu-layout={megamenuLayout}
 >
   <Container width="wide" class="flex items-center justify-between py-5">
     <!-- Brand —logo lockup contains both mark and wordmark -->
@@ -46,30 +54,38 @@ const isActive = (href: string | undefined): boolean =>
       <Logo class="h-8 w-auto" />
     </a>
 
-    <!-- Desktop nav (md and up) -->
+    <!-- Desktop nav (lg and up) — banda full-bleed via Viewport nativo -->
     <nav aria-label="Navigazione principale" class="hidden lg:flex">
-      <NavigationMenu size="sm">
+      <NavigationMenuBand size="sm">
         <NavigationMenuList>
           {navItems.map((item) =>
             item.children?.length ? (
               <NavigationMenuItem value={item.label}>
                 <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul class="w-fit min-w-[180px] py-1">
-                    {item.children.map((child) => (
-                      <li>
-                        <NavigationMenuLink
-                          href={child.href}
-                          target={child.external ? "_blank" : undefined}
-                          rel={child.external ? "noopener noreferrer" : undefined}
-                          active={isActive(child.href)}
-                          aria-current={isActive(child.href) ? "page" : undefined}
-                        >
-                          {child.label}
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
+                  <Container width="wide" class="py-8">
+                    <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
+                      {item.children.map((child) => (
+                        <li>
+                          <NavigationMenuLink
+                            href={child.href}
+                            target={child.external ? "_blank" : undefined}
+                            rel={child.external ? "noopener noreferrer" : undefined}
+                            active={isActive(child.href)}
+                            aria-current={isActive(child.href) ? "page" : undefined}
+                            class="flex-col items-start gap-1"
+                          >
+                            <span class="text-sm font-medium">{child.label}</span>
+                            {child.description && (
+                              <span class="text-muted-foreground text-xs leading-snug">
+                                {child.description}
+                              </span>
+                            )}
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </Container>
                 </NavigationMenuContent>
               </NavigationMenuItem>
             ) : (
@@ -88,7 +104,7 @@ const isActive = (href: string | undefined): boolean =>
             )
           )}
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenuBand>
     </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->

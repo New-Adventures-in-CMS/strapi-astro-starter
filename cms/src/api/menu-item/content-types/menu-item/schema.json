@@ -49,6 +49,10 @@
       "type": "integer",
       "default": 0,
       "description": "Ordine — numero per ordinare le voci (più basso = prima)"
+    },
+    "description": {
+      "type": "text",
+      "description": "Descrizione — riga secondaria opzionale mostrata nel megamenu banda"
     }
   }
 }

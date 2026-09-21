@@ -4,8 +4,10 @@ import NavigationMenuIndicator from "./NavigationMenuIndicator.astro";
 import NavigationMenuItem from "./NavigationMenuItem.astro";
 import NavigationMenuLink from "./NavigationMenuLink.astro";
 import NavigationMenuList from "./NavigationMenuList.astro";
+import NavigationMenuPopup from "./NavigationMenuPopup.astro";
 import NavigationMenuPositioner from "./NavigationMenuPositioner.astro";
 import NavigationMenuTrigger from "./NavigationMenuTrigger.astro";
+import NavigationMenuViewport from "./NavigationMenuViewport.astro";
 import {
   navigationMenu,
   navigationMenuContent,
@@ -42,7 +44,9 @@ const NavigationMenuParts = {
   Content: NavigationMenuContent,
   Link: NavigationMenuLink,
   Indicator: NavigationMenuIndicator,
+  Popup: NavigationMenuPopup,
   Positioner: NavigationMenuPositioner,
+  Viewport: NavigationMenuViewport,
 };
 
 export {
@@ -52,8 +56,10 @@ export {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuPopup,
   NavigationMenuPositioner,
   NavigationMenuTrigger,
+  NavigationMenuViewport,
   navigationMenuTriggerStyle,
   NavigationMenuVariants,
 };

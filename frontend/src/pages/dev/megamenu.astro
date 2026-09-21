@@ -1,0 +1,74 @@
+---
+import "@/styles/starwind.css";
+import { Container } from "@/components/layout";
+import NavigationMenuBand from "@/components/nav/NavigationMenuBand.astro";
+import {
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+} from "@/components/starwind/navigation-menu";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>dev/megamenu fixture</title>
+  </head>
+  <body class="min-h-[200vh] bg-background text-foreground">
+    <header
+      class="border-border bg-background fixed inset-x-0 top-0 z-50 border-b"
+      data-overlay="false"
+      data-hidden="false"
+    >
+      <Container width="wide" class="flex items-center justify-between py-5">
+        <span class="text-sm font-semibold">fixture</span>
+        <nav aria-label="Navigazione principale">
+          <NavigationMenuBand size="sm">
+            <NavigationMenuList>
+              <NavigationMenuItem value="voce">
+                <NavigationMenuTrigger class="text-sm font-medium">Voce</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <Container width="wide" class="py-8">
+                    <ul class="grid grid-cols-3 gap-4">
+                      <li>
+                        <NavigationMenuLink href="#a" class="flex-col items-start gap-1">
+                          <span class="text-sm font-medium">Link A</span>
+                          <span class="text-muted-foreground text-xs leading-snug">
+                            descrizione A
+                          </span>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink href="#b" class="text-sm font-medium">
+                          Link B
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink href="#c" class="text-sm font-medium">
+                          Link C
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </Container>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenuBand>
+        </nav>
+      </Container>
+    </header>
+    <main class="px-6 pt-40">
+      <p class="text-muted-foreground max-w-prose text-sm">
+        Fixture isolata per misurare il piazzamento della banda megamenu.
+        Apri la voce, misura in console:
+        <code
+          >document.querySelector('[data-sw-nav-menu-popup]').getBoundingClientRect()</code
+        >
+      </p>
+    </main>
+  </body>
+</html>

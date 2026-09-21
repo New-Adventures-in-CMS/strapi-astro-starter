@@ -313,6 +313,53 @@
     color: var(--foreground);
   }
 
+  /* Megamenu open → header adopts solid look even in transparent overlay.
+     Header + banda form one continuous white block; on close, :has() stops
+     matching and the header returns to transparent. */
+  header[data-overlay="true"][data-state="transparent"]:has(
+      [data-slot="navigation-menu-trigger"][data-state="open"]
+    ) {
+    background: var(--background);
+    color: var(--foreground);
+    border-bottom-color: transparent;
+  }
+
+  header[data-overlay="true"][data-state="transparent"]:has(
+      [data-slot="navigation-menu-trigger"][data-state="open"]
+    )
+    a {
+    color: var(--foreground);
+  }
+
+  /* Nav items (trigger + first-level link) need explicit override: the
+     transparent-state rule below targets `[data-slot=...]` directly with
+     higher specificity than `header ... a`, so :has() must match the same
+     selector shape to flip color when a megamenu is open. */
+  header[data-overlay="true"][data-state="transparent"]:has(
+      [data-slot="navigation-menu-trigger"][data-state="open"]
+    )
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-trigger"],
+  header[data-overlay="true"][data-state="transparent"]:has(
+      [data-slot="navigation-menu-trigger"][data-state="open"]
+    )
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-link"] {
+    color: var(--foreground);
+  }
+
+  /* Unified transition on overlay header: preserve auto-hide (transform) while
+     smoothly virating background/color/border on open/close. */
+  header[data-overlay="true"] {
+    transition:
+      transform 300ms,
+      background-color 250ms ease,
+      color 250ms ease,
+      border-color 250ms ease;
+  }
+
   /* ========================================================================
    * NAV ITEM STYLING (ALL FIRST-LEVEL ITEMS — TRIGGERS + LINKS)
    * Underline on hover/focus/open/active via animated ::after pseudo-element
