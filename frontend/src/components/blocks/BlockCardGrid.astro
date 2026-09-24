@@ -22,14 +22,16 @@ const showIndex = cards.length >= 3;
 
 <Section tone={sectionTone} spacing="default">
   <Container width="wide">
-    <SectionHeader
-      eyebrow={eyebrow}
-      heading={heading}
-      lead={lead}
-      align="center"
-      onDark={onDark}
-    />
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div data-reveal>
+      <SectionHeader
+        eyebrow={eyebrow}
+        heading={heading}
+        lead={lead}
+        align="center"
+        onDark={onDark}
+      />
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal="stagger">
       {cards.map((card, i) => {
         const imageUrl = card.image ? strapiMediaUrl(card.image.url) : null;
         const idx = String(i + 1).padStart(2, "0");

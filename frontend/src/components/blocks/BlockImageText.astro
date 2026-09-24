@@ -24,6 +24,7 @@ const isImageLeft = image_position === "left";
   <Container width="wide">
     <div
       class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
+      data-reveal="stagger"
     >
       <div class={isImageLeft ? "md:order-1" : "md:order-2"}>
         {imageUrl ? (
