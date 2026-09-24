@@ -4,6 +4,13 @@ export type HeroTransition = "parallax" | "fade" | "slide";
 
 export type MegamenuLayout = "band" | "dropdown";
 
+export type MotionSmoothPreset = "off" | "light" | "medium" | "marked";
+
+export interface MotionConfig {
+  /** Smooth scroll globale (Lenis). "off" => scroll nativo. */
+  smooth: MotionSmoothPreset;
+}
+
 export interface NavItem {
   label: string;
   href?: string;
@@ -31,6 +38,7 @@ export interface SiteConfig {
   url: string;
   locale: string;
   heroTransition: HeroTransition;
+  motion: MotionConfig;
   nav: NavConfig;
   footer: {
     columns: { title: string; items: NavItem[] }[];
@@ -41,6 +49,9 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: "Strapi + Astro Starter",
   heroTransition: "fade",
+  motion: {
+    smooth: "medium",
+  },
   description:
     "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",

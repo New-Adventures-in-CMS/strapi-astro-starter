@@ -1,0 +1,87 @@
+---
+// frontend/src/pages/dev/reveal.astro
+// Dev fixture — not linked in nav. Tests Fase A scroll-reveal (data-reveal).
+import BlockCardGrid from "@/components/blocks/BlockCardGrid.astro";
+import BlockImageText from "@/components/blocks/BlockImageText.astro";
+import BlockRichText from "@/components/blocks/BlockRichText.astro";
+import type { SharedCard } from "@/types";
+import "@/styles/starwind.css";
+
+const CARDS: SharedCard[] = [
+  {
+    title: "Card one",
+    description: "First card description for reveal stagger test.",
+    image: null,
+    link_url: null,
+    link_text: null,
+  },
+  {
+    title: "Card two",
+    description: "Second card description for reveal stagger test.",
+    image: null,
+    link_url: null,
+    link_text: null,
+  },
+  {
+    title: "Card three",
+    description: "Third card description for reveal stagger test.",
+    image: null,
+    link_url: null,
+    link_text: null,
+  },
+];
+
+const IMAGE_TEXT_BODY = "Testo statico per il blocco image-text nella fixture reveal. Il wrapper grid deve avere data-reveal=\"stagger\".";
+const RICH_TEXT_BODY = "## Rich text reveal\n\nContenuto statico per verificare che il Container width=\"prose\" riceva data-reveal e acquisisca .is-revealed allo scroll.";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reveal Fixture</title>
+  </head>
+  <body>
+    <!-- Spacer per tenere i blocchi fuori viewport al load -->
+    <div style="height: 150vh; padding: 4rem 2rem;" data-fixture-spacer>
+      <h1>Reveal fixture</h1>
+      <p>Scrolla in basso per attivare i reveal.</p>
+    </div>
+
+    <div data-fixture-block="card-grid">
+      <BlockCardGrid
+        heading="Cards heading"
+        eyebrow="EYEBROW"
+        lead="Lead descrittivo per il blocco card-grid della fixture reveal."
+        tone="light"
+        cards={CARDS}
+      />
+    </div>
+
+    <div style="height: 60vh;"></div>
+
+    <div data-fixture-block="image-text">
+      <BlockImageText
+        heading="Image + Text heading"
+        eyebrow="EYEBROW"
+        body={IMAGE_TEXT_BODY}
+        image={null}
+        image_position="left"
+      />
+    </div>
+
+    <div style="height: 60vh;"></div>
+
+    <div data-fixture-block="rich-text">
+      <BlockRichText body={RICH_TEXT_BODY} align="left" />
+    </div>
+
+    <div style="height: 40vh;"></div>
+
+    <script>
+      import { initReveal } from "@skeleton/reveal.js";
+      initReveal();
+    </script>
+  </body>
+</html>
