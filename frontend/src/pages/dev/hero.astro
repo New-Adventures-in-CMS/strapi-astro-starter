@@ -103,6 +103,18 @@ const ONE_SLIDE = [
       />
     </div>
 
+    <!-- Parallax (depth, pointer-driven) strategy (3 slides, 3000ms autoplay, fade) -->
+    <div data-hero-section="parallax">
+      <div class="test-label"><strong>PARALLAX</strong> Profondità sfondo/testo guidata dal puntatore (transizione fade). ✓ muovendo il mouse lo sfondo deriva più del testo; su touch è statico.</div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="fade"
+        effect="parallax"
+      />
+    </div>
+
     <!-- Focus (scale) strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="focus">
       <div class="test-label"><strong>FOCUS</strong> La slide attiva è ingrandita (~8%) e si rimpicciolisce uscendo. ✓ se l'immagine attiva "respira".</div>
