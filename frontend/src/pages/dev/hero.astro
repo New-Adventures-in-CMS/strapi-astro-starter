@@ -3,7 +3,46 @@
 // Dev fixture — not linked in nav. Tests BlockHero transition strategies.
 // Three labeled sections (parallax / fade / slide) + single-slide static.
 import BlockHero from "@/components/blocks/BlockHero.astro";
+import type { StrapiMedia } from "@/types";
 import "@/styles/starwind.css";
+
+const svgMedia = (svg: string, alt: string): StrapiMedia => ({
+  id: 0,
+  url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+  name: "dev-fixture",
+  mime: "image/svg+xml",
+  size: 0,
+  alternativeText: alt,
+});
+
+const SVG1 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#6d28d9'/><stop offset='.5' stop-color='#db2777'/>
+    <stop offset='1' stop-color='#f59e0b'/></linearGradient></defs>
+  <rect width='1600' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <circle cx='420' cy='300' r='130'/><circle cx='1180' cy='640' r='210'/>
+    <path d='M0 220 L1600 420'/><path d='M0 520 L1600 760'/></g></svg>`;
+
+const SVG2 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#0d9488'/><stop offset='.5' stop-color='#0284c7'/>
+    <stop offset='1' stop-color='#1e3a8a'/></linearGradient></defs>
+  <rect width='1600' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <rect x='200' y='180' width='320' height='320'/>
+    <rect x='980' y='420' width='420' height='260'/>
+    <path d='M0 700 L1600 300'/><path d='M0 120 L1600 500'/></g></svg>`;
+
+const SVG3 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#ea580c'/><stop offset='.5' stop-color='#dc2626'/>
+    <stop offset='1' stop-color='#7f1d1d'/></linearGradient></defs>
+  <rect width='1600' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <polygon points='300,700 560,240 820,700'/>
+    <polygon points='900,720 1200,320 1500,720'/>
+    <path d='M0 460 L1600 460'/></g></svg>`;
 
 const THREE_SLIDES = [
   {
@@ -12,7 +51,7 @@ const THREE_SLIDES = [
     subheading: "A production-ready foundation for content-driven sites.",
     cta_text: "Explore",
     cta_url: "#",
-    image: null,
+    image: svgMedia(SVG1, "Test slide 1"),
   },
   {
     eyebrow: "SLIDE TWO",
@@ -20,7 +59,7 @@ const THREE_SLIDES = [
     subheading: "Hero, rich text, image + text, card grids.",
     cta_text: "See blocks",
     cta_url: "#",
-    image: null,
+    image: svgMedia(SVG2, "Test slide 2"),
   },
   {
     eyebrow: "SLIDE THREE",
@@ -28,7 +67,7 @@ const THREE_SLIDES = [
     subheading: "Semantic tokens, fluid type scale, dark bands.",
     cta_text: "Read guide",
     cta_url: "#",
-    image: null,
+    image: svgMedia(SVG3, "Test slide 3"),
   },
 ];
 
@@ -101,14 +140,5 @@ const ONE_SLIDE = [
         slides={ONE_SLIDE}
       />
     </div>
-    <style>
-      [data-hero-section="parallax"] [data-hero-media],
-      [data-hero-section="focus"] [data-hero-media] {
-        background-image:
-          linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px) !important;
-        background-size: 48px 48px !important;
-      }
-    </style>
   </body>
 </html>

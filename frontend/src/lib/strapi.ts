@@ -2,7 +2,7 @@ import { STRAPI_URL, STRAPI_API_TOKEN } from "astro:env/server";
 
 export function strapiMediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
-  if (path.startsWith("http")) return path;
+  if (path.startsWith("http") || path.startsWith("data:")) return path;
   return `${STRAPI_URL}${path}`;
 }
 
