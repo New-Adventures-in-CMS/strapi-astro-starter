@@ -4,7 +4,7 @@ import { Section, Container } from "@/components/layout";
 import { Button } from "@/components/starwind/button";
 import { strapiMediaUrl } from "@/lib/strapi";
 import { site } from "@/config/site";
-import type { HeroTransition } from "@/config/site";
+import type { HeroTransition, HeroEffect } from "@/config/site";
 
 interface Props {
   heading: string;
@@ -17,6 +17,7 @@ interface Props {
   slides?: HeroSlide[] | null;
   autoplayDelay?: number;
   transition?: HeroTransition;
+  effect?: HeroEffect;
 }
 
 const {
@@ -30,10 +31,22 @@ const {
   slides,
   autoplayDelay = 5000,
   transition,
+  effect,
 } = Astro.props;
 
-const strategy: HeroTransition = transition ?? site.heroTransition;
-const isParallax = strategy === "parallax";
+const heroTransition: HeroTransition = transition ?? site.heroTransition;
+const requestedEffect: HeroEffect = effect ?? site.heroEffect;
+const SCROLL_EFFECTS: HeroEffect[] = ["parallax", "focus", "dim"]; // pattern A → richiedono slide
+const heroEffect: HeroEffect =
+  SCROLL_EFFECTS.includes(requestedEffect) && heroTransition !== "slide"
+    ? "none"
+    : requestedEffect;
+if (import.meta.env.DEV && heroEffect !== requestedEffect) {
+  console.warn(
+    `[BlockHero] effect "${requestedEffect}" richiede transition "slide" (attuale "${heroTransition}") → degradato a "none".`,
+  );
+}
+const isParallax = heroEffect === "parallax";
 const multiSlide = slides && slides.length >= 2;
 
 // Static display: first slide content or top-level fields
@@ -61,7 +74,8 @@ function slideImageUrl(s: HeroSlide) {
       class="absolute inset-0"
       data-hero-carousel
       data-autoplay-delay={autoplayDelay}
-      data-hero-strategy={strategy}
+      data-hero-transition={heroTransition}
+      data-hero-effect={heroEffect}
       tabindex="0"
     >
       {/* Embla viewport — overflow:hidden + explicit h-full so Embla can measure */}
@@ -257,7 +271,9 @@ function slideImageUrl(s: HeroSlide) {
     const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
     const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
-    const strategy = (root.dataset.heroStrategy ?? "fade") as "parallax" | "fade" | "slide";
+    const heroTransition = (root.dataset.heroTransition ?? "fade") as "slide" | "fade";
+    const heroEffect = (root.dataset.heroEffect ?? "none") as
+      | "none" | "parallax" | "focus" | "dim" | "ken-burns";
 
     const api = createCarousel(root, {
       loop: true,
@@ -265,12 +281,12 @@ function slideImageUrl(s: HeroSlide) {
       prevBtn,
       nextBtn,
       dots,
-      ...(strategy === "fade" ? { transition: "fade" } : {}),
+      ...(heroTransition === "fade" ? { transition: "fade" as const } : {}),
     });
 
-    if (strategy === "parallax") {
-      const cleanupParallax = setupHeroParallax(api, root);
-      document.addEventListener("astro:before-swap", cleanupParallax, { once: true });
+    if (heroEffect === "parallax") {
+      const cleanup = setupHeroParallax(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
   });
 </script>

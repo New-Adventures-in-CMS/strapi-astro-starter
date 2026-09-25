@@ -1,6 +1,7 @@
 // frontend/src/config/site.ts
 
-export type HeroTransition = "parallax" | "fade" | "slide";
+export type HeroTransition = "slide" | "fade";
+export type HeroEffect = "none" | "parallax" | "focus" | "dim" | "ken-burns";
 
 export type MegamenuLayout = "band" | "dropdown";
 
@@ -38,6 +39,7 @@ export interface SiteConfig {
   url: string;
   locale: string;
   heroTransition: HeroTransition;
+  heroEffect: HeroEffect;
   motion: MotionConfig;
   nav: NavConfig;
   footer: {
@@ -49,6 +51,7 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: "Strapi + Astro Starter",
   heroTransition: "fade",
+  heroEffect: "none",
   motion: {
     smooth: "medium",
   },
