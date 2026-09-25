@@ -63,6 +63,17 @@ const ONE_SLIDE = [
       />
     </div>
 
+    <!-- Focus (scale) strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="focus">
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="slide"
+        effect="focus"
+      />
+    </div>
+
     <!-- Fade strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="fade">
       <BlockHero
@@ -90,5 +101,14 @@ const ONE_SLIDE = [
         slides={ONE_SLIDE}
       />
     </div>
+    <style>
+      [data-hero-section="parallax"] [data-hero-media],
+      [data-hero-section="focus"] [data-hero-media] {
+        background-image:
+          linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px) !important;
+        background-size: 48px 48px !important;
+      }
+    </style>
   </body>
 </html>
