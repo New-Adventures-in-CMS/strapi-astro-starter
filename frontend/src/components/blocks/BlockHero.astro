@@ -267,6 +267,7 @@ function slideImageUrl(s: HeroSlide) {
   import { createCarousel } from "@skeleton/carousel.js";
   import { setupHeroParallax } from "@/lib/hero-parallax.js";
   import { setupHeroFocus } from "@/lib/hero-focus.js";
+  import { setupHeroDim } from "@/lib/hero-dim.js";
 
   document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
@@ -292,6 +293,10 @@ function slideImageUrl(s: HeroSlide) {
     }
     if (heroEffect === "focus") {
       const cleanup = setupHeroFocus(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "dim") {
+      const cleanup = setupHeroDim(api, root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
   });

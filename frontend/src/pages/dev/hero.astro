@@ -93,6 +93,7 @@ const ONE_SLIDE = [
   <body>
     <!-- Parallax strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="parallax">
+      <div class="test-label"><strong>PARALLAX</strong> Lo sfondo deriva lateralmente, più lento del testo. ✓ se il fondo "resta indietro" rispetto al titolo durante la transizione.</div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
@@ -104,6 +105,7 @@ const ONE_SLIDE = [
 
     <!-- Focus (scale) strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="focus">
+      <div class="test-label"><strong>FOCUS</strong> La slide attiva è ingrandita (~8%) e si rimpicciolisce uscendo. ✓ se l'immagine attiva "respira".</div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
@@ -113,8 +115,21 @@ const ONE_SLIDE = [
       />
     </div>
 
+    <!-- Dim (brightness neighbors) strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="dim">
+      <div class="test-label"><strong>DIM</strong> La slide che esce si scurisce; l'attiva resta a piena luce. ✓ se c'è uno stacco netto di luminosità in transizione.</div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="slide"
+        effect="dim"
+      />
+    </div>
+
     <!-- Fade strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="fade">
+      <div class="test-label"><strong>FADE</strong> Dissolvenza incrociata: cambia solo l'opacità, nessun movimento/scala/luce. ✓ se non c'è slittamento né zoom.</div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
@@ -125,6 +140,7 @@ const ONE_SLIDE = [
 
     <!-- Slide strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="slide">
+      <div class="test-label"><strong>SLIDE</strong> Scorrimento orizzontale netto, nessun effetto sul media. ✓ se è un semplice slittamento.</div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
@@ -135,10 +151,22 @@ const ONE_SLIDE = [
 
     <!-- Single-slide static degradation -->
     <div data-hero-single>
+      <div class="test-label"><strong>SINGLE</strong> Slide singola: nessun controllo carousel (frecce/dot) e nessun effetto. ✓ se non compaiono controlli.</div>
       <BlockHero
         heading="Static single slide."
         slides={ONE_SLIDE}
       />
     </div>
+    <style>
+      [data-hero-section], [data-hero-single] { position: relative; }
+      .test-label {
+        position: absolute; top: 0; left: 0; right: 0; z-index: 50;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.72); color: #fff;
+        font: 500 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+        letter-spacing: 0.02em; padding: 8px 14px;
+      }
+      .test-label strong { letter-spacing: 0.12em; margin-right: 10px; }
+    </style>
   </body>
 </html>
