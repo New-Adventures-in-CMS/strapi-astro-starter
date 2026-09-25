@@ -89,7 +89,7 @@ function slideImageUrl(s: HeroSlide) {
                 {imgUrl ? (
                   <>
                     {isParallax ? (
-                      <div class="hero-slide__parallax" data-parallax-layer>
+                      <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
                         <img
                           src={imgUrl}
                           alt={slide.image?.alternativeText || ""}
@@ -101,16 +101,17 @@ function slideImageUrl(s: HeroSlide) {
                         src={imgUrl}
                         alt={slide.image?.alternativeText || ""}
                         class="absolute inset-0 h-full w-full object-cover"
+                        data-hero-media
                       />
                     )}
                     <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
                   </>
                 ) : isParallax ? (
-                  <div class="hero-slide__parallax" data-parallax-layer>
+                  <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
                   </div>
                 ) : (
-                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" data-hero-media />
                 )}
                 <Container width="default" class="relative z-10 text-center py-24">
                   {slide.eyebrow && (
@@ -265,6 +266,7 @@ function slideImageUrl(s: HeroSlide) {
 <script>
   import { createCarousel } from "@skeleton/carousel.js";
   import { setupHeroParallax } from "@/lib/hero-parallax.js";
+  import { setupHeroFocus } from "@/lib/hero-focus.js";
 
   document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
@@ -286,6 +288,10 @@ function slideImageUrl(s: HeroSlide) {
 
     if (heroEffect === "parallax") {
       const cleanup = setupHeroParallax(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "focus") {
+      const cleanup = setupHeroFocus(api, root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
   });
