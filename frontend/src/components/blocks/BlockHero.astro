@@ -85,7 +85,7 @@ function slideImageUrl(s: HeroSlide) {
             const imgUrl = slideImageUrl(slide);
             const showCta = slide.cta_text && slide.cta_url;
             return (
-              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center" data-hero-slide>
+              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center overflow-hidden" data-hero-slide>
                 {imgUrl ? (
                   <>
                     {isParallax ? (
