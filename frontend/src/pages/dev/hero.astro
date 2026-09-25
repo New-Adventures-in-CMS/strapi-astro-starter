@@ -1,7 +1,7 @@
 ---
 // frontend/src/pages/dev/hero.astro
 // Dev fixture — not linked in nav. Tests BlockHero transition strategies.
-// Three labeled sections (parallax / fade / slide) + single-slide static.
+// Three labeled sections (drift / fade / slide) + single-slide static.
 import BlockHero from "@/components/blocks/BlockHero.astro";
 import type { StrapiMedia } from "@/types";
 import "@/styles/starwind.css";
@@ -91,15 +91,15 @@ const ONE_SLIDE = [
     <title>Hero Transition Strategy Fixture</title>
   </head>
   <body>
-    <!-- Parallax strategy (3 slides, 3000ms autoplay) -->
-    <div data-hero-section="parallax">
-      <div class="test-label"><strong>PARALLAX</strong> Lo sfondo deriva lateralmente, più lento del testo. ✓ se il fondo "resta indietro" rispetto al titolo durante la transizione.</div>
+    <!-- Drift strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="drift">
+      <div class="test-label"><strong>DRIFT</strong> Lo sfondo deriva lateralmente, più lento del testo. ✓ se il fondo "resta indietro" rispetto al titolo durante la transizione.</div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
         autoplayDelay={3000}
         transition="slide"
-        effect="parallax"
+        effect="drift"
       />
     </div>
 

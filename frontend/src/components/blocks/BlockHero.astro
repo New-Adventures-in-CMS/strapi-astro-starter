@@ -36,7 +36,7 @@ const {
 
 const heroTransition: HeroTransition = transition ?? site.heroTransition;
 const requestedEffect: HeroEffect = effect ?? site.heroEffect;
-const SCROLL_EFFECTS: HeroEffect[] = ["parallax", "focus", "dim"]; // pattern A → richiedono slide
+const SCROLL_EFFECTS: HeroEffect[] = ["drift", "focus", "dim"]; // pattern A → richiedono slide
 const heroEffect: HeroEffect =
   SCROLL_EFFECTS.includes(requestedEffect) && heroTransition !== "slide"
     ? "none"
@@ -46,7 +46,7 @@ if (import.meta.env.DEV && heroEffect !== requestedEffect) {
     `[BlockHero] effect "${requestedEffect}" richiede transition "slide" (attuale "${heroTransition}") → degradato a "none".`,
   );
 }
-const isParallax = heroEffect === "parallax";
+const isDrift = heroEffect === "drift";
 const multiSlide = slides && slides.length >= 2;
 
 // Static display: first slide content or top-level fields
@@ -88,7 +88,7 @@ function slideImageUrl(s: HeroSlide) {
               <div class="relative flex-[0_0_100%] h-full flex items-center justify-center overflow-hidden" data-hero-slide>
                 {imgUrl ? (
                   <>
-                    {isParallax ? (
+                    {isDrift ? (
                       <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
                         <img
                           src={imgUrl}
@@ -106,7 +106,7 @@ function slideImageUrl(s: HeroSlide) {
                     )}
                     <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
                   </>
-                ) : isParallax ? (
+                ) : isDrift ? (
                   <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
                   </div>
@@ -265,7 +265,7 @@ function slideImageUrl(s: HeroSlide) {
 
 <script>
   import { createCarousel } from "@skeleton/carousel.js";
-  import { setupHeroParallax } from "@/lib/hero-parallax.js";
+  import { setupHeroDrift } from "@/lib/hero-drift.js";
   import { setupHeroFocus } from "@/lib/hero-focus.js";
   import { setupHeroDim } from "@/lib/hero-dim.js";
 
@@ -276,7 +276,7 @@ function slideImageUrl(s: HeroSlide) {
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
     const heroTransition = (root.dataset.heroTransition ?? "fade") as "slide" | "fade";
     const heroEffect = (root.dataset.heroEffect ?? "none") as
-      | "none" | "parallax" | "focus" | "dim" | "ken-burns";
+      | "none" | "drift" | "focus" | "dim" | "ken-burns";
 
     const api = createCarousel(root, {
       loop: true,
@@ -287,8 +287,8 @@ function slideImageUrl(s: HeroSlide) {
       ...(heroTransition === "fade" ? { transition: "fade" as const } : {}),
     });
 
-    if (heroEffect === "parallax") {
-      const cleanup = setupHeroParallax(api, root);
+    if (heroEffect === "drift") {
+      const cleanup = setupHeroDrift(api, root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
     if (heroEffect === "focus") {
