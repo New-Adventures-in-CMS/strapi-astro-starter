@@ -1,20 +1,18 @@
 import { test, expect } from "@playwright/test";
 
 // ---------------------------------------------------------------------------
-// Hero parallax collaudo — skin consumer of Phase-1 scroll hooks.
+// Hero drift collaudo — skin consumer of Phase-1 scroll hooks.
 // Verifies: non-identity transform during drag; absent under reduced-motion;
-// single-slide has no parallax layer. Suite tests against /dev/hero parallax section.
+// single-slide has no drift layer. Suite tests against /dev/hero drift section.
 // ---------------------------------------------------------------------------
 
-test.describe("Hero parallax — multi-slide", () => {
+test.describe("Hero drift — multi-slide", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("parallax layers are present for each carousel slide", async ({
-    page,
-  }) => {
+  test("drift layers are present for each carousel slide", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
-      .locator('[data-hero-section="parallax"]')
+      .locator('[data-hero-section="drift"]')
       .locator("[data-hero-carousel]")
       .first();
     await expect(root).toBeVisible();
@@ -22,12 +20,12 @@ test.describe("Hero parallax — multi-slide", () => {
     await expect(layers).toHaveCount(3);
   });
 
-  test("parallax layer acquires non-identity transform during drag", async ({
+  test("drift layer acquires non-identity transform during drag", async ({
     page,
   }) => {
     await page.goto("/dev/hero");
     const root = page
-      .locator('[data-hero-section="parallax"]')
+      .locator('[data-hero-section="drift"]')
       .locator("[data-hero-carousel]")
       .first();
     await expect(root).toBeVisible();
@@ -44,7 +42,7 @@ test.describe("Hero parallax — multi-slide", () => {
     await page.waitForTimeout(80);
 
     const hasNonIdentity = await page.evaluate(() => {
-      const section = document.querySelector('[data-hero-section="parallax"]');
+      const section = document.querySelector('[data-hero-section="drift"]');
       const layers =
         section?.querySelectorAll<HTMLElement>("[data-parallax-layer]") ?? [];
       const identity = new Set([
@@ -63,12 +61,12 @@ test.describe("Hero parallax — multi-slide", () => {
     expect(hasNonIdentity).toBe(true);
   });
 
-  test("parallax layer bounding-box shifts relative to slide content during drag", async ({
+  test("drift layer bounding-box shifts relative to slide content during drag", async ({
     page,
   }) => {
     await page.goto("/dev/hero");
     const root = page
-      .locator('[data-hero-section="parallax"]')
+      .locator('[data-hero-section="drift"]')
       .locator("[data-hero-carousel]")
       .first();
     await expect(root).toBeVisible();
@@ -97,24 +95,24 @@ test.describe("Hero parallax — multi-slide", () => {
 
     expect(layerBefore).not.toBeNull();
     expect(layerDuring).not.toBeNull();
-    // Layer x should differ from initial position (Embla slides AND parallax both moved)
+    // Layer x should differ from initial position (Embla slides AND drift both moved)
     // but layerDuring.left - slide.left should differ from layerBefore.left - slide.left
-    // We compare absolute x shift against Embla's own shift to isolate parallax offset.
-    // Simpler: the layer should have moved (any shift indicates parallax is wired up).
+    // We compare absolute x shift against Embla's own shift to isolate drift offset.
+    // Simpler: the layer should have moved (any shift indicates drift is wired up).
     expect(layerDuring!.x).not.toBeCloseTo(layerBefore!.x, 0);
   });
 });
 
-test.describe("Hero parallax — reduced motion", () => {
+test.describe("Hero drift — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("no parallax transform applied with prefers-reduced-motion: reduce", async ({
+  test("no drift transform applied with prefers-reduced-motion: reduce", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/hero");
     const root = page
-      .locator('[data-hero-section="parallax"]')
+      .locator('[data-hero-section="drift"]')
       .locator("[data-hero-carousel]")
       .first();
     await expect(root).toBeVisible();
@@ -129,7 +127,7 @@ test.describe("Hero parallax — reduced motion", () => {
     await page.waitForTimeout(80);
 
     const transforms = await page.evaluate(() => {
-      const section = document.querySelector('[data-hero-section="parallax"]');
+      const section = document.querySelector('[data-hero-section="drift"]');
       return Array.from(
         section?.querySelectorAll<HTMLElement>("[data-parallax-layer]") ?? [],
       ).map((l) => l.style.transform);
@@ -149,10 +147,10 @@ test.describe("Hero parallax — reduced motion", () => {
   });
 });
 
-test.describe("Hero parallax — single-slide degradation", () => {
+test.describe("Hero drift — single-slide degradation", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("single-slide hero has no parallax layer", async ({ page }) => {
+  test("single-slide hero has no drift layer", async ({ page }) => {
     await page.goto("/dev/hero");
     const wrapper = page.locator("[data-hero-single]");
     await expect(wrapper).toBeVisible();

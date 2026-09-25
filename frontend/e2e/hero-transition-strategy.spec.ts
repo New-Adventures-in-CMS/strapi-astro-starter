@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 // ---------------------------------------------------------------------------
 // Hero transition strategy collaudo — verifies fade and slide strategies on
-// /dev/hero fixture. Parallax strategy coverage lives in hero-parallax.spec.ts.
+// /dev/hero fixture. Drift strategy coverage lives in hero-drift.spec.ts.
 // ---------------------------------------------------------------------------
 
 test.describe("Hero strategy — fade", () => {

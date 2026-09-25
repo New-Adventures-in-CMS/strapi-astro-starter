@@ -1,8 +1,8 @@
 import type { CarouselAPI } from "@skeleton/carousel.js";
 
-const PARALLAX_FACTOR = 0.15;
+const DRIFT_FACTOR = 0.15;
 
-export function setupHeroParallax(
+export function setupHeroDrift(
   api: CarouselAPI,
   root: HTMLElement,
 ): () => void {
@@ -30,7 +30,7 @@ export function setupHeroParallax(
       let delta = p - i / n;
       if (delta > 0.5) delta -= 1;
       if (delta < -0.5) delta += 1;
-      layer.style.transform = `translate3d(${delta * PARALLAX_FACTOR * 100}%, 0, 0)`;
+      layer.style.transform = `translate3d(${delta * DRIFT_FACTOR * 100}%, 0, 0)`;
     });
   }
 
