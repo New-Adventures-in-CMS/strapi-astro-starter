@@ -22,14 +22,8 @@ export function setupHeroDim(api: CarouselAPI, root: HTMLElement): () => void {
   if (mediaBySlide.size === 0) return () => {};
 
   function update() {
-    const inView = api.slidesInView();
     const p = api.scrollProgress();
-
     mediaBySlide.forEach((media, i) => {
-      if (!inView.includes(i)) {
-        media.style.filter = "";
-        return;
-      }
       let delta = p - i / n;
       if (delta > 0.5) delta -= 1;
       if (delta < -0.5) delta += 1;

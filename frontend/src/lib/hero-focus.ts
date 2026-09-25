@@ -1,6 +1,6 @@
 import type { CarouselAPI } from "@skeleton/carousel.js";
 
-const SCALE_RANGE = 0.08;
+const SHRINK_RANGE = 0.08;
 
 export function setupHeroFocus(
   api: CarouselAPI,
@@ -25,19 +25,13 @@ export function setupHeroFocus(
   if (mediaBySlide.size === 0) return () => {};
 
   function update() {
-    const inView = api.slidesInView();
     const p = api.scrollProgress();
-
     mediaBySlide.forEach((media, i) => {
-      if (!inView.includes(i)) {
-        media.style.transform = "scale(1)";
-        return;
-      }
       let delta = p - i / n;
       if (delta > 0.5) delta -= 1;
       if (delta < -0.5) delta += 1;
       const t = 1 - Math.min(Math.abs(delta) * 2, 1);
-      media.style.transform = `scale(${1 + t * SCALE_RANGE})`;
+      media.style.transform = `scale(${1 - (1 - t) * SHRINK_RANGE})`;
     });
   }
 
