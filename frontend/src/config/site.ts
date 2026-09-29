@@ -4,6 +4,16 @@ export type HeroTransition = "slide" | "fade";
 export type HeroEffect =
   "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
+export type HeroStyle =
+  | "fade"
+  | "slide"
+  | "drift"
+  | "focus"
+  | "dim"
+  | "parallax"
+  | "tilt"
+  | "ken-burns";
+
 export type HeroAlign =
   | "center"
   | "top-left"
@@ -53,6 +63,7 @@ export interface SiteConfig {
   heroTransition: HeroTransition;
   heroEffect: HeroEffect;
   heroAlign: HeroAlign;
+  heroStyle: HeroStyle;
   motion: MotionConfig;
   nav: NavConfig;
   footer: {
@@ -66,6 +77,7 @@ export const site: SiteConfig = {
   heroTransition: "fade",
   heroEffect: "none",
   heroAlign: "center",
+  heroStyle: "fade",
   motion: {
     smooth: "medium",
   },

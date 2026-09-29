@@ -31,6 +31,16 @@ export type HeroAlign =
   | "bottom-center"
   | "bottom-right";
 
+export type HeroStyle =
+  | "fade"
+  | "slide"
+  | "drift"
+  | "focus"
+  | "dim"
+  | "parallax"
+  | "tilt"
+  | "ken-burns";
+
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
 export interface HeroSlide {
   id?: number;
@@ -54,6 +64,7 @@ export interface BlockHero {
   immersive?: boolean | null;
   slides?: HeroSlide[] | null;
   align?: HeroAlign | null;
+  heroStyle?: HeroStyle | null;
 }
 
 export interface BlockRichText {
