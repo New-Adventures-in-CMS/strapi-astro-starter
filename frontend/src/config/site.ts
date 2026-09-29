@@ -2,7 +2,7 @@
 
 export type HeroTransition = "slide" | "fade";
 export type HeroEffect =
-  "none" | "drift" | "parallax" | "focus" | "dim" | "ken-burns";
+  "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
 export type MegamenuLayout = "band" | "dropdown";
 
