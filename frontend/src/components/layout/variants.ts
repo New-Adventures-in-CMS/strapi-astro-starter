@@ -32,6 +32,28 @@ export const container = tv({
  * - `spacing: sm`: py-16 md:py-20 (smaller sections for lists, grids)
  * - `spacing: none`: py-0 (no vertical padding; for full-bleed media sections)
  */
+export const heroContent = tv({
+  slots: { wrap: "flex", text: "" },
+  variants: {
+    align: {
+      center: { wrap: "items-center justify-center", text: "text-center" },
+      "bottom-left": {
+        wrap: "items-end justify-start",
+        text: "text-left ml-0 mr-auto max-w-[820px]",
+      },
+      "bottom-center": {
+        wrap: "items-end justify-center",
+        text: "text-center",
+      },
+      "center-left": {
+        wrap: "items-center justify-start",
+        text: "text-left ml-0 mr-auto max-w-[820px]",
+      },
+    },
+  },
+  defaultVariants: { align: "center" },
+});
+
 export const section = tv({
   base: "w-full",
   variants: {

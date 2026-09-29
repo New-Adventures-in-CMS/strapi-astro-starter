@@ -20,6 +20,9 @@ export interface StrapiMedia {
   formats?: Record<string, { url: string; width: number; height: number }>;
 }
 
+export type HeroAlign =
+  "center" | "bottom-left" | "bottom-center" | "center-left";
+
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
 export interface HeroSlide {
   id?: number;
@@ -29,6 +32,7 @@ export interface HeroSlide {
   cta_text?: string | null;
   cta_url?: string | null;
   image?: StrapiMedia | null;
+  align?: HeroAlign | null;
 }
 
 export interface BlockHero {
@@ -41,6 +45,7 @@ export interface BlockHero {
   image?: StrapiMedia | null;
   immersive?: boolean | null;
   slides?: HeroSlide[] | null;
+  align?: HeroAlign | null;
 }
 
 export interface BlockRichText {
