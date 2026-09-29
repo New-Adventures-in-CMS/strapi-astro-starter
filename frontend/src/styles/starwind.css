@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./motion.css";
+@import "./hero-effects.css";
 @plugin "@tailwindcss/forms";
 @custom-variant dark (&:where(.dark, .dark *));
 
