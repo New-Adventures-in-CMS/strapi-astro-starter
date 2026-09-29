@@ -282,6 +282,7 @@ function slideImageUrl(s: HeroSlide) {
   import { setupHeroTilt } from "@/lib/hero-tilt.js";
   import { setupHeroFocus } from "@/lib/hero-focus.js";
   import { setupHeroDim } from "@/lib/hero-dim.js";
+  import { setupHeroKenBurns } from "@/lib/hero-ken-burns.js";
 
   document.querySelectorAll<HTMLElement>("[data-hero-static]").forEach((root) => {
     const heroEffect = root.dataset.heroEffect ?? "none";
@@ -327,6 +328,10 @@ function slideImageUrl(s: HeroSlide) {
     }
     if (heroEffect === "dim") {
       const cleanup = setupHeroDim(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "ken-burns") {
+      const cleanup = setupHeroKenBurns(api, root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
   });
