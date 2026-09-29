@@ -5,7 +5,15 @@ export type HeroEffect =
   "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
 export type HeroAlign =
-  "center" | "bottom-left" | "bottom-center" | "center-left";
+  | "center"
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "middle-left"
+  | "middle-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
 
 export type MegamenuLayout = "band" | "dropdown";
 

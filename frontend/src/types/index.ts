@@ -21,7 +21,15 @@ export interface StrapiMedia {
 }
 
 export type HeroAlign =
-  "center" | "bottom-left" | "bottom-center" | "center-left";
+  | "center"
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "middle-left"
+  | "middle-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
 
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
 export interface HeroSlide {
