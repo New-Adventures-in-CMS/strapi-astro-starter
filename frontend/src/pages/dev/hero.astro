@@ -71,6 +71,17 @@ const THREE_SLIDES = [
   },
 ];
 
+const TILT_SINGLE = [
+  {
+    eyebrow: "TILT · SINGLE",
+    heading: "Depth on a single slide.",
+    subheading: "Pointer-driven — nessun carosello.",
+    cta_text: null,
+    cta_url: null,
+    image: svgMedia(SVG1, "Tilt single demo"),
+  },
+];
+
 const ONE_SLIDE = [
   {
     eyebrow: "SINGLE",
@@ -157,6 +168,11 @@ const ONE_SLIDE = [
         autoplayDelay={3000}
         transition="slide"
       />
+    </div>
+
+    <div data-hero-section="tilt-single">
+      <div class="test-label"><strong>TILT · SINGLE</strong> Tilt su hero a slide singola (percorso static, nessun carosello). ✓ muovi il mouse.</div>
+      <BlockHero heading="Depth on a single slide." slides={TILT_SINGLE} effect="tilt" />
     </div>
 
     <!-- Single-slide static degradation -->
