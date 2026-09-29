@@ -175,6 +175,16 @@ const ONE_SLIDE = [
       <BlockHero heading="Ship editorial content, fast." slides={THREE_SLIDES} autoplayDelay={3000} transition="fade" effect="ken-burns" />
     </div>
 
+    <div data-hero-section="preset-default">
+      <div class="test-label"><strong>PRESET · default</strong> Nessun heroStyle/transition/effect → default preset <code>fade</code> (transition fade + effect none).</div>
+      <BlockHero heading="Ship editorial content, fast." slides={THREE_SLIDES} autoplayDelay={3000} />
+    </div>
+
+    <div data-hero-section="preset-parallax">
+      <div class="test-label"><strong>PRESET · parallax</strong> Scelto via heroStyle (mappa a fade + parallax). ✓ stesso risultato del parallax, ma da un solo campo.</div>
+      <BlockHero heading="Ship editorial content, fast." slides={THREE_SLIDES} autoplayDelay={3000} heroStyle="parallax" align="bottom-left" />
+    </div>
+
     <div data-hero-section="tilt-single">
       <div class="test-label"><strong>TILT · SINGLE</strong> Tilt su hero a slide singola (percorso static, nessun carosello). ✓ muovi il mouse.</div>
       <BlockHero heading="Depth on a single slide." slides={TILT_SINGLE} effect="tilt" />

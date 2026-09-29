@@ -1,5 +1,5 @@
 ---
-import type { HeroSlide, StrapiMedia, HeroAlign } from "@/types";
+import type { HeroSlide, StrapiMedia, HeroAlign, HeroStyle } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { heroContent } from "@/components/layout/variants";
 import { Button } from "@/components/starwind/button";
@@ -20,6 +20,7 @@ interface Props {
   transition?: HeroTransition;
   effect?: HeroEffect;
   align?: HeroAlign | null;
+  heroStyle?: HeroStyle | null;
 }
 
 const {
@@ -35,10 +36,22 @@ const {
   transition,
   effect,
   align,
+  heroStyle,
 } = Astro.props;
 
-const heroTransition: HeroTransition = transition ?? site.heroTransition;
-const requestedEffect: HeroEffect = effect ?? site.heroEffect;
+const HERO_PRESETS: Record<HeroStyle, { transition: HeroTransition; effect: HeroEffect }> = {
+  "fade": { transition: "fade", effect: "none" },
+  "slide": { transition: "slide", effect: "none" },
+  "drift": { transition: "slide", effect: "drift" },
+  "focus": { transition: "slide", effect: "focus" },
+  "dim": { transition: "slide", effect: "dim" },
+  "parallax": { transition: "fade", effect: "parallax" },
+  "tilt": { transition: "fade", effect: "tilt" },
+  "ken-burns": { transition: "fade", effect: "ken-burns" },
+};
+const presetPair = HERO_PRESETS[heroStyle ?? site.heroStyle];
+const heroTransition: HeroTransition = transition ?? presetPair.transition;
+const requestedEffect: HeroEffect = effect ?? presetPair.effect;
 const blockAlign: HeroAlign = align ?? site.heroAlign;
 const SCROLL_EFFECTS: HeroEffect[] = ["drift", "focus", "dim"]; // pattern A → richiedono slide
 const heroEffect: HeroEffect =
