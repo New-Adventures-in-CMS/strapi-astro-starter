@@ -113,7 +113,7 @@ function slideImageUrl(s: HeroSlide) {
                 ) : (
                   <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" data-hero-media />
                 )}
-                <Container width="default" class="relative z-10 text-center py-24">
+                <Container width="default" class="relative z-10 text-center py-24" data-hero-content>
                   {slide.eyebrow && (
                     <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
                       {slide.eyebrow}
@@ -266,6 +266,7 @@ function slideImageUrl(s: HeroSlide) {
 <script>
   import { createCarousel } from "@skeleton/carousel.js";
   import { setupHeroDrift } from "@/lib/hero-drift.js";
+  import { setupHeroParallax } from "@/lib/hero-parallax.js";
   import { setupHeroFocus } from "@/lib/hero-focus.js";
   import { setupHeroDim } from "@/lib/hero-dim.js";
 
@@ -276,7 +277,7 @@ function slideImageUrl(s: HeroSlide) {
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
     const heroTransition = (root.dataset.heroTransition ?? "fade") as "slide" | "fade";
     const heroEffect = (root.dataset.heroEffect ?? "none") as
-      | "none" | "drift" | "focus" | "dim" | "ken-burns";
+      | "none" | "drift" | "parallax" | "focus" | "dim" | "ken-burns";
 
     const api = createCarousel(root, {
       loop: true,
@@ -289,6 +290,10 @@ function slideImageUrl(s: HeroSlide) {
 
     if (heroEffect === "drift") {
       const cleanup = setupHeroDrift(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "parallax") {
+      const cleanup = setupHeroParallax(api, root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
     if (heroEffect === "focus") {
