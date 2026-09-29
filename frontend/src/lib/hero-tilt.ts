@@ -1,13 +1,8 @@
-import type { CarouselAPI } from "@skeleton/carousel.js";
-
 const BG_SCALE = 1.08;
 const BG_SHIFT = 20; // px
 const TEXT_SHIFT = 6; // px
 
-export function setupHeroTilt(
-  _api: CarouselAPI,
-  root: HTMLElement,
-): () => void {
+export function setupHeroTilt(root: HTMLElement): () => void {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
     return () => {};
   if (!window.matchMedia("(pointer: fine)").matches) return () => {}; // touch → statico

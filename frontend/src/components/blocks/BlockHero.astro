@@ -74,6 +74,8 @@ function slideImageUrl(s: HeroSlide) {
     `relative overflow-hidden flex ${staticHC.wrap()}`,
     immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
   ]}
+  data-hero-static={multiSlide ? undefined : ""}
+  data-hero-effect={multiSlide ? undefined : heroEffect}
 >
   {multiSlide ? (
     /* ── CAROUSEL MODE ──────────────────────────────────────── */
@@ -192,14 +194,15 @@ function slideImageUrl(s: HeroSlide) {
             src={slideImageUrl(staticSlide)!}
             alt={staticSlide.image?.alternativeText || ""}
             class="absolute inset-0 h-full w-full object-cover"
+            data-hero-media
           />
           <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
         </>
       ) : (
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" data-hero-media />
       )}
 
-      <Container width="default" class={`relative z-10 ${staticHC.text()}`}>
+      <Container width="default" class={`relative z-10 ${staticHC.text()}`} data-hero-content>
         {staticSlide.eyebrow && (
           <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
             {staticSlide.eyebrow}
@@ -280,6 +283,14 @@ function slideImageUrl(s: HeroSlide) {
   import { setupHeroFocus } from "@/lib/hero-focus.js";
   import { setupHeroDim } from "@/lib/hero-dim.js";
 
+  document.querySelectorAll<HTMLElement>("[data-hero-static]").forEach((root) => {
+    const heroEffect = root.dataset.heroEffect ?? "none";
+    if (heroEffect === "tilt") {
+      const cleanup = setupHeroTilt(root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+  });
+
   document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
     const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
@@ -307,7 +318,7 @@ function slideImageUrl(s: HeroSlide) {
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
     if (heroEffect === "tilt") {
-      const cleanup = setupHeroTilt(api, root);
+      const cleanup = setupHeroTilt(root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
     if (heroEffect === "focus") {
