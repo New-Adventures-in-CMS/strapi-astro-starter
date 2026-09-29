@@ -1,7 +1,8 @@
 // frontend/src/config/site.ts
 
 export type HeroTransition = "slide" | "fade";
-export type HeroEffect = "none" | "drift" | "focus" | "dim" | "ken-burns";
+export type HeroEffect =
+  "none" | "drift" | "parallax" | "focus" | "dim" | "ken-burns";
 
 export type MegamenuLayout = "band" | "dropdown";
 
