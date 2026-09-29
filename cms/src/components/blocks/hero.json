@@ -36,6 +36,21 @@
       "type": "component",
       "repeatable": true,
       "component": "hero.slide"
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": [
+        "center",
+        "top-left",
+        "top-center",
+        "top-right",
+        "middle-left",
+        "middle-right",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right"
+      ],
+      "default": "center"
     }
   }
 }

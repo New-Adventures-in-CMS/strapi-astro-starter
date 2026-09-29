@@ -37,6 +37,23 @@ export const heroContent = tv({
   variants: {
     align: {
       center: { wrap: "items-center justify-center", text: "text-center" },
+      "top-left": {
+        wrap: "items-start justify-start",
+        text: "text-left ml-0 mr-auto max-w-[820px]",
+      },
+      "top-center": { wrap: "items-start justify-center", text: "text-center" },
+      "top-right": {
+        wrap: "items-start justify-end",
+        text: "text-right mr-0 ml-auto max-w-[820px]",
+      },
+      "middle-left": {
+        wrap: "items-center justify-start",
+        text: "text-left ml-0 mr-auto max-w-[820px]",
+      },
+      "middle-right": {
+        wrap: "items-center justify-end",
+        text: "text-right mr-0 ml-auto max-w-[820px]",
+      },
       "bottom-left": {
         wrap: "items-end justify-start",
         text: "text-left ml-0 mr-auto max-w-[820px]",
@@ -45,9 +62,9 @@ export const heroContent = tv({
         wrap: "items-end justify-center",
         text: "text-center",
       },
-      "center-left": {
-        wrap: "items-center justify-start",
-        text: "text-left ml-0 mr-auto max-w-[820px]",
+      "bottom-right": {
+        wrap: "items-end justify-end",
+        text: "text-right mr-0 ml-auto max-w-[820px]",
       },
     },
   },
