@@ -518,5 +518,21 @@ export default {
     }
 
     await seedMenuItems(strapi);
+    await seedSiteSetting(strapi);
   },
 };
+
+async function seedSiteSetting(strapi: Core.Strapi) {
+  try {
+    const existing = await strapi
+      .documents("api::site-setting.site-setting" as any)
+      .findFirst({});
+    if (existing) return;
+    await strapi.documents("api::site-setting.site-setting" as any).create({
+      data: { submenuLayout: "full-bleed", headerWidth: "full" } as any,
+    });
+    strapi.log.info("[bootstrap] Seeded site-setting con default (full + full-bleed)");
+  } catch (err) {
+    strapi.log.warn("[bootstrap] Seed site-setting fallito: " + String(err));
+  }
+}
