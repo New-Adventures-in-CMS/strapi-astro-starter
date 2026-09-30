@@ -24,20 +24,17 @@ export const container = tv({
 /**
  * Header wrapper variants — controls the header's horizontal skin.
  *
- * - `full`: piena larghezza col solo inset `page-margin` (base container padding
- *   `px-6 md:px-8 lg:px-12`), nessun clamp `max-width`. Non edge-to-edge —
- *   mantiene i margini di pagina.
+ * - `full`: piena larghezza col solo inset `page-margin` (var `--page-margin-lg`,
+ *   responsive per breakpoint), nessun clamp `max-width`. Non edge-to-edge —
+ *   mantiene i margini di pagina editoriali.
  * - `contained`: riusa la geometria del token `container` variante `wide`
  *   (`max-w-[1400px]` + stesso padding), allineando l'header al layout dei contenuti.
- *
- * Le classi derivano dal base padding di `container` per rispettare il layer token:
- * nessuna misura hardcoded fuori dal file variants.
  */
 export const headerWrapper = tv({
   base: "flex w-full items-center justify-between py-5",
   variants: {
     width: {
-      full: "px-6 md:px-8 lg:px-12",
+      full: "px-[var(--page-margin-lg)]",
       contained: "mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12",
     },
   },
