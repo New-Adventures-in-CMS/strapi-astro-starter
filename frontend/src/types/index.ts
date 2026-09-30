@@ -102,13 +102,15 @@ export interface BlockCardGrid {
 export type PageBlock =
   BlockHero | BlockRichText | BlockImageText | BlockCardGrid;
 
-// Single-type "site-setting" — layout globali dell'header/submenu
+// Single-type "site-setting" — layout globali di header, submenu e footer
 export type SubmenuLayout = "full-bleed" | "dropdown";
 export type HeaderWidth = "full" | "contained";
+export type FooterWidth = HeaderWidth;
 
 export interface SiteSettings {
   submenuLayout: SubmenuLayout;
   headerWidth: HeaderWidth;
+  footerWidth: FooterWidth;
 }
 
 // Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"

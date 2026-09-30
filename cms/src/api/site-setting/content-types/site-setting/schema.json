@@ -5,7 +5,7 @@
     "singularName": "site-setting",
     "pluralName": "site-settings",
     "displayName": "Site settings",
-    "description": "Impostazioni globali del sito (singleton). Layout dell'header e del submenu."
+    "description": "Impostazioni globali del sito (singleton). Layout di header, submenu e footer."
   },
   "options": {
     "draftAndPublish": false
@@ -19,6 +19,12 @@
       "required": true
     },
     "headerWidth": {
+      "type": "enumeration",
+      "enum": ["full", "contained"],
+      "default": "full",
+      "required": true
+    },
+    "footerWidth": {
       "type": "enumeration",
       "enum": ["full", "contained"],
       "default": "full",

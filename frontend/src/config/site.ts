@@ -25,15 +25,21 @@ export type HeroAlign =
   | "bottom-center"
   | "bottom-right";
 
-/** Layout globali dell'header pilotati dal CMS (single-type `site-setting`). */
+/** Layout globali di header e footer pilotati dal CMS (single-type `site-setting`). */
 export type SubmenuLayout = "full-bleed" | "dropdown";
 export type HeaderWidth = "full" | "contained";
+export type FooterWidth = HeaderWidth;
 
 export interface HeaderConfig {
   /** Wrapper header width. `full` = viewport width col solo inset page-margin; `contained` = riusa il token container. */
   width: HeaderWidth;
   /** Pannello submenu. `full-bleed` = banda edge-to-edge; `dropdown` = ancorato al trigger, auto-width. */
   submenuLayout: SubmenuLayout;
+}
+
+export interface FooterConfig {
+  /** Wrapper footer width. `full` = viewport width col solo inset page-margin; `contained` = riusa il token container. */
+  width: FooterWidth;
 }
 
 export type MotionSmoothPreset = "off" | "light" | "medium" | "marked";
@@ -71,7 +77,7 @@ export interface SiteConfig {
   motion: MotionConfig;
   nav: NavConfig;
   header: HeaderConfig;
-  footer: {
+  footer: FooterConfig & {
     columns: { title: string; items: NavItem[] }[];
     legal: string;
   };
@@ -117,6 +123,7 @@ export const site: SiteConfig = {
     ],
   },
   footer: {
+    width: "full",
     columns: [
       {
         title: "Navigazione",

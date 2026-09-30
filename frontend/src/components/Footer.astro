@@ -1,14 +1,16 @@
 ---
 import { getFooterNav } from "@/lib/navigation";
+import { getSiteSettings } from "@/lib/strapi";
 import { site } from "@/config/site";
-import { Container } from "@/components/layout";
+import { footerWrapper } from "@/components/layout";
 import { Separator } from "@/components/starwind/separator";
 
 const footer = await getFooterNav();
+const { footerWidth } = await getSiteSettings();
 ---
 
-<footer class="mt-auto">
-  <Container width="wide" class="py-16 md:py-20">
+<footer class="mt-auto" data-footer-width={footerWidth}>
+  <div class={footerWrapper({ width: footerWidth })}>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       {footer.columns.map((col) => (
         <div>
@@ -30,5 +32,5 @@ const footer = await getFooterNav();
     </div>
     <Separator class="my-8" />
     <p class="text-xs text-muted-foreground">{site.footer.legal}</p>
-  </Container>
+  </div>
 </footer>
