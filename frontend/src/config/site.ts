@@ -25,8 +25,6 @@ export type HeroAlign =
   | "bottom-center"
   | "bottom-right";
 
-export type MegamenuLayout = "band" | "dropdown";
-
 /** Layout globali dell'header pilotati dal CMS (single-type `site-setting`). */
 export type SubmenuLayout = "full-bleed" | "dropdown";
 export type HeaderWidth = "full" | "contained";
@@ -56,11 +54,6 @@ export interface NavItem {
 }
 
 export interface NavConfig {
-  /**
-   * Megamenu layout. Only `band` is wired; `dropdown` is reserved as a config
-   * seam and not implemented — the Header throws when it encounters it.
-   */
-  megamenuLayout: MegamenuLayout;
   /** Fallback header items when the CMS is unreachable. */
   items: NavItem[];
 }
@@ -102,7 +95,6 @@ export const site: SiteConfig = {
   url: "https://example.com",
   locale: "it-IT",
   nav: {
-    megamenuLayout: "band",
     items: [
       { label: "Home", href: "/" },
       {
