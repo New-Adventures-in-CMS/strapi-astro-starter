@@ -235,9 +235,9 @@ function slideImageUrl(s: HeroSlide) {
           <p
             class:list={[
               "mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
-              a.includes("left") && "mr-auto text-left",
-              a.includes("center") && "mx-auto text-center",
-              a.includes("right") && "ml-auto text-right",
+              staticAlign.includes("left") && "mr-auto text-left",
+              staticAlign.includes("center") && "mx-auto text-center",
+              staticAlign.includes("right") && "ml-auto text-right",
             ]}
           >
             {staticSlide.subheading}
