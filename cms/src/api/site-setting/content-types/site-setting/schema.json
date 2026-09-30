@@ -29,6 +29,12 @@
       "enum": ["full", "contained"],
       "default": "full",
       "required": true
+    },
+    "footerTone": {
+      "type": "enumeration",
+      "enum": ["muted", "dark"],
+      "default": "dark",
+      "required": true
     }
   }
 }

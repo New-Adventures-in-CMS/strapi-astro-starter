@@ -1,6 +1,6 @@
 import { STRAPI_URL, STRAPI_API_TOKEN } from "astro:env/server";
 import { site } from "@/config/site";
-import type { FooterWidth, HeaderWidth, SiteSettings, SubmenuLayout } from "@/types";
+import type { FooterTone, FooterWidth, HeaderWidth, SiteSettings, SubmenuLayout } from "@/types";
 
 export function strapiMediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
@@ -89,6 +89,7 @@ export async function strapiFindOne<T>(
 const SUBMENU_LAYOUTS: readonly SubmenuLayout[] = ["full-bleed", "dropdown"];
 const HEADER_WIDTHS: readonly HeaderWidth[] = ["full", "contained"];
 const FOOTER_WIDTHS: readonly FooterWidth[] = ["full", "contained"];
+const FOOTER_TONES: readonly FooterTone[] = ["muted", "dark"];
 
 function coerceSubmenuLayout(v: unknown): SubmenuLayout {
   return SUBMENU_LAYOUTS.includes(v as SubmenuLayout)
@@ -108,6 +109,12 @@ function coerceFooterWidth(v: unknown): FooterWidth {
     : site.footer.width;
 }
 
+function coerceFooterTone(v: unknown): FooterTone {
+  return FOOTER_TONES.includes(v as FooterTone)
+    ? (v as FooterTone)
+    : site.footer.tone;
+}
+
 /**
  * Read the global `site-setting` singleType, resolving each field to a valid
  * enum with fallback to `site.header`/`site.footer` (Strapi down, 404, missing
@@ -125,12 +132,14 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       submenuLayout: coerceSubmenuLayout(data?.submenuLayout),
       headerWidth: coerceHeaderWidth(data?.headerWidth),
       footerWidth: coerceFooterWidth(data?.footerWidth),
+      footerTone: coerceFooterTone(data?.footerTone),
     };
   } catch {
     return {
       submenuLayout: site.header.submenuLayout,
       headerWidth: site.header.width,
       footerWidth: site.footer.width,
+      footerTone: site.footer.tone,
     };
   }
 }

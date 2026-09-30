@@ -6,15 +6,20 @@ import { footerWrapper } from "@/components/layout";
 import { Separator } from "@/components/starwind/separator";
 
 const footer = await getFooterNav();
-const { footerWidth } = await getSiteSettings();
+const { footerWidth, footerTone } = await getSiteSettings();
+const styles = footerWrapper({ width: footerWidth, tone: footerTone });
 ---
 
-<footer class="mt-auto" data-footer-width={footerWidth}>
-  <div class={footerWrapper({ width: footerWidth })}>
+<footer
+  class="mt-auto"
+  data-footer-width={footerWidth}
+  data-footer-tone={footerTone}
+>
+  <div class={styles.root()}>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       {footer.columns.map((col) => (
         <div>
-          <h3 class="mb-4 text-sm font-semibold text-foreground">{col.title}</h3>
+          <h3 class={styles.title()}>{col.title}</h3>
           <ul class="space-y-2">
             {col.items.map((item) => (
               <li>
@@ -22,7 +27,7 @@ const { footerWidth } = await getSiteSettings();
                   href={item.href}
                   target={item.external ? "_blank" : undefined}
                   rel={item.external ? "noopener noreferrer" : undefined}
-                  class="text-sm text-muted-foreground hover:text-foreground"
+                  class={styles.link()}
                 >{item.label}</a>
               </li>
             ))}
@@ -30,7 +35,7 @@ const { footerWidth } = await getSiteSettings();
         </div>
       ))}
     </div>
-    <Separator class="my-8" />
-    <p class="text-xs text-muted-foreground">{site.footer.legal}</p>
+    <Separator class={styles.separator()} />
+    <p class={styles.legal()}>{site.footer.legal}</p>
   </div>
 </footer>
