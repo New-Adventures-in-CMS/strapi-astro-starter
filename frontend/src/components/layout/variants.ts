@@ -1,5 +1,8 @@
 import { tv } from "tailwind-variants";
 
+/** Vocabolario tone condiviso: usato da `section` e sottoinsiemi (es. `footerWrapper`). */
+export type SectionTone = "default" | "muted" | "dark";
+
 /**
  * Container variants — controls max-width and horizontal padding.
  *

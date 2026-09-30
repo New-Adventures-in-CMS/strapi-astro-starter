@@ -103,14 +103,19 @@ export type PageBlock =
   BlockHero | BlockRichText | BlockImageText | BlockCardGrid;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
+import type { SectionTone } from "@/components/layout/variants";
+
 export type SubmenuLayout = "full-bleed" | "dropdown";
 export type HeaderWidth = "full" | "contained";
 export type FooterWidth = HeaderWidth;
+/** Sottoinsieme esposto per il footer: `default` non è disponibile (= nessuno stacco). */
+export type FooterTone = Extract<SectionTone, "muted" | "dark">;
 
 export interface SiteSettings {
   submenuLayout: SubmenuLayout;
   headerWidth: HeaderWidth;
   footerWidth: FooterWidth;
+  footerTone: FooterTone;
 }
 
 // Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"

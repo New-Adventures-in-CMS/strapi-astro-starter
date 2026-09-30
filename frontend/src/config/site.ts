@@ -29,6 +29,8 @@ export type HeroAlign =
 export type SubmenuLayout = "full-bleed" | "dropdown";
 export type HeaderWidth = "full" | "contained";
 export type FooterWidth = HeaderWidth;
+/** Tono del footer: sottoinsieme di `SectionTone` senza `default` (= nessuno stacco). */
+export type FooterTone = "muted" | "dark";
 
 export interface HeaderConfig {
   /** Wrapper header width. `full` = viewport width col solo inset page-margin; `contained` = riusa il token container. */
@@ -40,6 +42,8 @@ export interface HeaderConfig {
 export interface FooterConfig {
   /** Wrapper footer width. `full` = viewport width col solo inset page-margin; `contained` = riusa il token container. */
   width: FooterWidth;
+  /** Tono del footer: `muted` (chiaro ma distinto) | `dark` (contrasto forte). */
+  tone: FooterTone;
 }
 
 export type MotionSmoothPreset = "off" | "light" | "medium" | "marked";
@@ -124,6 +128,7 @@ export const site: SiteConfig = {
   },
   footer: {
     width: "full",
+    tone: "dark",
     columns: [
       {
         title: "Navigazione",
