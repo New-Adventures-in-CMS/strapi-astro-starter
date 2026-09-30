@@ -1,10 +1,13 @@
 ---
 import { getHeaderNav } from "@/lib/navigation";
+import { getSiteSettings } from "@/lib/strapi";
 import { site } from "@/config/site";
-import { Container } from "@/components/layout";
+import { Container, headerWrapper } from "@/components/layout";
 import Logo from "@/components/Logo.astro";
 import NavigationMenuBand from "@/components/nav/NavigationMenuBand.astro";
+import { submenuDropdownList } from "@/components/nav/submenu-variants";
 import {
+  NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuTrigger,
@@ -26,16 +29,11 @@ interface Props {
 const { overlay = false } = Astro.props;
 
 const navItems = await getHeaderNav();
+const { headerWidth, submenuLayout } = await getSiteSettings();
+
 const path = Astro.url.pathname;
 const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
-
-const megamenuLayout = site.nav.megamenuLayout;
-if (megamenuLayout === "dropdown") {
-  throw new Error(
-    'nav.megamenuLayout "dropdown" is a config seam but not implemented yet. Use "band" or wire the dropdown branch.',
-  );
-}
 ---
 
 <header
@@ -46,25 +44,76 @@ if (megamenuLayout === "dropdown") {
   data-overlay={overlay ? "true" : "false"}
   data-state={overlay ? "transparent" : undefined}
   data-hidden="false"
-  data-megamenu-layout={megamenuLayout}
+  data-header-width={headerWidth}
+  data-submenu-layout={submenuLayout}
 >
-  <Container width="wide" class="flex items-center justify-between py-5">
+  <div class={headerWrapper({ width: headerWidth })}>
     <!-- Brand —logo lockup contains both mark and wordmark -->
     <a href="/" aria-label={site.name}>
       <Logo class="h-8 w-auto" />
     </a>
 
-    <!-- Desktop nav (lg and up) — banda full-bleed via Viewport nativo -->
+    <!-- Desktop nav (lg and up) -->
     <nav aria-label="Navigazione principale" class="hidden lg:flex">
-      <NavigationMenuBand size="sm">
-        <NavigationMenuList>
-          {navItems.map((item) =>
-            item.children?.length ? (
-              <NavigationMenuItem value={item.label}>
-                <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <Container width="wide" class="py-8">
-                    <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
+      {submenuLayout === "full-bleed" ? (
+        <NavigationMenuBand size="sm">
+          <NavigationMenuList>
+            {navItems.map((item) =>
+              item.children?.length ? (
+                <NavigationMenuItem value={item.label}>
+                  <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <Container width="wide" class="py-8">
+                      <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
+                        {item.children.map((child) => (
+                          <li>
+                            <NavigationMenuLink
+                              href={child.href}
+                              target={child.external ? "_blank" : undefined}
+                              rel={child.external ? "noopener noreferrer" : undefined}
+                              active={isActive(child.href)}
+                              aria-current={isActive(child.href) ? "page" : undefined}
+                              class="flex-col items-start gap-1"
+                            >
+                              <span class="text-sm font-medium">{child.label}</span>
+                              {child.description && (
+                                <span class="text-muted-foreground text-xs leading-snug">
+                                  {child.description}
+                                </span>
+                              )}
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </Container>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    active={isActive(item.href)}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    class="text-sm font-medium"
+                  >
+                    {item.label}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )
+            )}
+          </NavigationMenuList>
+        </NavigationMenuBand>
+      ) : (
+        <NavigationMenu size="sm">
+          <NavigationMenuList>
+            {navItems.map((item) =>
+              item.children?.length ? (
+                <NavigationMenuItem value={item.label}>
+                  <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul class={submenuDropdownList()}>
                       {item.children.map((child) => (
                         <li>
                           <NavigationMenuLink
@@ -73,38 +122,32 @@ if (megamenuLayout === "dropdown") {
                             rel={child.external ? "noopener noreferrer" : undefined}
                             active={isActive(child.href)}
                             aria-current={isActive(child.href) ? "page" : undefined}
-                            class="flex-col items-start gap-1"
                           >
-                            <span class="text-sm font-medium">{child.label}</span>
-                            {child.description && (
-                              <span class="text-muted-foreground text-xs leading-snug">
-                                {child.description}
-                              </span>
-                            )}
+                            {child.label}
                           </NavigationMenuLink>
                         </li>
                       ))}
                     </ul>
-                  </Container>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ) : (
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  href={item.href}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  active={isActive(item.href)}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  class="text-sm font-medium"
-                >
-                  {item.label}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            )
-          )}
-        </NavigationMenuList>
-      </NavigationMenuBand>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    active={isActive(item.href)}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    class="text-sm font-medium"
+                  >
+                    {item.label}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )
+            )}
+          </NavigationMenuList>
+        </NavigationMenu>
+      )}
     </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->
@@ -188,7 +231,7 @@ if (megamenuLayout === "dropdown") {
         </SheetContent>
       </Sheet>
     </div>
-  </Container>
+  </div>
 
   {overlay && (
     <script>

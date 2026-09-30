@@ -25,7 +25,16 @@ export type HeroAlign =
   | "bottom-center"
   | "bottom-right";
 
-export type MegamenuLayout = "band" | "dropdown";
+/** Layout globali dell'header pilotati dal CMS (single-type `site-setting`). */
+export type SubmenuLayout = "full-bleed" | "dropdown";
+export type HeaderWidth = "full" | "contained";
+
+export interface HeaderConfig {
+  /** Wrapper header width. `full` = viewport width col solo inset page-margin; `contained` = riusa il token container. */
+  width: HeaderWidth;
+  /** Pannello submenu. `full-bleed` = banda edge-to-edge; `dropdown` = ancorato al trigger, auto-width. */
+  submenuLayout: SubmenuLayout;
+}
 
 export type MotionSmoothPreset = "off" | "light" | "medium" | "marked";
 
@@ -45,11 +54,6 @@ export interface NavItem {
 }
 
 export interface NavConfig {
-  /**
-   * Megamenu layout. Only `band` is wired; `dropdown` is reserved as a config
-   * seam and not implemented — the Header throws when it encounters it.
-   */
-  megamenuLayout: MegamenuLayout;
   /** Fallback header items when the CMS is unreachable. */
   items: NavItem[];
 }
@@ -66,6 +70,7 @@ export interface SiteConfig {
   heroStyle: HeroStyle;
   motion: MotionConfig;
   nav: NavConfig;
+  header: HeaderConfig;
   footer: {
     columns: { title: string; items: NavItem[] }[];
     legal: string;
@@ -81,12 +86,15 @@ export const site: SiteConfig = {
   motion: {
     smooth: "medium",
   },
+  header: {
+    width: "full",
+    submenuLayout: "full-bleed",
+  },
   description:
     "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
   locale: "it-IT",
   nav: {
-    megamenuLayout: "band",
     items: [
       { label: "Home", href: "/" },
       {

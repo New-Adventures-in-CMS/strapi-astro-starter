@@ -1,0 +1,28 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site settings",
+    "description": "Impostazioni globali del sito (singleton). Layout dell'header e del submenu."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "submenuLayout": {
+      "type": "enumeration",
+      "enum": ["full-bleed", "dropdown"],
+      "default": "full-bleed",
+      "required": true
+    },
+    "headerWidth": {
+      "type": "enumeration",
+      "enum": ["full", "contained"],
+      "default": "full",
+      "required": true
+    }
+  }
+}
