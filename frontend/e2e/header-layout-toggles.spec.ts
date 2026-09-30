@@ -66,3 +66,62 @@ test.describe("Footer width toggle — data attribute, fallback, inset parity", 
     expect(footerInsetLeft).toBe("80px");
   });
 });
+
+test.describe("Footer tone toggle — data attribute, fallback, coordinated fg", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("<footer> exposes data-footer-tone", async ({ page }) => {
+    await page.goto("/");
+    const footer = page.locator("footer").first();
+    await expect(footer).toHaveAttribute("data-footer-tone", /^(muted|dark)$/);
+  });
+
+  test("fallback path uses site.footer.tone default (dark)", async ({ page }) => {
+    await page.goto("/");
+    const footer = page.locator("footer").first();
+    await expect(footer).toHaveAttribute("data-footer-tone", "dark");
+  });
+
+  test("dark tone coordinates foreground: link resolves to on-dark token (high luminance)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const footer = page.locator("footer").first();
+    await expect(footer).toHaveAttribute("data-footer-tone", "dark");
+
+    // Parse any CSS color (rgb/rgba/color-mix/color()) into [r,g,b,a] via canvas.
+    const parseColor = (selector: string, prop: "color" | "backgroundColor") =>
+      page.evaluate(
+        ({ sel, p }) => {
+          const el = document.querySelector(sel) as HTMLElement | null;
+          if (!el) return null;
+          const raw = getComputedStyle(el)[p as any];
+          const cvs = document.createElement("canvas");
+          cvs.width = cvs.height = 1;
+          const ctx = cvs.getContext("2d")!;
+          ctx.fillStyle = "#000";
+          ctx.fillRect(0, 0, 1, 1);
+          ctx.fillStyle = raw;
+          ctx.fillRect(0, 0, 1, 1);
+          const d = ctx.getImageData(0, 0, 1, 1).data;
+          return { raw, r: d[0], g: d[1], b: d[2], a: d[3] };
+        },
+        { sel: selector, p: prop },
+      );
+
+    const bg = await parseColor("footer > div", "backgroundColor");
+    expect(bg).not.toBeNull();
+    // Dark bg: each channel low (≤ 40 is generous for near-black).
+    expect(bg!.r).toBeLessThanOrEqual(40);
+    expect(bg!.g).toBeLessThanOrEqual(40);
+    expect(bg!.b).toBeLessThanOrEqual(40);
+
+    const link = await parseColor("footer a", "color");
+    expect(link).not.toBeNull();
+    // On-dark fg tokens are white or near-white (with alpha mixed onto black bg).
+    // After compositing on black via canvas, R/G/B should still be high (≥ 180).
+    expect(link!.r).toBeGreaterThanOrEqual(180);
+    expect(link!.g).toBeGreaterThanOrEqual(180);
+    expect(link!.b).toBeGreaterThanOrEqual(180);
+  });
+});
