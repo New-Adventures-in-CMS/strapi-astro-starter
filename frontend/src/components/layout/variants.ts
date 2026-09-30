@@ -6,10 +6,12 @@ export type SectionTone = "default" | "muted" | "dark";
 /**
  * Container variants — controls max-width and horizontal padding.
  *
+ * Five-tier width vocabulary shared with chrome (header/footer):
  * - `prose` (~70ch ≈ 720px): optimized for readable text columns
  * - `default` (1200px): standard page container
- * - `wide` (1400px): full-featured layouts with more horizontal breathing room
- * - `full`: no max-width clamp, stretches to full viewport width (padding removed)
+ * - `contained` (1400px): full-featured layouts with more horizontal breathing room
+ * - `full`: page-margin inset (`--page-margin-lg`) at every breakpoint — no max-width clamp
+ * - `bleed`: edge-to-edge — no max-width, no horizontal padding
  */
 export const container = tv({
   base: "mx-auto w-full px-6 md:px-8 lg:px-12",
@@ -18,7 +20,8 @@ export const container = tv({
       prose: "max-w-[70ch]",
       default: "max-w-[1200px]",
       contained: "max-w-[1400px]",
-      full: "max-w-none px-0 md:px-0 lg:px-0",
+      full: "max-w-none px-[var(--page-margin-lg)] md:px-[var(--page-margin-lg)] lg:px-[var(--page-margin-lg)]",
+      bleed: "max-w-none px-0 md:px-0 lg:px-0",
     },
   },
   defaultVariants: { width: "default" },
