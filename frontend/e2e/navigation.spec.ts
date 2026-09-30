@@ -647,38 +647,18 @@ test.describe("Header v2 — scroll-state overlay sentinel", () => {
   test("header starts transparent when sentinel is visible (data-state=transparent)", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/dev/hero-immersive");
     const header = page.locator("header[data-overlay='true']");
-    const sentinelCount = await page
-      .locator("#header-overlay-sentinel")
-      .count();
-    if (sentinelCount === 0) {
-      test.skip(
-        true,
-        "No overlay sentinel on this page — overlay mode not active",
-      );
-      return;
-    }
     await expect(header).toHaveAttribute("data-state", "transparent");
   });
 
   test("header becomes solid after scrolling past sentinel (data-state=solid)", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/dev/hero-immersive");
     const header = page.locator("header[data-overlay='true']");
-    const sentinelCount = await page
-      .locator("#header-overlay-sentinel")
-      .count();
-    if (sentinelCount === 0) {
-      test.skip(
-        true,
-        "No overlay sentinel on this page — overlay mode not active",
-      );
-      return;
-    }
 
-    await page.evaluate(() => window.scrollBy(0, 600));
+    await page.evaluate(() => window.scrollBy(0, 1000));
     await page.waitForTimeout(150);
 
     await expect(header).toHaveAttribute("data-state", "solid");
@@ -793,18 +773,8 @@ test.describe("Header v2 — solid on megamenu open (overlay)", () => {
   test("opening megamenu turns header background solid; closing restores transparent", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/dev/hero-immersive");
     const header = page.locator("header[data-overlay='true']");
-    const sentinelCount = await page
-      .locator("#header-overlay-sentinel")
-      .count();
-    if (sentinelCount === 0) {
-      test.skip(
-        true,
-        "No overlay sentinel on this page — overlay mode not active",
-      );
-      return;
-    }
     await expect(header).toHaveAttribute("data-state", "transparent");
 
     const initialBg = await header.evaluate(
