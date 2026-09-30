@@ -45,20 +45,47 @@ export const headerWrapper = tv({
 });
 
 /**
- * Footer wrapper variants — mirror del header per coerenza dell'impianto grafico.
+ * Footer wrapper variants — slot-form.
  *
+ * `width`: mirror del header per coerenza dell'impianto grafico.
  * - `full`: stesso inset `page-margin` dell'header `full` (var `--page-margin-lg`).
  * - `contained`: stessa geometria del token container condiviso con header `contained`.
+ *
+ * `tone`: sottoinsieme di `SectionTone` (senza `default`), coordinato con gli slot fg.
+ * - `muted`: bg + fg dai token muted/foreground.
+ * - `dark`: bg + fg dai token on-dark (`--section-dark-*`) — riusa il set già esistente
+ *   in `starwind.css` (statement dark / header overlay). Nessun token colore nuovo.
  */
 export const footerWrapper = tv({
-  base: "py-16 md:py-20",
+  slots: {
+    root: "py-16 md:py-20",
+    title: "mb-4 text-sm font-semibold",
+    link: "text-sm transition-colors",
+    separator: "my-8",
+    legal: "text-xs",
+  },
   variants: {
     width: {
-      full: "px-[var(--page-margin-lg)]",
-      contained: "mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12",
+      full: { root: "px-[var(--page-margin-lg)]" },
+      contained: { root: "mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12" },
+    },
+    tone: {
+      muted: {
+        root: "bg-muted text-foreground",
+        title: "text-foreground",
+        link: "text-muted-foreground hover:text-foreground",
+        legal: "text-muted-foreground",
+      },
+      dark: {
+        root: "bg-[var(--section-dark-bg)] text-[var(--section-dark-fg)]",
+        title: "text-[var(--section-dark-fg)]",
+        link: "text-[var(--section-dark-fg-muted)] hover:text-[var(--section-dark-fg)]",
+        separator: "border-[color:var(--section-dark-accent)]",
+        legal: "text-[var(--section-dark-fg-subtle)]",
+      },
     },
   },
-  defaultVariants: { width: "full" },
+  defaultVariants: { width: "full", tone: "dark" },
 });
 
 /**
