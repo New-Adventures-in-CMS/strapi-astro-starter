@@ -1,6 +1,12 @@
 import { STRAPI_URL, STRAPI_API_TOKEN } from "astro:env/server";
 import { site } from "@/config/site";
-import type { FooterTone, FooterWidth, HeaderWidth, SiteSettings, SubmenuLayout } from "@/types";
+import type {
+  FooterTone,
+  FooterWidth,
+  HeaderWidth,
+  SiteSettings,
+  SubmenuLayout,
+} from "@/types";
 
 export function strapiMediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
@@ -124,9 +130,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   try {
     const res = await fetch(`${STRAPI_URL}/api/site-setting`);
     if (!res.ok) throw new Error(`status ${res.status}`);
-    const json = (await res.json()) as StrapiSingleResponse<
-      Partial<SiteSettings> | null
-    >;
+    const json =
+      (await res.json()) as StrapiSingleResponse<Partial<SiteSettings> | null>;
     const data = json?.data ?? null;
     return {
       submenuLayout: coerceSubmenuLayout(data?.submenuLayout),

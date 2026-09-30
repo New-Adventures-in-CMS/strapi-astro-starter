@@ -536,7 +536,9 @@ async function seedSiteSetting(strapi: Core.Strapi) {
         footerTone: "dark",
       } as any,
     });
-    strapi.log.info("[bootstrap] Seeded site-setting con default (header full + full-bleed + footer full/dark)");
+    strapi.log.info(
+      "[bootstrap] Seeded site-setting con default (header full + full-bleed + footer full/dark)",
+    );
   } catch (err) {
     strapi.log.warn("[bootstrap] Seed site-setting fallito: " + String(err));
   }

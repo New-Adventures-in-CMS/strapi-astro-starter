@@ -8,10 +8,15 @@ import { test, expect } from "@playwright/test";
 test.describe("Header layout toggles — data attributes and fallback", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("<header> exposes data-header-width and data-submenu-layout", async ({ page }) => {
+  test("<header> exposes data-header-width and data-submenu-layout", async ({
+    page,
+  }) => {
     await page.goto("/");
     const header = page.locator("header").first();
-    await expect(header).toHaveAttribute("data-header-width", /^(full|contained)$/);
+    await expect(header).toHaveAttribute(
+      "data-header-width",
+      /^(full|contained)$/,
+    );
     await expect(header).toHaveAttribute(
       "data-submenu-layout",
       /^(full-bleed|dropdown)$/,
@@ -34,7 +39,10 @@ test.describe("Footer width toggle — data attribute, fallback, inset parity", 
   test("<footer> exposes data-footer-width", async ({ page }) => {
     await page.goto("/");
     const footer = page.locator("footer").first();
-    await expect(footer).toHaveAttribute("data-footer-width", /^(full|contained)$/);
+    await expect(footer).toHaveAttribute(
+      "data-footer-width",
+      /^(full|contained)$/,
+    );
   });
 
   test("fallback path uses site.footer default (full)", async ({ page }) => {
@@ -76,7 +84,9 @@ test.describe("Footer tone toggle — data attribute, fallback, coordinated fg",
     await expect(footer).toHaveAttribute("data-footer-tone", /^(muted|dark)$/);
   });
 
-  test("fallback path uses site.footer.tone default (dark)", async ({ page }) => {
+  test("fallback path uses site.footer.tone default (dark)", async ({
+    page,
+  }) => {
     await page.goto("/");
     const footer = page.locator("footer").first();
     await expect(footer).toHaveAttribute("data-footer-tone", "dark");

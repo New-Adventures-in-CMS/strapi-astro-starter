@@ -201,9 +201,19 @@
 /* BRIDGE-START page-margin — TEMP finché lo stadio token-emission non emette i token
    semantici responsivi da nsp-ds-tokens. Valori da page-margin.lg (v0.4.2). Quando il sync
    emetterà --page-margin-lg, CANCELLARE questo intero blocco: il consumer non cambia. */
-:root { --page-margin-lg: 16px; }
-@media (min-width: 768px)  { :root { --page-margin-lg: 32px; } }
-@media (min-width: 1024px) { :root { --page-margin-lg: 80px; } }
+:root {
+  --page-margin-lg: 16px;
+}
+@media (min-width: 768px) {
+  :root {
+    --page-margin-lg: 32px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --page-margin-lg: 80px;
+  }
+}
 /* BRIDGE-END page-margin */
 
 @layer base {
