@@ -102,6 +102,15 @@ export interface BlockCardGrid {
 export type PageBlock =
   BlockHero | BlockRichText | BlockImageText | BlockCardGrid;
 
+// Single-type "site-setting" — layout globali dell'header/submenu
+export type SubmenuLayout = "full-bleed" | "dropdown";
+export type HeaderWidth = "full" | "contained";
+
+export interface SiteSettings {
+  submenuLayout: SubmenuLayout;
+  headerWidth: HeaderWidth;
+}
+
 // Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"
 export interface Page {
   id: number;

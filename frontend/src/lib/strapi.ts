@@ -1,4 +1,6 @@
 import { STRAPI_URL, STRAPI_API_TOKEN } from "astro:env/server";
+import { site } from "@/config/site";
+import type { HeaderWidth, SiteSettings, SubmenuLayout } from "@/types";
 
 export function strapiMediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
@@ -82,6 +84,45 @@ export async function strapiFindOne<T>(
   if (!res.ok)
     throw new Error(`Strapi GET /api/${singularApiId} → ${res.status}`);
   return res.json() as Promise<StrapiSingleResponse<T>>;
+}
+
+const SUBMENU_LAYOUTS: readonly SubmenuLayout[] = ["full-bleed", "dropdown"];
+const HEADER_WIDTHS: readonly HeaderWidth[] = ["full", "contained"];
+
+function coerceSubmenuLayout(v: unknown): SubmenuLayout {
+  return SUBMENU_LAYOUTS.includes(v as SubmenuLayout)
+    ? (v as SubmenuLayout)
+    : site.header.submenuLayout;
+}
+
+function coerceHeaderWidth(v: unknown): HeaderWidth {
+  return HEADER_WIDTHS.includes(v as HeaderWidth)
+    ? (v as HeaderWidth)
+    : site.header.width;
+}
+
+/**
+ * Read the global `site-setting` singleType, resolving each field to a valid
+ * enum with fallback to `site.header` (Strapi down, 404, missing key, unknown value).
+ */
+export async function getSiteSettings(): Promise<SiteSettings> {
+  try {
+    const res = await fetch(`${STRAPI_URL}/api/site-setting`);
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const json = (await res.json()) as StrapiSingleResponse<
+      Partial<SiteSettings> | null
+    >;
+    const data = json?.data ?? null;
+    return {
+      submenuLayout: coerceSubmenuLayout(data?.submenuLayout),
+      headerWidth: coerceHeaderWidth(data?.headerWidth),
+    };
+  } catch {
+    return {
+      submenuLayout: site.header.submenuLayout,
+      headerWidth: site.header.width,
+    };
+  }
 }
 
 export async function strapiPost<T>(

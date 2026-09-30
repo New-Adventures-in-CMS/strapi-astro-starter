@@ -27,6 +27,17 @@ export type HeroAlign =
 
 export type MegamenuLayout = "band" | "dropdown";
 
+/** Layout globali dell'header pilotati dal CMS (single-type `site-setting`). */
+export type SubmenuLayout = "full-bleed" | "dropdown";
+export type HeaderWidth = "full" | "contained";
+
+export interface HeaderConfig {
+  /** Wrapper header width. `full` = viewport width col solo inset page-margin; `contained` = riusa il token container. */
+  width: HeaderWidth;
+  /** Pannello submenu. `full-bleed` = banda edge-to-edge; `dropdown` = ancorato al trigger, auto-width. */
+  submenuLayout: SubmenuLayout;
+}
+
 export type MotionSmoothPreset = "off" | "light" | "medium" | "marked";
 
 export interface MotionConfig {
@@ -66,6 +77,7 @@ export interface SiteConfig {
   heroStyle: HeroStyle;
   motion: MotionConfig;
   nav: NavConfig;
+  header: HeaderConfig;
   footer: {
     columns: { title: string; items: NavItem[] }[];
     legal: string;
@@ -80,6 +92,10 @@ export const site: SiteConfig = {
   heroStyle: "fade",
   motion: {
     smooth: "medium",
+  },
+  header: {
+    width: "full",
+    submenuLayout: "full-bleed",
   },
   description:
     "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
