@@ -80,7 +80,7 @@ export const footerWrapper = tv({
         root: "bg-[var(--section-dark-bg)] text-[var(--section-dark-fg)]",
         title: "text-[var(--section-dark-fg)]",
         link: "text-[var(--section-dark-fg-muted)] hover:text-[var(--section-dark-fg)]",
-        separator: "border-[color:var(--section-dark-accent)]",
+        separator: "bg-[var(--section-dark-accent)]",
         legal: "text-[var(--section-dark-fg-subtle)]",
       },
     },
