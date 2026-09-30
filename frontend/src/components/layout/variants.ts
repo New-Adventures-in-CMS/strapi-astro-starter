@@ -17,7 +17,7 @@ export const container = tv({
     width: {
       prose: "max-w-[70ch]",
       default: "max-w-[1200px]",
-      wide: "max-w-[1400px]",
+      contained: "max-w-[1400px]",
       full: "max-w-none px-0 md:px-0 lg:px-0",
     },
   },

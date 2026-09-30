@@ -63,7 +63,7 @@ const isActive = (href: string | undefined): boolean =>
                 <NavigationMenuItem value={item.label}>
                   <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <Container width="wide" class="py-8">
+                    <Container width="contained" class="py-8">
                       <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
                         {item.children.map((child) => (
                           <li>
