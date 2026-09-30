@@ -533,9 +533,10 @@ async function seedSiteSetting(strapi: Core.Strapi) {
         submenuLayout: "full-bleed",
         headerWidth: "full",
         footerWidth: "full",
+        footerTone: "dark",
       } as any,
     });
-    strapi.log.info("[bootstrap] Seeded site-setting con default (full + full-bleed + footer full)");
+    strapi.log.info("[bootstrap] Seeded site-setting con default (header full + full-bleed + footer full/dark)");
   } catch (err) {
     strapi.log.warn("[bootstrap] Seed site-setting fallito: " + String(err));
   }
