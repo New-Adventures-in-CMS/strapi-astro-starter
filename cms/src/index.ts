@@ -529,9 +529,13 @@ async function seedSiteSetting(strapi: Core.Strapi) {
       .findFirst({});
     if (existing) return;
     await strapi.documents("api::site-setting.site-setting" as any).create({
-      data: { submenuLayout: "full-bleed", headerWidth: "full" } as any,
+      data: {
+        submenuLayout: "full-bleed",
+        headerWidth: "full",
+        footerWidth: "full",
+      } as any,
     });
-    strapi.log.info("[bootstrap] Seeded site-setting con default (full + full-bleed)");
+    strapi.log.info("[bootstrap] Seeded site-setting con default (full + full-bleed + footer full)");
   } catch (err) {
     strapi.log.warn("[bootstrap] Seed site-setting fallito: " + String(err));
   }
