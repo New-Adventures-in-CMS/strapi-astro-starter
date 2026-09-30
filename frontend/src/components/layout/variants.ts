@@ -42,6 +42,23 @@ export const headerWrapper = tv({
 });
 
 /**
+ * Footer wrapper variants — mirror del header per coerenza dell'impianto grafico.
+ *
+ * - `full`: stesso inset `page-margin` dell'header `full` (var `--page-margin-lg`).
+ * - `contained`: stessa geometria del token container condiviso con header `contained`.
+ */
+export const footerWrapper = tv({
+  base: "py-16 md:py-20",
+  variants: {
+    width: {
+      full: "px-[var(--page-margin-lg)]",
+      contained: "mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12",
+    },
+  },
+  defaultVariants: { width: "full" },
+});
+
+/**
  * Section variants — full-bleed wrapper with tone (background) and vertical rhythm.
  *
  * - `tone: default`: light background (bg-background)
