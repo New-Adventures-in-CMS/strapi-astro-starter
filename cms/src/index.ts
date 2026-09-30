@@ -8,7 +8,7 @@ const PUBLIC_COLLECTION_UIDS: string[] = [
   "api::menu-item.menu-item",
 ];
 
-const PUBLIC_SINGLE_UIDS: string[] = [];
+const PUBLIC_SINGLE_UIDS: string[] = ["api::site-setting.site-setting"];
 
 const SEED_ASSETS_DIR = path.join(process.cwd(), "seed-assets");
 
