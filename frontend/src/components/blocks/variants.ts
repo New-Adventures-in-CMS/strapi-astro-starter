@@ -20,9 +20,9 @@ import { tv } from "tailwind-variants";
  */
 export const carousel = {
   viewport: tv({ base: "overflow-hidden [margin-inline-end:calc(50%-50vw)]" }),
-  track: tv({ base: "flex gap-6 touch-pan-y" }),
+  track: tv({ base: "flex -ml-6 touch-pan-y" }),
   slide: tv({
-    base: "basis-[82%] sm:basis-[46%] lg:basis-[31%] shrink-0 grow-0 min-w-0",
+    base: "pl-6 basis-[82%] sm:basis-[46%] lg:basis-[31%] shrink-0 grow-0 min-w-0",
   }),
   controls: tv({ base: "mt-8 flex items-center justify-end gap-3" }),
   navBtn: tv({
