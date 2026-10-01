@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_blocks_carousels",
+  "info": {
+    "displayName": "Carousel",
+    "icon": "columns",
+    "description": "Card carousel with peek rail"
+  },
+  "options": {},
+  "attributes": {
+    "heading": { "type": "string" },
+    "eyebrow": { "type": "string" },
+    "lead": { "type": "text" },
+    "tone": {
+      "type": "enumeration",
+      "enum": ["light", "dark"],
+      "default": "light"
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.card"
+    },
+    "loop": { "type": "boolean", "default": false },
+    "autoplay": { "type": "boolean", "default": false }
+  }
+}
