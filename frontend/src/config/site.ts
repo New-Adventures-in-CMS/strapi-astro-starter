@@ -1,18 +1,10 @@
 // frontend/src/config/site.ts
 
 export type HeroTransition = "slide" | "fade";
-export type HeroEffect =
-  "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
+export type HeroEffect = "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
 export type HeroStyle =
-  | "fade"
-  | "slide"
-  | "drift"
-  | "focus"
-  | "dim"
-  | "parallax"
-  | "tilt"
-  | "ken-burns";
+  "fade" | "slide" | "drift" | "focus" | "dim" | "parallax" | "tilt" | "ken-burns";
 
 export type HeroAlign =
   | "center"
@@ -100,8 +92,7 @@ export const site: SiteConfig = {
     width: "full",
     submenuLayout: "full-bleed",
   },
-  description:
-    "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
+  description: "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
   locale: "it-IT",
   nav: {

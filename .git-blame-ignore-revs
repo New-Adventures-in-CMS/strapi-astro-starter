@@ -1,0 +1,2 @@
+# Reformat-only commits to skip in git blame.
+# After squash-merge, add the squash commit hash of "chore(format): adopt prettier" below.

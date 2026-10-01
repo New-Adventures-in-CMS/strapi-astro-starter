@@ -2,17 +2,12 @@ import type { CarouselAPI } from "@skeleton/carousel.js";
 
 const SHRINK_RANGE = 0.08;
 
-export function setupHeroFocus(
-  api: CarouselAPI,
-  root: HTMLElement,
-): () => void {
+export function setupHeroFocus(api: CarouselAPI, root: HTMLElement): () => void {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     return () => {};
   }
 
-  const slideNodes = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-slide]"),
-  );
+  const slideNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
   const n = slideNodes.length;
   if (n <= 1) return () => {};
 

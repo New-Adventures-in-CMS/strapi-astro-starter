@@ -8,9 +8,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Carousel — basic navigation", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("carousel renders with first slide selected (selectedIndex = 0)", async ({
-    page,
-  }) => {
+  test("carousel renders with first slide selected (selectedIndex = 0)", async ({ page }) => {
     await page.goto("/dev/carousel");
     const root = page.locator("[data-demo-carousel]");
     await expect(root).toBeVisible();
@@ -106,9 +104,7 @@ test.describe("Carousel — basic navigation", () => {
     await expect(dots.first()).toHaveAttribute("aria-current", "true");
   });
 
-  test("carousel root has role=region and aria-roledescription=carousel", async ({
-    page,
-  }) => {
+  test("carousel root has role=region and aria-roledescription=carousel", async ({ page }) => {
     await page.goto("/dev/carousel");
     const root = page.locator("[data-demo-carousel]");
     await expect(root).toHaveAttribute("role", "region");
@@ -128,9 +124,7 @@ test.describe("Carousel — basic navigation", () => {
 test.describe("Carousel — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("autoplay off with prefers-reduced-motion: reduce (no slide advance)", async ({
-    page,
-  }) => {
+  test("autoplay off with prefers-reduced-motion: reduce (no slide advance)", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/carousel");
     const root = page.locator("[data-demo-carousel]");
@@ -216,9 +210,7 @@ test.describe("Carousel fade — navigation (crossfade)", () => {
 test.describe("Carousel fade — slides stacked (same boundingBox)", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("active slide always appears at the same position after navigation", async ({
-    page,
-  }) => {
+  test("active slide always appears at the same position after navigation", async ({ page }) => {
     await page.goto("/dev/carousel");
     const root = page.locator("[data-demo-carousel-fade]");
     await expect(root).toBeVisible();

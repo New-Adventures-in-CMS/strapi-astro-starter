@@ -32,14 +32,7 @@ export type HeroAlign =
   | "bottom-right";
 
 export type HeroStyle =
-  | "fade"
-  | "slide"
-  | "drift"
-  | "focus"
-  | "dim"
-  | "parallax"
-  | "tilt"
-  | "ken-burns";
+  "fade" | "slide" | "drift" | "focus" | "dim" | "parallax" | "tilt" | "ken-burns";
 
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
 export interface HeroSlide {
@@ -110,8 +103,7 @@ export interface BlockCarousel {
   autoplay?: boolean | null;
 }
 
-export type PageBlock =
-  BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;
+export type PageBlock = BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
 import type { SectionTone } from "@/components/layout/variants";

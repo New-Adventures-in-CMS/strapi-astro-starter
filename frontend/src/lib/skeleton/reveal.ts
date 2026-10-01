@@ -9,12 +9,10 @@ const REVEAL_MARGIN = "0px 0px -12% 0px";
  * Non anima nulla direttamente — tocca solo classe .is-revealed e transition-delay.
  */
 export function initReveal(scope: ParentNode = document): () => void {
-  const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-  const nodes = Array.from(
-    scope.querySelectorAll<HTMLElement>("[data-reveal]"),
-  ).filter((n) => !n.hasAttribute("data-reveal-init"));
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nodes = Array.from(scope.querySelectorAll<HTMLElement>("[data-reveal]")).filter(
+    (n) => !n.hasAttribute("data-reveal-init"),
+  );
   const cleanups: Array<() => void> = [];
 
   nodes.forEach((node) => {

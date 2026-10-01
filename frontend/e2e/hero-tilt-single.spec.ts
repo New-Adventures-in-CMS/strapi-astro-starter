@@ -29,10 +29,7 @@ test.describe("Hero tilt — single slide (static path)", () => {
     await expect(root).toBeVisible();
 
     const box = await root.boundingBox();
-    await page.mouse.move(
-      box!.x + box!.width * 0.2,
-      box!.y + box!.height * 0.2,
-    );
+    await page.mouse.move(box!.x + box!.width * 0.2, box!.y + box!.height * 0.2);
     await page.waitForTimeout(80);
 
     const check = await page.evaluate(() => {
@@ -65,18 +62,12 @@ test.describe("Hero tilt single — reduced motion", () => {
     await expect(root).toBeVisible();
 
     const box = await root.boundingBox();
-    await page.mouse.move(
-      box!.x + box!.width * 0.2,
-      box!.y + box!.height * 0.2,
-    );
+    await page.mouse.move(box!.x + box!.width * 0.2, box!.y + box!.height * 0.2);
     await page.waitForTimeout(80);
 
     const transforms = await page.evaluate(() => {
       const s = document.querySelector('[data-hero-section="tilt-single"]');
-      const nodes =
-        s?.querySelectorAll<HTMLElement>(
-          "[data-hero-media],[data-hero-content]",
-        ) ?? [];
+      const nodes = s?.querySelectorAll<HTMLElement>("[data-hero-media],[data-hero-content]") ?? [];
       return Array.from(nodes).map((n) => n.style.transform);
     });
 

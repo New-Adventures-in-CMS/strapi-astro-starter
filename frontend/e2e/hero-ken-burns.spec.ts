@@ -10,9 +10,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Hero ken-burns — multi-slide", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("media present and animation running on active slide", async ({
-    page,
-  }) => {
+  test("media present and animation running on active slide", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
       .locator('[data-hero-section="ken-burns"]')
@@ -25,8 +23,7 @@ test.describe("Hero ken-burns — multi-slide", () => {
     await page.waitForTimeout(120);
     const animation = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="ken-burns"]');
-      const medias =
-        section?.querySelectorAll<HTMLElement>("[data-hero-media]");
+      const medias = section?.querySelectorAll<HTMLElement>("[data-hero-media]");
       return Array.from(medias ?? []).map((m) => m.style.animation);
     });
     const active = animation.filter((a) => a.includes("hero-ken-burns"));
@@ -49,8 +46,7 @@ test.describe("Hero ken-burns — multi-slide", () => {
 
     const animation = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="ken-burns"]');
-      const medias =
-        section?.querySelectorAll<HTMLElement>("[data-hero-media]");
+      const medias = section?.querySelectorAll<HTMLElement>("[data-hero-media]");
       return Array.from(medias ?? []).map((m) => m.style.animation);
     });
     const active = animation.filter((a) => a.includes("hero-ken-burns"));
@@ -61,9 +57,7 @@ test.describe("Hero ken-burns — multi-slide", () => {
 test.describe("Hero ken-burns — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("no animation applied with prefers-reduced-motion: reduce", async ({
-    page,
-  }) => {
+  test("no animation applied with prefers-reduced-motion: reduce", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/hero");
     const root = page
@@ -76,8 +70,7 @@ test.describe("Hero ken-burns — reduced motion", () => {
 
     const animation = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="ken-burns"]');
-      const medias =
-        section?.querySelectorAll<HTMLElement>("[data-hero-media]");
+      const medias = section?.querySelectorAll<HTMLElement>("[data-hero-media]");
       return Array.from(medias ?? []).map((m) => m.style.animation);
     });
     for (const a of animation) {

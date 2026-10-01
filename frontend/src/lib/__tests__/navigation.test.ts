@@ -42,12 +42,7 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 describe("FOOTER_COLUMNS", () => {
   it("exports canonical column order", () => {
-    expect(FOOTER_COLUMNS).toEqual([
-      "Prodotto",
-      "Azienda",
-      "Supporto",
-      "Legale",
-    ]);
+    expect(FOOTER_COLUMNS).toEqual(["Prodotto", "Azienda", "Supporto", "Legale"]);
   });
 });
 
@@ -56,9 +51,7 @@ describe("FOOTER_COLUMNS", () => {
 // ---------------------------------------------------------------------------
 describe("resolveHref — via getHeaderNav", () => {
   it("uses externalUrl when present (relative)", async () => {
-    mockFind.mockResolvedValue(
-      apiResponse([makeItem({ externalUrl: "/servizi/a" })]),
-    );
+    mockFind.mockResolvedValue(apiResponse([makeItem({ externalUrl: "/servizi/a" })]));
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/servizi/a");
     expect(nav[0].external).toBe(false);
@@ -75,27 +68,21 @@ describe("resolveHref — via getHeaderNav", () => {
 
   it("externalUrl takes precedence over page", async () => {
     mockFind.mockResolvedValue(
-      apiResponse([
-        makeItem({ externalUrl: "/override", page: { slug: "home" } }),
-      ]),
+      apiResponse([makeItem({ externalUrl: "/override", page: { slug: "home" } })]),
     );
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/override");
   });
 
   it("uses /slug when page present and no externalUrl", async () => {
-    mockFind.mockResolvedValue(
-      apiResponse([makeItem({ page: { slug: "about" } })]),
-    );
+    mockFind.mockResolvedValue(apiResponse([makeItem({ page: { slug: "about" } })]));
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/about");
     expect(nav[0].external).toBe(false);
   });
 
   it("maps home slug to /", async () => {
-    mockFind.mockResolvedValue(
-      apiResponse([makeItem({ page: { slug: "home" } })]),
-    );
+    mockFind.mockResolvedValue(apiResponse([makeItem({ page: { slug: "home" } })]));
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/");
   });
@@ -269,9 +256,7 @@ describe("getFooterNav", () => {
   });
 
   it("returns static fallback when no item has footerColumn", async () => {
-    mockFind.mockResolvedValue(
-      apiResponse([makeItem({ area: "header" as const })]),
-    );
+    mockFind.mockResolvedValue(apiResponse([makeItem({ area: "header" as const })]));
     expect(await getFooterNav()).toEqual({ columns: site.footer.columns });
   });
 

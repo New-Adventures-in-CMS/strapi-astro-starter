@@ -43,17 +43,14 @@ export default factories.createCoreController(
         return ctx.badRequest(errori.join(", "));
       }
 
-      await strapi.entityService.create(
-        "api::form-submission.form-submission",
-        {
-          data: {
-            form: form.id as number,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            dati: data as any,
-            letto: false,
-          },
+      await strapi.entityService.create("api::form-submission.form-submission", {
+        data: {
+          form: form.id as number,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          dati: data as any,
+          letto: false,
         },
-      );
+      });
 
       const emailTo = form.emailDestinatario as string | undefined;
       if (emailTo) {

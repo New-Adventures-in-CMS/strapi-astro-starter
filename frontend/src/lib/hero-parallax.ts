@@ -11,16 +11,10 @@ const TEXT_DELAY = 90; // ms, micro-ritardo del testo
 const DUR = 600; // ms
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
-export function setupHeroParallax(
-  api: CarouselAPI,
-  root: HTMLElement,
-): () => void {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return () => {};
+export function setupHeroParallax(api: CarouselAPI, root: HTMLElement): () => void {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
 
-  const slideNodes = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-slide]"),
-  );
+  const slideNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
   const n = slideNodes.length;
   if (n === 0) return () => {};
 

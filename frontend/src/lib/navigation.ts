@@ -1,12 +1,7 @@
 import { strapiFind } from "@/lib/strapi";
 import { site, type NavItem } from "@/config/site";
 
-export const FOOTER_COLUMNS = [
-  "Prodotto",
-  "Azienda",
-  "Supporto",
-  "Legale",
-] as const;
+export const FOOTER_COLUMNS = ["Prodotto", "Azienda", "Supporto", "Legale"] as const;
 
 export interface MenuItem {
   id: number;
@@ -51,10 +46,7 @@ async function fetchMenuItems(): Promise<MenuItem[] | null> {
   }
 }
 
-function buildTree(
-  items: MenuItem[],
-  filterArea: (a: MenuItem["area"]) => boolean,
-): NavItem[] {
+function buildTree(items: MenuItem[], filterArea: (a: MenuItem["area"]) => boolean): NavItem[] {
   const relevant = items.filter((i) => filterArea(i.area));
   const roots = relevant.filter((i) => !i.parent);
   const childrenOf = (docId: string): NavItem[] =>

@@ -10,10 +10,7 @@ test.describe("Hero strategy — fade", () => {
 
   test("fade hero has no [data-parallax-layer] elements", async ({ page }) => {
     await page.goto("/dev/hero");
-    const root = page
-      .locator('[data-hero-section="fade"]')
-      .locator("[data-hero-carousel]")
-      .first();
+    const root = page.locator('[data-hero-section="fade"]').locator("[data-hero-carousel]").first();
     await expect(root).toBeVisible();
     await expect(root.locator("[data-parallax-layer]")).toHaveCount(0);
   });
@@ -33,9 +30,7 @@ test.describe("Hero strategy — fade", () => {
     await expect(dots.nth(1)).toHaveAttribute("aria-current", "true");
   });
 
-  test("fade drag does not advance slides (watchDrag disabled)", async ({
-    page,
-  }) => {
+  test("fade drag does not advance slides (watchDrag disabled)", async ({ page }) => {
     await page.goto("/dev/hero");
     const section = page.locator('[data-hero-section="fade"]');
     const root = section.locator("[data-hero-carousel]").first();

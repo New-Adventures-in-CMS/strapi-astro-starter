@@ -12,15 +12,10 @@ test.describe("Header layout toggles — data attributes and fallback", () => {
     await page.goto("/");
     const header = page.locator("header").first();
     await expect(header).toHaveAttribute("data-header-width", /^(full|contained)$/);
-    await expect(header).toHaveAttribute(
-      "data-submenu-layout",
-      /^(full-bleed|dropdown)$/,
-    );
+    await expect(header).toHaveAttribute("data-submenu-layout", /^(full-bleed|dropdown)$/);
   });
 
-  test("fallback path uses site.header defaults (full + full-bleed)", async ({
-    page,
-  }) => {
+  test("fallback path uses site.header defaults (full + full-bleed)", async ({ page }) => {
     await page.goto("/");
     const header = page.locator("header").first();
     await expect(header).toHaveAttribute("data-header-width", "full");
@@ -43,9 +38,7 @@ test.describe("Footer width toggle — data attribute, fallback, inset parity", 
     await expect(footer).toHaveAttribute("data-footer-width", "full");
   });
 
-  test("full footer inset matches full header inset (same --page-margin-lg)", async ({
-    page,
-  }) => {
+  test("full footer inset matches full header inset (same --page-margin-lg)", async ({ page }) => {
     await page.goto("/");
     const header = page.locator("header").first();
     const footer = page.locator("footer").first();

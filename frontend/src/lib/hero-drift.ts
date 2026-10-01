@@ -2,17 +2,12 @@ import type { CarouselAPI } from "@skeleton/carousel.js";
 
 const DRIFT_FACTOR = 0.15;
 
-export function setupHeroDrift(
-  api: CarouselAPI,
-  root: HTMLElement,
-): () => void {
+export function setupHeroDrift(api: CarouselAPI, root: HTMLElement): () => void {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     return () => {};
   }
 
-  const slideNodes = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-slide]"),
-  );
+  const slideNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
   const n = slideNodes.length;
   if (n <= 1) return () => {};
 

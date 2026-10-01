@@ -28,12 +28,7 @@
     },
     "blocks": {
       "type": "dynamiczone",
-      "components": [
-        "blocks.hero",
-        "blocks.rich-text",
-        "blocks.image-text",
-        "blocks.card-grid"
-      ]
+      "components": ["blocks.hero", "blocks.rich-text", "blocks.image-text", "blocks.card-grid"]
     }
   }
 }

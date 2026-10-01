@@ -40,13 +40,13 @@ const {
 } = Astro.props;
 
 const HERO_PRESETS: Record<HeroStyle, { transition: HeroTransition; effect: HeroEffect }> = {
-  "fade": { transition: "fade", effect: "none" },
-  "slide": { transition: "slide", effect: "none" },
-  "drift": { transition: "slide", effect: "drift" },
-  "focus": { transition: "slide", effect: "focus" },
-  "dim": { transition: "slide", effect: "dim" },
-  "parallax": { transition: "fade", effect: "parallax" },
-  "tilt": { transition: "fade", effect: "tilt" },
+  fade: { transition: "fade", effect: "none" },
+  slide: { transition: "slide", effect: "none" },
+  drift: { transition: "slide", effect: "drift" },
+  focus: { transition: "slide", effect: "focus" },
+  dim: { transition: "slide", effect: "dim" },
+  parallax: { transition: "fade", effect: "parallax" },
+  tilt: { transition: "fade", effect: "tilt" },
   "ken-burns": { transition: "fade", effect: "ken-burns" },
 };
 const presetPair = HERO_PRESETS[heroStyle ?? site.heroStyle];
@@ -55,9 +55,7 @@ const requestedEffect: HeroEffect = effect ?? presetPair.effect;
 const blockAlign: HeroAlign = align ?? site.heroAlign;
 const SCROLL_EFFECTS: HeroEffect[] = ["drift", "focus", "dim"]; // pattern A → richiedono slide
 const heroEffect: HeroEffect =
-  SCROLL_EFFECTS.includes(requestedEffect) && heroTransition !== "slide"
-    ? "none"
-    : requestedEffect;
+  SCROLL_EFFECTS.includes(requestedEffect) && heroTransition !== "slide" ? "none" : requestedEffect;
 if (import.meta.env.DEV && heroEffect !== requestedEffect) {
   console.warn(
     `[BlockHero] effect "${requestedEffect}" richiede transition "slide" (attuale "${heroTransition}") → degradato a "none".`,
@@ -109,7 +107,10 @@ function slideImageUrl(s: HeroSlide) {
             const a: HeroAlign = slide.align ?? blockAlign;
             const hc = heroContent({ align: a });
             return (
-              <div class={`relative flex-[0_0_100%] h-full flex ${hc.wrap()} overflow-hidden`} data-hero-slide>
+              <div
+                class={`relative flex-[0_0_100%] h-full flex ${hc.wrap()} overflow-hidden`}
+                data-hero-slide
+              >
                 {imgUrl ? (
                   <>
                     {isDrift ? (
@@ -135,9 +136,16 @@ function slideImageUrl(s: HeroSlide) {
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
                   </div>
                 ) : (
-                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" data-hero-media />
+                  <div
+                    class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+                    data-hero-media
+                  />
                 )}
-                <Container width="default" class={`relative z-10 py-24 ${hc.text()}`} data-hero-content>
+                <Container
+                  width="default"
+                  class={`relative z-10 py-24 ${hc.text()}`}
+                  data-hero-content
+                >
                   {slide.eyebrow && (
                     <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
                       {slide.eyebrow}
@@ -183,8 +191,19 @@ function slideImageUrl(s: HeroSlide) {
         data-carousel-prev
         type="button"
       >
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        <svg
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
       </button>
 
@@ -194,7 +213,13 @@ function slideImageUrl(s: HeroSlide) {
         data-carousel-next
         type="button"
       >
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -219,7 +244,10 @@ function slideImageUrl(s: HeroSlide) {
           <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
         </>
       ) : (
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" data-hero-media />
+        <div
+          class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+          data-hero-media
+        />
       )}
 
       <Container width="default" class={`relative z-10 ${staticHC.text()}`} data-hero-content>
@@ -260,7 +288,11 @@ function slideImageUrl(s: HeroSlide) {
   )}
 
   {immersive && (
-    <div id="header-overlay-sentinel" class="pointer-events-none absolute bottom-0 h-px w-full z-30" aria-hidden="true"></div>
+    <div
+      id="header-overlay-sentinel"
+      class="pointer-events-none absolute bottom-0 h-px w-full z-30"
+      aria-hidden="true"
+    ></div>
   )}
 </Section>
 
@@ -294,7 +326,9 @@ function slideImageUrl(s: HeroSlide) {
     opacity: 0.4;
     border: none;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
   [data-hero-carousel] [data-carousel-dots] button[data-active] {
     opacity: 1;
@@ -326,7 +360,7 @@ function slideImageUrl(s: HeroSlide) {
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
     const heroTransition = (root.dataset.heroTransition ?? "fade") as "slide" | "fade";
     const heroEffect = (root.dataset.heroEffect ?? "none") as
-      | "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
+      "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
     const api = createCarousel(root, {
       loop: true,

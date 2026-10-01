@@ -20,9 +20,7 @@ test.describe("Hero drift — multi-slide", () => {
     await expect(layers).toHaveCount(3);
   });
 
-  test("drift layer acquires non-identity transform during drag", async ({
-    page,
-  }) => {
+  test("drift layer acquires non-identity transform during drag", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
       .locator('[data-hero-section="drift"]')
@@ -43,14 +41,8 @@ test.describe("Hero drift — multi-slide", () => {
 
     const hasNonIdentity = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="drift"]');
-      const layers =
-        section?.querySelectorAll<HTMLElement>("[data-parallax-layer]") ?? [];
-      const identity = new Set([
-        "",
-        "none",
-        "translate3d(0, 0, 0)",
-        "translate3d(0%, 0, 0)",
-      ]);
+      const layers = section?.querySelectorAll<HTMLElement>("[data-parallax-layer]") ?? [];
+      const identity = new Set(["", "none", "translate3d(0, 0, 0)", "translate3d(0%, 0, 0)"]);
       for (const layer of layers) {
         if (!identity.has(layer.style.transform)) return true;
       }
@@ -72,10 +64,7 @@ test.describe("Hero drift — multi-slide", () => {
     await expect(root).toBeVisible();
 
     // Capture initial layer position
-    const layerBefore = await root
-      .locator("[data-parallax-layer]")
-      .first()
-      .boundingBox();
+    const layerBefore = await root.locator("[data-parallax-layer]").first().boundingBox();
 
     const box = await root.boundingBox();
     const cx = box!.x + box!.width / 2;
@@ -86,10 +75,7 @@ test.describe("Hero drift — multi-slide", () => {
     await page.mouse.move(cx - 200, cy, { steps: 8 });
     await page.waitForTimeout(80);
 
-    const layerDuring = await root
-      .locator("[data-parallax-layer]")
-      .first()
-      .boundingBox();
+    const layerDuring = await root.locator("[data-parallax-layer]").first().boundingBox();
 
     await page.mouse.up();
 
@@ -106,9 +92,7 @@ test.describe("Hero drift — multi-slide", () => {
 test.describe("Hero drift — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("no drift transform applied with prefers-reduced-motion: reduce", async ({
-    page,
-  }) => {
+  test("no drift transform applied with prefers-reduced-motion: reduce", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/hero");
     const root = page
@@ -128,19 +112,14 @@ test.describe("Hero drift — reduced motion", () => {
 
     const transforms = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="drift"]');
-      return Array.from(
-        section?.querySelectorAll<HTMLElement>("[data-parallax-layer]") ?? [],
-      ).map((l) => l.style.transform);
+      return Array.from(section?.querySelectorAll<HTMLElement>("[data-parallax-layer]") ?? []).map(
+        (l) => l.style.transform,
+      );
     });
 
     await page.mouse.up();
 
-    const identity = new Set([
-      "",
-      "none",
-      "translate3d(0, 0, 0)",
-      "translate3d(0%, 0, 0)",
-    ]);
+    const identity = new Set(["", "none", "translate3d(0, 0, 0)", "translate3d(0%, 0, 0)"]);
     for (const t of transforms) {
       expect(identity.has(t)).toBe(true);
     }

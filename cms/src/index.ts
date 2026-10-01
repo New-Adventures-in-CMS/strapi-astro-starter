@@ -242,8 +242,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
             cards: [
               {
                 title: "Clone and run",
-                description:
-                  "install:all, dev, done. No manual env plumbing, no missing steps.",
+                description: "install:all, dev, done. No manual env plumbing, no missing steps.",
                 image: cardImgs.clone?.id ?? undefined,
               },
               {
@@ -328,9 +327,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
       status: "published",
     });
 
-    strapi.log.info(
-      "[seed] Seeded demo pages: home, about, services, contacts",
-    );
+    strapi.log.info("[seed] Seeded demo pages: home, about, services, contacts");
   } catch (err) {
     strapi.log.error("[seed] Seeding demo pages failed: " + String(err));
   }
@@ -338,25 +335,16 @@ async function seedDemoPages(strapi: Core.Strapi) {
 
 async function seedMenuItems(strapi: Core.Strapi) {
   try {
-    const count = await strapi
-      .documents("api::menu-item.menu-item" as any)
-      .count({});
+    const count = await strapi.documents("api::menu-item.menu-item" as any).count({});
     if (count > 0) return;
 
-    const pages = await strapi
-      .documents("api::page.page")
-      .findMany({ status: "published" });
+    const pages = await strapi.documents("api::page.page").findMany({ status: "published" });
     const bySlug: Record<string, { documentId: string }> = Object.fromEntries(
-      pages.map((p) => [
-        p.slug as string,
-        { documentId: p.documentId as string },
-      ]),
+      pages.map((p) => [p.slug as string, { documentId: p.documentId as string }]),
     );
 
     const connectPage = (slug: string) =>
-      bySlug[slug]
-        ? { connect: [{ documentId: bySlug[slug].documentId }] }
-        : undefined;
+      bySlug[slug] ? { connect: [{ documentId: bySlug[slug].documentId }] } : undefined;
 
     // Root items
     await strapi.documents("api::menu-item.menu-item" as any).create({
@@ -379,17 +367,15 @@ async function seedMenuItems(strapi: Core.Strapi) {
       status: "published",
     });
 
-    const servizi = await strapi
-      .documents("api::menu-item.menu-item" as any)
-      .create({
-        data: {
-          label: "Servizi",
-          area: "header",
-          order: 3,
-          page: connectPage("services"),
-        },
-        status: "published",
-      });
+    const servizi = await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Servizi",
+        area: "header",
+        order: 3,
+        page: connectPage("services"),
+      },
+      status: "published",
+    });
 
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
@@ -476,9 +462,7 @@ export default {
       return;
     }
 
-    const permissionRepo = strapi.db.query(
-      "plugin::users-permissions.permission",
-    );
+    const permissionRepo = strapi.db.query("plugin::users-permissions.permission");
 
     const desired: string[] = [];
 
@@ -504,15 +488,11 @@ export default {
     }
 
     if (created > 0) {
-      strapi.log.info(
-        `[bootstrap] Aggiunti ${created} permessi al ruolo Public`,
-      );
+      strapi.log.info(`[bootstrap] Aggiunti ${created} permessi al ruolo Public`);
     }
 
     // Seed default pages if none exist
-    const pageCount = await strapi
-      .documents("api::page.page")
-      .count({ status: "published" });
+    const pageCount = await strapi.documents("api::page.page").count({ status: "published" });
     if (pageCount === 0) {
       await seedDemoPages(strapi);
     }
@@ -524,9 +504,7 @@ export default {
 
 async function seedSiteSetting(strapi: Core.Strapi) {
   try {
-    const existing = await strapi
-      .documents("api::site-setting.site-setting" as any)
-      .findFirst({});
+    const existing = await strapi.documents("api::site-setting.site-setting" as any).findFirst({});
     if (existing) return;
     await strapi.documents("api::site-setting.site-setting" as any).create({
       data: {
@@ -536,7 +514,9 @@ async function seedSiteSetting(strapi: Core.Strapi) {
         footerTone: "dark",
       } as any,
     });
-    strapi.log.info("[bootstrap] Seeded site-setting con default (header full + full-bleed + footer full/dark)");
+    strapi.log.info(
+      "[bootstrap] Seeded site-setting con default (header full + full-bleed + footer full/dark)",
+    );
   } catch (err) {
     strapi.log.warn("[bootstrap] Seed site-setting fallito: " + String(err));
   }

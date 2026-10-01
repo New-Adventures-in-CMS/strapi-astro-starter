@@ -27,9 +27,7 @@ test.describe("Hero dim — multi-slide", () => {
     await expect(media).toHaveCount(3);
   });
 
-  test("in-view off-center media acquires brightness(<1) during drag", async ({
-    page,
-  }) => {
+  test("in-view off-center media acquires brightness(<1) during drag", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page.locator(SECTION).locator("[data-hero-carousel]").first();
     await root.scrollIntoViewIfNeeded();
@@ -46,8 +44,7 @@ test.describe("Hero dim — multi-slide", () => {
 
     const hasDim = await page.evaluate((sel) => {
       const section = document.querySelector(sel);
-      const nodes =
-        section?.querySelectorAll<HTMLElement>("[data-hero-media]") ?? [];
+      const nodes = section?.querySelectorAll<HTMLElement>("[data-hero-media]") ?? [];
       for (const el of nodes) {
         const inline = el.style.filter;
         if (inline) {
@@ -71,9 +68,7 @@ test.describe("Hero dim — multi-slide", () => {
 test.describe("Hero dim — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("no filter applied with prefers-reduced-motion: reduce", async ({
-    page,
-  }) => {
+  test("no filter applied with prefers-reduced-motion: reduce", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/hero");
     const root = page.locator(SECTION).locator("[data-hero-carousel]").first();
@@ -91,9 +86,9 @@ test.describe("Hero dim — reduced motion", () => {
 
     const filters = await page.evaluate((sel) => {
       const section = document.querySelector(sel);
-      return Array.from(
-        section?.querySelectorAll<HTMLElement>("[data-hero-media]") ?? [],
-      ).map((el) => el.style.filter);
+      return Array.from(section?.querySelectorAll<HTMLElement>("[data-hero-media]") ?? []).map(
+        (el) => el.style.filter,
+      );
     }, SECTION);
 
     await page.mouse.up();
@@ -114,9 +109,9 @@ test.describe("Hero dim — single-slide degradation", () => {
     await expect(wrapper).toBeVisible();
 
     const filters = await wrapper.evaluate((el) => {
-      return Array.from(
-        el.querySelectorAll<HTMLElement>("[data-hero-media]"),
-      ).map((n) => n.style.filter);
+      return Array.from(el.querySelectorAll<HTMLElement>("[data-hero-media]")).map(
+        (n) => n.style.filter,
+      );
     });
 
     for (const f of filters) {

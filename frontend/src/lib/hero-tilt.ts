@@ -3,16 +3,11 @@ const BG_SHIFT = 20; // px
 const TEXT_SHIFT = 6; // px
 
 export function setupHeroTilt(root: HTMLElement): () => void {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return () => {};
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
   if (!window.matchMedia("(pointer: fine)").matches) return () => {}; // touch → statico
 
-  const media = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-media]"),
-  );
-  const content = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-content]"),
-  );
+  const media = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-media]"));
+  const content = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-content]"));
   if (media.length === 0) return () => {};
 
   const all = [...media, ...content];

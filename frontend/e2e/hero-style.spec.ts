@@ -22,9 +22,7 @@ test.describe("Hero style preset — mappa heroStyle → transition+effect", () 
     await expect(root).toHaveAttribute("data-hero-effect", "parallax");
   });
 
-  test("default (nessun heroStyle/transition/effect) → fade + none", async ({
-    page,
-  }) => {
+  test("default (nessun heroStyle/transition/effect) → fade + none", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
       .locator('[data-hero-section="preset-default"]')

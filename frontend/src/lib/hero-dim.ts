@@ -7,9 +7,7 @@ export function setupHeroDim(api: CarouselAPI, root: HTMLElement): () => void {
     return () => {};
   }
 
-  const slideNodes = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-slide]"),
-  );
+  const slideNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
   const n = slideNodes.length;
   if (n <= 1) return () => {};
 

@@ -163,8 +163,7 @@ Due famiglie self-hosted via Astro Fonts API — nessuna richiesta CDN a runtime
 
 ```css
 /* starwind.css → @theme inline */
---font-sans:
-  var(--font-geist), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+--font-sans: var(--font-geist), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 ```
 
 ### Scala tipografica fluida
@@ -687,12 +686,7 @@ Priorità (primo valorizzato vince):
 `getFooterNav()` — voci con `area === "footer"` o `"both"` **e** `footerColumn` valorizzato, raggruppate per colonna nell'ordine canonico:
 
 ```ts
-export const FOOTER_COLUMNS = [
-  "Prodotto",
-  "Azienda",
-  "Supporto",
-  "Legale",
-] as const;
+export const FOOTER_COLUMNS = ["Prodotto", "Azienda", "Supporto", "Legale"] as const;
 ```
 
 Colonne senza voci vengono omesse. Un item con `area === "both"` e `footerColumn` valorizzato appare sia in header che in footer.

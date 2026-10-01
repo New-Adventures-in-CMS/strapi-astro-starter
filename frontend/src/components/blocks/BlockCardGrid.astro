@@ -1,7 +1,13 @@
 ---
 import type { SharedCard } from "@/types";
 import { Section, Container } from "@/components/layout";
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/starwind/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/starwind/card";
 import { Button } from "@/components/starwind/button";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { strapiMediaUrl } from "@/lib/strapi";
@@ -36,9 +42,7 @@ const showIndex = cards.length >= 3;
         const imageUrl = card.image ? strapiMediaUrl(card.image.url) : null;
         const idx = String(i + 1).padStart(2, "0");
         return (
-          <Card
-            class={onDark ? "bg-background/80 border-border/50" : ""}
-          >
+          <Card class={onDark ? "bg-background/80 border-border/50" : ""}>
             {imageUrl && (
               <img
                 src={imageUrl}
@@ -50,14 +54,10 @@ const showIndex = cards.length >= 3;
             )}
             <CardHeader>
               {showIndex && (
-                <p class="text-xs tracking-[0.2em] text-muted-foreground mb-2">
-                  ({idx})
-                </p>
+                <p class="text-xs tracking-[0.2em] text-muted-foreground mb-2">({idx})</p>
               )}
               <CardTitle>{card.title}</CardTitle>
-              {card.description && (
-                <CardDescription>{card.description}</CardDescription>
-              )}
+              {card.description && <CardDescription>{card.description}</CardDescription>}
             </CardHeader>
             {card.link_url && card.link_text && (
               <CardFooter>

@@ -40,19 +40,13 @@ const targetPath = join(ROOT, targetRelative);
 // 3. Clone into temp dir
 const tmpDir = mkdtempSync(join(tmpdir(), "tokens-sync-"));
 try {
-  const clone = spawnSync(
-    "git",
-    ["clone", "--depth", "1", "--branch", ref, source, tmpDir],
-    { encoding: "utf8" },
-  );
+  const clone = spawnSync("git", ["clone", "--depth", "1", "--branch", ref, source, tmpDir], {
+    encoding: "utf8",
+  });
 
   if (clone.status !== 0) {
     const stderr = (clone.stderr || "") + (clone.stdout || "");
-    if (
-      /not found|could not find remote branch|reference is not a tree/i.test(
-        stderr,
-      )
-    ) {
+    if (/not found|could not find remote branch|reference is not a tree/i.test(stderr)) {
       const ls = spawnSync("git", ["ls-remote", "--tags", source], {
         encoding: "utf8",
       });
@@ -61,11 +55,7 @@ try {
       console.error(ls.stdout || ls.stderr || "(could not list tags)");
       process.exit(1);
     }
-    if (
-      /authentication failed|repository not found|access denied|could not read/i.test(
-        stderr,
-      )
-    ) {
+    if (/authentication failed|repository not found|access denied|could not read/i.test(stderr)) {
       console.error(`Error: cannot access ${source}.`);
       console.error(
         "Serve accesso a NSP-Design-System-Tokens; questo comando è per il manutentore, non per il clone-and-run.",
@@ -78,9 +68,7 @@ try {
   }
 
   // 4. Read color.json
-  const colorJson = JSON.parse(
-    readFileSync(join(tmpDir, "tokens", "core", "color.json"), "utf8"),
-  );
+  const colorJson = JSON.parse(readFileSync(join(tmpDir, "tokens", "core", "color.json"), "utf8"));
 
   function getModes(node) {
     return node?.["$extensions"]?.["com.figma.modes"];
@@ -98,17 +86,14 @@ try {
   const grayLight = {};
   const grayDark = {};
   for (let n = 1; n <= 12; n++) {
-    const node =
-      colorJson.color?.gray?.[n] ?? colorJson.color?.gray?.[String(n)];
+    const node = colorJson.color?.gray?.[n] ?? colorJson.color?.gray?.[String(n)];
     if (!node) {
       console.error(`Error: color.gray.${n} not found in color.json`);
       process.exit(1);
     }
     const modes = getModes(node);
     if (!modes?.light || !modes?.dark) {
-      console.error(
-        `Error: color.gray.${n} missing light/dark in $extensions["com.figma.modes"]`,
-      );
+      console.error(`Error: color.gray.${n} missing light/dark in $extensions["com.figma.modes"]`);
       process.exit(1);
     }
     grayLight[n] = modes.light;
@@ -116,10 +101,7 @@ try {
   }
 
   // Flat (single-mode) values
-  const blackAlphaA2 = mustGet(
-    "color.black-alpha.a2",
-    colorJson.color?.["black-alpha"]?.a2,
-  );
+  const blackAlphaA2 = mustGet("color.black-alpha.a2", colorJson.color?.["black-alpha"]?.a2);
   const white = mustGet("color.white", colorJson.color?.white);
   const black = mustGet("color.black", colorJson.color?.black);
   const red9Node = colorJson.color?.red?.["9"];
@@ -147,8 +129,7 @@ try {
   // 5. Build CSS blocks
   function buildLight() {
     const lines = [];
-    for (let n = 1; n <= 12; n++)
-      lines.push(`${INDENT}--gray-${n}: ${grayLight[n]};`);
+    for (let n = 1; n <= 12; n++) lines.push(`${INDENT}--gray-${n}: ${grayLight[n]};`);
     lines.push(`${INDENT}--gray-a2: ${blackAlphaA2};`);
     lines.push(`${INDENT}--white: ${white};`);
     lines.push(`${INDENT}--black: ${black};`);
@@ -160,8 +141,7 @@ try {
 
   function buildDark() {
     const lines = [];
-    for (let n = 1; n <= 12; n++)
-      lines.push(`${INDENT}--gray-${n}: ${grayDark[n]};`);
+    for (let n = 1; n <= 12; n++) lines.push(`${INDENT}--gray-${n}: ${grayDark[n]};`);
     return lines.join("\n");
   }
 
@@ -180,9 +160,7 @@ try {
     }
     const afterStart = css.indexOf("\n", startIdx) + 1; // first char after start-sentinel line
     const beforeEnd = css.lastIndexOf("\n", endIdx) + 1; // first char of end-sentinel line
-    return (
-      css.substring(0, afterStart) + content + "\n" + css.substring(beforeEnd)
-    );
+    return css.substring(0, afterStart) + content + "\n" + css.substring(beforeEnd);
   }
 
   function applySync(css) {
@@ -196,9 +174,7 @@ try {
   // G2: idempotency — applying sync again must produce identical output
   const newCss2 = applySync(newCss);
   if (newCss !== newCss2) {
-    console.error(
-      "STOP: G2 — splice is not idempotent; second pass produces a diff.",
-    );
+    console.error("STOP: G2 — splice is not idempotent; second pass produces a diff.");
     process.exit(1);
   }
   console.log("G2: diff empty (idempotent)");
@@ -238,16 +214,8 @@ try {
   const writtenDark = extractRegion(writtenCss, S_DARK_START, S_DARK_END);
 
   const sourceEntries = [
-    ...Array.from({ length: 12 }, (_, i) => [
-      `gray-${i + 1}`,
-      "light",
-      grayLight[i + 1],
-    ]),
-    ...Array.from({ length: 12 }, (_, i) => [
-      `gray-${i + 1}`,
-      "dark",
-      grayDark[i + 1],
-    ]),
+    ...Array.from({ length: 12 }, (_, i) => [`gray-${i + 1}`, "light", grayLight[i + 1]]),
+    ...Array.from({ length: 12 }, (_, i) => [`gray-${i + 1}`, "dark", grayDark[i + 1]]),
     ["gray-a2", "light", blackAlphaA2],
     ["white", "light", white],
     ["black", "light", black],

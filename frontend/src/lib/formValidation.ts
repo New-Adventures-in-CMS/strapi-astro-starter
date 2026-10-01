@@ -14,10 +14,7 @@ export function validateEmail(email: string | undefined): ValidationResult {
   return { ok: true };
 }
 
-export function validateRequired(
-  value: string | undefined,
-  fieldName: string,
-): ValidationResult {
+export function validateRequired(value: string | undefined, fieldName: string): ValidationResult {
   if (!value?.trim()) return { ok: false, error: `${fieldName} obbligatorio` };
   return { ok: true };
 }

@@ -29,9 +29,12 @@ const hasBlocks = home?.blocks && home.blocks.length > 0;
 const firstBlock = home?.blocks?.[0];
 const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.immersive === true;
 ---
+
 <Layout
   title={home?.title ?? "Strapi + Astro Starter"}
-  description={home?.seo_desc ?? "Starter kit Strapi 5 + Astro 7 con Tailwind CSS v4 e Starwind UI."}
+  description={
+    home?.seo_desc ?? "Starter kit Strapi 5 + Astro 7 con Tailwind CSS v4 e Starwind UI."
+  }
   headerOverlay={headerOverlay}
 >
   {home ? (
@@ -64,12 +67,11 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
           <Badge tone={cmsError ? "warning" : "info"} appearance="soft" size="sm">
             {cmsError ? "CMS non raggiungibile" : "Home page non ancora creata"}
           </Badge>
-          <h1 class="mt-4 text-balance">
-            Strapi + Astro Starter
-          </h1>
+          <h1 class="mt-4 text-balance">Strapi + Astro Starter</h1>
           <p class="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-            Headless CMS (Strapi 5) + frontend Astro 7 con Tailwind CSS v4 e Starwind UI.
-            Clone → <code class="rounded bg-muted px-1.5 py-0.5 text-sm">install:all</code> → <code class="rounded bg-muted px-1.5 py-0.5 text-sm">dev</code> e via.
+            Headless CMS (Strapi 5) + frontend Astro 7 con Tailwind CSS v4 e Starwind UI. Clone →{" "}
+            <code class="rounded bg-muted px-1.5 py-0.5 text-sm">install:all</code> →{" "}
+            <code class="rounded bg-muted px-1.5 py-0.5 text-sm">dev</code> e via.
           </p>
         </section>
 
@@ -80,29 +82,47 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
           <CardContent>
             <ol class="mt-4 space-y-4">
               <li class="flex gap-3">
-                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">1</span>
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                  1
+                </span>
                 <div>
                   <p class="font-medium text-foreground">Avvia Strapi</p>
                   <p class="text-sm text-muted-foreground">
-                    Se stai leggendo questa pagina il frontend gira. Manca il CMS: <code class="rounded bg-muted px-1.5 py-0.5 text-sm">npm run dev</code> dalla root li avvia entrambi.
+                    Se stai leggendo questa pagina il frontend gira. Manca il CMS:{" "}
+                    <code class="rounded bg-muted px-1.5 py-0.5 text-sm">npm run dev</code> dalla
+                    root li avvia entrambi.
                   </p>
                 </div>
               </li>
               <li class="flex gap-3">
-                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">2</span>
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                  2
+                </span>
                 <div>
                   <p class="font-medium text-foreground">Crea l'account admin</p>
                   <p class="text-sm text-muted-foreground">
-                    Vai su <a class="text-primary underline hover:text-primary/80" href="http://localhost:1337/admin">localhost:1337/admin</a> e registra email + password.
+                    Vai su{" "}
+                    <a
+                      class="text-primary underline hover:text-primary/80"
+                      href="http://localhost:1337/admin"
+                    >
+                      localhost:1337/admin
+                    </a>{" "}
+                    e registra email + password.
                   </p>
                 </div>
               </li>
               <li class="flex gap-3">
-                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">3</span>
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+                  3
+                </span>
                 <div>
                   <p class="font-medium text-foreground">Crea una pagina "home"</p>
                   <p class="text-sm text-muted-foreground">
-                    Content Manager → Page → New entry. Slug <code class="rounded bg-muted px-1.5 py-0.5 text-sm">home</code>, compila <code class="rounded bg-muted px-1.5 py-0.5 text-sm">body</code> in Markdown, <strong>Publish</strong>. Ricarica questa pagina.
+                    Content Manager → Page → New entry. Slug{" "}
+                    <code class="rounded bg-muted px-1.5 py-0.5 text-sm">home</code>, compila{" "}
+                    <code class="rounded bg-muted px-1.5 py-0.5 text-sm">body</code> in Markdown,{" "}
+                    <strong>Publish</strong>. Ricarica questa pagina.
                   </p>
                 </div>
               </li>

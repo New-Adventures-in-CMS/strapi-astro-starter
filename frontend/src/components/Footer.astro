@@ -10,11 +10,7 @@ const { footerWidth, footerTone } = await getSiteSettings();
 const styles = footerWrapper({ width: footerWidth, tone: footerTone });
 ---
 
-<footer
-  class="mt-auto"
-  data-footer-width={footerWidth}
-  data-footer-tone={footerTone}
->
+<footer class="mt-auto" data-footer-width={footerWidth} data-footer-tone={footerTone}>
   <div class={styles.root()}>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
       {footer.columns.map((col) => (
@@ -28,7 +24,9 @@ const styles = footerWrapper({ width: footerWidth, tone: footerTone });
                   target={item.external ? "_blank" : undefined}
                   rel={item.external ? "noopener noreferrer" : undefined}
                   class={styles.link()}
-                >{item.label}</a>
+                >
+                  {item.label}
+                </a>
               </li>
             ))}
           </ul>

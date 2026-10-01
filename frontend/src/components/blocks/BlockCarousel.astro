@@ -31,13 +31,7 @@ const onDark = sectionTone === "dark";
 <Section tone={sectionTone} spacing="default">
   <Container width="contained">
     <div data-reveal>
-      <SectionHeader
-        eyebrow={eyebrow}
-        heading={heading}
-        lead={lead}
-        align="left"
-        onDark={onDark}
-      />
+      <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="left" onDark={onDark} />
     </div>
   </Container>
   <Container width="contained">
@@ -66,9 +60,7 @@ const onDark = sectionTone === "dark";
                   )}
                   <CardHeader>
                     <CardTitle>{card.title}</CardTitle>
-                    {card.description && (
-                      <CardDescription>{card.description}</CardDescription>
-                    )}
+                    {card.description && <CardDescription>{card.description}</CardDescription>}
                   </CardHeader>
                   {card.link_url && card.link_text && (
                     <CardFooter>
@@ -84,24 +76,24 @@ const onDark = sectionTone === "dark";
         </div>
       </div>
       <div class={cv.controls()}>
-        <button
-          class={cv.navBtn()}
-          data-carousel-prev
-          type="button"
-          aria-label="Precedente"
-        >
+        <button class={cv.navBtn()} data-carousel-prev type="button" aria-label="Precedente">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
-        <button
-          class={cv.navBtn()}
-          data-carousel-next
-          type="button"
-          aria-label="Successivo"
-        >
+        <button class={cv.navBtn()} data-carousel-next type="button" aria-label="Successivo">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </button>
         <div class={cv.dots()} data-carousel-dots></div>
@@ -132,30 +124,23 @@ const onDark = sectionTone === "dark";
 
 <script>
   import { createCarousel } from "@skeleton/carousel.js";
-  document
-    .querySelectorAll<HTMLElement>("[data-block-carousel]")
-    .forEach((root) => {
-      const prevBtn =
-        root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
-      const nextBtn =
-        root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
-      const dots =
-        root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
-      const loop = root.hasAttribute("data-loop");
-      const autoplay = root.hasAttribute("data-autoplay")
-        ? { delayMs: 5000 }
-        : undefined;
-      createCarousel(root, {
-        loop,
-        autoplay,
-        prevBtn,
-        nextBtn,
-        dots,
-        labels: {
-          prev: "Precedente",
-          next: "Successivo",
-          slide: (i) => `Slide ${i + 1}`,
-        },
-      });
+  document.querySelectorAll<HTMLElement>("[data-block-carousel]").forEach((root) => {
+    const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
+    const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
+    const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
+    const loop = root.hasAttribute("data-loop");
+    const autoplay = root.hasAttribute("data-autoplay") ? { delayMs: 5000 } : undefined;
+    createCarousel(root, {
+      loop,
+      autoplay,
+      prevBtn,
+      nextBtn,
+      dots,
+      labels: {
+        prev: "Precedente",
+        next: "Successivo",
+        slide: (i) => `Slide ${i + 1}`,
+      },
     });
+  });
 </script>

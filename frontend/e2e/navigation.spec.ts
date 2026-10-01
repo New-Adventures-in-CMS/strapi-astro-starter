@@ -136,9 +136,7 @@ test.describe("Desktop nav — banda full-bleed", () => {
 test.describe("Desktop nav — banda dismiss & focus", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("Escape closes banda and restores focus to trigger", async ({
-    page,
-  }) => {
+  test("Escape closes banda and restores focus to trigger", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -176,9 +174,7 @@ test.describe("Desktop nav — banda dismiss & focus", () => {
 test.describe("Desktop nav — banda description row", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("child link renders description as secondary line when present", async ({
-    page,
-  }) => {
+  test("child link renders description as secondary line when present", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -199,9 +195,7 @@ test.describe("Desktop nav — banda description row", () => {
 test.describe("Desktop nav — banda morph", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("only one [data-sw-nav-menu-popup] regardless of active trigger", async ({
-    page,
-  }) => {
+  test("only one [data-sw-nav-menu-popup] regardless of active trigger", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -269,9 +263,7 @@ test.describe("Mobile Sheet nav", () => {
     }
   });
 
-  test("Escape closes sheet and returns focus to hamburger", async ({
-    page,
-  }) => {
+  test("Escape closes sheet and returns focus to hamburger", async ({ page }) => {
     await page.goto("/");
     const hamburger = page.getByRole("button", {
       name: "Apri menu di navigazione",
@@ -295,13 +287,9 @@ test.describe("Mobile Sheet nav", () => {
 // ---------------------------------------------------------------------------
 
 test.describe("Layout overflow — no horizontal scroll", () => {
-  const checkNoHorizontalOverflow = async (
-    page: import("@playwright/test").Page,
-  ) =>
+  const checkNoHorizontalOverflow = async (page: import("@playwright/test").Page) =>
     page.evaluate(
-      () =>
-        document.documentElement.scrollWidth <=
-        document.documentElement.clientWidth,
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
     );
 
   for (const [width, height] of [
@@ -310,17 +298,13 @@ test.describe("Layout overflow — no horizontal scroll", () => {
     [768, 1024],
     [375, 812],
   ] as const) {
-    test(`no horizontal overflow on homepage at ${width}px`, async ({
-      page,
-    }) => {
+    test(`no horizontal overflow on homepage at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       await page.goto("/");
       expect(await checkNoHorizontalOverflow(page)).toBe(true);
     });
 
-    test(`no horizontal overflow on /esempio at ${width}px`, async ({
-      page,
-    }) => {
+    test(`no horizontal overflow on /esempio at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       await page.goto("/esempio");
       expect(await checkNoHorizontalOverflow(page)).toBe(true);
@@ -342,9 +326,7 @@ test.describe("Header v2 — auto-hide directional", () => {
     await expect(header).toHaveAttribute("data-hidden", "false");
   });
 
-  test("header hidden after scrolling down significantly (data-hidden=true)", async ({
-    page,
-  }) => {
+  test("header hidden after scrolling down significantly (data-hidden=true)", async ({ page }) => {
     await page.goto("/");
     const header = page.locator("header[data-hidden]");
 
@@ -412,9 +394,7 @@ test.describe("Header v2 — auto-hide directional", () => {
 test.describe("Header v2 — underline nav styling", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("nav trigger has animated underline on hover (pseudo-element scaleX)", async ({
-    page,
-  }) => {
+  test("nav trigger has animated underline on hover (pseudo-element scaleX)", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -436,9 +416,7 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleX).toBeGreaterThan(0.1);
   });
 
-  test("nav trigger text-decoration is none (not text-decoration underline)", async ({
-    page,
-  }) => {
+  test("nav trigger text-decoration is none (not text-decoration underline)", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -452,9 +430,7 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(styles.textDecoration).toContain("none");
   });
 
-  test("nav trigger has underline on focus via pseudo-element", async ({
-    page,
-  }) => {
+  test("nav trigger has underline on focus via pseudo-element", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -476,9 +452,7 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleX).toBeGreaterThan(0.1);
   });
 
-  test("nav trigger has underline when open via pseudo-element", async ({
-    page,
-  }) => {
+  test("nav trigger has underline when open via pseudo-element", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -502,15 +476,11 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleXOpen).toBeGreaterThan(0.1);
   });
 
-  test("active nav link has persistent underline via pseudo-element", async ({
-    page,
-  }) => {
+  test("active nav link has persistent underline via pseudo-element", async ({ page }) => {
     await page.goto("/");
 
     // Find active link (home page, so first top-level link with data-active)
-    const activeLink = page.locator(
-      "header [data-slot='navigation-menu-link'][data-active]",
-    );
+    const activeLink = page.locator("header [data-slot='navigation-menu-link'][data-active]");
 
     // There should be at least one active link on homepage
     const count = await activeLink.count();
@@ -527,9 +497,7 @@ test.describe("Header v2 — underline nav styling", () => {
     }
   });
 
-  test("nav trigger background is transparent (no hover bg)", async ({
-    page,
-  }) => {
+  test("nav trigger background is transparent (no hover bg)", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -544,21 +512,15 @@ test.describe("Header v2 — underline nav styling", () => {
 
     // Should be transparent or rgba with alpha 0 or rgb(0,0,0,0)
     const isTransparent =
-      bgColor === "rgba(0, 0, 0, 0)" ||
-      bgColor === "rgb(0, 0, 0, 0)" ||
-      bgColor === "transparent";
+      bgColor === "rgba(0, 0, 0, 0)" || bgColor === "rgb(0, 0, 0, 0)" || bgColor === "transparent";
     expect(isTransparent).toBe(true);
   });
 
-  test("nav links (not inside dropdown) have underline on hover", async ({
-    page,
-  }) => {
+  test("nav links (not inside dropdown) have underline on hover", async ({ page }) => {
     await page.goto("/");
     const link = page
       .getByRole("navigation", { name: "Navigazione principale" })
-      .locator(
-        "[data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']",
-      )
+      .locator("[data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']")
       .first();
 
     await link.hover();
@@ -584,9 +546,7 @@ test.describe("Header v2 — underline nav styling", () => {
 test.describe("Tablet nav — breakpoint lg (820×1180)", () => {
   test.use({ viewport: { width: 820, height: 1180 } });
 
-  test("hamburger is visible at 820px (below lg breakpoint)", async ({
-    page,
-  }) => {
+  test("hamburger is visible at 820px (below lg breakpoint)", async ({ page }) => {
     await page.goto("/");
     const hamburger = page.getByRole("button", {
       name: "Apri menu di navigazione",
@@ -676,9 +636,7 @@ test.describe("Header v2 — scroll-state overlay sentinel", () => {
 test.describe("Desktop nav — banda diagonal-gap fix", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("diagonal traversal from trigger to panel does not close the banda", async ({
-    page,
-  }) => {
+  test("diagonal traversal from trigger to panel does not close the banda", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -709,9 +667,7 @@ test.describe("Desktop nav — banda diagonal-gap fix", () => {
     await expect(popup).not.toHaveAttribute("hidden");
   });
 
-  test("banda top edge coincides (±1px) with header bottom edge", async ({
-    page,
-  }) => {
+  test("banda top edge coincides (±1px) with header bottom edge", async ({ page }) => {
     await page.goto("/");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
@@ -742,9 +698,7 @@ test.describe("Desktop nav — banda diagonal-gap fix", () => {
 test.describe("Desktop nav — banda fixture (/dev/megamenu)", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("fixture: popup y ≈ header bottom (±2px) and width ≈ innerWidth", async ({
-    page,
-  }) => {
+  test("fixture: popup y ≈ header bottom (±2px) and width ≈ innerWidth", async ({ page }) => {
     await page.goto("/dev/megamenu");
     const trigger = page.locator("[data-sw-nav-menu-trigger]").first();
     await trigger.focus();
@@ -777,9 +731,7 @@ test.describe("Header v2 — solid on megamenu open (overlay)", () => {
     const header = page.locator("header[data-overlay='true']");
     await expect(header).toHaveAttribute("data-state", "transparent");
 
-    const initialBg = await header.evaluate(
-      (el) => window.getComputedStyle(el).backgroundColor,
-    );
+    const initialBg = await header.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     // Transparent baseline: rgba alpha 0 (or the literal "transparent")
     expect(
       initialBg === "rgba(0, 0, 0, 0)" ||
@@ -798,16 +750,10 @@ test.describe("Header v2 — solid on megamenu open (overlay)", () => {
     // Wait for :has() to apply + transition to progress meaningfully
     await page.waitForTimeout(300);
 
-    const openBg = await header.evaluate(
-      (el) => window.getComputedStyle(el).backgroundColor,
-    );
-    const openColor = await header.evaluate(
-      (el) => window.getComputedStyle(el).color,
-    );
+    const openBg = await header.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+    const openColor = await header.evaluate((el) => window.getComputedStyle(el).color);
     // Solid: not fully transparent
-    const openBgAlpha = openBg.match(
-      /rgba?\([^,]+,\s*[^,]+,\s*[^,]+(?:,\s*([\d.]+))?\)/,
-    );
+    const openBgAlpha = openBg.match(/rgba?\([^,]+,\s*[^,]+,\s*[^,]+(?:,\s*([\d.]+))?\)/);
     const alpha = openBgAlpha?.[1] ? parseFloat(openBgAlpha[1]) : 1;
     expect(alpha).toBeGreaterThan(0.5);
 
@@ -822,9 +768,7 @@ test.describe("Header v2 — solid on megamenu open (overlay)", () => {
     await page.keyboard.press("Escape");
     await expect(trigger).toHaveAttribute("data-state", "closed");
     await page.waitForTimeout(300);
-    const closedBg = await header.evaluate(
-      (el) => window.getComputedStyle(el).backgroundColor,
-    );
+    const closedBg = await header.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     expect(
       closedBg === "rgba(0, 0, 0, 0)" ||
         closedBg === "transparent" ||

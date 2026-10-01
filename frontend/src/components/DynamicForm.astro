@@ -11,11 +11,51 @@ const { slug, className = "" } = Astro.props;
 type Larghezza = "full" | "half" | "third";
 
 type Campo =
-  | { __component: "form.campo-testo"; id: number; label: string; nome: string; placeholder?: string; required?: boolean; larghezza?: Larghezza }
-  | { __component: "form.campo-email"; id: number; label: string; nome: string; placeholder?: string; required?: boolean; larghezza?: Larghezza }
-  | { __component: "form.campo-textarea"; id: number; label: string; nome: string; placeholder?: string; righe?: number; required?: boolean; larghezza?: Larghezza }
-  | { __component: "form.campo-select"; id: number; label: string; nome: string; opzioni: string; required?: boolean; larghezza?: Larghezza }
-  | { __component: "form.campo-checkbox"; id: number; label: string; nome: string; required?: boolean; larghezza?: Larghezza };
+  | {
+      __component: "form.campo-testo";
+      id: number;
+      label: string;
+      nome: string;
+      placeholder?: string;
+      required?: boolean;
+      larghezza?: Larghezza;
+    }
+  | {
+      __component: "form.campo-email";
+      id: number;
+      label: string;
+      nome: string;
+      placeholder?: string;
+      required?: boolean;
+      larghezza?: Larghezza;
+    }
+  | {
+      __component: "form.campo-textarea";
+      id: number;
+      label: string;
+      nome: string;
+      placeholder?: string;
+      righe?: number;
+      required?: boolean;
+      larghezza?: Larghezza;
+    }
+  | {
+      __component: "form.campo-select";
+      id: number;
+      label: string;
+      nome: string;
+      opzioni: string;
+      required?: boolean;
+      larghezza?: Larghezza;
+    }
+  | {
+      __component: "form.campo-checkbox";
+      id: number;
+      label: string;
+      nome: string;
+      required?: boolean;
+      larghezza?: Larghezza;
+    };
 
 interface FormDef {
   id: number;
@@ -49,19 +89,20 @@ function getSpan(larghezza?: Larghezza): string {
 }
 ---
 
-{loadError && (
-  <p class="text-error text-sm">Errore nel caricamento del form.</p>
-)}
+{loadError && <p class="text-error text-sm">Errore nel caricamento del form.</p>}
 
-{!loadError && !formDef && (
-  <p class="text-muted-foreground text-sm">Form non trovato.</p>
-)}
+{!loadError && !formDef && <p class="text-muted-foreground text-sm">Form non trovato.</p>}
 
 {formDef && (
   <div class={className}>
-    <form id={"dform-" + slug} class="mt-4" novalidate data-slug={slug} data-success={formDef.messaggioSuccesso ?? "Grazie! Il tuo messaggio è stato inviato."}>
+    <form
+      id={"dform-" + slug}
+      class="mt-4"
+      novalidate
+      data-slug={slug}
+      data-success={formDef.messaggioSuccesso ?? "Grazie! Il tuo messaggio è stato inviato."}
+    >
       <div class="grid grid-cols-6 gap-4 max-w-[640px]">
-
         {formDef.campi.map((campo) => {
           const id = "dform-" + slug + "-" + campo.nome;
           const req = campo.required ?? false;
@@ -70,8 +111,18 @@ function getSpan(larghezza?: Larghezza): string {
           if (campo.__component === "form.campo-testo") {
             return (
               <div class={span}>
-                <label for={id} class={labelClass}>{campo.label}{req && " *"}</label>
-                <input id={id} type="text" name={campo.nome} placeholder={campo.placeholder ?? ""} required={req} class={inputClass} />
+                <label for={id} class={labelClass}>
+                  {campo.label}
+                  {req && " *"}
+                </label>
+                <input
+                  id={id}
+                  type="text"
+                  name={campo.nome}
+                  placeholder={campo.placeholder ?? ""}
+                  required={req}
+                  class={inputClass}
+                />
               </div>
             );
           }
@@ -79,8 +130,18 @@ function getSpan(larghezza?: Larghezza): string {
           if (campo.__component === "form.campo-email") {
             return (
               <div class={span}>
-                <label for={id} class={labelClass}>{campo.label}{req && " *"}</label>
-                <input id={id} type="email" name={campo.nome} placeholder={campo.placeholder ?? ""} required={req} class={inputClass} />
+                <label for={id} class={labelClass}>
+                  {campo.label}
+                  {req && " *"}
+                </label>
+                <input
+                  id={id}
+                  type="email"
+                  name={campo.nome}
+                  placeholder={campo.placeholder ?? ""}
+                  required={req}
+                  class={inputClass}
+                />
               </div>
             );
           }
@@ -88,21 +149,43 @@ function getSpan(larghezza?: Larghezza): string {
           if (campo.__component === "form.campo-textarea") {
             return (
               <div class={span}>
-                <label for={id} class={labelClass}>{campo.label}{req && " *"}</label>
-                <textarea id={id} name={campo.nome} placeholder={campo.placeholder ?? ""} rows={campo.righe ?? 5} required={req}
-                  class="w-full px-4 py-3 border border-border rounded text-[0.9375rem] font-[inherit] outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:border-primary resize-vertical" />
+                <label for={id} class={labelClass}>
+                  {campo.label}
+                  {req && " *"}
+                </label>
+                <textarea
+                  id={id}
+                  name={campo.nome}
+                  placeholder={campo.placeholder ?? ""}
+                  rows={campo.righe ?? 5}
+                  required={req}
+                  class="w-full px-4 py-3 border border-border rounded text-[0.9375rem] font-[inherit] outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:border-primary resize-vertical"
+                />
               </div>
             );
           }
 
           if (campo.__component === "form.campo-select") {
-            const opts = (campo.opzioni ?? "").split("\n").map((o: string) => o.trim()).filter(Boolean);
+            const opts = (campo.opzioni ?? "")
+              .split("\n")
+              .map((o: string) => o.trim())
+              .filter(Boolean);
             return (
               <div class={span}>
-                <label for={id} class={labelClass}>{campo.label}{req && " *"}</label>
-                <select id={id} name={campo.nome} required={req} class={inputClass + " bg-background cursor-pointer"}>
+                <label for={id} class={labelClass}>
+                  {campo.label}
+                  {req && " *"}
+                </label>
+                <select
+                  id={id}
+                  name={campo.nome}
+                  required={req}
+                  class={inputClass + " bg-background cursor-pointer"}
+                >
                   <option value="">— Seleziona —</option>
-                  {opts.map((o: string) => <option value={o}>{o}</option>)}
+                  {opts.map((o: string) => (
+                    <option value={o}>{o}</option>
+                  ))}
                 </select>
               </div>
             );
@@ -111,8 +194,17 @@ function getSpan(larghezza?: Larghezza): string {
           if (campo.__component === "form.campo-checkbox") {
             return (
               <div class={span + " flex items-start gap-2"}>
-                <input id={id} type="checkbox" name={campo.nome} required={req} class="mt-[3px] w-4 h-4 flex-shrink-0" />
-                <label for={id} class="text-[0.875rem] leading-[1.4] cursor-pointer">{campo.label}{req && " *"}</label>
+                <input
+                  id={id}
+                  type="checkbox"
+                  name={campo.nome}
+                  required={req}
+                  class="mt-[3px] w-4 h-4 flex-shrink-0"
+                />
+                <label for={id} class="text-[0.875rem] leading-[1.4] cursor-pointer">
+                  {campo.label}
+                  {req && " *"}
+                </label>
               </div>
             );
           }
@@ -120,20 +212,35 @@ function getSpan(larghezza?: Larghezza): string {
           return null;
         })}
 
-        <input type="text" name="website" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true" />
+        <input
+          type="text"
+          name="website"
+          tabindex="-1"
+          autocomplete="off"
+          style="display:none"
+          aria-hidden="true"
+        />
 
-        <div id={"dform-" + slug + "-error"} class="hidden col-span-6 text-[0.875rem] text-error py-2"></div>
+        <div
+          id={"dform-" + slug + "-error"}
+          class="hidden col-span-6 text-[0.875rem] text-error py-2"
+        ></div>
 
         <div class="col-span-6">
-          <button type="submit"
-            class="bg-primary text-primary-foreground border-0 px-8 h-[44px] rounded text-[0.875rem] font-medium cursor-pointer transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button
+            type="submit"
+            class="bg-primary text-primary-foreground border-0 px-8 h-[44px] rounded text-[0.875rem] font-medium cursor-pointer transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             Invia
           </button>
         </div>
       </div>
     </form>
 
-    <div id={"dform-" + slug + "-success"} class="hidden mt-6 max-w-[640px] bg-success/10 border border-success/40 rounded p-5">
+    <div
+      id={"dform-" + slug + "-success"}
+      class="hidden mt-6 max-w-[640px] bg-success/10 border border-success/40 rounded p-5"
+    >
       <p class="m-0 font-medium text-success-foreground" id={"dform-" + slug + "-success-msg"}></p>
     </div>
   </div>
@@ -153,7 +260,7 @@ function getSpan(larghezza?: Larghezza): string {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const honeypot = (form.querySelector<HTMLInputElement>("[name=website]")?.value ?? "");
+      const honeypot = form.querySelector<HTMLInputElement>("[name=website]")?.value ?? "";
       if (honeypot) return;
 
       submitBtn.disabled = true;
@@ -163,7 +270,9 @@ function getSpan(larghezza?: Larghezza): string {
 
       const formData = new FormData(form);
       const data: Record<string, string> = {};
-      formData.forEach((v, k) => { if (k !== "website") data[k] = String(v); });
+      formData.forEach((v, k) => {
+        if (k !== "website") data[k] = String(v);
+      });
 
       try {
         const strapiUrl = PUBLIC_STRAPI_URL ?? "http://localhost:1337";
@@ -172,7 +281,11 @@ function getSpan(larghezza?: Larghezza): string {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ formSlug: slug, data }),
         });
-        const json = await res.json() as { success?: boolean; message?: string; error?: { message?: string } };
+        const json = (await res.json()) as {
+          success?: boolean;
+          message?: string;
+          error?: { message?: string };
+        };
 
         if (json.success) {
           form.classList.add("hidden");

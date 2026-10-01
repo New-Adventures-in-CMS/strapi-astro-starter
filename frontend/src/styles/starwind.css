@@ -30,8 +30,7 @@
 
 @theme inline {
   /* Typography: font families and scale */
-  --font-sans:
-    var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-heading: var(--font-sora), var(--font-sans);
 
   /* Fluid type scale */
@@ -161,16 +160,8 @@
   --section-dark-fg-subtle: color-mix(in srgb, var(--white) 70%, transparent);
   --section-dark-cta-bg: var(--white);
   --section-dark-cta-fg: #202020; /* literal near-black — NOT var(--gray-12) */
-  --section-dark-cta-bg-hover: color-mix(
-    in srgb,
-    var(--white) 90%,
-    transparent
-  );
-  --section-dark-overlay-from: color-mix(
-    in srgb,
-    var(--black) 70%,
-    transparent
-  );
+  --section-dark-cta-bg-hover: color-mix(in srgb, var(--white) 90%, transparent);
+  --section-dark-overlay-from: color-mix(in srgb, var(--black) 70%, transparent);
   --section-dark-overlay-via: color-mix(in srgb, var(--black) 50%, transparent);
   --section-dark-overlay-to: color-mix(in srgb, var(--black) 30%, transparent);
   --section-dark-accent: color-mix(in srgb, var(--white) 8%, transparent);
@@ -201,9 +192,19 @@
 /* BRIDGE-START page-margin — TEMP finché lo stadio token-emission non emette i token
    semantici responsivi da nsp-ds-tokens. Valori da page-margin.lg (v0.4.2). Quando il sync
    emetterà --page-margin-lg, CANCELLARE questo intero blocco: il consumer non cambia. */
-:root { --page-margin-lg: 16px; }
-@media (min-width: 768px)  { :root { --page-margin-lg: 32px; } }
-@media (min-width: 1024px) { :root { --page-margin-lg: 80px; } }
+:root {
+  --page-margin-lg: 16px;
+}
+@media (min-width: 768px) {
+  :root {
+    --page-margin-lg: 32px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --page-margin-lg: 80px;
+  }
+}
 /* BRIDGE-END page-margin */
 
 @layer base {
@@ -379,14 +380,8 @@
    * ======================================================================== */
 
   /* Base state — all first-level items: position for pseudo-element */
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-link"],
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"] {
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
     position: relative;
     text-decoration: none !important;
     background: transparent !important;
@@ -425,14 +420,8 @@
   }
 
   /* Animated underline pseudo-element: ::after on all first-level items */
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-link"]::after,
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"]::after {
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
     content: "";
     position: absolute;
     left: 0.625rem;
@@ -446,14 +435,8 @@
   }
 
   /* Hover / focus / open — animate underline to full width */
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-link"]:hover::after,
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-link"]:focus::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus::after,
   header
     [data-slot="navigation-menu-list"]
     > *
@@ -480,14 +463,8 @@
 
   /* Reduced motion: disable animation */
   @media (prefers-reduced-motion: reduce) {
-    header
-      [data-slot="navigation-menu-list"]
-      > *
-      > [data-slot="navigation-menu-link"]::after,
-    header
-      [data-slot="navigation-menu-list"]
-      > *
-      > [data-slot="navigation-menu-trigger"]::after {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
       transition: none;
     }
   }
@@ -509,16 +486,14 @@
   }
 
   /* Solid state: standard light hamburger */
-  header[data-overlay="true"][data-state="solid"]
-    button[aria-label="Apri menu di navigazione"],
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"],
   header[data-overlay="false"] button[aria-label="Apri menu di navigazione"] {
     color: var(--foreground);
   }
 
   header[data-overlay="true"][data-state="solid"]
     button[aria-label="Apri menu di navigazione"]:hover,
-  header[data-overlay="false"]
-    button[aria-label="Apri menu di navigazione"]:hover {
+  header[data-overlay="false"] button[aria-label="Apri menu di navigazione"]:hover {
     background: var(--muted);
   }
 

@@ -3,15 +3,9 @@ import type { CarouselAPI } from "@skeleton/carousel.js";
 const DURATION = 7000; // ms — zoom lento (tunable; per completarlo entro la sosta ~= autoplay delay)
 const EASE = "ease-out";
 
-export function setupHeroKenBurns(
-  api: CarouselAPI,
-  root: HTMLElement,
-): () => void {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return () => {};
-  const slideNodes = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-hero-slide]"),
-  );
+export function setupHeroKenBurns(api: CarouselAPI, root: HTMLElement): () => void {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
+  const slideNodes = Array.from(root.querySelectorAll<HTMLElement>("[data-hero-slide]"));
   if (slideNodes.length === 0) return () => {};
 
   const mediaBySlide = new Map<number, HTMLElement>();

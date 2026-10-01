@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+.astro
+cms/.tmp
+cms/build
+cms/dist
+cms/.strapi
+coverage
+playwright-report
+test-results
+**/*.min.*
+package-lock.json

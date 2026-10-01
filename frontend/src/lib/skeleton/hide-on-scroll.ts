@@ -3,10 +3,7 @@ export type HideOnScrollOpts = {
   topThreshold?: number;
 };
 
-export function initHideOnScroll(
-  el: HTMLElement,
-  opts: HideOnScrollOpts = {},
-): () => void {
+export function initHideOnScroll(el: HTMLElement, opts: HideOnScrollOpts = {}): () => void {
   const THRESHOLD = opts.threshold ?? 8;
   const TOP_THRESHOLD = opts.topThreshold ?? 40;
 

@@ -10,18 +10,13 @@ export const badge = tv({
   variants: {
     variant: {
       default: "bg-foreground text-background focus-visible:ring-outline/50",
-      primary:
-        "bg-primary text-primary-foreground focus-visible:ring-primary/50",
-      secondary:
-        "bg-secondary text-secondary-foreground focus-visible:ring-secondary/50",
-      outline:
-        "border-border focus-visible:border-outline focus-visible:ring-outline/50 border",
+      primary: "bg-primary text-primary-foreground focus-visible:ring-primary/50",
+      secondary: "bg-secondary text-secondary-foreground focus-visible:ring-secondary/50",
+      outline: "border-border focus-visible:border-outline focus-visible:ring-outline/50 border",
       ghost: "bg-foreground/10 text-foreground focus-visible:ring-outline/50",
       info: "bg-info text-info-foreground focus-visible:ring-info/50",
-      success:
-        "bg-success text-success-foreground focus-visible:ring-success/50",
-      warning:
-        "bg-warning text-warning-foreground focus-visible:ring-warning/50",
+      success: "bg-success text-success-foreground focus-visible:ring-success/50",
+      warning: "bg-warning text-warning-foreground focus-visible:ring-warning/50",
       error: "bg-error text-error-foreground focus-visible:ring-error/50",
     },
     tone: {
@@ -282,26 +277,22 @@ export const badge = tv({
     {
       tone: "primary",
       appearance: "solid",
-      className:
-        "bg-primary text-primary-foreground focus-visible:ring-primary/50",
+      className: "bg-primary text-primary-foreground focus-visible:ring-primary/50",
     },
     {
       tone: "primary-accent",
       appearance: "solid",
-      className:
-        "bg-primary-accent text-background focus-visible:ring-primary-accent/50",
+      className: "bg-primary-accent text-background focus-visible:ring-primary-accent/50",
     },
     {
       tone: "secondary",
       appearance: "solid",
-      className:
-        "bg-secondary text-secondary-foreground focus-visible:ring-secondary/50",
+      className: "bg-secondary text-secondary-foreground focus-visible:ring-secondary/50",
     },
     {
       tone: "secondary-accent",
       appearance: "solid",
-      className:
-        "bg-secondary-accent text-background focus-visible:ring-secondary-accent/50",
+      className: "bg-secondary-accent text-background focus-visible:ring-secondary-accent/50",
     },
     {
       tone: "info",
@@ -311,14 +302,12 @@ export const badge = tv({
     {
       tone: "success",
       appearance: "solid",
-      className:
-        "bg-success text-success-foreground focus-visible:ring-success/50",
+      className: "bg-success text-success-foreground focus-visible:ring-success/50",
     },
     {
       tone: "warning",
       appearance: "solid",
-      className:
-        "bg-warning text-warning-foreground focus-visible:ring-warning/50",
+      className: "bg-warning text-warning-foreground focus-visible:ring-warning/50",
     },
     {
       tone: "error",
@@ -328,8 +317,7 @@ export const badge = tv({
     {
       tone: "neutral",
       appearance: "soft",
-      className:
-        "bg-foreground/10 text-foreground focus-visible:ring-outline/50",
+      className: "bg-foreground/10 text-foreground focus-visible:ring-outline/50",
     },
     {
       tone: "primary",
@@ -339,14 +327,12 @@ export const badge = tv({
     {
       tone: "primary-accent",
       appearance: "soft",
-      className:
-        "bg-primary-accent/10 text-primary-accent focus-visible:ring-primary-accent/50",
+      className: "bg-primary-accent/10 text-primary-accent focus-visible:ring-primary-accent/50",
     },
     {
       tone: "secondary",
       appearance: "soft",
-      className:
-        "bg-secondary/10 text-foreground focus-visible:ring-secondary/50",
+      className: "bg-secondary/10 text-foreground focus-visible:ring-secondary/50",
     },
     {
       tone: "secondary-accent",
@@ -377,14 +363,12 @@ export const badge = tv({
     {
       tone: "neutral",
       appearance: "outline",
-      className:
-        "border border-border text-foreground focus-visible:ring-outline/50",
+      className: "border border-border text-foreground focus-visible:ring-outline/50",
     },
     {
       tone: "primary",
       appearance: "outline",
-      className:
-        "border border-primary text-foreground focus-visible:ring-primary/50",
+      className: "border border-primary text-foreground focus-visible:ring-primary/50",
     },
     {
       tone: "primary-accent",
@@ -407,26 +391,22 @@ export const badge = tv({
     {
       tone: "info",
       appearance: "outline",
-      className:
-        "border border-info text-foreground focus-visible:ring-info/50",
+      className: "border border-info text-foreground focus-visible:ring-info/50",
     },
     {
       tone: "success",
       appearance: "outline",
-      className:
-        "border border-success text-foreground focus-visible:ring-success/50",
+      className: "border border-success text-foreground focus-visible:ring-success/50",
     },
     {
       tone: "warning",
       appearance: "outline",
-      className:
-        "border border-warning text-foreground focus-visible:ring-warning/50",
+      className: "border border-warning text-foreground focus-visible:ring-warning/50",
     },
     {
       tone: "error",
       appearance: "outline",
-      className:
-        "border border-error text-foreground focus-visible:ring-error/50",
+      className: "border border-error text-foreground focus-visible:ring-error/50",
     },
     {
       appearance: "text",
@@ -484,14 +464,12 @@ export const badge = tv({
     {
       tone: "neutral",
       appearance: "frosted",
-      className:
-        "border-border/60 text-foreground focus-visible:ring-outline/50",
+      className: "border-border/60 text-foreground focus-visible:ring-outline/50",
     },
     {
       tone: "primary",
       appearance: "frosted",
-      className:
-        "border-primary/40 text-foreground focus-visible:ring-primary/50",
+      className: "border-primary/40 text-foreground focus-visible:ring-primary/50",
     },
     {
       tone: "primary-accent",
@@ -502,8 +480,7 @@ export const badge = tv({
     {
       tone: "secondary",
       appearance: "frosted",
-      className:
-        "border-secondary/60 text-secondary-foreground focus-visible:ring-secondary/50",
+      className: "border-secondary/60 text-secondary-foreground focus-visible:ring-secondary/50",
     },
     {
       tone: "secondary-accent",
@@ -519,14 +496,12 @@ export const badge = tv({
     {
       tone: "success",
       appearance: "frosted",
-      className:
-        "border-success/40 text-foreground focus-visible:ring-success/50",
+      className: "border-success/40 text-foreground focus-visible:ring-success/50",
     },
     {
       tone: "warning",
       appearance: "frosted",
-      className:
-        "border-warning/40 text-foreground focus-visible:ring-warning/50",
+      className: "border-warning/40 text-foreground focus-visible:ring-warning/50",
     },
     {
       tone: "error",

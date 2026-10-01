@@ -10,9 +10,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Hero align — bottom-left (parallax section)", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("content is text-left, slide wrapper uses items-end + justify-start", async ({
-    page,
-  }) => {
+  test("content is text-left, slide wrapper uses items-end + justify-start", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
       .locator('[data-hero-section="parallax"]')

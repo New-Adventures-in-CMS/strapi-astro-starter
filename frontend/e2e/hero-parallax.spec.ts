@@ -10,9 +10,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Hero parallax — multi-slide", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("media and content layers present for each carousel slide", async ({
-    page,
-  }) => {
+  test("media and content layers present for each carousel slide", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
       .locator('[data-hero-section="parallax"]')
@@ -24,9 +22,7 @@ test.describe("Hero parallax — multi-slide", () => {
     await expect(root.locator("[data-hero-content]")).toHaveCount(3);
   });
 
-  test("active content gets non-empty inline transform after slide change", async ({
-    page,
-  }) => {
+  test("active content gets non-empty inline transform after slide change", async ({ page }) => {
     await page.goto("/dev/hero");
     const root = page
       .locator('[data-hero-section="parallax"]')
@@ -41,8 +37,7 @@ test.describe("Hero parallax — multi-slide", () => {
 
     const hasContentTransform = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="parallax"]');
-      const contents =
-        section?.querySelectorAll<HTMLElement>("[data-hero-content]") ?? [];
+      const contents = section?.querySelectorAll<HTMLElement>("[data-hero-content]") ?? [];
       for (const c of contents) {
         if (c.style.transform && c.style.transform !== "none") return true;
       }
@@ -56,9 +51,7 @@ test.describe("Hero parallax — multi-slide", () => {
 test.describe("Hero parallax — reduced motion", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("no transform applied with prefers-reduced-motion: reduce", async ({
-    page,
-  }) => {
+  test("no transform applied with prefers-reduced-motion: reduce", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/dev/hero");
     const root = page
@@ -75,9 +68,7 @@ test.describe("Hero parallax — reduced motion", () => {
     const transforms = await page.evaluate(() => {
       const section = document.querySelector('[data-hero-section="parallax"]');
       const nodes =
-        section?.querySelectorAll<HTMLElement>(
-          "[data-hero-media],[data-hero-content]",
-        ) ?? [];
+        section?.querySelectorAll<HTMLElement>("[data-hero-media],[data-hero-content]") ?? [];
       return Array.from(nodes).map((n) => n.style.transform);
     });
 

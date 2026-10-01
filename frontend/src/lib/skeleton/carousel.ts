@@ -1,9 +1,6 @@
 // frontend/src/lib/skeleton/carousel.ts
 
-import EmblaCarousel, {
-  type EmblaCarouselType,
-  type EmblaOptionsType,
-} from "embla-carousel";
+import EmblaCarousel, { type EmblaCarouselType, type EmblaOptionsType } from "embla-carousel";
 import Fade from "embla-carousel-fade";
 
 export type CarouselOpts = {
@@ -31,17 +28,11 @@ export type CarouselAPI = {
   destroy(): void;
 };
 
-export function createCarousel(
-  root: HTMLElement,
-  opts: CarouselOpts = {},
-): CarouselAPI {
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+export function createCarousel(root: HTMLElement, opts: CarouselOpts = {}): CarouselAPI {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const viewport = root.querySelector<HTMLElement>("[data-carousel-viewport]");
-  if (!viewport)
-    throw new Error("createCarousel: missing [data-carousel-viewport]");
+  if (!viewport) throw new Error("createCarousel: missing [data-carousel-viewport]");
 
   const useFade = opts.transition === "fade";
   const emblaOpts: EmblaOptionsType = {
@@ -82,10 +73,7 @@ export function createCarousel(
     slides.forEach((_, i) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.setAttribute(
-        "aria-label",
-        opts.labels?.slide ? opts.labels.slide(i) : `Slide ${i + 1}`,
-      );
+      btn.setAttribute("aria-label", opts.labels?.slide ? opts.labels.slide(i) : `Slide ${i + 1}`);
       btn.addEventListener("click", () => embla.scrollTo(i));
       dotsContainer.appendChild(btn);
       dotBtns.push(btn);
@@ -102,18 +90,12 @@ export function createCarousel(
 
   function updateNav() {
     if (opts.prevBtn) {
-      opts.prevBtn.setAttribute(
-        "aria-label",
-        opts.labels?.prev ?? "Precedente",
-      );
+      opts.prevBtn.setAttribute("aria-label", opts.labels?.prev ?? "Precedente");
       const canPrev = opts.loop ? true : embla.canScrollPrev();
       opts.prevBtn.toggleAttribute("disabled", !canPrev);
     }
     if (opts.nextBtn) {
-      opts.nextBtn.setAttribute(
-        "aria-label",
-        opts.labels?.next ?? "Successivo",
-      );
+      opts.nextBtn.setAttribute("aria-label", opts.labels?.next ?? "Successivo");
       const canNext = opts.loop ? true : embla.canScrollNext();
       opts.nextBtn.toggleAttribute("disabled", !canNext);
     }
@@ -157,10 +139,7 @@ export function createCarousel(
   function startAutoplay() {
     if (!opts.autoplay || reducedMotion) return;
     stopAutoplay();
-    autoplayTimer = setInterval(
-      () => embla.scrollNext(),
-      opts.autoplay.delayMs,
-    );
+    autoplayTimer = setInterval(() => embla.scrollNext(), opts.autoplay.delayMs);
     liveRegion.setAttribute("aria-live", "off");
   }
 

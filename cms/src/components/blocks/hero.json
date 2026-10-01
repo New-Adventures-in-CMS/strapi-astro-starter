@@ -54,16 +54,7 @@
     },
     "heroStyle": {
       "type": "enumeration",
-      "enum": [
-        "fade",
-        "slide",
-        "drift",
-        "focus",
-        "dim",
-        "parallax",
-        "tilt",
-        "ken-burns"
-      ],
+      "enum": ["fade", "slide", "drift", "focus", "dim", "parallax", "tilt", "ken-burns"],
       "default": "fade"
     }
   }

@@ -12,18 +12,13 @@ interface Props {
   noindex?: boolean;
 }
 
-const {
-  title,
-  description = site.description,
-  image,
-  canonical,
-  noindex = false,
-} = Astro.props;
+const { title, description = site.description, image, canonical, noindex = false } = Astro.props;
 
 const fullTitle = title ? `${title} — ${site.name}` : site.name;
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, site.url).href;
 const ogImage = image ? new URL(image, site.url).href : undefined;
 ---
+
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />

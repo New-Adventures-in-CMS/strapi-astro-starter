@@ -15,6 +15,7 @@ try {
   cmsError = true;
 }
 ---
+
 <Layout title="Pagine" description="Elenco pagine pubblicate.">
   <Section spacing="default">
     <Container width="prose">
@@ -28,7 +29,8 @@ try {
 
       {!cmsError && pages.length === 0 && (
         <p class="mt-6 text-muted-foreground">
-          Nessuna pagina pubblicata. Crea una <code class="rounded bg-muted px-1.5 py-0.5 text-sm">page</code> in Strapi e pubblicala.
+          Nessuna pagina pubblicata. Crea una{" "}
+          <code class="rounded bg-muted px-1.5 py-0.5 text-sm">page</code> in Strapi e pubblicala.
         </p>
       )}
 
@@ -36,10 +38,7 @@ try {
         <ul class="mt-8 divide-y divide-border border-y border-border">
           {pages.map((page) => (
             <li class="py-4">
-              <a
-                href={`/pagine/${page.slug}`}
-                class="block group"
-              >
+              <a href={`/pagine/${page.slug}`} class="block group">
                 <span class="text-lg font-semibold text-foreground group-hover:text-primary">
                   {page.title}
                 </span>

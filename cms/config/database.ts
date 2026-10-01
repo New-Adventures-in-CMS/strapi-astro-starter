@@ -1,9 +1,7 @@
 import path from "path";
 import type { Core } from "@strapi/strapi";
 
-const config = ({
-  env,
-}: Core.Config.Shared.ConfigParams): Core.Config.Database => {
+const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
   const client = env("DATABASE_CLIENT", "sqlite");
 
   const connections = {
@@ -16,10 +14,7 @@ const config = ({
         user: env("DATABASE_USERNAME", "strapi"),
         password: env("DATABASE_PASSWORD", "strapi"),
         ssl: env.bool("DATABASE_SSL", false) && {
-          rejectUnauthorized: env.bool(
-            "DATABASE_SSL_REJECT_UNAUTHORIZED",
-            true,
-          ),
+          rejectUnauthorized: env.bool("DATABASE_SSL_REJECT_UNAUTHORIZED", true),
         },
         schema: env("DATABASE_SCHEMA", "public"),
       },
@@ -30,21 +25,14 @@ const config = ({
     },
     sqlite: {
       connection: {
-        filename: path.join(
-          __dirname,
-          "..",
-          "..",
-          env("DATABASE_FILENAME") || ".tmp/data.db",
-        ),
+        filename: path.join(__dirname, "..", "..", env("DATABASE_FILENAME") || ".tmp/data.db"),
       },
       useNullAsDefault: true,
     },
   };
 
   if (!(client in connections)) {
-    throw new Error(
-      `Unsupported DATABASE_CLIENT: ${client}. Use "postgres" or "sqlite".`,
-    );
+    throw new Error(`Unsupported DATABASE_CLIENT: ${client}. Use "postgres" or "sqlite".`);
   }
 
   type DatabaseClient = keyof typeof connections;

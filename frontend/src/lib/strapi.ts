@@ -58,9 +58,7 @@ function buildQs(params: Record<string, unknown>): string {
     } else if (Array.isArray(obj)) {
       obj.forEach((v, i) => walk(v, `${prefix}[${i}]`));
     } else {
-      parts.push(
-        `${encodeURIComponent(prefix)}=${encodeURIComponent(String(obj))}`,
-      );
+      parts.push(`${encodeURIComponent(prefix)}=${encodeURIComponent(String(obj))}`);
     }
   };
   walk(params, "");
@@ -73,8 +71,7 @@ export async function strapiFind<T>(
 ): Promise<StrapiListResponse<T>> {
   const qs = buildQs(params);
   const res = await fetch(`${STRAPI_URL}/api/${pluralApiId}${qs}`);
-  if (!res.ok)
-    throw new Error(`Strapi GET /api/${pluralApiId} → ${res.status}`);
+  if (!res.ok) throw new Error(`Strapi GET /api/${pluralApiId} → ${res.status}`);
   return res.json() as Promise<StrapiListResponse<T>>;
 }
 
@@ -84,8 +81,7 @@ export async function strapiFindOne<T>(
 ): Promise<StrapiSingleResponse<T>> {
   const qs = buildQs(params);
   const res = await fetch(`${STRAPI_URL}/api/${singularApiId}${qs}`);
-  if (!res.ok)
-    throw new Error(`Strapi GET /api/${singularApiId} → ${res.status}`);
+  if (!res.ok) throw new Error(`Strapi GET /api/${singularApiId} → ${res.status}`);
   return res.json() as Promise<StrapiSingleResponse<T>>;
 }
 
@@ -101,21 +97,15 @@ function coerceSubmenuLayout(v: unknown): SubmenuLayout {
 }
 
 function coerceHeaderWidth(v: unknown): HeaderWidth {
-  return HEADER_WIDTHS.includes(v as HeaderWidth)
-    ? (v as HeaderWidth)
-    : site.header.width;
+  return HEADER_WIDTHS.includes(v as HeaderWidth) ? (v as HeaderWidth) : site.header.width;
 }
 
 function coerceFooterWidth(v: unknown): FooterWidth {
-  return FOOTER_WIDTHS.includes(v as FooterWidth)
-    ? (v as FooterWidth)
-    : site.footer.width;
+  return FOOTER_WIDTHS.includes(v as FooterWidth) ? (v as FooterWidth) : site.footer.width;
 }
 
 function coerceFooterTone(v: unknown): FooterTone {
-  return FOOTER_TONES.includes(v as FooterTone)
-    ? (v as FooterTone)
-    : site.footer.tone;
+  return FOOTER_TONES.includes(v as FooterTone) ? (v as FooterTone) : site.footer.tone;
 }
 
 /**
@@ -127,9 +117,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   try {
     const res = await fetch(`${STRAPI_URL}/api/site-setting`);
     if (!res.ok) throw new Error(`status ${res.status}`);
-    const json = (await res.json()) as StrapiSingleResponse<
-      Partial<SiteSettings> | null
-    >;
+    const json = (await res.json()) as StrapiSingleResponse<Partial<SiteSettings> | null>;
     const data = json?.data ?? null;
     return {
       submenuLayout: coerceSubmenuLayout(data?.submenuLayout),
