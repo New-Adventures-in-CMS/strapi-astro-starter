@@ -99,8 +99,19 @@ export interface BlockCardGrid {
   cards: SharedCard[];
 }
 
+export interface BlockCarousel {
+  __component: "blocks.carousel";
+  heading?: string | null;
+  eyebrow?: string | null;
+  lead?: string | null;
+  tone?: "light" | "dark" | null;
+  cards: SharedCard[];
+  loop?: boolean | null;
+  autoplay?: boolean | null;
+}
+
 export type PageBlock =
-  BlockHero | BlockRichText | BlockImageText | BlockCardGrid;
+  BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
 import type { SectionTone } from "@/components/layout/variants";

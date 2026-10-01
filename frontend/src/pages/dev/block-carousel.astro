@@ -1,0 +1,75 @@
+---
+// frontend/src/pages/dev/block-carousel.astro
+// Dev fixture — not linked in nav. Renders BlockCarousel with mock cards so
+// the skin can be audited without Strapi.
+import BlockCarousel from "@/components/blocks/BlockCarousel.astro";
+import type { SharedCard } from "@/types";
+import "@/styles/starwind.css";
+
+const mockCards: SharedCard[] = [
+  {
+    title: "Carta uno",
+    description: "Descrizione breve della prima carta per audit visivo.",
+    image: null,
+    link_url: "#one",
+    link_text: "Scopri",
+  },
+  {
+    title: "Carta due",
+    description: "Descrizione breve della seconda carta per audit visivo.",
+    image: null,
+    link_url: "#two",
+    link_text: "Scopri",
+  },
+  {
+    title: "Carta tre",
+    description: "Descrizione breve della terza carta per audit visivo.",
+    image: null,
+    link_url: "#three",
+    link_text: "Scopri",
+  },
+  {
+    title: "Carta quattro",
+    description: "Descrizione breve della quarta carta per audit visivo.",
+    image: null,
+    link_url: "#four",
+    link_text: "Scopri",
+  },
+  {
+    title: "Carta cinque",
+    description: "Descrizione breve della quinta carta per audit visivo.",
+    image: null,
+    link_url: "#five",
+    link_text: "Scopri",
+  },
+];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Block Carousel Dev Fixture</title>
+  </head>
+  <body>
+    <BlockCarousel
+      heading="Carousel standard"
+      eyebrow="Fixture"
+      lead="Peek rail con bleed a destra, nav + dots inside contained."
+      tone="light"
+      cards={mockCards}
+      loop={false}
+      autoplay={false}
+    />
+    <BlockCarousel
+      heading="Carousel autoplay + loop"
+      eyebrow="Fixture"
+      lead="Stesso skin ma con loop e autoplay attivi."
+      tone="dark"
+      cards={mockCards}
+      loop={true}
+      autoplay={true}
+    />
+  </body>
+</html>
