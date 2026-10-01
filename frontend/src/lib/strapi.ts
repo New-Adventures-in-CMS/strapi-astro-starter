@@ -23,6 +23,9 @@ export const pageBlocksPopulate = {
       "blocks.card-grid": {
         populate: { cards: { populate: { image: true } } },
       },
+      "blocks.carousel": {
+        populate: { cards: { populate: { image: true } } },
+      },
     },
   },
 } as const;
