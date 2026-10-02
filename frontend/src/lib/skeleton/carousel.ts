@@ -24,6 +24,7 @@ export type CarouselAPI = {
   scrollTo(i: number): void;
   selectedIndex(): number;
   scrollProgress(): number;
+  snapCount(): number;
   slidesInView(): number[];
   on(evt: "select" | "scroll" | "reInit", cb: () => void): () => void;
   destroy(): void;
@@ -189,6 +190,7 @@ export function createCarousel(root: HTMLElement, opts: CarouselOpts = {}): Caro
     scrollTo: (i) => embla.scrollTo(i),
     selectedIndex: () => embla.selectedScrollSnap(),
     scrollProgress: () => embla.scrollProgress(),
+    snapCount: () => embla.scrollSnapList().length,
     slidesInView: () => embla.slidesInView(),
     on(evt, cb) {
       embla.on(evt, cb);

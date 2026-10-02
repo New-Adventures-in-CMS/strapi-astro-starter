@@ -96,7 +96,9 @@ const onDark = sectionTone === "dark";
             />
           </svg>
         </button>
-        <div class={cv.dots()} data-carousel-dots></div>
+        <div class={cv.scrollbar()} data-carousel-bar aria-hidden="true">
+          <div class={cv.scrollbarThumb()} data-carousel-bar-thumb></div>
+        </div>
       </div>
     </div>
   </Container>
@@ -127,15 +129,13 @@ const onDark = sectionTone === "dark";
   document.querySelectorAll<HTMLElement>("[data-block-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
     const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
-    const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
     const loop = root.hasAttribute("data-loop");
     const autoplay = root.hasAttribute("data-autoplay") ? { delayMs: 5000 } : undefined;
-    createCarousel(root, {
+    const api = createCarousel(root, {
       loop,
       autoplay,
       prevBtn,
       nextBtn,
-      dots,
       align: "start",
       labels: {
         prev: "Precedente",
@@ -143,5 +143,24 @@ const onDark = sectionTone === "dark";
         slide: (i) => `Slide ${i + 1}`,
       },
     });
+
+    const thumb = root.querySelector<HTMLElement>("[data-carousel-bar-thumb]");
+    if (thumb) {
+      let n = Math.max(1, api.snapCount());
+      function sizeThumb() {
+        n = Math.max(1, api.snapCount());
+        thumb!.style.width = `${100 / n}%`;
+      }
+      function moveThumb() {
+        thumb!.style.transform = `translateX(${api.selectedIndex() * 100}%)`;
+      }
+      sizeThumb();
+      moveThumb();
+      api.on("select", moveThumb);
+      api.on("reInit", () => {
+        sizeThumb();
+        moveThumb();
+      });
+    }
   });
 </script>
