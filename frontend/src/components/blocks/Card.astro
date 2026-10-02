@@ -13,12 +13,10 @@ import { strapiMediaUrl } from "@/lib/strapi";
 interface Props {
   card: SharedCard;
   onDark?: boolean;
-  index?: number;
 }
 
-const { card, onDark = false, index } = Astro.props;
+const { card, onDark = false } = Astro.props;
 const imageUrl = card.image ? strapiMediaUrl(card.image.url) : null;
-const idx = index != null ? String(index).padStart(2, "0") : null;
 ---
 
 <UICard class={onDark ? "bg-background/80 border-border/50" : ""}>
@@ -45,7 +43,6 @@ const idx = index != null ? String(index).padStart(2, "0") : null;
     </div>
   )}
   <CardHeader>
-    {idx && <p class="text-xs tracking-[0.2em] text-muted-foreground mb-2">({idx})</p>}
     {card.eyebrow && (
       <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">{card.eyebrow}</p>
     )}

@@ -15,7 +15,6 @@ interface Props {
 const { heading, eyebrow, lead, tone, cards } = Astro.props;
 const sectionTone = tone === "dark" ? "dark" : "default";
 const onDark = sectionTone === "dark";
-const showIndex = cards.length >= 3;
 ---
 
 <Section tone={sectionTone} spacing="default">
@@ -30,8 +29,8 @@ const showIndex = cards.length >= 3;
       />
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal="stagger">
-      {cards.map((c, i) => (
-        <Card card={c} onDark={onDark} index={showIndex ? i + 1 : undefined} />
+      {cards.map((c) => (
+        <Card card={c} onDark={onDark} />
       ))}
     </div>
   </Container>
