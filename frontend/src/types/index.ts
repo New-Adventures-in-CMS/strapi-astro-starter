@@ -77,6 +77,7 @@ export interface BlockImageText {
 
 export interface SharedCard {
   title: string;
+  eyebrow?: string | null;
   description?: string | null;
   image?: StrapiMedia | null;
   link_url?: string | null;
