@@ -1,16 +1,8 @@
 ---
 import type { SharedCard } from "@/types";
 import { Section, Container } from "@/components/layout";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/starwind/card";
-import { Button } from "@/components/starwind/button";
 import SectionHeader from "@/components/SectionHeader.astro";
-import { strapiMediaUrl } from "@/lib/strapi";
+import Card from "./Card.astro";
 import { carousel as cv } from "./variants";
 
 interface Props {
@@ -44,35 +36,11 @@ const onDark = sectionTone === "dark";
     >
       <div class={cv.viewport()} data-carousel-viewport>
         <div class={cv.track()}>
-          {cards.map((card) => {
-            const imageUrl = card.image ? strapiMediaUrl(card.image.url) : null;
-            return (
-              <div class={cv.slide()}>
-                <Card class={onDark ? "bg-background/80 border-border/50" : ""}>
-                  {imageUrl && (
-                    <img
-                      src={imageUrl}
-                      alt={card.image?.alternativeText || card.title || ""}
-                      class="w-full rounded-t-lg object-cover aspect-video"
-                      width={card.image?.width}
-                      height={card.image?.height}
-                    />
-                  )}
-                  <CardHeader>
-                    <CardTitle>{card.title}</CardTitle>
-                    {card.description && <CardDescription>{card.description}</CardDescription>}
-                  </CardHeader>
-                  {card.link_url && card.link_text && (
-                    <CardFooter>
-                      <Button variant="ghost" size="sm" href={card.link_url}>
-                        {card.link_text}
-                      </Button>
-                    </CardFooter>
-                  )}
-                </Card>
-              </div>
-            );
-          })}
+          {cards.map((c) => (
+            <div class={cv.slide()}>
+              <Card card={c} onDark={onDark} />
+            </div>
+          ))}
         </div>
       </div>
       <div class={cv.controls()}>
