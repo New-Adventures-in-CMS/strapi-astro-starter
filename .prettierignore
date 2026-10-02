@@ -11,3 +11,7 @@ playwright-report
 test-results
 **/*.min.*
 package-lock.json
+
+# Strapi-generated schemas (owned by Strapi; it re-serializes them on schema change)
+cms/src/components/**/*.json
+cms/src/api/**/content-types/**/*.json
