@@ -7,20 +7,35 @@
   },
   "options": {},
   "attributes": {
-    "heading": { "type": "string" },
-    "eyebrow": { "type": "string" },
-    "lead": { "type": "text" },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
+    "heading": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "lead": {
+      "type": "text"
+    },
     "tone": {
       "type": "enumeration",
-      "enum": ["light", "dark"],
-      "default": "light"
+      "default": "light",
+      "enum": [
+        "light",
+        "dark"
+      ]
     },
     "cards": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.card"
-    },
-    "loop": { "type": "boolean", "default": false },
-    "autoplay": { "type": "boolean", "default": false }
+      "component": "shared.card",
+      "repeatable": true
+    }
   }
 }

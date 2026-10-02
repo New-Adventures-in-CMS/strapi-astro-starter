@@ -7,10 +7,10 @@
   },
   "options": {},
   "attributes": {
-    "heading": {
+    "eyebrow": {
       "type": "string"
     },
-    "eyebrow": {
+    "heading": {
       "type": "string"
     },
     "lead": {
@@ -18,13 +18,16 @@
     },
     "tone": {
       "type": "enumeration",
-      "enum": ["light", "dark"],
-      "default": "light"
+      "default": "light",
+      "enum": [
+        "light",
+        "dark"
+      ]
     },
     "cards": {
       "type": "component",
-      "repeatable": true,
-      "component": "shared.card"
+      "component": "shared.card",
+      "repeatable": true
     }
   }
 }
