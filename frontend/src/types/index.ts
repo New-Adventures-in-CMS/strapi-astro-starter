@@ -73,6 +73,7 @@ export interface BlockImageText {
   body: string;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
+  width?: BlockWidth;
 }
 
 export interface SharedCard {
@@ -91,6 +92,7 @@ export interface BlockCardGrid {
   lead?: string | null;
   tone?: "light" | "dark" | null;
   cards: SharedCard[];
+  width?: BlockWidth;
 }
 
 export interface BlockCarousel {
@@ -102,7 +104,10 @@ export interface BlockCarousel {
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
+  width?: BlockWidth;
 }
+
+export type BlockWidth = "full" | "contained";
 
 export type PageBlock = BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;
 

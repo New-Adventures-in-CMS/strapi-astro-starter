@@ -36,6 +36,11 @@
       "type": "component",
       "component": "shared.card",
       "repeatable": true
+    },
+    "width": {
+      "type": "enumeration",
+      "enum": ["full", "contained"],
+      "default": "contained"
     }
   }
 }
