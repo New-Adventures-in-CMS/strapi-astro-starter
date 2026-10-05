@@ -10,15 +10,16 @@ interface Props {
   lead?: string | null;
   tone?: "light" | "dark" | null;
   cards: SharedCard[];
+  width?: "full" | "contained";
 }
 
-const { heading, eyebrow, lead, tone, cards } = Astro.props;
+const { heading, eyebrow, lead, tone, cards, width } = Astro.props;
 const sectionTone = tone === "dark" ? "dark" : "default";
 const onDark = sectionTone === "dark";
 ---
 
 <Section tone={sectionTone} spacing="default">
-  <Container width="contained">
+  <Container width={width ?? "contained"}>
     <div data-reveal>
       <SectionHeader
         eyebrow={eyebrow}
