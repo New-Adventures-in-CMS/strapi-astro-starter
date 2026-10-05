@@ -101,8 +101,8 @@ export const footerWrapper = tv({
  * - `spacing: none`: py-0 (no vertical padding; for full-bleed media sections)
  * - `spacing: sm`: compact vertical rhythm
  * - `spacing: md`: moderate vertical rhythm
- * - `spacing: lg`: standard vertical rhythm (default)
- * - `spacing: xl`: generous vertical rhythm
+ * - `spacing: lg`: standard vertical rhythm
+ * - `spacing: xl`: generous vertical rhythm (default)
  */
 export const heroContent = tv({
   slots: { wrap: "flex", text: "" },
@@ -160,5 +160,5 @@ export const section = tv({
       xl: "py-10 md:py-16 lg:py-[120px]",
     },
   },
-  defaultVariants: { tone: "default", spacing: "lg" },
+  defaultVariants: { tone: "default", spacing: "xl" },
 });

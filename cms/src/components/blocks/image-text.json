@@ -35,7 +35,7 @@
     "spacing": {
       "type": "enumeration",
       "enum": ["none", "sm", "md", "lg", "xl"],
-      "default": "lg"
+      "default": "xl"
     }
   }
 }
