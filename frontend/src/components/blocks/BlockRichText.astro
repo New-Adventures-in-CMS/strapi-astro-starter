@@ -6,9 +6,10 @@ import { renderMarkdown } from "@/lib/markdown";
 interface Props {
   body: string;
   align?: "left" | "center" | "right" | null;
+  spacing?: "none" | "sm" | "md" | "lg" | "xl";
 }
 
-const { body, align } = Astro.props;
+const { body, align, spacing } = Astro.props;
 const html = renderMarkdown(body);
 const alignClass =
   align === "center"
@@ -18,7 +19,7 @@ const alignClass =
       : undefined;
 ---
 
-<Section spacing="default">
+<Section spacing={spacing ?? "xl"}>
   <Container width="prose" class={alignClass} data-reveal>
     <Prose class={alignClass}>
       <div set:html={html} />

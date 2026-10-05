@@ -14,14 +14,15 @@ interface Props {
   loop?: boolean | null;
   autoplay?: boolean | null;
   width?: "full" | "contained";
+  spacing?: "none" | "sm" | "md" | "lg" | "xl";
 }
 
-const { heading, eyebrow, lead, tone, cards, loop, autoplay, width } = Astro.props;
+const { heading, eyebrow, lead, tone, cards, loop, autoplay, width, spacing } = Astro.props;
 const sectionTone = tone === "dark" ? "dark" : "default";
 const onDark = sectionTone === "dark";
 ---
 
-<Section tone={sectionTone} spacing="default">
+<Section tone={sectionTone} spacing={spacing ?? "xl"}>
   <Container width={width ?? "contained"}>
     <div data-reveal>
       <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="left" onDark={onDark} />

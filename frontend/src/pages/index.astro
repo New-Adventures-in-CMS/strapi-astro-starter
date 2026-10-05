@@ -41,7 +41,7 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
     <>
       {hasBlocks && <BlockRenderer blocks={home.blocks!} />}
       {!hasBlocks && (
-        <Section spacing="default">
+        <Section spacing="lg">
           <Container width="prose">
             <article>
               <h1>{home.title}</h1>
@@ -51,7 +51,7 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
         </Section>
       )}
       {hasBlocks && bodyHtml && (
-        <Section spacing="default">
+        <Section spacing="lg">
           <Container width="prose">
             <article>
               <Prose set:html={bodyHtml} />
@@ -61,7 +61,7 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
       )}
     </>
   ) : (
-    <Section spacing="default">
+    <Section spacing="lg">
       <Container width="default">
         <section class="text-center">
           <Badge tone={cmsError ? "warning" : "info"} appearance="soft" size="sm">

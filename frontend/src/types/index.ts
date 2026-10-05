@@ -64,6 +64,7 @@ export interface BlockRichText {
   __component: "blocks.rich-text";
   body: string;
   align?: "left" | "center" | "right" | null;
+  spacing?: SectionSpacing;
 }
 
 export interface BlockImageText {
@@ -74,6 +75,7 @@ export interface BlockImageText {
   image?: StrapiMedia | null;
   image_position: "left" | "right";
   width?: BlockWidth;
+  spacing?: SectionSpacing;
 }
 
 export interface SharedCard {
@@ -93,6 +95,7 @@ export interface BlockCardGrid {
   tone?: "light" | "dark" | null;
   cards: SharedCard[];
   width?: BlockWidth;
+  spacing?: SectionSpacing;
 }
 
 export interface BlockCarousel {
@@ -105,9 +108,11 @@ export interface BlockCarousel {
   loop?: boolean | null;
   autoplay?: boolean | null;
   width?: BlockWidth;
+  spacing?: SectionSpacing;
 }
 
 export type BlockWidth = "full" | "contained";
+export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 
 export type PageBlock = BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;
 

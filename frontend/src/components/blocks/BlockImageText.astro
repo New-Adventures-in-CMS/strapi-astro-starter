@@ -13,15 +13,16 @@ interface Props {
   image?: StrapiMedia | null;
   image_position: "left" | "right";
   width?: "full" | "contained";
+  spacing?: "none" | "sm" | "md" | "lg" | "xl";
 }
 
-const { heading, eyebrow, body, image, image_position, width } = Astro.props;
+const { heading, eyebrow, body, image, image_position, width, spacing } = Astro.props;
 const imageUrl = image ? strapiMediaUrl(image.url) : null;
 const html = renderMarkdown(body);
 const isImageLeft = image_position === "left";
 ---
 
-<Section spacing="default">
+<Section spacing={spacing ?? "xl"}>
   <Container width={width ?? "contained"}>
     <div
       class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
