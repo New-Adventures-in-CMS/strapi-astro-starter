@@ -98,9 +98,11 @@ export const footerWrapper = tv({
  * - `tone: muted`: muted tone (bg-muted) for visual breathing
  * - `tone: dark`: high-contrast dark background with light text
  *
- * - `spacing: default`: py-24 md:py-32 lg:py-40 (generous vertical padding)
- * - `spacing: sm`: py-16 md:py-20 (smaller sections for lists, grids)
  * - `spacing: none`: py-0 (no vertical padding; for full-bleed media sections)
+ * - `spacing: sm`: compact vertical rhythm
+ * - `spacing: md`: moderate vertical rhythm
+ * - `spacing: lg`: standard vertical rhythm (default)
+ * - `spacing: xl`: generous vertical rhythm
  */
 export const heroContent = tv({
   slots: { wrap: "flex", text: "" },
@@ -150,10 +152,13 @@ export const section = tv({
       dark: "bg-[var(--section-dark-bg)] text-[var(--section-dark-fg)]",
     },
     spacing: {
-      default: "py-24 md:py-32 lg:py-40",
-      sm: "py-16 md:py-20",
+      // BRIDGE — section.padding.* from nsp-ds-tokens; swap to var() at token-emission
       none: "py-0",
+      sm: "py-4 md:py-6 lg:py-8",
+      md: "py-6 md:py-8 lg:py-12",
+      lg: "py-8 md:py-12 lg:py-20",
+      xl: "py-10 md:py-16 lg:py-[120px]",
     },
   },
-  defaultVariants: { tone: "default", spacing: "default" },
+  defaultVariants: { tone: "default", spacing: "lg" },
 });

@@ -31,6 +31,11 @@
       "type": "enumeration",
       "enum": ["full", "contained"],
       "default": "contained"
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "lg"
     }
   }
 }
