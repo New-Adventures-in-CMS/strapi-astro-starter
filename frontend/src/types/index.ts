@@ -111,7 +111,7 @@ export interface BlockCarousel {
   spacing?: SectionSpacing;
 }
 
-export type BlockWidth = "full" | "contained";
+export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 
 export type PageBlock = BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;

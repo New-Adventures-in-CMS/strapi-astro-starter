@@ -1,5 +1,5 @@
 ---
-import type { SharedCard } from "@/types";
+import type { BlockWidth, SectionSpacing, SharedCard } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Card from "./Card.astro";
@@ -10,8 +10,8 @@ interface Props {
   lead?: string | null;
   tone?: "light" | "dark" | null;
   cards: SharedCard[];
-  width?: "full" | "contained";
-  spacing?: "none" | "sm" | "md" | "lg" | "xl";
+  width?: BlockWidth;
+  spacing?: SectionSpacing;
 }
 
 const { heading, eyebrow, lead, tone, cards, width, spacing } = Astro.props;

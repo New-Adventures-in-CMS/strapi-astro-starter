@@ -29,7 +29,7 @@
     },
     "width": {
       "type": "enumeration",
-      "enum": ["full", "contained"],
+      "enum": ["full", "contained", "bleed"],
       "default": "contained"
     },
     "spacing": {

@@ -1,5 +1,64 @@
 import { tv } from "tailwind-variants";
 
+export const imageText = tv({
+  slots: {
+    grid: "grid grid-cols-1 md:grid-cols-2 items-center",
+    imageCol: "",
+    image: "w-full object-cover aspect-[4/3]",
+    textCol: "",
+  },
+  variants: {
+    width: {
+      contained: {
+        grid: "gap-10 md:gap-16",
+        image: "rounded-lg",
+      },
+      full: {
+        grid: "gap-10 md:gap-16",
+        image: "rounded-lg",
+      },
+      bleed: {
+        grid: "gap-0",
+      },
+    },
+    imagePosition: {
+      left: {
+        imageCol: "md:order-1",
+        textCol: "md:order-2",
+      },
+      right: {
+        imageCol: "md:order-2",
+        textCol: "md:order-1",
+      },
+    },
+  },
+  compoundVariants: [
+    // BRIDGE — padding values from nsp-ds-tokens section.padding / page-margin scales
+    // bleed + image left: image flush left, text padded right
+    {
+      width: "bleed",
+      imagePosition: "left",
+      class: {
+        image: "rounded-none",
+        textCol: "px-[var(--page-margin-lg)] md:pl-16 md:pr-20 lg:pl-[120px] lg:pr-[160px]",
+      },
+    },
+    // bleed + image right: image flush right, text padded left
+    {
+      width: "bleed",
+      imagePosition: "right",
+      class: {
+        image: "rounded-none",
+        textCol: "px-[var(--page-margin-lg)] md:pr-16 md:pl-20 lg:pr-[120px] lg:pl-[160px]",
+      },
+    },
+  ],
+  defaultVariants: {
+    width: "contained",
+    imagePosition: "left",
+  },
+});
+
 /**
  * Carousel block variants — peek rail with right-bleed.
  *

@@ -1,10 +1,11 @@
 ---
-import type { StrapiMedia } from "@/types";
+import type { BlockWidth, SectionSpacing, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { renderMarkdown } from "@/lib/markdown";
 import { strapiMediaUrl } from "@/lib/strapi";
+import { imageText } from "./variants";
 
 interface Props {
   heading?: string | null;
@@ -12,36 +13,42 @@ interface Props {
   body: string;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
-  width?: "full" | "contained";
-  spacing?: "none" | "sm" | "md" | "lg" | "xl";
+  width?: BlockWidth;
+  spacing?: SectionSpacing;
 }
 
-const { heading, eyebrow, body, image, image_position, width, spacing } = Astro.props;
+const {
+  heading,
+  eyebrow,
+  body,
+  image,
+  image_position = "left",
+  width = "contained",
+  spacing = "xl",
+} = Astro.props;
+
 const imageUrl = image ? strapiMediaUrl(image.url) : null;
 const html = renderMarkdown(body);
-const isImageLeft = image_position === "left";
+const cv = imageText({ width, imagePosition: image_position });
 ---
 
-<Section spacing={spacing ?? "xl"}>
-  <Container width={width ?? "contained"}>
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
-      data-reveal="stagger"
-    >
-      <div class={isImageLeft ? "md:order-1" : "md:order-2"}>
+<Section spacing={spacing}>
+  <Container width={width}>
+    <div class={cv.grid()} data-reveal="stagger">
+      <div class={cv.imageCol()}>
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={image?.alternativeText || heading || ""}
-            class="w-full rounded-lg object-cover aspect-[4/3]"
+            class={cv.image()}
             width={image?.width}
             height={image?.height}
           />
         ) : (
-          <div class="w-full aspect-[4/3] rounded-lg bg-muted border border-border/40" />
+          <div class:list={[cv.image(), "bg-muted border border-border/40"]} />
         )}
       </div>
-      <div class={isImageLeft ? "md:order-2" : "md:order-1"}>
+      <div class={cv.textCol()}>
         <SectionHeader eyebrow={eyebrow} heading={heading} class="mb-0" />
         <Prose class={heading || eyebrow ? "mt-6" : ""}>
           <div set:html={html} />
