@@ -1,4 +1,6 @@
 import { factories } from "@strapi/strapi";
+import { escapeHtml } from "../utils/escape-html";
+import { isValidEmail } from "../utils/validate-email";
 
 export default factories.createCoreController(
   "api::form-submission.form-submission",
@@ -39,6 +41,14 @@ export default factories.createCoreController(
           errori.push(`Campo '${campo.nome}' obbligatorio`);
         }
       }
+
+      for (const campo of form.campi ?? []) {
+        const val = data[campo.nome];
+        if (campo.__component === "form.campo-email" && val && !isValidEmail(val)) {
+          errori.push(`Campo '${campo.nome}' non è un indirizzo email valido`);
+        }
+      }
+
       if (errori.length > 0) {
         return ctx.badRequest(errori.join(", "));
       }
@@ -55,7 +65,7 @@ export default factories.createCoreController(
       const emailTo = form.emailDestinatario as string | undefined;
       if (emailTo) {
         const righe = Object.entries(data)
-          .map(([k, v]) => `<p><strong>${k}:</strong> ${v}</p>`)
+          .map(([k, v]) => `<p><strong>${escapeHtml(k)}:</strong> ${escapeHtml(v)}</p>`)
           .join("");
         try {
           await strapi.plugins.email.services.email.send({
