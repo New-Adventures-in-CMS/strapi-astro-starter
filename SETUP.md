@@ -122,6 +122,8 @@ npm test          # vitest (unit) — no prereq
 npm run test:e2e  # playwright (e2e) — richiede `npx playwright install chromium` una tantum
 ```
 
+Il CMS usa **vitest** per i test unitari (`cms/package.json` → `"test": "vitest run"`), introdotto con la #50 per coprire escape e validazione server-side dei form submission.
+
 ### Come Header e Footer consumano menu-item
 
 `frontend/src/lib/navigation.ts` è l'unico punto di fetch — Header e Footer importano direttamente:
@@ -568,13 +570,12 @@ Al primo avvio Strapi costruisce l'interfaccia (1-2 min). Poi:
 
 ## Plugin CMS inclusi
 
-| Plugin                                  | Stato                 | Funzione                                                                                   |
-| --------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
-| `@devxcommerce/strapi-plugin-cm-groups` | installato            | Raggruppa collection nell'admin sidebar                                                    |
-| `strapi-plugin-sortable-entries`        | installato            | Drag-and-drop ordinamento nelle liste                                                      |
-| `@strapi/provider-email-nodemailer`     | installato            | Email via SMTP                                                                             |
-| `@strapi/plugin-seo`                    | installato            | Campi SEO (meta title, description, og image) su qualsiasi collection                      |
-| `@strapi/plugin-i18n`                   | bundled, disabilitato | Internazionalizzazione multi-lingua — abilitare subito se serve, difficile aggiungere dopo |
+**Principio: zero plugin di terze parti.** Lo starter usa solo pacchetti core `@strapi/*` e provider ufficiali. Eventuali plugin community vanno valutati caso per caso e aggiunti esplicitamente.
+
+| Plugin                              | Stato                 | Funzione                                                                                   |
+| ----------------------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
+| `@strapi/provider-email-nodemailer` | installato            | Email via SMTP (notifiche form submission)                                                 |
+| `@strapi/plugin-i18n`               | bundled, disabilitato | Internazionalizzazione multi-lingua — abilitare subito se serve, difficile aggiungere dopo |
 
 ### Abilitare i18n
 
@@ -585,10 +586,6 @@ i18n: { enabled: true },
 ```
 
 Poi in ogni collection che deve supportare più lingue: Content-Type Builder → seleziona collection → Advanced Settings → spunta **Enable localization**.
-
-### Usare SEO in una collection
-
-Content-Type Builder → seleziona collection → Add another field → **Component** → cerca `shared.seo`. Il plugin aggiunge automaticamente i campi meta alla collection.
 
 ---
 
@@ -873,10 +870,9 @@ npm run start
 
 ## Gotcha noti
 
-| Problema                                                          | Causa                                                                                                                                                             | Fix                                                                                                                                                                                     |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `env('X', default)` restituisce `''`                              | Variabile presente ma vuota nel `.env`                                                                                                                            | Usa `env('X') \|\| 'default'` oppure rimuovi la variabile dal `.env`                                                                                                                    |
-| Template literal dentro JSX Astro                                 | `Record<T, K>` viene letto come JSX tag                                                                                                                           | Sposta type annotation nel frontmatter                                                                                                                                                  |
-| `TypeError: Cannot read properties of undefined (reading 'kind')` | Spread di `createCoreRouter().routes` dentro oggetto `routes`                                                                                                     | Due file separati nella cartella `routes/`                                                                                                                                              |
-| Warning `No adapter installed`                                    | `output: "server"` senza adapter                                                                                                                                  | `@astrojs/node` già incluso nel boilerplate                                                                                                                                             |
-| `npx @strapi/upgrade minor` → E404 su `@strapi/plugin-seo`        | Il tool tratta tutti i pacchetti `@strapi/*` come core e tenta di portarli alla versione Strapi (es. 5.52.1), ma `@strapi/plugin-seo` esiste solo su versione 2.x | **Prima** di eseguire `@strapi/upgrade`: rimuovi il `^` da `@strapi/plugin-seo` in `cms/package.json` (es. `"2.0.9"` anziché `"^2.0.9"`). Il tool salta i pacchetti già pinnati esatti. |
+| Problema                                                          | Causa                                                         | Fix                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `env('X', default)` restituisce `''`                              | Variabile presente ma vuota nel `.env`                        | Usa `env('X') \|\| 'default'` oppure rimuovi la variabile dal `.env` |
+| Template literal dentro JSX Astro                                 | `Record<T, K>` viene letto come JSX tag                       | Sposta type annotation nel frontmatter                               |
+| `TypeError: Cannot read properties of undefined (reading 'kind')` | Spread di `createCoreRouter().routes` dentro oggetto `routes` | Due file separati nella cartella `routes/`                           |
+| Warning `No adapter installed`                                    | `output: "server"` senza adapter                              | `@astrojs/node` già incluso nel boilerplate                          |
