@@ -26,6 +26,9 @@ export const pageBlocksPopulate = {
       "blocks.carousel": {
         populate: { cards: { populate: { image: true } } },
       },
+      "blocks.form": {
+        populate: { form: { fields: ["slug"] } },
+      },
     },
   },
 } as const;

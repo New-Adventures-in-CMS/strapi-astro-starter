@@ -77,7 +77,53 @@ async function uploadSeedImage(
   }
 }
 
-async function seedDemoPages(strapi: Core.Strapi) {
+async function seedDemoForm(strapi: Core.Strapi): Promise<string | null> {
+  try {
+    const existing = await strapi.documents("api::form.form" as any).findMany({
+      filters: { slug: { $eq: "contatti" } },
+    });
+    if (existing.length > 0) {
+      strapi.log.debug("[seed] Form 'contatti' already exists, skipping");
+      return (existing[0] as any).documentId as string;
+    }
+
+    const form = await strapi.documents("api::form.form" as any).create({
+      data: {
+        nome: "Contatti",
+        slug: "contatti",
+        emailDestinatario: "info@example.com",
+        messaggioSuccesso: "Grazie! Il tuo messaggio è stato inviato.",
+        campi: [
+          {
+            __component: "form.campo-testo",
+            label: "Nome",
+            nome: "nome",
+            required: true,
+          },
+          {
+            __component: "form.campo-email",
+            label: "Email",
+            nome: "email",
+            required: true,
+          },
+          {
+            __component: "form.campo-textarea",
+            label: "Messaggio",
+            nome: "messaggio",
+          },
+        ],
+      },
+    });
+
+    strapi.log.info("[seed] Seeded demo form: contatti");
+    return form.documentId as string;
+  } catch (err) {
+    strapi.log.error("[seed] Seeding demo form failed: " + String(err));
+    return null;
+  }
+}
+
+async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
   try {
     // Upload seed images (idempotent)
     const heroImg = await uploadSeedImage(
@@ -310,17 +356,16 @@ async function seedDemoPages(strapi: Core.Strapi) {
       status: "published",
     });
 
-    // Contacts — replace placeholder with sensible skeleton
+    // Contacts — form block wired to the seeded "contatti" form
     await strapi.documents("api::page.page").create({
       data: {
         title: "Contatti",
         slug: "contacts",
-        seo_desc:
-          "Contact page skeleton. Pair it with a dynamic form from the Strapi admin to collect enquiries.",
+        seo_desc: "Contact page with a working form. Submissions land in the Strapi admin.",
         blocks: [
           {
-            __component: "blocks.rich-text",
-            body: "## Get in touch\n\nReplace this content with a contact form (see `DynamicForm.astro` and the `form` content-type) or a plain description of how to reach you.\n\nForm submissions land in the Strapi admin under **Content Manager → Form submission**.",
+            __component: "blocks.form",
+            form: formDocId ? { connect: [{ documentId: formDocId }] } : undefined,
           },
         ],
       } as any,
@@ -491,10 +536,13 @@ export default {
       strapi.log.info(`[bootstrap] Aggiunti ${created} permessi al ruolo Public`);
     }
 
+    // Seed demo form (idempotent) before pages so contacts can reference it
+    const formDocId = await seedDemoForm(strapi);
+
     // Seed default pages if none exist
     const pageCount = await strapi.documents("api::page.page").count({ status: "published" });
     if (pageCount === 0) {
-      await seedDemoPages(strapi);
+      await seedDemoPages(strapi, formDocId);
     }
 
     await seedMenuItems(strapi);
