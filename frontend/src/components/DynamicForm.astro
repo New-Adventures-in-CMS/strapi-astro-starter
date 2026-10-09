@@ -81,6 +81,7 @@ try {
 const inputClass =
   "w-full h-[44px] px-4 border border-border rounded text-[0.9375rem] font-[inherit] outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:border-primary";
 const labelClass = "block text-[0.8125rem] font-medium mb-1";
+const errorMsgClass = "hidden text-[0.8125rem] text-error mt-1";
 
 function getSpan(larghezza?: Larghezza): string {
   if (larghezza === "half") return "col-span-3";
@@ -105,6 +106,7 @@ function getSpan(larghezza?: Larghezza): string {
       <div class="grid grid-cols-6 gap-4 max-w-[640px]">
         {formDef.campi.map((campo) => {
           const id = "dform-" + slug + "-" + campo.nome;
+          const errId = id + "-error";
           const req = campo.required ?? false;
           const span = getSpan(campo.larghezza);
 
@@ -123,6 +125,7 @@ function getSpan(larghezza?: Larghezza): string {
                   required={req}
                   class={inputClass}
                 />
+                <p id={errId} class={errorMsgClass}></p>
               </div>
             );
           }
@@ -142,6 +145,7 @@ function getSpan(larghezza?: Larghezza): string {
                   required={req}
                   class={inputClass}
                 />
+                <p id={errId} class={errorMsgClass}></p>
               </div>
             );
           }
@@ -161,6 +165,7 @@ function getSpan(larghezza?: Larghezza): string {
                   required={req}
                   class="w-full px-4 py-3 border border-border rounded text-[0.9375rem] font-[inherit] outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:border-primary resize-vertical"
                 />
+                <p id={errId} class={errorMsgClass}></p>
               </div>
             );
           }
@@ -187,24 +192,28 @@ function getSpan(larghezza?: Larghezza): string {
                     <option value={o}>{o}</option>
                   ))}
                 </select>
+                <p id={errId} class={errorMsgClass}></p>
               </div>
             );
           }
 
           if (campo.__component === "form.campo-checkbox") {
             return (
-              <div class={span + " flex items-start gap-2"}>
-                <input
-                  id={id}
-                  type="checkbox"
-                  name={campo.nome}
-                  required={req}
-                  class="mt-[3px] w-4 h-4 flex-shrink-0"
-                />
-                <label for={id} class="text-[0.875rem] leading-[1.4] cursor-pointer">
-                  {campo.label}
-                  {req && " *"}
-                </label>
+              <div class={span + " flex flex-col"}>
+                <div class="flex items-start gap-2">
+                  <input
+                    id={id}
+                    type="checkbox"
+                    name={campo.nome}
+                    required={req}
+                    class="mt-[3px] w-4 h-4 flex-shrink-0"
+                  />
+                  <label for={id} class="text-[0.875rem] leading-[1.4] cursor-pointer">
+                    {campo.label}
+                    {req && " *"}
+                  </label>
+                </div>
+                <p id={errId} class={errorMsgClass}></p>
               </div>
             );
           }
@@ -248,6 +257,18 @@ function getSpan(larghezza?: Larghezza): string {
 
 <script>
   import { PUBLIC_STRAPI_URL } from "astro:env/client";
+  import {
+    isHoneypotFilled,
+    validateForm,
+    watchFields,
+    type FieldDef,
+    type ValidationCode,
+  } from "@/lib/skeleton/form-validation";
+
+  const ERROR_MESSAGES: Record<ValidationCode, string> = {
+    required: "Campo obbligatorio",
+    email: "Indirizzo email non valido",
+  };
 
   document.querySelectorAll<HTMLFormElement>("form[data-slug]").forEach((form) => {
     const slug = form.dataset.slug!;
@@ -257,11 +278,56 @@ function getSpan(larghezza?: Larghezza): string {
     const successEl = document.getElementById(`dform-${slug}-success`)!;
     const successMsgEl = document.getElementById(`dform-${slug}-success-msg`)!;
 
+    const fields: FieldDef[] = [];
+    form
+      .querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+        "input[id], textarea[id], select[id]",
+      )
+      .forEach((el) => {
+        if (el.getAttribute("name") === "website") return;
+        const rules: ValidationCode[] = [];
+        if (el.required) rules.push("required");
+        if (el instanceof HTMLInputElement && el.type === "email") rules.push("email");
+        if (rules.length === 0) return;
+        const errorEl = document.getElementById(el.id + "-error");
+        if (!errorEl) return;
+        fields.push({ el, rules, errorEl });
+      });
+
+    let cleanupWatch: (() => void) | null = null;
+
+    function showError(field: FieldDef, code: ValidationCode): void {
+      field.errorEl.textContent = ERROR_MESSAGES[code];
+      field.errorEl.classList.remove("hidden");
+    }
+
+    function clearError(field: FieldDef): void {
+      field.errorEl.textContent = "";
+      field.errorEl.classList.add("hidden");
+    }
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const honeypot = form.querySelector<HTMLInputElement>("[name=website]")?.value ?? "";
-      if (honeypot) return;
+      if (isHoneypotFilled(form)) return;
+
+      const errors = validateForm(fields);
+      if (errors.length > 0) {
+        for (const { field, code } of errors) {
+          showError(field, code);
+        }
+        cleanupWatch?.();
+        cleanupWatch = watchFields(
+          errors.map((err) => err.field),
+          showError,
+          clearError,
+        );
+        return;
+      }
+
+      for (const field of fields) {
+        clearError(field);
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = "Invio in corso…";

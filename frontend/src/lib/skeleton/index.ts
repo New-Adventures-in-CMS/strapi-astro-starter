@@ -5,3 +5,4 @@ export * from "./scroll-state.js";
 export * from "./carousel.js";
 export * from "./reveal.js";
 export * from "./smooth-scroll.js";
+export * from "./form-validation.js";
