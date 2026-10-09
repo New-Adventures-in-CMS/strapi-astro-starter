@@ -114,7 +114,14 @@ export interface BlockCarousel {
 export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 
-export type PageBlock = BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel;
+export interface BlockForm {
+  __component: "blocks.form";
+  form?: { slug: string } | null;
+  spacing?: SectionSpacing;
+}
+
+export type PageBlock =
+  BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel | BlockForm;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
 import type { SectionTone } from "@/components/layout/variants";

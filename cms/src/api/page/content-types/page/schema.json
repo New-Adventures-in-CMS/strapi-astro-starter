@@ -33,7 +33,8 @@
         "blocks.rich-text",
         "blocks.image-text",
         "blocks.card-grid",
-        "blocks.carousel"
+        "blocks.carousel",
+        "blocks.form"
       ]
     }
   }

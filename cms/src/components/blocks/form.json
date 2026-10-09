@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_forms",
+  "info": {
+    "displayName": "Form",
+    "icon": "file-text",
+    "description": "Embeds a dynamic form from the Form collection"
+  },
+  "options": {},
+  "attributes": {
+    "form": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::form.form"
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "xl"
+    }
+  }
+}
