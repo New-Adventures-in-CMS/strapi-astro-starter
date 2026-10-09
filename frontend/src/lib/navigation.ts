@@ -1,5 +1,6 @@
 import { strapiFind } from "@/lib/strapi";
 import { site, type NavItem } from "@/config/site";
+import type { LinkMode } from "@/types";
 
 export const FOOTER_COLUMNS = ["Prodotto", "Azienda", "Supporto", "Legale"] as const;
 
@@ -9,6 +10,7 @@ export interface MenuItem {
   label: string;
   page?: { slug: string } | null;
   externalUrl?: string | null;
+  linkMode: LinkMode;
   area: "header" | "footer" | "both";
   footerColumn?: "Prodotto" | "Azienda" | "Supporto" | "Legale" | null;
   parent?: { documentId: string } | null;
@@ -21,17 +23,21 @@ export interface FooterData {
 }
 
 function resolveHref(item: MenuItem): { href: string; external: boolean } {
-  if (item.externalUrl) {
-    const isExternal = /^https?:\/\//.test(item.externalUrl);
-    return { href: item.externalUrl, external: isExternal };
+  switch (item.linkMode) {
+    case "external": {
+      if (!item.externalUrl) return { href: "#", external: false };
+      const isExternal = /^https?:\/\//.test(item.externalUrl);
+      return { href: item.externalUrl, external: isExternal };
+    }
+    case "internal":
+    default: {
+      if (!item.page?.slug) return { href: "#", external: false };
+      return {
+        href: item.page.slug === "home" ? "/" : `/${item.page.slug}`,
+        external: false,
+      };
+    }
   }
-  if (item.page?.slug) {
-    return {
-      href: item.page.slug === "home" ? "/" : `/${item.page.slug}`,
-      external: false,
-    };
-  }
-  return { href: "#", external: false };
 }
 
 async function fetchMenuItems(): Promise<MenuItem[] | null> {

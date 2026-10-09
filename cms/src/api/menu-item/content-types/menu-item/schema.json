@@ -45,6 +45,12 @@
       "target": "api::menu-item.menu-item",
       "description": "Voce genitore — lascia vuoto per le voci di primo livello"
     },
+    "linkMode": {
+      "type": "enumeration",
+      "enum": ["internal", "external"],
+      "default": "internal",
+      "required": true
+    },
     "order": {
       "type": "integer",
       "default": 0,

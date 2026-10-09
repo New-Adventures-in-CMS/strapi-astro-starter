@@ -139,6 +139,8 @@ export interface SiteSettings {
   footerTone: FooterTone;
 }
 
+export type LinkMode = "internal" | "external";
+
 // Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"
 export interface Page {
   id: number;

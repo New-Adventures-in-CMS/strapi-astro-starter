@@ -14,6 +14,7 @@ function makeItem(overrides: Record<string, unknown> = {}) {
     id: 1,
     documentId: "doc1",
     label: "Item",
+    linkMode: "internal" as const,
     area: "header" as const,
     order: 1,
     externalUrl: null,
@@ -50,44 +51,57 @@ describe("FOOTER_COLUMNS", () => {
 // resolveHref (tested through getHeaderNav)
 // ---------------------------------------------------------------------------
 describe("resolveHref — via getHeaderNav", () => {
-  it("uses externalUrl when present (relative)", async () => {
-    mockFind.mockResolvedValue(apiResponse([makeItem({ externalUrl: "/servizi/a" })]));
+  it("external mode: uses externalUrl (relative)", async () => {
+    mockFind.mockResolvedValue(
+      apiResponse([makeItem({ linkMode: "external", externalUrl: "/servizi/a" })]),
+    );
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/servizi/a");
     expect(nav[0].external).toBe(false);
   });
 
-  it("marks absolute externalUrl as external: true", async () => {
+  it("external mode: marks absolute externalUrl as external: true", async () => {
     mockFind.mockResolvedValue(
-      apiResponse([makeItem({ externalUrl: "https://docs.astro.build" })]),
+      apiResponse([makeItem({ linkMode: "external", externalUrl: "https://docs.astro.build" })]),
     );
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("https://docs.astro.build");
     expect(nav[0].external).toBe(true);
   });
 
-  it("externalUrl takes precedence over page", async () => {
+  it("external mode: falls back to # when externalUrl absent", async () => {
     mockFind.mockResolvedValue(
-      apiResponse([makeItem({ externalUrl: "/override", page: { slug: "home" } })]),
+      apiResponse([makeItem({ linkMode: "external", externalUrl: null })]),
     );
     const nav = await getHeaderNav();
-    expect(nav[0].href).toBe("/override");
+    expect(nav[0].href).toBe("#");
+    expect(nav[0].external).toBe(false);
   });
 
-  it("uses /slug when page present and no externalUrl", async () => {
+  it("internal mode: uses /slug when page present", async () => {
     mockFind.mockResolvedValue(apiResponse([makeItem({ page: { slug: "about" } })]));
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/about");
     expect(nav[0].external).toBe(false);
   });
 
-  it("maps home slug to /", async () => {
+  it("internal mode: maps home slug to /", async () => {
     mockFind.mockResolvedValue(apiResponse([makeItem({ page: { slug: "home" } })]));
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("/");
   });
 
-  it("falls back to # when no externalUrl and no page", async () => {
+  it("internal mode: ignores externalUrl, uses page", async () => {
+    mockFind.mockResolvedValue(
+      apiResponse([
+        makeItem({ linkMode: "internal", externalUrl: "/override", page: { slug: "home" } }),
+      ]),
+    );
+    const nav = await getHeaderNav();
+    expect(nav[0].href).toBe("/");
+  });
+
+  it("internal mode: falls back to # when no page", async () => {
     mockFind.mockResolvedValue(apiResponse([makeItem()]));
     const nav = await getHeaderNav();
     expect(nav[0].href).toBe("#");
@@ -179,6 +193,7 @@ describe("getHeaderNav", () => {
         makeItem({
           documentId: "child1",
           label: "Servizio A",
+          linkMode: "external" as const,
           area: "header" as const,
           order: 1,
           externalUrl: "/servizi/a",
@@ -187,6 +202,7 @@ describe("getHeaderNav", () => {
         makeItem({
           documentId: "child2",
           label: "Servizio B",
+          linkMode: "external" as const,
           area: "header" as const,
           order: 2,
           externalUrl: "/servizi/b",
@@ -265,6 +281,7 @@ describe("getFooterNav", () => {
       apiResponse([
         makeItem({
           label: "Privacy",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Legale",
           externalUrl: "/privacy",
@@ -273,6 +290,7 @@ describe("getFooterNav", () => {
         makeItem({
           documentId: "d2",
           label: "Termini",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Legale",
           externalUrl: "/termini",
@@ -322,15 +340,19 @@ describe("getFooterNav", () => {
         makeItem({
           documentId: "d2",
           label: "Privacy",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Legale",
+          externalUrl: "/privacy",
           order: 1,
         }),
         makeItem({
           documentId: "d3",
           label: "Widget",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Prodotto",
+          externalUrl: "/widget",
           order: 1,
         }),
       ]),
@@ -347,6 +369,7 @@ describe("getFooterNav", () => {
       apiResponse([
         makeItem({
           label: "Privacy",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Legale",
           externalUrl: "/privacy",
@@ -364,6 +387,7 @@ describe("getFooterNav", () => {
         makeItem({
           documentId: "d2",
           label: "Z",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Azienda",
           externalUrl: "/z",
@@ -372,6 +396,7 @@ describe("getFooterNav", () => {
         makeItem({
           documentId: "d1",
           label: "A",
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Azienda",
           externalUrl: "/a",
@@ -388,6 +413,7 @@ describe("getFooterNav", () => {
     mockFind.mockResolvedValue(
       apiResponse([
         makeItem({
+          linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Legale",
           externalUrl: "/privacy",

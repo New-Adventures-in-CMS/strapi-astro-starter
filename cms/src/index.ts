@@ -395,6 +395,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Home",
+        linkMode: "internal",
         area: "both",
         order: 1,
         page: connectPage("home"),
@@ -405,6 +406,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Chi siamo",
+        linkMode: "internal",
         area: "header",
         order: 2,
         page: connectPage("about"),
@@ -415,6 +417,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     const servizi = await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizi",
+        linkMode: "internal",
         area: "header",
         order: 3,
         page: connectPage("services"),
@@ -425,6 +428,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Contatti",
+        linkMode: "internal",
         area: "both",
         order: 4,
         page: connectPage("contacts"),
@@ -435,6 +439,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Documentazione",
+        linkMode: "external",
         area: "header",
         order: 5,
         externalUrl: "https://docs.astro.build",
@@ -446,6 +451,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizio A",
+        linkMode: "external",
         area: "header",
         order: 1,
         externalUrl: "/servizi/a",
@@ -457,6 +463,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizio B",
+        linkMode: "external",
         area: "header",
         order: 2,
         externalUrl: "/servizi/b",
@@ -469,6 +476,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Privacy",
+        linkMode: "external",
         area: "footer",
         order: 1,
         externalUrl: "/privacy",
@@ -480,6 +488,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Termini",
+        linkMode: "external",
         area: "footer",
         order: 2,
         externalUrl: "/termini",
