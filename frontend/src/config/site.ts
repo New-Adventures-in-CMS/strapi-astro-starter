@@ -113,7 +113,6 @@ export const site: SiteConfig = {
           },
         ],
       },
-      { label: "Pagine", href: "/pagine" },
       { label: "Contatti", href: "/contatti" },
     ],
   },
@@ -123,10 +122,7 @@ export const site: SiteConfig = {
     columns: [
       {
         title: "Navigazione",
-        items: [
-          { label: "Home", href: "/" },
-          { label: "Pagine", href: "/pagine" },
-        ],
+        items: [{ label: "Home", href: "/" }],
       },
       {
         title: "Risorse",

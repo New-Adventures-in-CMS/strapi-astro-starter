@@ -13,7 +13,7 @@ test.describe("Form client-side validation", () => {
   );
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/pagine/contacts");
+    await page.goto("/contacts");
     await expect(page.locator("form#dform-contatti")).toBeVisible();
   });
 
