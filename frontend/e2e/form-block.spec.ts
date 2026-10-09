@@ -13,7 +13,7 @@ test.describe("Form block — contacts page", () => {
   );
 
   test("renders form with nome, email, messaggio fields", async ({ page }) => {
-    await page.goto("/pagine/contacts");
+    await page.goto("/contacts");
     const form = page.locator("form#dform-contatti");
     await expect(form).toBeVisible();
     await expect(page.locator("#dform-contatti-nome")).toBeVisible();

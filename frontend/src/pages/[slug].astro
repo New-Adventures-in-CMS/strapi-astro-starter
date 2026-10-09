@@ -1,5 +1,7 @@
 ---
-// frontend/src/pages/pagine/[slug].astro
+// frontend/src/pages/[slug].astro
+// Catch-all for CMS pages. Static routes (index, esempio, 404, dev/*) take
+// priority — CMS page slugs must not collide with them.
 import Layout from "@/layouts/Layout.astro";
 import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
@@ -10,6 +12,8 @@ import type { Page } from "@/types";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
+
+if (slug === "home") return Astro.redirect("/");
 
 let page: Page | null = null;
 

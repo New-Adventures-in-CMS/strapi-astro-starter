@@ -345,7 +345,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
         title: "Servizi",
         slug: "services",
         seo_desc:
-          "The starter ships with a page skeleton at /pagine/services — use it as a template for landing pages, product pages, or service breakdowns.",
+          "The starter ships with a page skeleton at /services — use it as a template for landing pages, product pages, or service breakdowns.",
         blocks: [
           {
             __component: "blocks.rich-text",

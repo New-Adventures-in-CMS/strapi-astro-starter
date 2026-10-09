@@ -426,7 +426,7 @@ Usa worktree **esterno alla directory del progetto** (skill `superpowers:using-g
 
 ## Content-type Page
 
-Il boilerplate include route SSR `/pagine` e `/pagine/[slug]` che leggono da un content-type `page` in Strapi.
+Il boilerplate include una route SSR catch-all `/{slug}` che legge da un content-type `page` in Strapi.
 
 **Campi richiesti:**
 
@@ -442,6 +442,11 @@ Il boilerplate include route SSR `/pagine` e `/pagine/[slug]` che leggono da un 
 
 **Nota:** per la home, crea una entry con slug `home`. Sul primo avvio il seed
 crea automaticamente `home` e `about` con contenuti demo che usano i blocchi.
+
+**Slug riservati:** la route `[slug].astro` è catch-all alla radice. Le route
+statiche (`index`, `esempio`, `404`, `dev/*`) hanno priorità automatica in Astro,
+ma lo slug `home` è gestito esplicitamente — `/home` redirige a `/`. Non creare
+pagine CMS con slug che coincidono con route statiche esistenti.
 
 ---
 
