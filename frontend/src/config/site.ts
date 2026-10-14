@@ -98,22 +98,9 @@ export const site: SiteConfig = {
   nav: {
     items: [
       { label: "Home", href: "/" },
-      {
-        label: "Prodotto",
-        children: [
-          {
-            label: "Panoramica",
-            href: "/prodotto/panoramica",
-            description: "Cosa è, a chi serve, come è fatto.",
-          },
-          {
-            label: "Funzionalità",
-            href: "/prodotto/funzionalita",
-            description: "Le capacità principali in una schermata.",
-          },
-        ],
-      },
-      { label: "Contatti", href: "/contatti" },
+      { label: "Chi siamo", href: "/about" },
+      { label: "Servizi", href: "/services" },
+      { label: "Contatti", href: "/contacts" },
     ],
   },
   footer: {
@@ -133,6 +120,13 @@ export const site: SiteConfig = {
             external: true,
           },
           { label: "Strapi", href: "https://strapi.io", external: true },
+        ],
+      },
+      {
+        title: "Legale",
+        items: [
+          { label: "Privacy", href: "/privacy" },
+          { label: "Termini", href: "/termini" },
         ],
       },
     ],

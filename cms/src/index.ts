@@ -372,7 +372,49 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       status: "published",
     });
 
-    strapi.log.info("[seed] Seeded demo pages: home, about, services, contacts");
+    // Servizio A
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Servizio A",
+        slug: "servizio-a",
+        body: "Pagina demo per il Servizio A. Sostituisci questo contenuto con la descrizione reale del servizio offerto.",
+      } as any,
+      status: "published",
+    });
+
+    // Servizio B
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Servizio B",
+        slug: "servizio-b",
+        body: "Pagina demo per il Servizio B. Sostituisci questo contenuto con la descrizione reale del servizio offerto.",
+      } as any,
+      status: "published",
+    });
+
+    // Privacy
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Privacy",
+        slug: "privacy",
+        body: "Questa è una pagina segnaposto. Inserisci qui la tua informativa sulla privacy.",
+      } as any,
+      status: "published",
+    });
+
+    // Termini
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Termini",
+        slug: "termini",
+        body: "Questa è una pagina segnaposto. Inserisci qui i tuoi termini e condizioni di servizio.",
+      } as any,
+      status: "published",
+    });
+
+    strapi.log.info(
+      "[seed] Seeded demo pages: home, about, services, contacts, servizio-a, servizio-b, privacy, termini",
+    );
   } catch (err) {
     strapi.log.error("[seed] Seeding demo pages failed: " + String(err));
   }
@@ -451,10 +493,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizio A",
-        linkMode: "external",
+        linkMode: "internal",
         area: "header",
         order: 1,
-        externalUrl: "/servizi/a",
+        page: connectPage("servizio-a"),
         parent: { connect: [{ documentId: servizi.documentId as string }] },
       },
       status: "published",
@@ -463,10 +505,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizio B",
-        linkMode: "external",
+        linkMode: "internal",
         area: "header",
         order: 2,
-        externalUrl: "/servizi/b",
+        page: connectPage("servizio-b"),
         parent: { connect: [{ documentId: servizi.documentId as string }] },
       },
       status: "published",
@@ -476,10 +518,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Privacy",
-        linkMode: "external",
+        linkMode: "internal",
         area: "footer",
         order: 1,
-        externalUrl: "/privacy",
+        page: connectPage("privacy"),
         footerColumn: "Legale",
       },
       status: "published",
@@ -488,10 +530,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Termini",
-        linkMode: "external",
+        linkMode: "internal",
         area: "footer",
         order: 2,
-        externalUrl: "/termini",
+        page: connectPage("termini"),
         footerColumn: "Legale",
       },
       status: "published",
