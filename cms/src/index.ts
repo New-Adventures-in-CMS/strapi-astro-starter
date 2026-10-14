@@ -1,6 +1,7 @@
 import type { Core } from "@strapi/strapi";
 import fs from "node:fs";
 import path from "node:path";
+import { registerMenuItemRequiredIf } from "./api/menu-item/middlewares/required-if";
 
 const PUBLIC_COLLECTION_UIDS: string[] = [
   "api::form.form",
@@ -546,7 +547,9 @@ async function seedMenuItems(strapi: Core.Strapi) {
 }
 
 export default {
-  register() {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    registerMenuItemRequiredIf(strapi);
+  },
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     const publicRole = await strapi.db
