@@ -5,32 +5,27 @@ const { ValidationError } = errors;
 
 const MENU_ITEM_UID = "api::menu-item.menu-item";
 
-/**
- * Payload form: interpret relation as it arrives in create/update params.data
- * (documentId string, { connect }, { set }, null / empty set / disconnect-only → absent)
- */
-function isRelationPresentInPayload(value: unknown): boolean {
-  if (value == null) return false;
-  if (typeof value === "string" && value.length > 0) return true;
-  if (typeof value === "number") return true;
-  if (typeof value === "object" && value !== null) {
-    const obj = value as Record<string, any>;
-    if ("documentId" in obj) return true;
-    if ("id" in obj && obj.id != null) return true;
-    if ("set" in obj) {
-      if (obj.set == null || (Array.isArray(obj.set) && obj.set.length === 0)) return false;
-      return true;
-    }
-    if ("disconnect" in obj && !("connect" in obj)) return false;
-    if ("connect" in obj && Array.isArray(obj.connect) && obj.connect.length > 0) return true;
+type RelationIntent = "present" | "absent" | "untouched";
+
+function payloadRelationIntent(v: unknown): RelationIntent {
+  if (v === undefined || v === null) return "untouched";
+  if (typeof v === "string") return "present";
+  if (typeof v === "number") return "present";
+  if (Array.isArray(v)) return v.length ? "present" : "untouched";
+  if (typeof v === "object") {
+    const o = v as Record<string, any>;
+    const hasConnect = Array.isArray(o.connect) && o.connect.length > 0;
+    const hasSet = Array.isArray(o.set);
+    const hasDisconnect = Array.isArray(o.disconnect) && o.disconnect.length > 0;
+    if (hasConnect) return "present";
+    if (hasSet) return o.set.length ? "present" : "absent";
+    if (hasDisconnect) return "absent";
+    if ("documentId" in o || "id" in o) return "present";
+    return "untouched";
   }
-  return false;
+  return "untouched";
 }
 
-/**
- * Stored/populated form: interpret relation as it comes back from a DB query
- * with populate (entity object with id/documentId, or array for *ToMany).
- */
 function isStoredRelationPresent(value: unknown): boolean {
   if (value == null) return false;
   if (Array.isArray(value)) return value.length > 0;
@@ -44,6 +39,17 @@ function isStoredRelationPresent(value: unknown): boolean {
 function isAbsoluteUrl(value: unknown): value is string {
   if (typeof value !== "string" || value.trim() === "") return false;
   return /^(https?:\/\/.+|mailto:.+|tel:.+)/i.test(value.trim());
+}
+
+function resolvePagePresent(intent: RelationIntent, storedPage: unknown): boolean {
+  if (intent === "present") return true;
+  if (intent === "absent") return false;
+  return isStoredRelationPresent(storedPage);
+}
+
+function resolveExternalUrl(dataUrl: unknown, storedUrl: unknown): unknown {
+  if (dataUrl === undefined) return storedUrl;
+  return dataUrl;
 }
 
 function validateState(linkMode: string | undefined, hasPage: boolean, externalUrl: unknown) {
@@ -66,7 +72,9 @@ export function registerMenuItemRequiredIf(strapi: Core.Strapi) {
     if (action === "create") {
       const data = params?.data;
       if (data) {
-        validateState(data.linkMode, isRelationPresentInPayload(data.page), data.externalUrl);
+        const intent = payloadRelationIntent(data.page);
+        const hasPage = intent === "present";
+        validateState(data.linkMode, hasPage, data.externalUrl);
       }
     } else if (action === "update") {
       const { documentId, data } = params ?? {};
@@ -76,19 +84,10 @@ export function registerMenuItemRequiredIf(strapi: Core.Strapi) {
           populate: { page: true },
         });
         if (draft) {
-          const pageInData = "page" in data;
-          const branchUsed = pageInData ? "payload" : "stored";
-          const draftPagePresent = isStoredRelationPresent(draft.page);
-          strapi.log.info(
-            `[required-if] update pageInData=${pageInData} data.page=${JSON.stringify(data.page)} draftPagePresent=${draftPagePresent} branchUsed=${branchUsed}`,
-          );
-          strapi.log.info(`[required-if] update draft.page=${JSON.stringify(draft.page)}`);
           const effectiveLinkMode = data.linkMode ?? draft.linkMode;
-          const hasPage = !pageInData
-            ? isStoredRelationPresent(draft.page)
-            : isRelationPresentInPayload(data.page);
-          const effectiveUrl =
-            data.externalUrl !== undefined ? data.externalUrl : draft.externalUrl;
+          const intent = payloadRelationIntent(data.page);
+          const hasPage = resolvePagePresent(intent, draft.page);
+          const effectiveUrl = resolveExternalUrl(data.externalUrl, draft.externalUrl);
           validateState(effectiveLinkMode, hasPage, effectiveUrl);
         }
       }
@@ -100,11 +99,7 @@ export function registerMenuItemRequiredIf(strapi: Core.Strapi) {
           populate: { page: true },
         });
         if (draft) {
-          const hasPage = isStoredRelationPresent(draft.page);
-          strapi.log.info(
-            `[required-if] publish draft.page=${JSON.stringify(draft.page)} hasPage=${hasPage}`,
-          );
-          validateState(draft.linkMode, hasPage, draft.externalUrl);
+          validateState(draft.linkMode, isStoredRelationPresent(draft.page), draft.externalUrl);
         }
       }
     }
