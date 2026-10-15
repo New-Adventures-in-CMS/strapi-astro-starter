@@ -1,17 +1,37 @@
+# dipendenze e output di build
 node_modules
+**/node_modules
 dist
-build
+**/dist
 .astro
-cms/.tmp
+**/.astro
 cms/build
+cms/.strapi*
 cms/dist
-cms/.strapi
+
+# runtime / dati / media
+.tmp
+**/.tmp
+*.db
+cms/public/uploads
+
+# schemi generati da Strapi (riscritti da Strapi: non formattare, evita ping-pong)
+cms/src/components/**/*.json
+cms/src/api/**/content-types/**/*.json
+
+# output di test / minificati (generati)
 coverage
 playwright-report
 test-results
 **/*.min.*
-package-lock.json
 
-# Strapi-generated schemas (owned by Strapi; it re-serializes them on schema change)
-cms/src/components/**/*.json
-cms/src/api/**/content-types/**/*.json
+# generati
+package-lock.json
+**/package-lock.json
+
+# repo playbook annidato (gestito a parte)
+docs
+
+# documentazione: esclusa da questo pass (reversibile)
+*.md
+**/*.md
