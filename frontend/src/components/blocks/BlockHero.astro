@@ -151,13 +151,13 @@ function slideImageUrl(s: HeroSlide) {
                       {slide.eyebrow}
                     </p>
                   )}
-                  <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+                  <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
                     {slide.heading}
                   </h1>
                   {slide.subheading && (
                     <p
                       class:list={[
-                        "mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+                        "mt-6 text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
                         a.includes("left") && "mr-auto text-left",
                         a.includes("center") && "mx-auto text-center",
                         a.includes("right") && "ml-auto text-right",
@@ -256,13 +256,13 @@ function slideImageUrl(s: HeroSlide) {
             {staticSlide.eyebrow}
           </p>
         )}
-        <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+        <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
           {staticSlide.heading}
         </h1>
         {staticSlide.subheading && (
           <p
             class:list={[
-              "mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+              "mt-6 text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
               staticAlign.includes("left") && "mr-auto text-left",
               staticAlign.includes("center") && "mx-auto text-center",
               staticAlign.includes("right") && "ml-auto text-right",
