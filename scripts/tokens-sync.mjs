@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Syncs design tokens from nsp-ds-tokens into starwind.css.
- * Regions: primitive colors (core/color.json), responsive spacing (semantic/layout.json).
+ * Regions: primitive colors (core/color.json), responsive spacing (semantic/layout.json),
+ *          responsive type-size (responsive/type-size.json).
  * Only built-in Node.js modules. No npm dependencies.
  * Maintainer-only: requires access to NSP-Design-System-Tokens.
  * Usage: node scripts/tokens-sync.mjs [--check]
@@ -27,6 +28,9 @@ const S_DARK_END = "/* <<< tokens:sync END (dark) */";
 const S_SPACING_START =
   "/* >>> tokens:sync START (spacing) — from nsp-ds-tokens semantic/layout.json — DO NOT EDIT */";
 const S_SPACING_END = "/* <<< tokens:sync END (spacing) */";
+const S_TYPE_SIZE_START =
+  "/* >>> tokens:sync START (type-size) — from nsp-ds-tokens responsive/type-size.json — DO NOT EDIT */";
+const S_TYPE_SIZE_END = "/* <<< tokens:sync END (type-size) */";
 const INDENT = "  ";
 const SIZE_ORDER = ["sm", "md", "lg", "xl", "2xl"];
 
@@ -165,9 +169,9 @@ try {
     const bpJson = JSON.parse(
       readFileSync(join(tmpDir, "tokens", "core", "breakpoints.json"), "utf8"),
     );
-    const bpRoot = bpJson.breakpoints ?? bpJson;
-    const tabletNode = bpRoot.tablet ?? bpRoot.md;
-    const desktopNode = bpRoot.desktop ?? bpRoot.lg;
+    const thresholds = bpJson.breakpoint?.threshold;
+    const tabletNode = thresholds?.tablet;
+    const desktopNode = thresholds?.desktop;
     if (tabletNode?.$value && desktopNode?.$value) {
       BREAKPOINTS.tablet = parseInt(tabletNode.$value);
       BREAKPOINTS.desktop = parseInt(desktopNode.$value);
@@ -254,6 +258,85 @@ try {
 
   const spacingBlock = buildSpacing();
 
+  // ── TYPE-SIZE TOKENS ────────────────────────────────────────────────────
+
+  const typeSizeJson = JSON.parse(
+    readFileSync(join(tmpDir, "tokens", "responsive", "type-size.json"), "utf8"),
+  );
+  const fontJson = JSON.parse(readFileSync(join(tmpDir, "tokens", "core", "font.json"), "utf8"));
+
+  function resolveFontRef(value, context) {
+    const m = value.match(/^\{font\.size\.(.+)\}$/);
+    if (!m) return value;
+    const key = m[1];
+    const node = fontJson.font?.size?.[key];
+    if (!node?.$value) {
+      console.error(`Error: font.size.${key} not found in font.json (ref by ${context})`);
+      process.exit(1);
+    }
+    return node.$value;
+  }
+
+  function pxToRem(pxStr) {
+    const num = parseFloat(pxStr);
+    return `${num / 16}rem`;
+  }
+
+  const TYPE_SIZE_ROLES = [
+    "display",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "body-large",
+    "body",
+    "body-small",
+  ];
+
+  const typeSizeVars = [];
+  const tsRoot = typeSizeJson["type-size"];
+  for (const role of TYPE_SIZE_ROLES) {
+    const node = tsRoot[role];
+    if (!node) {
+      console.error(`Error: type-size.${role} not found in type-size.json`);
+      process.exit(1);
+    }
+    const modes = getModes(node);
+    if (!modes?.mobile || !modes?.tablet || !modes?.desktop) {
+      console.error(`Error: type-size.${role} missing mobile/tablet/desktop modes`);
+      process.exit(1);
+    }
+    const ctx = `type-size.${role}`;
+    typeSizeVars.push({
+      name: `fs-${role}`,
+      mobile: pxToRem(modes.mobile),
+      tablet: pxToRem(modes.tablet),
+      desktop: pxToRem(resolveFontRef(modes.desktop, ctx)),
+    });
+  }
+
+  function buildTypeSize() {
+    const lines = [];
+    lines.push(":root {");
+    for (const v of typeSizeVars) lines.push(`${INDENT}--${v.name}: ${v.mobile};`);
+    lines.push("}");
+    lines.push(`@media (min-width: ${BREAKPOINTS.tablet}px) {`);
+    lines.push("  :root {");
+    for (const v of typeSizeVars) lines.push(`    --${v.name}: ${v.tablet};`);
+    lines.push("  }");
+    lines.push("}");
+    lines.push(`@media (min-width: ${BREAKPOINTS.desktop}px) {`);
+    lines.push("  :root {");
+    for (const v of typeSizeVars) lines.push(`    --${v.name}: ${v.desktop};`);
+    lines.push("  }");
+    lines.push("}");
+    return lines.join("\n");
+  }
+
+  const typeSizeBlock = buildTypeSize();
+
   // ── SPLICE + GUARDS ─────────────────────────────────────────────────────
 
   function spliceRegion(css, startSentinel, endSentinel, content) {
@@ -273,7 +356,8 @@ try {
   function applySync(css) {
     let result = spliceRegion(css, S_ROOT_START, S_ROOT_END, lightBlock);
     result = spliceRegion(result, S_DARK_START, S_DARK_END, darkBlock);
-    return spliceRegion(result, S_SPACING_START, S_SPACING_END, spacingBlock);
+    result = spliceRegion(result, S_SPACING_START, S_SPACING_END, spacingBlock);
+    return spliceRegion(result, S_TYPE_SIZE_START, S_TYPE_SIZE_END, typeSizeBlock);
   }
 
   const originalCss = readFileSync(targetPath, "utf8");
@@ -389,7 +473,48 @@ try {
     }
   }
 
-  const total = colorEntries.length + spacingEntries.length;
+  // G1c: type-size
+  function extractTypeSizeBlocks(css) {
+    const startIdx = css.indexOf(S_TYPE_SIZE_START);
+    const endIdx = css.indexOf(S_TYPE_SIZE_END);
+    const afterStart = css.indexOf("\n", startIdx) + 1;
+    const beforeEnd = css.lastIndexOf("\n", endIdx) + 1;
+    const region = css.substring(afterStart, beforeEnd);
+    const blocks = { mobile: {}, tablet: {}, desktop: {} };
+    let currentMode = "mobile";
+    for (const line of region.split("\n")) {
+      const mqMatch = line.match(/@media\s*\(min-width:\s*(\d+)px\)/);
+      if (mqMatch) {
+        currentMode = parseInt(mqMatch[1]) === BREAKPOINTS.tablet ? "tablet" : "desktop";
+        continue;
+      }
+      const varMatch = line.match(/--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/);
+      if (varMatch) {
+        blocks[currentMode][varMatch[1]] = varMatch[2].trim().toLowerCase();
+      }
+    }
+    return blocks;
+  }
+
+  const writtenTypeSize = extractTypeSizeBlocks(writtenCss);
+  const typeSizeEntries = [];
+  for (const v of typeSizeVars) {
+    typeSizeEntries.push([v.name, "mobile", v.mobile]);
+    typeSizeEntries.push([v.name, "tablet", v.tablet]);
+    typeSizeEntries.push([v.name, "desktop", v.desktop]);
+  }
+  for (const [varName, mode, sourceVal] of typeSizeEntries) {
+    const written = writtenTypeSize[mode]?.[varName];
+    if (written == null || written !== sourceVal.toLowerCase()) {
+      console.error(
+        `DIFF: --${varName} (${mode}): source="${sourceVal}"` +
+          ` written="${written ?? "NOT FOUND"}"`,
+      );
+      diffs++;
+    }
+  }
+
+  const total = colorEntries.length + spacingEntries.length + typeSizeEntries.length;
   if (diffs > 0) {
     console.error(`G1: STOP — ${total} comparisons, ${diffs} differences`);
     process.exit(1);
