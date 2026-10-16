@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Syncs primitive color tokens from nsp-ds-tokens into starwind.css.
+ * Syncs design tokens from nsp-ds-tokens into starwind.css.
+ * Regions: primitive colors (core/color.json), responsive spacing (semantic/layout.json).
  * Only built-in Node.js modules. No npm dependencies.
  * Maintainer-only: requires access to NSP-Design-System-Tokens.
  * Usage: node scripts/tokens-sync.mjs [--check]
@@ -23,7 +24,11 @@ const S_ROOT_END = "/* <<< tokens:sync END */";
 const S_DARK_START =
   "/* >>> tokens:sync START (dark) — generated from nsp-ds-tokens core/color.json — DO NOT EDIT */";
 const S_DARK_END = "/* <<< tokens:sync END (dark) */";
+const S_SPACING_START =
+  "/* >>> tokens:sync START (spacing) — from nsp-ds-tokens semantic/layout.json — DO NOT EDIT */";
+const S_SPACING_END = "/* <<< tokens:sync END (spacing) */";
 const INDENT = "  ";
+const SIZE_ORDER = ["sm", "md", "lg", "xl", "2xl"];
 
 // 1. Verify git
 const gitCheck = spawnSync("git", ["--version"], { encoding: "utf8" });
@@ -67,22 +72,22 @@ try {
     process.exit(1);
   }
 
-  // 4. Read color.json
-  const colorJson = JSON.parse(readFileSync(join(tmpDir, "tokens", "core", "color.json"), "utf8"));
-
   function getModes(node) {
     return node?.["$extensions"]?.["com.figma.modes"];
   }
 
   function mustGet(dotPath, node) {
     if (node == null || node["$value"] == null) {
-      console.error(`Error: ${dotPath} missing $value in color.json`);
+      console.error(`Error: ${dotPath} missing $value`);
       process.exit(1);
     }
     return node["$value"];
   }
 
-  // Gray ramps (1–12): moded
+  // ── COLOR TOKENS ────────────────────────────────────────────────────────
+
+  const colorJson = JSON.parse(readFileSync(join(tmpDir, "tokens", "core", "color.json"), "utf8"));
+
   const grayLight = {};
   const grayDark = {};
   for (let n = 1; n <= 12; n++) {
@@ -100,7 +105,6 @@ try {
     grayDark[n] = modes.dark;
   }
 
-  // Flat (single-mode) values
   const blackAlphaA2 = mustGet("color.black-alpha.a2", colorJson.color?.["black-alpha"]?.a2);
   const white = mustGet("color.white", colorJson.color?.white);
   const black = mustGet("color.black", colorJson.color?.black);
@@ -111,7 +115,6 @@ try {
   const green9 = mustGet("color.green.9", green9Node);
   const orange9 = mustGet("color.orange.9", orange9Node);
 
-  // Assert status-9 mode-invariance
   for (const [name, node] of [
     ["red.9", red9Node],
     ["green.9", green9Node],
@@ -120,13 +123,13 @@ try {
     const modes = getModes(node);
     if (modes && modes.light !== modes.dark) {
       console.error(
-        `STOP: color.${name} light (${modes.light}) !== dark (${modes.dark}) — status anchors must be mode-invariant.`,
+        `STOP: color.${name} light (${modes.light}) !== dark (${modes.dark})` +
+          ` — status anchors must be mode-invariant.`,
       );
       process.exit(1);
     }
   }
 
-  // 5. Build CSS blocks
   function buildLight() {
     const lines = [];
     for (let n = 1; n <= 12; n++) lines.push(`${INDENT}--gray-${n}: ${grayLight[n]};`);
@@ -148,7 +151,111 @@ try {
   const lightBlock = buildLight();
   const darkBlock = buildDark();
 
-  // 6. Splice helper: replaces content between start and end sentinel lines
+  // ── SPACING TOKENS ──────────────────────────────────────────────────────
+
+  const layoutJson = JSON.parse(
+    readFileSync(join(tmpDir, "tokens", "semantic", "layout.json"), "utf8"),
+  );
+  const spacingJson = JSON.parse(
+    readFileSync(join(tmpDir, "tokens", "core", "spacing.json"), "utf8"),
+  );
+
+  let BREAKPOINTS = { tablet: 768, desktop: 1024 };
+  try {
+    const bpJson = JSON.parse(
+      readFileSync(join(tmpDir, "tokens", "core", "breakpoints.json"), "utf8"),
+    );
+    const bpRoot = bpJson.breakpoints ?? bpJson;
+    const tabletNode = bpRoot.tablet ?? bpRoot.md;
+    const desktopNode = bpRoot.desktop ?? bpRoot.lg;
+    if (tabletNode?.$value && desktopNode?.$value) {
+      BREAKPOINTS.tablet = parseInt(tabletNode.$value);
+      BREAKPOINTS.desktop = parseInt(desktopNode.$value);
+      console.log(
+        `Breakpoints: from core/breakpoints.json` +
+          ` (tablet: ${BREAKPOINTS.tablet}, desktop: ${BREAKPOINTS.desktop})`,
+      );
+    } else {
+      console.log("Breakpoints: core/breakpoints.json found but unusable; using defaults");
+    }
+  } catch {
+    console.log(
+      `Breakpoints: core/breakpoints.json not found; defaults` +
+        ` (${BREAKPOINTS.tablet}/${BREAKPOINTS.desktop})`,
+    );
+  }
+
+  function resolveRef(value, context) {
+    const m = value.match(/^\{spacing\.(.+)\}$/);
+    if (!m) return value;
+    const key = m[1];
+    const node = spacingJson.spacing?.[key];
+    if (!node?.$value) {
+      console.error(`Error: spacing.${key} not found in spacing.json (ref by ${context})`);
+      process.exit(1);
+    }
+    return node.$value;
+  }
+
+  const FAMILIES = [
+    { accessor: (j) => j["page-margin"], prefix: "page-margin" },
+    { accessor: (j) => j["section-gap"], prefix: "section-gap" },
+    { accessor: (j) => j["section"]?.["padding"], prefix: "section-padding" },
+  ];
+
+  const spacingVars = [];
+  for (const { accessor, prefix } of FAMILIES) {
+    const group = accessor(layoutJson);
+    if (!group) {
+      console.error(`Error: ${prefix} not found in layout.json`);
+      process.exit(1);
+    }
+    const sizes = Object.keys(group)
+      .filter((k) => !k.startsWith("$"))
+      .sort((a, b) => {
+        const ia = SIZE_ORDER.indexOf(a);
+        const ib = SIZE_ORDER.indexOf(b);
+        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+      });
+    for (const size of sizes) {
+      const node = group[size];
+      const modes = getModes(node);
+      if (!modes?.mobile || !modes?.tablet || !modes?.desktop) {
+        console.error(`Error: ${prefix}.${size} missing mobile/tablet/desktop modes`);
+        process.exit(1);
+      }
+      const ctx = `${prefix}.${size}`;
+      spacingVars.push({
+        name: `${prefix}-${size}`,
+        mobile: resolveRef(modes.mobile, ctx),
+        tablet: resolveRef(modes.tablet, ctx),
+        desktop: resolveRef(modes.desktop, ctx),
+      });
+    }
+  }
+
+  function buildSpacing() {
+    const lines = [];
+    lines.push(":root {");
+    for (const v of spacingVars) lines.push(`${INDENT}--${v.name}: ${v.mobile};`);
+    lines.push("}");
+    lines.push(`@media (min-width: ${BREAKPOINTS.tablet}px) {`);
+    lines.push("  :root {");
+    for (const v of spacingVars) lines.push(`    --${v.name}: ${v.tablet};`);
+    lines.push("  }");
+    lines.push("}");
+    lines.push(`@media (min-width: ${BREAKPOINTS.desktop}px) {`);
+    lines.push("  :root {");
+    for (const v of spacingVars) lines.push(`    --${v.name}: ${v.desktop};`);
+    lines.push("  }");
+    lines.push("}");
+    return lines.join("\n");
+  }
+
+  const spacingBlock = buildSpacing();
+
+  // ── SPLICE + GUARDS ─────────────────────────────────────────────────────
+
   function spliceRegion(css, startSentinel, endSentinel, content) {
     const startIdx = css.indexOf(startSentinel);
     const endIdx = css.indexOf(endSentinel);
@@ -158,14 +265,15 @@ try {
       if (endIdx === -1) console.error(`  Missing END:   ${endSentinel}`);
       process.exit(1);
     }
-    const afterStart = css.indexOf("\n", startIdx) + 1; // first char after start-sentinel line
-    const beforeEnd = css.lastIndexOf("\n", endIdx) + 1; // first char of end-sentinel line
+    const afterStart = css.indexOf("\n", startIdx) + 1;
+    const beforeEnd = css.lastIndexOf("\n", endIdx) + 1;
     return css.substring(0, afterStart) + content + "\n" + css.substring(beforeEnd);
   }
 
   function applySync(css) {
     let result = spliceRegion(css, S_ROOT_START, S_ROOT_END, lightBlock);
-    return spliceRegion(result, S_DARK_START, S_DARK_END, darkBlock);
+    result = spliceRegion(result, S_DARK_START, S_DARK_END, darkBlock);
+    return spliceRegion(result, S_SPACING_START, S_SPACING_END, spacingBlock);
   }
 
   const originalCss = readFileSync(targetPath, "utf8");
@@ -193,7 +301,8 @@ try {
   // Write
   writeFileSync(targetPath, newCss, "utf8");
 
-  // G1: re-read written file, re-extract values, compare with source
+  // G1: re-read written file, extract and compare every emitted value
+
   function extractRegion(css, startSentinel, endSentinel) {
     const startIdx = css.indexOf(startSentinel);
     const endIdx = css.indexOf(endSentinel);
@@ -209,11 +318,35 @@ try {
     return vars;
   }
 
+  function extractSpacingBlocks(css) {
+    const startIdx = css.indexOf(S_SPACING_START);
+    const endIdx = css.indexOf(S_SPACING_END);
+    const afterStart = css.indexOf("\n", startIdx) + 1;
+    const beforeEnd = css.lastIndexOf("\n", endIdx) + 1;
+    const region = css.substring(afterStart, beforeEnd);
+    const blocks = { mobile: {}, tablet: {}, desktop: {} };
+    let currentMode = "mobile";
+    for (const line of region.split("\n")) {
+      const mqMatch = line.match(/@media\s*\(min-width:\s*(\d+)px\)/);
+      if (mqMatch) {
+        currentMode = parseInt(mqMatch[1]) === BREAKPOINTS.tablet ? "tablet" : "desktop";
+        continue;
+      }
+      const varMatch = line.match(/--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/);
+      if (varMatch) {
+        blocks[currentMode][varMatch[1]] = varMatch[2].trim().toLowerCase();
+      }
+    }
+    return blocks;
+  }
+
   const writtenCss = readFileSync(targetPath, "utf8");
+
+  // G1a: color
   const writtenLight = extractRegion(writtenCss, S_ROOT_START, S_ROOT_END);
   const writtenDark = extractRegion(writtenCss, S_DARK_START, S_DARK_END);
 
-  const sourceEntries = [
+  const colorEntries = [
     ...Array.from({ length: 12 }, (_, i) => [`gray-${i + 1}`, "light", grayLight[i + 1]]),
     ...Array.from({ length: 12 }, (_, i) => [`gray-${i + 1}`, "dark", grayDark[i + 1]]),
     ["gray-a2", "light", blackAlphaA2],
@@ -225,18 +358,38 @@ try {
   ];
 
   let diffs = 0;
-  for (const [varName, block, sourceVal] of sourceEntries) {
+  for (const [varName, block, sourceVal] of colorEntries) {
     const pool = block === "dark" ? writtenDark : writtenLight;
     const written = pool[varName];
     if (written == null || written !== sourceVal.toLowerCase()) {
       console.error(
-        `DIFF: --${varName} (${block}): source="${sourceVal}" written="${written ?? "NOT FOUND"}"`,
+        `DIFF: --${varName} (${block}): source="${sourceVal}"` +
+          ` written="${written ?? "NOT FOUND"}"`,
       );
       diffs++;
     }
   }
 
-  const total = sourceEntries.length;
+  // G1b: spacing
+  const writtenSpacing = extractSpacingBlocks(writtenCss);
+  const spacingEntries = [];
+  for (const v of spacingVars) {
+    spacingEntries.push([v.name, "mobile", v.mobile]);
+    spacingEntries.push([v.name, "tablet", v.tablet]);
+    spacingEntries.push([v.name, "desktop", v.desktop]);
+  }
+  for (const [varName, mode, sourceVal] of spacingEntries) {
+    const written = writtenSpacing[mode]?.[varName];
+    if (written == null || written !== sourceVal.toLowerCase()) {
+      console.error(
+        `DIFF: --${varName} (${mode}): source="${sourceVal}"` +
+          ` written="${written ?? "NOT FOUND"}"`,
+      );
+      diffs++;
+    }
+  }
+
+  const total = colorEntries.length + spacingEntries.length;
   if (diffs > 0) {
     console.error(`G1: STOP — ${total} comparisons, ${diffs} differences`);
     process.exit(1);

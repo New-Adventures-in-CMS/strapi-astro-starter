@@ -189,23 +189,51 @@
   --popover: var(--gray-3);
 }
 
-/* BRIDGE-START page-margin — TEMP finché lo stadio token-emission non emette i token
-   semantici responsivi da nsp-ds-tokens. Valori da page-margin.lg (v0.4.2). Quando il sync
-   emetterà --page-margin-lg, CANCELLARE questo intero blocco: il consumer non cambia. */
+/* >>> tokens:sync START (spacing) — from nsp-ds-tokens semantic/layout.json — DO NOT EDIT */
 :root {
+  --page-margin-sm: 16px;
+  --page-margin-md: 16px;
   --page-margin-lg: 16px;
+  --section-gap-sm: 24px;
+  --section-gap-md: 32px;
+  --section-gap-lg: 48px;
+  --section-padding-sm: 16px;
+  --section-padding-md: 24px;
+  --section-padding-lg: 32px;
+  --section-padding-xl: 40px;
+  --section-padding-2xl: 48px;
 }
 @media (min-width: 768px) {
   :root {
+    --page-margin-sm: 16px;
+    --page-margin-md: 24px;
     --page-margin-lg: 32px;
+    --section-gap-sm: 32px;
+    --section-gap-md: 48px;
+    --section-gap-lg: 80px;
+    --section-padding-sm: 24px;
+    --section-padding-md: 32px;
+    --section-padding-lg: 48px;
+    --section-padding-xl: 64px;
+    --section-padding-2xl: 80px;
   }
 }
 @media (min-width: 1024px) {
   :root {
+    --page-margin-sm: 32px;
+    --page-margin-md: 64px;
     --page-margin-lg: 80px;
+    --section-gap-sm: 64px;
+    --section-gap-md: 96px;
+    --section-gap-lg: 128px;
+    --section-padding-sm: 32px;
+    --section-padding-md: 48px;
+    --section-padding-lg: 80px;
+    --section-padding-xl: 120px;
+    --section-padding-2xl: 160px;
   }
 }
-/* BRIDGE-END page-margin */
+/* <<< tokens:sync END (spacing) */
 
 @layer base {
   /* Global reset */
