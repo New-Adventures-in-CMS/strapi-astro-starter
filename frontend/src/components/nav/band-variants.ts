@@ -22,14 +22,19 @@ export const navigationMenuBandPopup = tv({
     "pointer-events-auto w-full!",
     "bg-background text-foreground shadow-lg",
     "data-[state=closed]:pointer-events-none",
-    "data-starting-style:opacity-0 data-ending-style:opacity-0",
-    "transition-opacity duration-[0.25s] ease-out data-instant:transition-none",
+    "data-starting-style:h-0! data-ending-style:h-0!",
+    "transition-[height] duration-[360ms] ease-out",
+    "data-ending-style:duration-[200ms]",
+    "motion-reduce:transition-none motion-reduce:duration-0",
   ],
 });
 
 export const navigationMenuBandViewport = tv({
   base: [
     "relative! w-full! overflow-hidden",
-    "transition-[height] duration-[0.25s] ease-out data-instant:transition-none",
+    "data-starting-style:h-0! data-ending-style:h-0!",
+    "transition-[height] duration-[360ms] ease-out",
+    "data-ending-style:duration-[200ms]",
+    "motion-reduce:transition-none motion-reduce:duration-0",
   ],
 });
