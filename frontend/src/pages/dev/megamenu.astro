@@ -25,7 +25,9 @@ import {
       data-hidden="false"
     >
       <Container width="contained" class="flex items-center justify-between py-5">
-        <span class="text-sm font-semibold">fixture</span>
+        <a href="/" class="text-sm font-semibold">
+          fixture
+        </a>
         <nav aria-label="Navigazione principale">
           <NavigationMenuBand size="sm">
             <NavigationMenuList>
@@ -61,6 +63,10 @@ import {
         </nav>
       </Container>
     </header>
+    <script>
+      import { initPolestar } from "@/components/nav/polestar";
+      initPolestar();
+    </script>
     <main class="px-6 pt-40">
       <p class="text-muted-foreground max-w-prose text-sm">
         Fixture isolata per misurare il piazzamento della banda megamenu. Apri la voce, misura in

@@ -250,6 +250,11 @@ const isActive = (href: string | undefined): boolean =>
     }
   </script>}
 
+  <!-- Polestar: keep megamenu open while cursor stays on header -->
+  <script>
+    import { initPolestar } from "@/components/nav/polestar";
+    initPolestar();
+  </script>
   <!-- Auto-hide: directional scroll detection with focus reveal -->
   <script>
     import { initHideOnScroll } from "@skeleton/hide-on-scroll.js";
