@@ -152,12 +152,11 @@ export const section = tv({
       dark: "bg-[var(--section-dark-bg)] text-[var(--section-dark-fg)]",
     },
     spacing: {
-      // BRIDGE — section.padding.* from nsp-ds-tokens; swap to var() at token-emission
       none: "py-0",
-      sm: "py-4 md:py-6 lg:py-8",
-      md: "py-6 md:py-8 lg:py-12",
-      lg: "py-8 md:py-12 lg:py-20",
-      xl: "py-10 md:py-16 lg:py-[120px]",
+      sm: "py-[var(--section-padding-sm)]",
+      md: "py-[var(--section-padding-md)]",
+      lg: "py-[var(--section-padding-lg)]",
+      xl: "py-[var(--section-padding-xl)]",
     },
   },
   defaultVariants: { tone: "default", spacing: "xl" },
