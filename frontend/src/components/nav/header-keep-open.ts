@@ -1,15 +1,15 @@
 /**
- * Polestar effect: keep megamenu open while cursor stays on header.
+ * Keep megamenu open while cursor stays on header.
  * Two handlers — A cancels close when leaving Root for another header child,
  * B re-triggers close when cursor exits header entirely.
  */
-export function initPolestar(): void {
+export function initHeaderKeepOpen(): void {
   const root = document.querySelector<HTMLElement>(
     'header [data-slot="navigation-menu"][data-layout="band"]',
   );
   const header = root?.closest("header");
-  if (!root || !header || root.dataset.pmKeepopenBound) return;
-  root.dataset.pmKeepopenBound = "1";
+  if (!root || !header || root.dataset.keepopenBound) return;
+  root.dataset.keepopenBound = "1";
 
   const isOpen = () => root.getAttribute("data-state") === "open";
 

@@ -717,12 +717,11 @@ test.describe("Desktop nav — banda fixture (/dev/megamenu)", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Desktop nav — Polestar: header-wide hover keeps megamenu open
-// Cursor anywhere on header (logo, empty space) should not close the menu;
-// leaving the header entirely should close it.
+// Desktop nav — header keep-open: cursor anywhere on header keeps megamenu open
+// Leaving the header entirely should close it.
 // ---------------------------------------------------------------------------
 
-test.describe("Desktop nav — Polestar header-wide hover", () => {
+test.describe("Desktop nav — header keep-open", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
   test("cursor on logo with menu open keeps panel visible", async ({ page }) => {
