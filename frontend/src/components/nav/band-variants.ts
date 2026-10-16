@@ -19,13 +19,16 @@ export const navigationMenuBandPositioner = tv({
 
 export const navigationMenuBandPopup = tv({
   base: [
-    "pointer-events-auto w-full!",
+    "relative pointer-events-auto w-full!",
     "bg-background text-foreground shadow-lg",
     "data-[state=closed]:pointer-events-none",
     "data-starting-style:h-0! data-ending-style:h-0!",
     "transition-[height] duration-[360ms] ease-out",
     "data-ending-style:duration-[200ms]",
     "motion-reduce:transition-none motion-reduce:duration-0",
+    // Hover bridge: transparent zone above popup so diagonal cursor movement
+    // from trigger row stays inside a pointer-events-auto area.
+    "before:absolute before:left-0 before:right-0 before:bottom-full before:h-6",
   ],
 });
 
