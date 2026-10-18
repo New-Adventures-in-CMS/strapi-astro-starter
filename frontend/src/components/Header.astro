@@ -250,6 +250,11 @@ const isActive = (href: string | undefined): boolean =>
     }
   </script>}
 
+  <!-- Keep megamenu open while cursor stays on header -->
+  <script>
+    import { initHeaderKeepOpen } from "@/components/nav/header-keep-open";
+    initHeaderKeepOpen();
+  </script>
   <!-- Auto-hide: directional scroll detection with focus reveal -->
   <script>
     import { initHideOnScroll } from "@skeleton/hide-on-scroll.js";

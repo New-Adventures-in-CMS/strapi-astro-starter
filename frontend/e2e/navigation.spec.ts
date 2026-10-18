@@ -716,6 +716,57 @@ test.describe("Desktop nav — banda fixture (/dev/megamenu)", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Desktop nav — header keep-open: cursor anywhere on header keeps megamenu open
+// Leaving the header entirely should close it.
+// ---------------------------------------------------------------------------
+
+test.describe("Desktop nav — header keep-open", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("cursor on logo with menu open keeps panel visible", async ({ page }) => {
+    await page.goto("/dev/megamenu");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+
+    await trigger.hover();
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    const logo = page.locator('header a[href="/"]');
+    await logo.hover();
+
+    // Wait longer than closeDelay (280ms) to confirm menu stays open
+    await page.waitForTimeout(400);
+
+    await expect(trigger).toHaveAttribute("data-state", "open");
+    const popup = page.locator("[data-sw-nav-menu-popup]");
+    await expect(popup).not.toHaveAttribute("hidden");
+  });
+
+  test("cursor leaving header closes menu after hovering logo", async ({ page }) => {
+    await page.goto("/dev/megamenu");
+    const trigger = page
+      .getByRole("navigation", { name: "Navigazione principale" })
+      .locator("[data-sw-nav-menu-trigger]")
+      .first();
+
+    await trigger.hover();
+    await expect(trigger).toHaveAttribute("data-state", "open");
+
+    // Move to logo (inside header)
+    const logo = page.locator('header a[href="/"]');
+    await logo.hover();
+    await page.waitForTimeout(100);
+
+    // Move far below header → outside header
+    await page.mouse.move(640, 600);
+
+    await expect(trigger).toHaveAttribute("data-state", "closed");
+  });
+});
+
 // "solid on megamenu open (overlay)" removed — requires overlay header + submenu
 // trigger in the same page; no fixture provides both. Overlay scroll behavior is
 // tested by "scroll-state overlay sentinel" above; megamenu open/close by the
