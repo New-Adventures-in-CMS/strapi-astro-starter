@@ -597,8 +597,8 @@
     header[data-hidden] {
       transition:
         transform 300ms ease,
-        background 300ms ease,
-        color 300ms ease;
+        background 300ms ease-in-out,
+        color 300ms ease-in-out;
     }
   }
 
