@@ -37,7 +37,7 @@ export const container = tv({
  *   (`max-w-[1400px]` + stesso padding), allineando l'header al layout dei contenuti.
  */
 export const headerWrapper = tv({
-  base: "flex w-full items-center justify-between py-5",
+  base: "flex h-full w-full items-stretch justify-between",
   variants: {
     width: {
       full: "px-[var(--page-margin-lg)]",

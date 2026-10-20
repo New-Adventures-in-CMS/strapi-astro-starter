@@ -13,7 +13,7 @@ export const navigationMenuList = tv({
 });
 
 export const navigationMenuItem = tv({
-  base: "relative",
+  base: "relative flex items-stretch",
 });
 
 export const navigationMenuTrigger = tv({
