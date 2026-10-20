@@ -255,6 +255,11 @@ const isActive = (href: string | undefined): boolean =>
     import { initHeaderKeepOpen } from "@/components/nav/header-keep-open";
     initHeaderKeepOpen();
   </script>
+  <!-- Sync header background with megamenu open/close lifecycle -->
+  <script>
+    import { initHeaderMenuBackground } from "@/components/nav/header-menu-background";
+    initHeaderMenuBackground();
+  </script>
   <!-- Auto-hide: directional scroll detection with focus reveal -->
   <script>
     import { initHideOnScroll } from "@skeleton/hide-on-scroll.js";

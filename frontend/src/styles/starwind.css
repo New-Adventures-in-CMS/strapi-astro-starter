@@ -388,36 +388,23 @@
   }
 
   /* Megamenu open → header adopts solid look even in transparent overlay.
-     Header + banda form one continuous white block; on close, :has() stops
-     matching and the header returns to transparent. */
-  header[data-overlay="true"][data-state="transparent"]:has(
-      [data-slot="navigation-menu-trigger"][data-state="open"]
-    ) {
+     Driven by [data-menu-open] set/removed by header-menu-background.ts
+     with a delayed removal so the white bg persists during panel collapse. */
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"] {
     background: var(--background);
     color: var(--foreground);
     border-bottom-color: transparent;
   }
 
-  header[data-overlay="true"][data-state="transparent"]:has(
-      [data-slot="navigation-menu-trigger"][data-state="open"]
-    )
-    a {
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"] a {
     color: var(--foreground);
   }
 
-  /* Nav items (trigger + first-level link) need explicit override: the
-     transparent-state rule below targets `[data-slot=...]` directly with
-     higher specificity than `header ... a`, so :has() must match the same
-     selector shape to flip color when a megamenu is open. */
-  header[data-overlay="true"][data-state="transparent"]:has(
-      [data-slot="navigation-menu-trigger"][data-state="open"]
-    )
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"]
     [data-slot="navigation-menu-list"]
     > *
     > [data-slot="navigation-menu-trigger"],
-  header[data-overlay="true"][data-state="transparent"]:has(
-      [data-slot="navigation-menu-trigger"][data-state="open"]
-    )
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"]
     [data-slot="navigation-menu-list"]
     > *
     > [data-slot="navigation-menu-link"] {
