@@ -38,7 +38,7 @@ const isActive = (href: string | undefined): boolean =>
 
 <header
   class:list={[
-    "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
+    "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-transform duration-300",
     !overlay && "bg-background text-foreground border-b border-border",
   ]}
   data-overlay={overlay ? "true" : "false"}
@@ -49,7 +49,7 @@ const isActive = (href: string | undefined): boolean =>
 >
   <div class={headerWrapper({ width: headerWidth })}>
     <!-- Brand —logo lockup contains both mark and wordmark -->
-    <a href="/" aria-label={site.name}>
+    <a href="/" aria-label={site.name} class="self-center">
       <Logo class="h-8 w-auto" />
     </a>
 
@@ -155,7 +155,7 @@ const isActive = (href: string | undefined): boolean =>
     </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->
-    <div class="lg:hidden">
+    <div class="self-center lg:hidden">
       <Sheet>
         <SheetTrigger
           aria-label="Apri menu di navigazione"
