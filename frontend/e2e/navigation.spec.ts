@@ -425,23 +425,27 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(styles.textDecoration).toContain("none");
   });
 
-  test("nav trigger has underline on focus via pseudo-element", async ({ page }) => {
+  test("nav trigger has underline on focus-visible via pseudo-element", async ({ page }) => {
     await page.goto("/dev/megamenu");
     const trigger = page
       .getByRole("navigation", { name: "Navigazione principale" })
       .locator("[data-slot='navigation-menu-trigger']")
       .first();
 
-    await trigger.focus();
+    // Tab until trigger receives focus (keyboard focus → :focus-visible)
+    for (let i = 0; i < 15; i++) {
+      await page.keyboard.press("Tab");
+      if (await trigger.evaluate((el) => document.activeElement === el)) break;
+    }
+    await expect(trigger).toBeFocused();
+    await page.waitForTimeout(300);
 
-    // Check pseudo-element ::after is visible (scaleX > 0)
     const pseudoTransform = await trigger.evaluate((el) => {
       const pseudo = window.getComputedStyle(el, "::after");
       return pseudo.transform;
     });
 
     expect(pseudoTransform).toContain("matrix");
-    // Extract the first matrix value (scale X); if it's visible, it should be > 0.1 (not scaleX(0))
     const match = pseudoTransform.match(/matrix\(([^,]+)/);
     const scaleX = match ? parseFloat(match[1]) : 0;
     expect(scaleX).toBeGreaterThan(0.1);
@@ -471,24 +475,36 @@ test.describe("Header v2 — underline nav styling", () => {
     expect(scaleXOpen).toBeGreaterThan(0.1);
   });
 
-  test("active nav link has persistent underline via pseudo-element", async ({ page }) => {
+  test("active nav link is marked by full opacity, not underline", async ({ page }) => {
     await page.goto("/");
 
-    // Find active link (home page, so first top-level link with data-active)
     const activeLink = page.locator("header [data-slot='navigation-menu-link'][data-active]");
-
-    // There should be at least one active link on homepage
     const count = await activeLink.count();
-    if (count > 0) {
-      const pseudoTransform = await activeLink.first().evaluate((el) => {
-        const pseudo = window.getComputedStyle(el, "::after");
-        return pseudo.transform;
+    expect(count).toBeGreaterThan(0);
+
+    // Active link: opacity ~1 and NO underline (scaleX ~0)
+    const activeStyles = await activeLink.first().evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      const pseudo = window.getComputedStyle(el, "::after");
+      return { opacity: style.opacity, pseudoTransform: pseudo.transform };
+    });
+
+    expect(parseFloat(activeStyles.opacity)).toBeGreaterThanOrEqual(0.95);
+
+    const matchActive = activeStyles.pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleXActive = matchActive ? parseFloat(matchActive[1]) : 0;
+    expect(scaleXActive).toBeLessThan(0.1);
+
+    // Non-active top-level link: opacity < 1 (attenuated)
+    const nonActiveLink = page.locator(
+      "header [data-slot='navigation-menu-list'] > * > [data-slot='navigation-menu-link']:not([data-active])",
+    );
+    const nonActiveCount = await nonActiveLink.count();
+    if (nonActiveCount > 0) {
+      const nonActiveOpacity = await nonActiveLink.first().evaluate((el) => {
+        return window.getComputedStyle(el).opacity;
       });
-      expect(pseudoTransform).toContain("matrix");
-      // Numeric extraction avoids false match on "matrix(0.N...)" strings
-      const matchActive = pseudoTransform.match(/matrix\(([^,]+)/);
-      const scaleXActive = matchActive ? parseFloat(matchActive[1]) : 0;
-      expect(scaleXActive).toBeGreaterThan(0.1);
+      expect(parseFloat(nonActiveOpacity)).toBeLessThan(0.85);
     }
   });
 
@@ -519,6 +535,7 @@ test.describe("Header v2 — underline nav styling", () => {
       .first();
 
     await link.hover();
+    await page.waitForTimeout(300);
 
     const pseudoTransform = await link.evaluate((el) => {
       const pseudo = window.getComputedStyle(el, "::after");
@@ -526,7 +543,9 @@ test.describe("Header v2 — underline nav styling", () => {
     });
 
     expect(pseudoTransform).toContain("matrix");
-    expect(pseudoTransform).not.toContain("matrix(0");
+    const match = pseudoTransform.match(/matrix\(([^,]+)/);
+    const scaleX = match ? parseFloat(match[1]) : 0;
+    expect(scaleX).toBeGreaterThan(0.9);
   });
 });
 

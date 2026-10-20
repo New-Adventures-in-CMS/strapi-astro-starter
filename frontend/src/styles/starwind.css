@@ -490,7 +490,7 @@
     left: 0.625rem;
     right: 0.625rem;
     bottom: 0.25rem;
-    height: 2px;
+    height: 1px;
     background: currentColor;
     transform: scaleX(0);
     transform-origin: left center;
@@ -499,7 +499,10 @@
 
   /* Hover / focus / open — animate underline to full width */
   header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
-  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus::after,
+  header
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-link"]:focus-visible::after,
   header
     [data-slot="navigation-menu-list"]
     > *
@@ -507,7 +510,7 @@
   header
     [data-slot="navigation-menu-list"]
     > *
-    > [data-slot="navigation-menu-trigger"]:focus::after,
+    > [data-slot="navigation-menu-trigger"]:focus-visible::after,
   header
     [data-slot="navigation-menu-list"]
     > *
@@ -515,17 +518,38 @@
     transform: scaleX(1);
   }
 
-  /* Active nav link: persistent underline (no animation on persistent state) */
+  /* Active state: opacity-based (no underline).
+     Non-active items attenuated; active + hover/focus restore full opacity. */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+    opacity: 0.72;
+    transition:
+      opacity 200ms ease,
+      color 250ms ease;
+  }
+
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus-visible,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"][data-active],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:hover,
   header
     [data-slot="navigation-menu-list"]
     > *
-    > [data-slot="navigation-menu-link"][data-active]::after {
-    transform: scaleX(1);
-    transition: none;
+    > [data-slot="navigation-menu-trigger"]:focus-visible,
+  header
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-trigger"][data-state="open"] {
+    opacity: 1;
   }
 
   /* Reduced motion: disable animation */
   @media (prefers-reduced-motion: reduce) {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+      transition: none;
+    }
+
     header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
     header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
       transition: none;
