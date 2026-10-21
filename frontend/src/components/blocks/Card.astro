@@ -8,7 +8,7 @@ import {
   CardFooter,
 } from "@/components/starwind/card";
 import { Button } from "@/components/starwind/button";
-import { strapiMediaUrl } from "@/lib/strapi";
+import StrapiImage from "@/components/StrapiImage.astro";
 
 interface Props {
   card: SharedCard;
@@ -17,36 +17,34 @@ interface Props {
 }
 
 const { card, onDark = false, index } = Astro.props;
-const imageUrl = card.image ? strapiMediaUrl(card.image.url) : null;
-const hasMaskReveal = imageUrl != null && index != null;
+const hasImage = card.image != null;
+const hasMaskReveal = hasImage && index != null;
 const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal && "pt-0"]
   .filter(Boolean)
   .join(" ");
 ---
 
 <UICard class={cardClass}>
-  {imageUrl ? (
+  {hasImage ? (
     hasMaskReveal ? (
       <div
         data-mask-reveal
         class="overflow-hidden rounded-t-xl"
         style={`--mask-delay:${index! * 100}ms`}
       >
-        <img
-          src={imageUrl}
+        <StrapiImage
+          image={card.image}
           alt={card.image?.alternativeText || card.title || ""}
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
           class="w-full object-cover aspect-video"
-          width={card.image?.width}
-          height={card.image?.height}
         />
       </div>
     ) : (
-      <img
-        src={imageUrl}
+      <StrapiImage
+        image={card.image}
         alt={card.image?.alternativeText || card.title || ""}
+        sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
         class="w-full rounded-t-lg object-cover aspect-video"
-        width={card.image?.width}
-        height={card.image?.height}
       />
     )
   ) : (

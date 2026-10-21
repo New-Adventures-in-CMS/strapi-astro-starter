@@ -4,7 +4,7 @@ import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { renderMarkdown } from "@/lib/markdown";
-import { strapiMediaUrl } from "@/lib/strapi";
+import StrapiImage from "@/components/StrapiImage.astro";
 import { imageText } from "./variants";
 
 interface Props {
@@ -27,7 +27,6 @@ const {
   spacing = "xl",
 } = Astro.props;
 
-const imageUrl = image ? strapiMediaUrl(image.url) : null;
 const html = renderMarkdown(body);
 const cv = imageText({ width, imagePosition: image_position });
 ---
@@ -36,14 +35,13 @@ const cv = imageText({ width, imagePosition: image_position });
   <Container width={width}>
     <div class={cv.grid()} data-reveal="stagger">
       <div class={cv.imageCol()} data-mask-skip>
-        {imageUrl ? (
+        {image ? (
           <div data-mask-reveal class:list={["overflow-hidden", cv.image()]}>
-            <img
-              src={imageUrl}
-              alt={image?.alternativeText || heading || ""}
+            <StrapiImage
+              image={image}
+              alt={image.alternativeText || heading || ""}
+              sizes="(min-width: 768px) 50vw, 100vw"
               class="w-full h-full object-cover"
-              width={image?.width}
-              height={image?.height}
             />
           </div>
         ) : (
