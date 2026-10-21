@@ -37,6 +37,13 @@ Dark grid (statement cards "Skip the first forty hours…"):
 - `cards/card-08-editorial.svg` — left-right split
 - `cards/card-09-tokens.svg` — radial token-inspired composition
 
+### Raster fixture
+
+- `photo-hero.jpg` — synthetic high-entropy JPEG (3840×2160, ~3.2 MB),
+  generated with sharp from random noise. Exists solely to exercise the
+  frontend `<Picture>` pipeline (avif/webp/srcset) on a real raster in the
+  seed. CC0 — no external source, no AI model, deterministic LCG noise.
+
 ## Regenerating / replacing
 
 If you want to swap in your own photography:
