@@ -411,16 +411,6 @@
     color: var(--foreground);
   }
 
-  /* Unified transition on overlay header: preserve auto-hide (transform) while
-     smoothly virating background/color/border on open/close. */
-  header[data-overlay="true"] {
-    transition:
-      transform 300ms,
-      background-color 250ms ease,
-      color 250ms ease,
-      border-color 250ms ease;
-  }
-
   /* ========================================================================
    * NAV ITEM STYLING (ALL FIRST-LEVEL ITEMS — TRIGGERS + LINKS)
    * Underline on hover/focus/open/active via animated ::after pseudo-element
@@ -586,25 +576,5 @@
     button[aria-label="Apri menu di navigazione"]:hover,
   header[data-overlay="false"] button[aria-label="Apri menu di navigazione"]:hover {
     background: var(--muted);
-  }
-
-  /* ========================================================================
-   * MOTION PREFERENCES
-   * Transition for auto-hide; respects prefers-reduced-motion
-   * ======================================================================== */
-
-  @media (prefers-reduced-motion: no-preference) {
-    header[data-hidden] {
-      transition:
-        transform 300ms ease,
-        background 300ms ease-in-out,
-        color 300ms ease-in-out;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    header[data-hidden] {
-      transition: none;
-    }
   }
 }
