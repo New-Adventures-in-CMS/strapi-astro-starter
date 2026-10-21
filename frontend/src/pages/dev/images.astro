@@ -1,0 +1,80 @@
+---
+/**
+ * Fixture page for image-optimization E2E tests.
+ * Uses local public assets so tests pass without Strapi.
+ */
+import Layout from "@/layouts/Layout.astro";
+import StrapiImage from "@/components/StrapiImage.astro";
+import { Section, Container } from "@/components/layout";
+import type { StrapiMedia } from "@/types";
+
+const origin = Astro.url.origin;
+
+const rasterImage: StrapiMedia = {
+  url: `${origin}/_test/pixel.png`,
+  mime: "image/png",
+  width: 800,
+  height: 600,
+  alternativeText: "Test raster",
+};
+
+const svgImage: StrapiMedia = {
+  url: `${origin}/_test/icon.svg`,
+  mime: "image/svg+xml",
+  width: 100,
+  height: 100,
+  ext: ".svg",
+  alternativeText: "Test SVG",
+};
+---
+
+<Layout title="Image fixture" seo_desc="">
+  {/* Hero-style raster with eager + fetchpriority */}
+  <Section
+    tone="dark"
+    spacing="none"
+    class="min-h-[50vh] relative overflow-hidden flex items-center"
+    data-fixture-block="hero"
+  >
+    <StrapiImage
+      image={rasterImage}
+      sizes="100vw"
+      widths={[320, 640, 800]}
+      loading="eager"
+      fetchpriority="high"
+      class="absolute inset-0 h-full w-full object-cover"
+      data-hero-media
+    />
+    <Container width="default" class="relative z-10">
+      <h1 class="text-white text-4xl">Image Fixture</h1>
+    </Container>
+  </Section>
+
+  {/* SVG image (should render plain <img>) */}
+  <Section data-fixture-block="svg-image">
+    <Container width="default">
+      <StrapiImage
+        image={svgImage}
+        sizes="200px"
+        loading="lazy"
+        class="w-[200px]"
+        data-testid="svg-img"
+      />
+    </Container>
+  </Section>
+
+  {/* Raster with mask-reveal wrapper */}
+  <Section data-fixture-block="card-raster">
+    <Container width="default">
+      <div class="relative overflow-hidden rounded-xl" data-mask-reveal>
+        <StrapiImage
+          image={rasterImage}
+          sizes="(min-width: 768px) 50vw, 100vw"
+          loading="lazy"
+          class="w-full"
+          data-testid="card-raster"
+        />
+      </div>
+    </Container>
+  </Section>
+</Layout>
