@@ -30,9 +30,13 @@ const onDark = sectionTone === "dark";
         onDark={onDark}
       />
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal="stagger">
-      {cards.map((c) => (
-        <Card card={c} onDark={onDark} />
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      data-reveal="stagger"
+      data-mask-grid
+    >
+      {cards.map((c, i) => (
+        <Card card={c} onDark={onDark} index={i} />
       ))}
     </div>
   </Container>

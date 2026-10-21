@@ -35,15 +35,17 @@ const cv = imageText({ width, imagePosition: image_position });
 <Section spacing={spacing}>
   <Container width={width}>
     <div class={cv.grid()} data-reveal="stagger">
-      <div class={cv.imageCol()}>
+      <div class={cv.imageCol()} data-mask-skip>
         {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={image?.alternativeText || heading || ""}
-            class={cv.image()}
-            width={image?.width}
-            height={image?.height}
-          />
+          <div data-mask-reveal class:list={["overflow-hidden", cv.image()]}>
+            <img
+              src={imageUrl}
+              alt={image?.alternativeText || heading || ""}
+              class="w-full h-full object-cover"
+              width={image?.width}
+              height={image?.height}
+            />
+          </div>
         ) : (
           <div class:list={[cv.image(), "bg-muted border border-border/40"]} />
         )}
