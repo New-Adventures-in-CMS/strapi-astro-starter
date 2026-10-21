@@ -82,9 +82,10 @@ function slideImageUrl(s: HeroSlide) {
   tone="dark"
   spacing="none"
   class:list={[
-    `relative overflow-hidden flex ${staticHC.wrap()}`,
+    `overflow-hidden flex ${staticHC.wrap()}`,
     immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
   ]}
+  data-block="hero"
   data-hero-static={multiSlide ? undefined : ""}
   data-hero-effect={multiSlide ? undefined : heroEffect}
 >

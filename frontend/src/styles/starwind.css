@@ -577,4 +577,26 @@
   header[data-overlay="false"] button[aria-label="Apri menu di navigazione"]:hover {
     background: var(--muted);
   }
+
+  /* ========================================================================
+   * STICKY HERO — hero stays in place, content scrolls over it
+   * Activated by [data-sticky-hero] on <main> (immersive hero, ≥768px only).
+   * ======================================================================== */
+
+  [data-block="hero"] {
+    position: relative;
+  }
+
+  @media (min-width: 768px) {
+    [data-sticky-hero] > :first-child {
+      position: sticky;
+      top: var(--sticky-top, 0px);
+      z-index: 0;
+    }
+
+    [data-sticky-hero] > :first-child ~ * {
+      position: relative;
+      z-index: 1;
+    }
+  }
 }
