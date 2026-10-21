@@ -16,6 +16,7 @@ export interface StrapiMedia {
   width?: number;
   height?: number;
   mime: string;
+  ext?: string;
   size: number;
   formats?: Record<string, { url: string; width: number; height: number }>;
 }
