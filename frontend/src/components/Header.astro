@@ -243,10 +243,19 @@ const isActive = (href: string | undefined): boolean =>
 
   {overlay && <script>
     import { initScrollState } from "@skeleton/scroll-state.js";
-    const sentinel = document.getElementById("header-overlay-sentinel");
     const header = document.querySelector<HTMLElement>("header[data-overlay='true']");
-    if (sentinel && header) {
-      initScrollState(header, sentinel);
+    if (header) {
+      const stickyMain = document.querySelector<HTMLElement>("[data-sticky-hero]");
+      if (stickyMain && stickyMain.children.length > 1) {
+        const sentinel = document.createElement("div");
+        sentinel.className = "pointer-events-none h-px";
+        sentinel.setAttribute("aria-hidden", "true");
+        stickyMain.insertBefore(sentinel, stickyMain.children[1]);
+        initScrollState(header, sentinel);
+      } else {
+        const sentinel = document.getElementById("header-overlay-sentinel");
+        if (sentinel) initScrollState(header, sentinel);
+      }
     }
   </script>}
 

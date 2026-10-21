@@ -142,6 +142,13 @@ Where things live:
   in light and dark modes (`modes.light === modes.dark`); the script asserts this and stops if it
   diverges.
 
+- **Image pipeline:** `frontend/src/components/StrapiImage.astro` is the single
+  entry point for all content images. Raster → Astro `<Picture>` (avif + webp +
+  fallback, responsive srcset, sharp via `/_image`). SVG → plain `<img>`
+  passthrough. In SSR, `/_image` processes per-request — **production needs a
+  caching layer** (reverse-proxy, CDN, or `Cache-Control` middleware) in front of
+  it. See SETUP.md → "Image optimization caching (SSR)".
+
 **Golden sequence for a structural change:** edit schema → **restart Strapi**
 (schema discovery happens only at boot) → update Astro types → then fill content.
 

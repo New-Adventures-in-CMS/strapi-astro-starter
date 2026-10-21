@@ -127,11 +127,17 @@ async function seedDemoForm(strapi: Core.Strapi): Promise<string | null> {
 async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
   try {
     // Upload seed images (idempotent)
-    const heroImg = await uploadSeedImage(
+    const heroSvg = await uploadSeedImage(
       strapi,
       "hero-home.svg",
       "Abstract dark editorial hero background",
     );
+    const heroPhoto = await uploadSeedImage(
+      strapi,
+      "photo-hero.jpg",
+      "Synthetic raster placeholder for image pipeline testing",
+    );
+    const heroImg = heroPhoto ?? heroSvg;
     const aboutImg = await uploadSeedImage(
       strapi,
       "image-text-about.svg",
@@ -140,11 +146,13 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
 
     // Upload card images (light grid + dark grid)
     const cardImgs = {
-      cms: await uploadSeedImage(
-        strapi,
-        "cards/card-01-cms.svg",
-        "Headless CMS abstract illustration",
-      ),
+      cms:
+        heroPhoto ??
+        (await uploadSeedImage(
+          strapi,
+          "cards/card-01-cms.svg",
+          "Headless CMS abstract illustration",
+        )),
       blocks: await uploadSeedImage(
         strapi,
         "cards/card-02-blocks.svg",
