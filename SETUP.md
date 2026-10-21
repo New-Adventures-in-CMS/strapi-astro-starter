@@ -871,6 +871,19 @@ npm run start
 - Usa secrets forti (non i valori di dev)
 - Metti un reverse proxy (es. Nginx) davanti ai due server
 
+### Image optimization caching (SSR)
+
+In SSR mode Astro processes remote images through `/_image` **per-request** via
+sharp. Without caching, every visitor triggers a resize+encode on the Node
+server. In production you need a caching layer in front of `/_image`:
+
+- **Reverse proxy cache** (Nginx `proxy_cache` on `/_image`), or
+- **CDN** (Cloudflare, Fastly, …) caching the `/_image` responses, or
+- **`Cache-Control` header** set by a custom Astro middleware on `/_image` routes.
+
+This is gated by the deploy model (indeterminate in the starter) and is the
+deployer's responsibility. The starter provides no built-in caching middleware.
+
 ---
 
 ## Gotcha noti
