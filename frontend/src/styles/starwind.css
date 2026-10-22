@@ -599,4 +599,25 @@
       z-index: 1;
     }
   }
+
+  /* ========================================================================
+   * STICKY FOOTER — footer stays in place, content scrolls over it
+   * Activated by [data-sticky-footer] on <body> (global, ≥768px only).
+   * Specular to sticky hero: content (main) is opaque and elevated above
+   * the footer; scrolling to the bottom reveals the footer underneath.
+   * ======================================================================== */
+
+  @media (min-width: 768px) {
+    [data-sticky-footer] main {
+      position: relative;
+      z-index: 1;
+      background: var(--background);
+    }
+
+    [data-sticky-footer] footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 0;
+    }
+  }
 }
