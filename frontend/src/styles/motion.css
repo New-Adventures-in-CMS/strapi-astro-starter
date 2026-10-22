@@ -49,41 +49,45 @@
   transform: none;
 }
 
-/* Skip stagger animation on elements that use mask-reveal instead */
-[data-reveal="stagger"] > [data-mask-skip] {
-  opacity: 1;
-  transform: none;
-  transition: none;
-}
+/* --- Mask-reveal gate: active only when [data-mask-images] is on <body> --- */
 
-/* Wrapper: clip-path hides, then reveals */
-[data-mask-reveal] {
-  clip-path: inset(100% 0 0 0);
-  transition: clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--mask-delay, 0ms);
-}
-[data-mask-reveal].is-revealed,
-[data-reveal="stagger"].is-revealed [data-mask-reveal] {
-  clip-path: inset(0 0 0 0);
-}
+[data-mask-images] {
+  /* Skip stagger animation on elements that use mask-reveal instead */
+  [data-reveal="stagger"] > [data-mask-skip] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 
-/* Inner image: micro-scale settles */
-[data-mask-reveal] > img {
-  transform: scale(1.1);
-  transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--mask-delay, 0ms);
-}
-[data-mask-reveal].is-revealed > img,
-[data-reveal="stagger"].is-revealed [data-mask-reveal] > img {
-  transform: scale(1);
-}
+  /* Wrapper: clip-path hides, then reveals */
+  [data-mask-reveal] {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--mask-delay, 0ms);
+  }
+  [data-mask-reveal].is-revealed,
+  [data-reveal="stagger"].is-revealed [data-mask-reveal] {
+    clip-path: inset(0 0 0 0);
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  [data-mask-reveal],
+  /* Inner image: micro-scale settles */
   [data-mask-reveal] > img {
-    clip-path: none !important;
-    transform: none !important;
-    transition: none !important;
+    transform: scale(1.1);
+    transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--mask-delay, 0ms);
+  }
+  [data-mask-reveal].is-revealed > img,
+  [data-reveal="stagger"].is-revealed [data-mask-reveal] > img {
+    transform: scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-mask-reveal],
+    [data-mask-reveal] > img {
+      clip-path: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
   }
 }
 

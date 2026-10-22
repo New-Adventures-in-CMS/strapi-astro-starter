@@ -138,6 +138,8 @@ export interface SiteSettings {
   headerWidth: HeaderWidth;
   footerWidth: FooterWidth;
   footerTone: FooterTone;
+  stickyShell: boolean;
+  imageMaskReveal: boolean;
 }
 
 export type LinkMode = "internal" | "external";
