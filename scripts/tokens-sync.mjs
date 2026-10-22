@@ -44,6 +44,7 @@ if (gitCheck.status !== 0) {
 // 2. Read config
 const config = JSON.parse(readFileSync(join(ROOT, "tokens.sync.json"), "utf8"));
 const { source, ref, target: targetRelative } = config;
+const TYPE_ANCHORS = config.typeScale ?? { composeMobile: 390, composeDesktop: 1920 };
 const targetPath = join(ROOT, targetRelative);
 
 // 3. Clone into temp dir
@@ -311,27 +312,52 @@ try {
     const ctx = `type-size.${role}`;
     typeSizeVars.push({
       name: `fs-${role}`,
-      mobile: pxToRem(modes.mobile),
-      tablet: pxToRem(modes.tablet),
-      desktop: pxToRem(resolveFontRef(modes.desktop, ctx)),
+      mobilePx: parseFloat(modes.mobile),
+      tabletPx: parseFloat(modes.tablet),
+      desktopPx: parseFloat(resolveFontRef(modes.desktop, ctx)),
     });
   }
 
   function buildTypeSize() {
+    const w1 = TYPE_ANCHORS.composeMobile;
+    const w2 = BREAKPOINTS.tablet;
+    const w3 = TYPE_ANCHORS.composeDesktop;
+
+    function round5(x) {
+      return Math.round(x * 1e5) / 1e5;
+    }
+
+    function ramp(vLo, vHi, wLo, wHi) {
+      const slope = (vHi - vLo) / (wHi - wLo);
+      const coeff = round5(slope * 100);
+      const constVal = round5((vLo - slope * wLo) / 16);
+      const min = vLo / 16;
+      const max = vHi / 16;
+      return `clamp(${min}rem, calc(${constVal}rem + ${Math.abs(coeff)}vw), ${max}rem)`;
+    }
+
     const lines = [];
     lines.push(":root {");
-    for (const v of typeSizeVars) lines.push(`${INDENT}--${v.name}: ${v.mobile};`);
+    for (const v of typeSizeVars) {
+      if (v.mobilePx === v.tabletPx) {
+        lines.push(`${INDENT}--${v.name}: ${v.mobilePx / 16}rem;`);
+      } else {
+        lines.push(`${INDENT}--${v.name}: ${ramp(v.mobilePx, v.tabletPx, w1, w2)};`);
+      }
+    }
     lines.push("}");
-    lines.push(`@media (min-width: ${BREAKPOINTS.tablet}px) {`);
-    lines.push("  :root {");
-    for (const v of typeSizeVars) lines.push(`    --${v.name}: ${v.tablet};`);
-    lines.push("  }");
-    lines.push("}");
-    lines.push(`@media (min-width: ${BREAKPOINTS.desktop}px) {`);
-    lines.push("  :root {");
-    for (const v of typeSizeVars) lines.push(`    --${v.name}: ${v.desktop};`);
-    lines.push("  }");
-    lines.push("}");
+
+    const mediaRoles = typeSizeVars.filter((v) => v.tabletPx !== v.desktopPx);
+    if (mediaRoles.length > 0) {
+      lines.push(`@media (min-width: ${BREAKPOINTS.tablet}px) {`);
+      lines.push("  :root {");
+      for (const v of mediaRoles) {
+        lines.push(`    --${v.name}: ${ramp(v.tabletPx, v.desktopPx, w2, w3)};`);
+      }
+      lines.push("  }");
+      lines.push("}");
+    }
+
     return lines.join("\n");
   }
 
@@ -473,48 +499,138 @@ try {
     }
   }
 
-  // G1c: type-size
+  // G1c: type-size — two-segment endpoint verification (tolerance 0.01px)
   function extractTypeSizeBlocks(css) {
     const startIdx = css.indexOf(S_TYPE_SIZE_START);
     const endIdx = css.indexOf(S_TYPE_SIZE_END);
     const afterStart = css.indexOf("\n", startIdx) + 1;
     const beforeEnd = css.lastIndexOf("\n", endIdx) + 1;
     const region = css.substring(afterStart, beforeEnd);
-    const blocks = { mobile: {}, tablet: {}, desktop: {} };
-    let currentMode = "mobile";
+    const rootVars = {};
+    const mediaVars = {};
+    let inMedia = false;
     for (const line of region.split("\n")) {
-      const mqMatch = line.match(/@media\s*\(min-width:\s*(\d+)px\)/);
-      if (mqMatch) {
-        currentMode = parseInt(mqMatch[1]) === BREAKPOINTS.tablet ? "tablet" : "desktop";
+      if (/@media/.test(line)) {
+        inMedia = true;
         continue;
       }
       const varMatch = line.match(/--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/);
       if (varMatch) {
-        blocks[currentMode][varMatch[1]] = varMatch[2].trim().toLowerCase();
+        (inMedia ? mediaVars : rootVars)[varMatch[1]] = varMatch[2].trim();
       }
     }
-    return blocks;
+    return { rootVars, mediaVars };
   }
 
-  const writtenTypeSize = extractTypeSizeBlocks(writtenCss);
-  const typeSizeEntries = [];
-  for (const v of typeSizeVars) {
-    typeSizeEntries.push([v.name, "mobile", v.mobile]);
-    typeSizeEntries.push([v.name, "tablet", v.tablet]);
-    typeSizeEntries.push([v.name, "desktop", v.desktop]);
+  const { rootVars: writtenRoot, mediaVars: writtenMedia } = extractTypeSizeBlocks(writtenCss);
+  const clampRe =
+    /^clamp\(([0-9.]+)rem,\s*calc\((-?[0-9.]+)rem\s*([+-])\s*([0-9.]+)vw\),\s*([0-9.]+)rem\)$/;
+  const plainRe = /^([0-9.]+)rem$/;
+  const TOL = 0.01;
+  const cw1 = TYPE_ANCHORS.composeMobile;
+  const cw2 = BREAKPOINTS.tablet;
+  const cw3 = TYPE_ANCHORS.composeDesktop;
+  let typeSizeChecks = 0;
+
+  function approx(a, b) {
+    return Math.abs(a - b) <= TOL;
   }
-  for (const [varName, mode, sourceVal] of typeSizeEntries) {
-    const written = writtenTypeSize[mode]?.[varName];
-    if (written == null || written !== sourceVal.toLowerCase()) {
-      console.error(
-        `DIFF: --${varName} (${mode}): source="${sourceVal}"` +
-          ` written="${written ?? "NOT FOUND"}"`,
-      );
+
+  function parseClamp(str) {
+    const cm = str.match(clampRe);
+    if (!cm) return null;
+    const min = parseFloat(cm[1]) * 16;
+    const constPx = parseFloat(cm[2]) * 16;
+    const sep = cm[3];
+    const coeff = (sep === "+" ? 1 : -1) * parseFloat(cm[4]);
+    const max = parseFloat(cm[5]) * 16;
+    return { min, constPx, coeff, max };
+  }
+
+  for (const v of typeSizeVars) {
+    const rootVal = writtenRoot[v.name];
+    if (rootVal == null) {
+      console.error(`DIFF: --${v.name} NOT FOUND in :root`);
       diffs++;
+      typeSizeChecks++;
+      continue;
+    }
+
+    if (v.mobilePx === v.tabletPx) {
+      const pm = rootVal.match(plainRe);
+      if (!pm) {
+        console.error(`DIFF: --${v.name} :root: expected plain rem, got "${rootVal}"`);
+        diffs++;
+        typeSizeChecks++;
+      } else {
+        const valuePx = parseFloat(pm[1]) * 16;
+        if (!approx(valuePx, v.mobilePx)) {
+          console.error(`DIFF: --${v.name} :root: value ${valuePx}px !~= source ${v.mobilePx}px`);
+          diffs++;
+        }
+        typeSizeChecks++;
+      }
+    } else {
+      const c = parseClamp(rootVal);
+      if (!c) {
+        console.error(`DIFF: --${v.name} :root: expected clamp(), got "${rootVal}"`);
+        diffs++;
+        typeSizeChecks++;
+      } else {
+        const checks = [
+          [c.min, v.mobilePx, ":root min !~= mobile"],
+          [c.max, v.tabletPx, ":root max !~= tablet"],
+          [c.constPx + (c.coeff * cw1) / 100, v.mobilePx, `:root eval@${cw1} !~= mobile`],
+          [c.constPx + (c.coeff * cw2) / 100, v.tabletPx, `:root eval@${cw2} !~= tablet`],
+        ];
+        for (const [actual, expected, label] of checks) {
+          if (!approx(actual, expected)) {
+            console.error(`DIFF: --${v.name}: ${label} (${actual} vs ${expected})`);
+            diffs++;
+          }
+          typeSizeChecks++;
+        }
+      }
+    }
+
+    if (v.tabletPx !== v.desktopPx) {
+      const mediaVal = writtenMedia[v.name];
+      if (mediaVal == null) {
+        console.error(`DIFF: --${v.name} NOT FOUND in @media`);
+        diffs++;
+        typeSizeChecks++;
+      } else {
+        const c = parseClamp(mediaVal);
+        if (!c) {
+          console.error(`DIFF: --${v.name} @media: expected clamp(), got "${mediaVal}"`);
+          diffs++;
+          typeSizeChecks++;
+        } else {
+          const checks = [
+            [c.min, v.tabletPx, "@media min !~= tablet"],
+            [c.max, v.desktopPx, "@media max !~= desktop"],
+            [c.constPx + (c.coeff * cw2) / 100, v.tabletPx, `@media eval@${cw2} !~= tablet`],
+            [c.constPx + (c.coeff * cw3) / 100, v.desktopPx, `@media eval@${cw3} !~= desktop`],
+          ];
+          for (const [actual, expected, label] of checks) {
+            if (!approx(actual, expected)) {
+              console.error(`DIFF: --${v.name}: ${label} (${actual} vs ${expected})`);
+              diffs++;
+            }
+            typeSizeChecks++;
+          }
+        }
+      }
+    } else {
+      if (writtenMedia[v.name] != null) {
+        console.error(`DIFF: --${v.name} should NOT be in @media (tablet === desktop)`);
+        diffs++;
+      }
+      typeSizeChecks++;
     }
   }
 
-  const total = colorEntries.length + spacingEntries.length + typeSizeEntries.length;
+  const total = colorEntries.length + spacingEntries.length + typeSizeChecks;
   if (diffs > 0) {
     console.error(`G1: STOP — ${total} comparisons, ${diffs} differences`);
     process.exit(1);

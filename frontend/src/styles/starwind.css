@@ -229,43 +229,26 @@
 
 /* >>> tokens:sync START (type-size) — from nsp-ds-tokens responsive/type-size.json — DO NOT EDIT */
 :root {
-  --fs-display: 2.5rem;
-  --fs-h1: 2rem;
-  --fs-h2: 1.75rem;
-  --fs-h3: 1.5rem;
-  --fs-h4: 1.25rem;
-  --fs-h5: 1.25rem;
-  --fs-h6: 1.125rem;
-  --fs-body-large: 1.125rem;
+  --fs-display: clamp(2.5rem, calc(0.43651rem + 8.46561vw), 4.5rem);
+  --fs-h1: clamp(2rem, calc(0.45238rem + 6.34921vw), 3.5rem);
+  --fs-h2: clamp(1.75rem, calc(0.46032rem + 5.29101vw), 3rem);
+  --fs-h3: clamp(1.5rem, calc(0.72619rem + 3.1746vw), 2.25rem);
+  --fs-h4: clamp(1.25rem, calc(0.73413rem + 2.1164vw), 1.75rem);
+  --fs-h5: clamp(1.25rem, calc(0.99206rem + 1.0582vw), 1.5rem);
+  --fs-h6: clamp(1.125rem, calc(0.99603rem + 0.5291vw), 1.25rem);
+  --fs-body-large: clamp(1.125rem, calc(0.99603rem + 0.5291vw), 1.25rem);
   --fs-body: 1rem;
   --fs-body-small: 0.875rem;
 }
 @media (min-width: 768px) {
   :root {
-    --fs-display: 4.5rem;
-    --fs-h1: 3.5rem;
-    --fs-h2: 3rem;
-    --fs-h3: 2.25rem;
-    --fs-h4: 1.75rem;
-    --fs-h5: 1.5rem;
-    --fs-h6: 1.25rem;
-    --fs-body-large: 1.25rem;
-    --fs-body: 1rem;
-    --fs-body-small: 0.875rem;
-  }
-}
-@media (min-width: 1024px) {
-  :root {
-    --fs-display: 6.25rem;
-    --fs-h1: 5rem;
-    --fs-h2: 3.75rem;
-    --fs-h3: 3rem;
-    --fs-h4: 2.25rem;
-    --fs-h5: 1.875rem;
-    --fs-h6: 1.5rem;
-    --fs-body-large: 1.25rem;
-    --fs-body: 1rem;
-    --fs-body-small: 0.875rem;
+    --fs-display: clamp(4.5rem, calc(3.33333rem + 2.43056vw), 6.25rem);
+    --fs-h1: clamp(3.5rem, calc(2.5rem + 2.08333vw), 5rem);
+    --fs-h2: clamp(3rem, calc(2.5rem + 1.04167vw), 3.75rem);
+    --fs-h3: clamp(2.25rem, calc(1.75rem + 1.04167vw), 3rem);
+    --fs-h4: clamp(1.75rem, calc(1.41667rem + 0.69444vw), 2.25rem);
+    --fs-h5: clamp(1.5rem, calc(1.25rem + 0.52083vw), 1.875rem);
+    --fs-h6: clamp(1.25rem, calc(1.08333rem + 0.34722vw), 1.5rem);
   }
 }
 /* <<< tokens:sync END (type-size) */
