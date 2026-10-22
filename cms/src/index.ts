@@ -622,6 +622,8 @@ async function seedSiteSetting(strapi: Core.Strapi) {
         headerWidth: "full",
         footerWidth: "full",
         footerTone: "dark",
+        stickyShell: true,
+        imageMaskReveal: true,
       } as any,
     });
     strapi.log.info(

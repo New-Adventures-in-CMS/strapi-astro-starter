@@ -111,6 +111,10 @@ function coerceFooterTone(v: unknown): FooterTone {
   return FOOTER_TONES.includes(v as FooterTone) ? (v as FooterTone) : site.footer.tone;
 }
 
+function coerceBoolean(v: unknown, fallback: boolean): boolean {
+  return typeof v === "boolean" ? v : fallback;
+}
+
 /**
  * Read the global `site-setting` singleType, resolving each field to a valid
  * enum with fallback to `site.header`/`site.footer` (Strapi down, 404, missing
@@ -127,6 +131,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       headerWidth: coerceHeaderWidth(data?.headerWidth),
       footerWidth: coerceFooterWidth(data?.footerWidth),
       footerTone: coerceFooterTone(data?.footerTone),
+      stickyShell: coerceBoolean(data?.stickyShell, true),
+      imageMaskReveal: coerceBoolean(data?.imageMaskReveal, true),
     };
   } catch {
     return {
@@ -134,6 +140,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       headerWidth: site.header.width,
       footerWidth: site.footer.width,
       footerTone: site.footer.tone,
+      stickyShell: true,
+      imageMaskReveal: true,
     };
   }
 }

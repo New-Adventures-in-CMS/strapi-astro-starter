@@ -35,6 +35,16 @@
       "enum": ["muted", "dark"],
       "default": "dark",
       "required": true
+    },
+    "stickyShell": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "imageMaskReveal": {
+      "type": "boolean",
+      "default": true,
+      "required": true
     }
   }
 }
