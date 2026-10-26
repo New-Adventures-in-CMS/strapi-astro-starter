@@ -45,6 +45,12 @@ if (gitCheck.status !== 0) {
 const config = JSON.parse(readFileSync(join(ROOT, "tokens.sync.json"), "utf8"));
 const { source, ref, target: targetRelative } = config;
 const TYPE_ANCHORS = config.typeScale ?? { composeMobile: 390, composeDesktop: 1920 };
+for (const [k, v] of Object.entries(TYPE_ANCHORS)) {
+  if (!Number.isFinite(v) || v <= 0) {
+    console.error(`Error: typeScale.${k} must be a positive finite number, got ${v}`);
+    process.exit(1);
+  }
+}
 const targetPath = join(ROOT, targetRelative);
 
 // 3. Clone into temp dir
@@ -322,6 +328,12 @@ try {
     const w1 = TYPE_ANCHORS.composeMobile;
     const w2 = BREAKPOINTS.tablet;
     const w3 = TYPE_ANCHORS.composeDesktop;
+    if (w1 >= w2 || w3 <= w2) {
+      console.error(
+        `Error: compose anchors must satisfy composeMobile (${w1}) < tablet breakpoint (${w2}) < composeDesktop (${w3})`,
+      );
+      process.exit(1);
+    }
 
     function round5(x) {
       return Math.round(x * 1e5) / 1e5;
@@ -333,7 +345,9 @@ try {
       const constVal = round5((vLo - slope * wLo) / 16);
       const min = vLo / 16;
       const max = vHi / 16;
-      return `clamp(${min}rem, calc(${constVal}rem + ${Math.abs(coeff)}vw), ${max}rem)`;
+      // Separator depends on coeff sign (the vw term), not on constVal sign
+      const sep = coeff >= 0 ? "+" : "-";
+      return `clamp(${min}rem, calc(${constVal}rem ${sep} ${Math.abs(coeff)}vw), ${max}rem)`;
     }
 
     const lines = [];
