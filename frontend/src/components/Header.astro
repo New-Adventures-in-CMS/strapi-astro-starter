@@ -38,7 +38,7 @@ const isActive = (href: string | undefined): boolean =>
 
 <header
   class:list={[
-    "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[transform,background-color,color] duration-300",
+    "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[transform,background-color] duration-300",
     !overlay && "bg-background text-foreground border-b border-border",
   ]}
   data-overlay={overlay ? "true" : "false"}

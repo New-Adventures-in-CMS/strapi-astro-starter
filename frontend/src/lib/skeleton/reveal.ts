@@ -1,6 +1,6 @@
 import { observeInView } from "@skeleton/in-view.js";
 
-const STAGGER_MS = 100;
+const STAGGER_MS = 80;
 const REVEAL_MARGIN = "0px 0px -12% 0px";
 
 /**

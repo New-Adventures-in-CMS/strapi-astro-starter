@@ -9,7 +9,7 @@ const BG_SCALE_ENTER = 1.12; // il fondo entra un filo più zoomato → settle v
 const TEXT_ENTER = 80; // px (maggiore → "classico")
 const TEXT_DELAY = 90; // ms, micro-ritardo del testo
 const DUR = 600; // ms
-const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+const EASE = "var(--ease-out-expo)";
 
 export function setupHeroParallax(api: CarouselAPI, root: HTMLElement): () => void {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};

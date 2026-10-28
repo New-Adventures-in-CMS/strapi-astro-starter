@@ -453,20 +453,15 @@
     height: 1px;
     background: currentColor;
     transform: scaleX(0);
-    transform-origin: left center;
+    transform-origin: center center;
     transition: transform 200ms ease-out;
   }
 
-  /* Hover / focus / open — animate underline to full width */
-  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
+  /* Focus / open — animate underline to full width */
   header
     [data-slot="navigation-menu-list"]
     > *
     > [data-slot="navigation-menu-link"]:focus-visible::after,
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"]:hover::after,
   header
     [data-slot="navigation-menu-list"]
     > *
@@ -488,10 +483,8 @@
       color 250ms ease;
   }
 
-  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover,
   header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus-visible,
   header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"][data-active],
-  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:hover,
   header
     [data-slot="navigation-menu-list"]
     > *
@@ -501,6 +494,22 @@
     > *
     > [data-slot="navigation-menu-trigger"][data-state="open"] {
     opacity: 1;
+  }
+
+  /* Hover — gated to pointer devices to prevent sticky :hover on touch */
+  @media (hover: hover) and (pointer: fine) {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
+    header
+      [data-slot="navigation-menu-list"]
+      > *
+      > [data-slot="navigation-menu-trigger"]:hover::after {
+      transform: scaleX(1);
+    }
+
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover,
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:hover {
+      opacity: 1;
+    }
   }
 
   /* Reduced motion: disable animation */
