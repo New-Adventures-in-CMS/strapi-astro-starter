@@ -11,22 +11,22 @@ export function setupHeroDim(api: CarouselAPI, root: HTMLElement): () => void {
   const n = slideNodes.length;
   if (n <= 1) return () => {};
 
-  const mediaBySlide = new Map<number, HTMLElement>();
+  const overlayBySlide = new Map<number, HTMLElement>();
   slideNodes.forEach((slide, i) => {
-    const media = slide.querySelector<HTMLElement>("[data-hero-media]");
-    if (media) mediaBySlide.set(i, media);
+    const overlay = slide.querySelector<HTMLElement>("[data-hero-dim-overlay]");
+    if (overlay) overlayBySlide.set(i, overlay);
   });
 
-  if (mediaBySlide.size === 0) return () => {};
+  if (overlayBySlide.size === 0) return () => {};
 
   function update() {
     const p = api.scrollProgress();
-    mediaBySlide.forEach((media, i) => {
+    overlayBySlide.forEach((overlay, i) => {
       let delta = p - i / n;
       if (delta > 0.5) delta -= 1;
       if (delta < -0.5) delta += 1;
       const t = 1 - Math.min(Math.abs(delta) * 2, 1);
-      media.style.filter = `brightness(${DIM_MIN + t * (1 - DIM_MIN)})`;
+      overlay.style.opacity = `${(1 - t) * (1 - DIM_MIN)}`;
     });
   }
 
@@ -37,8 +37,8 @@ export function setupHeroDim(api: CarouselAPI, root: HTMLElement): () => void {
   return () => {
     offScroll();
     offReInit();
-    mediaBySlide.forEach((media) => {
-      media.style.filter = "";
+    overlayBySlide.forEach((overlay) => {
+      overlay.style.opacity = "";
     });
   };
 }

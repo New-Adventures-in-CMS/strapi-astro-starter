@@ -134,17 +134,36 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                         data-hero-media
                       />
                     )}
+                    <div
+                      class="absolute inset-0 bg-black pointer-events-none"
+                      data-hero-dim-overlay
+                      style="opacity: 0"
+                    ></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
                   </>
                 ) : isDrift ? (
-                  <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
-                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
-                  </div>
+                  <>
+                    <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
+                      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                    </div>
+                    <div
+                      class="absolute inset-0 bg-black pointer-events-none"
+                      data-hero-dim-overlay
+                      style="opacity: 0"
+                    ></div>
+                  </>
                 ) : (
-                  <div
-                    class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
-                    data-hero-media
-                  />
+                  <>
+                    <div
+                      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+                      data-hero-media
+                    />
+                    <div
+                      class="absolute inset-0 bg-black pointer-events-none"
+                      data-hero-dim-overlay
+                      style="opacity: 0"
+                    ></div>
+                  </>
                 )}
                 <Container
                   width="default"
@@ -312,6 +331,9 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
     left: -10%;
     right: -10%;
     will-change: transform;
+  }
+  [data-hero-dim-overlay] {
+    will-change: opacity;
   }
   .hero-carousel-arrow {
     background: color-mix(in srgb, var(--section-dark-fg) 15%, transparent);
