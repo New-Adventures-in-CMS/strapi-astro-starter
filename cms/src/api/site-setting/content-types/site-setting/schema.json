@@ -45,6 +45,20 @@
       "type": "boolean",
       "default": true,
       "required": true
+    },
+    "companyName": {
+      "type": "string"
+    },
+    "vatNumber": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social-link"
     }
   }
 }

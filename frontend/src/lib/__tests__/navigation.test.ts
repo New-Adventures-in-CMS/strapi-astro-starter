@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getHeaderNav, getFooterNav, FOOTER_COLUMNS } from "../navigation";
+import {
+  getHeaderNav,
+  getFooterNav,
+  FOOTER_COLUMNS,
+  FOOTER_NAV_COLUMNS,
+  FOOTER_LEGAL_COLUMN,
+} from "../navigation";
 import { site } from "@/config/site";
 
 vi.mock("@/lib/strapi", () => ({
@@ -42,8 +48,16 @@ beforeEach(() => {
 // FOOTER_COLUMNS
 // ---------------------------------------------------------------------------
 describe("FOOTER_COLUMNS", () => {
-  it("exports canonical column order", () => {
+  it("exports canonical column order (full, backward-compat)", () => {
     expect(FOOTER_COLUMNS).toEqual(["Prodotto", "Azienda", "Supporto", "Legale"]);
+  });
+
+  it("FOOTER_NAV_COLUMNS excludes Legale", () => {
+    expect(FOOTER_NAV_COLUMNS).toEqual(["Prodotto", "Azienda", "Supporto"]);
+  });
+
+  it("FOOTER_LEGAL_COLUMN is Legale", () => {
+    expect(FOOTER_LEGAL_COLUMN).toBe("Legale");
   });
 });
 
@@ -263,20 +277,26 @@ describe("getHeaderNav", () => {
 describe("getFooterNav", () => {
   it("returns static fallback when strapiFind throws", async () => {
     mockFind.mockRejectedValue(new Error("Network error"));
-    expect(await getFooterNav()).toEqual({ columns: site.footer.columns });
+    const result = await getFooterNav();
+    expect(result.columns).toEqual(site.footer.columns);
+    expect(result.legal).toEqual([]);
   });
 
   it("returns static fallback when data is empty", async () => {
     mockFind.mockResolvedValue(apiResponse([]));
-    expect(await getFooterNav()).toEqual({ columns: site.footer.columns });
+    const result = await getFooterNav();
+    expect(result.columns).toEqual(site.footer.columns);
+    expect(result.legal).toEqual([]);
   });
 
   it("returns static fallback when no item has footerColumn", async () => {
     mockFind.mockResolvedValue(apiResponse([makeItem({ area: "header" as const })]));
-    expect(await getFooterNav()).toEqual({ columns: site.footer.columns });
+    const result = await getFooterNav();
+    expect(result.columns).toEqual(site.footer.columns);
+    expect(result.legal).toEqual([]);
   });
 
-  it("includes footer and both items with footerColumn", async () => {
+  it("legal items go to legal array, not columns", async () => {
     mockFind.mockResolvedValue(
       apiResponse([
         makeItem({
@@ -299,12 +319,13 @@ describe("getFooterNav", () => {
       ]),
     );
     const result = await getFooterNav();
-    expect(result.columns).toHaveLength(1);
-    expect(result.columns[0].title).toBe("Legale");
-    expect(result.columns[0].items).toHaveLength(2);
+    expect(result.columns).toEqual(site.footer.columns);
+    expect(result.legal).toHaveLength(2);
+    expect(result.legal[0].label).toBe("Privacy");
+    expect(result.legal[1].label).toBe("Termini");
   });
 
-  it("area=both item with footerColumn appears in footer", async () => {
+  it("area=both item with nav footerColumn appears in columns", async () => {
     mockFind.mockResolvedValue(
       apiResponse([
         makeItem({
@@ -318,16 +339,19 @@ describe("getFooterNav", () => {
     const result = await getFooterNav();
     expect(result.columns[0].title).toBe("Prodotto");
     expect(result.columns[0].items[0].label).toBe("Home");
+    expect(result.legal).toEqual([]);
   });
 
   it("area=both item without footerColumn does NOT appear in footer", async () => {
     mockFind.mockResolvedValue(
       apiResponse([makeItem({ area: "both" as const, footerColumn: null })]),
     );
-    expect(await getFooterNav()).toEqual({ columns: site.footer.columns });
+    const result = await getFooterNav();
+    expect(result.columns).toEqual(site.footer.columns);
+    expect(result.legal).toEqual([]);
   });
 
-  it("groups items by footerColumn in canonical column order", async () => {
+  it("groups nav items by footerColumn, legal items separate", async () => {
     mockFind.mockResolvedValue(
       apiResponse([
         makeItem({
@@ -358,27 +382,28 @@ describe("getFooterNav", () => {
       ]),
     );
     const result = await getFooterNav();
-    expect(result.columns).toHaveLength(3);
+    expect(result.columns).toHaveLength(2);
     expect(result.columns[0].title).toBe("Prodotto");
     expect(result.columns[1].title).toBe("Azienda");
-    expect(result.columns[2].title).toBe("Legale");
+    expect(result.legal).toHaveLength(1);
+    expect(result.legal[0].label).toBe("Privacy");
   });
 
-  it("omits columns with no items", async () => {
+  it("omits nav columns with no items", async () => {
     mockFind.mockResolvedValue(
       apiResponse([
         makeItem({
-          label: "Privacy",
+          label: "Widget",
           linkMode: "external" as const,
           area: "footer" as const,
-          footerColumn: "Legale",
-          externalUrl: "/privacy",
+          footerColumn: "Prodotto",
+          externalUrl: "/widget",
         }),
       ]),
     );
     const result = await getFooterNav();
     expect(result.columns).toHaveLength(1);
-    expect(result.columns[0].title).toBe("Legale");
+    expect(result.columns[0].title).toBe("Prodotto");
   });
 
   it("sorts items within a column by order ascending", async () => {
@@ -409,18 +434,59 @@ describe("getFooterNav", () => {
     expect(result.columns[0].items[1].label).toBe("Z");
   });
 
-  it("href in footer item resolves correctly", async () => {
+  it("legal items resolve href correctly (internal)", async () => {
+    mockFind.mockResolvedValue(
+      apiResponse([
+        makeItem({
+          area: "footer" as const,
+          footerColumn: "Legale",
+          label: "Privacy",
+          page: { slug: "privacy" },
+        }),
+      ]),
+    );
+    const result = await getFooterNav();
+    expect(result.legal[0].href).toBe("/privacy");
+    expect(result.legal[0].external).toBe(false);
+  });
+
+  it("legal items resolve href correctly (external)", async () => {
     mockFind.mockResolvedValue(
       apiResponse([
         makeItem({
           linkMode: "external" as const,
           area: "footer" as const,
           footerColumn: "Legale",
-          externalUrl: "/privacy",
+          externalUrl: "https://example.com/cookie-policy",
         }),
       ]),
     );
     const result = await getFooterNav();
-    expect(result.columns[0].items[0].href).toBe("/privacy");
+    expect(result.legal[0].href).toBe("https://example.com/cookie-policy");
+    expect(result.legal[0].external).toBe(true);
+  });
+
+  it("sorts legal items by order ascending", async () => {
+    mockFind.mockResolvedValue(
+      apiResponse([
+        makeItem({
+          documentId: "d2",
+          label: "Cookie",
+          area: "footer" as const,
+          footerColumn: "Legale",
+          order: 2,
+        }),
+        makeItem({
+          documentId: "d1",
+          label: "Privacy",
+          area: "footer" as const,
+          footerColumn: "Legale",
+          order: 1,
+        }),
+      ]),
+    );
+    const result = await getFooterNav();
+    expect(result.legal[0].label).toBe("Privacy");
+    expect(result.legal[1].label).toBe("Cookie");
   });
 });

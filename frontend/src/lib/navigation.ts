@@ -2,7 +2,9 @@ import { strapiFind } from "@/lib/strapi";
 import { site, type NavItem } from "@/config/site";
 import type { LinkMode } from "@/types";
 
-export const FOOTER_COLUMNS = ["Prodotto", "Azienda", "Supporto", "Legale"] as const;
+export const FOOTER_NAV_COLUMNS = ["Prodotto", "Azienda", "Supporto"] as const;
+export const FOOTER_LEGAL_COLUMN = "Legale" as const;
+export const FOOTER_COLUMNS = [...FOOTER_NAV_COLUMNS, FOOTER_LEGAL_COLUMN] as const;
 
 export interface MenuItem {
   id: number;
@@ -20,6 +22,7 @@ export interface MenuItem {
 
 export interface FooterData {
   columns: { title: string; items: NavItem[] }[];
+  legal: NavItem[];
 }
 
 function resolveHref(item: MenuItem): { href: string; external: boolean } {
@@ -94,21 +97,29 @@ export async function getHeaderNav(): Promise<NavItem[]> {
 
 export async function getFooterNav(): Promise<FooterData> {
   const items = await fetchMenuItems();
-  if (!items) return { columns: site.footer.columns };
+  if (!items) return { columns: site.footer.columns, legal: [] };
 
   const footerItems = items.filter(
     (i) => (i.area === "footer" || i.area === "both") && i.footerColumn,
   );
-  const columns = FOOTER_COLUMNS.map((col) => ({
-    title: col,
-    items: footerItems
-      .filter((i) => i.footerColumn === col)
+
+  const resolveItems = (list: MenuItem[]): NavItem[] =>
+    list
       .sort((a, b) => a.order - b.order)
       .map((i) => {
         const { href, external } = resolveHref(i);
         return { label: i.label, href, external, order: i.order };
-      }),
+      });
+
+  const columns = FOOTER_NAV_COLUMNS.map((col) => ({
+    title: col,
+    items: resolveItems(footerItems.filter((i) => i.footerColumn === col)),
   })).filter((c) => c.items.length > 0);
 
-  return columns.length ? { columns } : { columns: site.footer.columns };
+  const legal = resolveItems(footerItems.filter((i) => i.footerColumn === FOOTER_LEGAL_COLUMN));
+
+  return {
+    columns: columns.length ? columns : site.footer.columns,
+    legal,
+  };
 }

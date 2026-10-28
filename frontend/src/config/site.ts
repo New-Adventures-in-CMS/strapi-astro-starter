@@ -1,5 +1,7 @@
 // frontend/src/config/site.ts
 
+import type { SocialLink } from "@/types";
+
 export type HeroTransition = "slide" | "fade";
 export type HeroEffect = "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
@@ -60,6 +62,13 @@ export interface NavConfig {
   items: NavItem[];
 }
 
+export interface CompanyConfig {
+  companyName: string;
+  vatNumber: string;
+  address: string;
+  socialLinks: SocialLink[];
+}
+
 export interface SiteConfig {
   name: string;
   description: string;
@@ -73,6 +82,7 @@ export interface SiteConfig {
   motion: MotionConfig;
   nav: NavConfig;
   header: HeaderConfig;
+  company: CompanyConfig;
   footer: FooterConfig & {
     columns: { title: string; items: NavItem[] }[];
     legal: string;
@@ -95,6 +105,16 @@ export const site: SiteConfig = {
   description: "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
   locale: "it-IT",
+  company: {
+    companyName: "Strapi + Astro Starter",
+    vatNumber: "IT00000000000",
+    address: "Via Example 1\n00100 Roma (RM)\nItalia",
+    socialLinks: [
+      { platform: "linkedin", url: "https://linkedin.com/company/example" },
+      { platform: "instagram", url: "https://instagram.com/example" },
+      { platform: "facebook", url: "https://facebook.com/example" },
+    ],
+  },
   nav: {
     items: [
       { label: "Home", href: "/" },

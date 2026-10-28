@@ -624,6 +624,14 @@ async function seedSiteSetting(strapi: Core.Strapi) {
         footerTone: "dark",
         stickyShell: true,
         imageMaskReveal: true,
+        companyName: "Strapi + Astro Starter",
+        vatNumber: "IT00000000000",
+        address: "Via Example 1\n00100 Roma (RM)\nItalia",
+        socialLinks: [
+          { platform: "linkedin", url: "https://linkedin.com/company/example" },
+          { platform: "instagram", url: "https://instagram.com/example" },
+          { platform: "facebook", url: "https://facebook.com/example" },
+        ],
       } as any,
     });
     strapi.log.info(

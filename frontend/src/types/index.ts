@@ -140,9 +140,20 @@ export interface SiteSettings {
   footerTone: FooterTone;
   stickyShell: boolean;
   imageMaskReveal: boolean;
+  companyName: string;
+  vatNumber: string;
+  address: string;
+  socialLinks: SocialLink[];
 }
 
 export type LinkMode = "internal" | "external";
+
+export type SocialPlatform = "facebook" | "instagram" | "x" | "youtube" | "linkedin" | "tiktok";
+
+export interface SocialLink {
+  platform: SocialPlatform;
+  url: string;
+}
 
 // Content-type "page" di Strapi — vedi SETUP.md → "Content-type Page"
 export interface Page {

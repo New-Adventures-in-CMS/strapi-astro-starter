@@ -1,6 +1,13 @@
 import { STRAPI_URL, STRAPI_API_TOKEN } from "astro:env/server";
 import { site } from "@/config/site";
-import type { FooterTone, FooterWidth, HeaderWidth, SiteSettings, SubmenuLayout } from "@/types";
+import type {
+  FooterTone,
+  FooterWidth,
+  HeaderWidth,
+  SiteSettings,
+  SocialLink,
+  SubmenuLayout,
+} from "@/types";
 
 export function strapiMediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
@@ -115,6 +122,25 @@ function coerceBoolean(v: unknown, fallback: boolean): boolean {
   return typeof v === "boolean" ? v : fallback;
 }
 
+function coerceString(v: unknown, fallback: string): string {
+  return typeof v === "string" && v.length > 0 ? v : fallback;
+}
+
+const SOCIAL_PLATFORMS = ["facebook", "instagram", "x", "youtube", "linkedin", "tiktok"] as const;
+
+function coerceSocialLinks(v: unknown, fallback: SocialLink[]): SocialLink[] {
+  if (!Array.isArray(v) || v.length === 0) return fallback;
+  const valid = v.filter(
+    (item): item is SocialLink =>
+      typeof item === "object" &&
+      item !== null &&
+      SOCIAL_PLATFORMS.includes((item as any).platform) &&
+      typeof (item as any).url === "string" &&
+      (item as any).url.length > 0,
+  );
+  return valid.length > 0 ? valid : fallback;
+}
+
 /**
  * Read the global `site-setting` singleType, resolving each field to a valid
  * enum with fallback to `site.header`/`site.footer` (Strapi down, 404, missing
@@ -122,7 +148,8 @@ function coerceBoolean(v: unknown, fallback: boolean): boolean {
  */
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const res = await fetch(`${STRAPI_URL}/api/site-setting`);
+    const qs = buildQs({ populate: { socialLinks: true } });
+    const res = await fetch(`${STRAPI_URL}/api/site-setting${qs}`);
     if (!res.ok) throw new Error(`status ${res.status}`);
     const json = (await res.json()) as StrapiSingleResponse<Partial<SiteSettings> | null>;
     const data = json?.data ?? null;
@@ -133,6 +160,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       footerTone: coerceFooterTone(data?.footerTone),
       stickyShell: coerceBoolean(data?.stickyShell, true),
       imageMaskReveal: coerceBoolean(data?.imageMaskReveal, true),
+      companyName: coerceString(data?.companyName, site.company.companyName),
+      vatNumber: coerceString(data?.vatNumber, site.company.vatNumber),
+      address: coerceString(data?.address, site.company.address),
+      socialLinks: coerceSocialLinks(data?.socialLinks, site.company.socialLinks),
     };
   } catch {
     return {
@@ -142,6 +173,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       footerTone: site.footer.tone,
       stickyShell: true,
       imageMaskReveal: true,
+      companyName: site.company.companyName,
+      vatNumber: site.company.vatNumber,
+      address: site.company.address,
+      socialLinks: site.company.socialLinks,
     };
   }
 }
