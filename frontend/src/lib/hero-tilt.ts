@@ -12,7 +12,7 @@ export function setupHeroTilt(root: HTMLElement): () => void {
 
   const all = [...media, ...content];
   all.forEach((el) => {
-    el.style.transition = "transform 0.15s ease-out";
+    el.style.transition = "transform 0.3s var(--ease-out-expo)";
     el.style.willChange = "transform";
   });
 
