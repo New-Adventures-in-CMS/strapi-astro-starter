@@ -1,11 +1,17 @@
 /* Motion system — Fase A: scroll-reveal nativo. Isolato per estrazione futura in @team/ui. */
 
+:root {
+  /* Motion tokens (locali, non DS-synced). Usati in questo file. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-reveal: 800ms;
+}
+
 [data-reveal] {
   opacity: 0;
   transform: translateY(24px);
   transition:
-    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
 }
 [data-reveal].is-revealed {
   opacity: 1;
@@ -22,8 +28,8 @@
   opacity: 0;
   transform: translateY(24px);
   transition:
-    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
 }
 [data-reveal="stagger"].is-revealed > * {
   opacity: 1;
@@ -62,7 +68,7 @@
   /* Wrapper: clip-path hides, then reveals */
   [data-mask-reveal] {
     clip-path: inset(100% 0 0 0);
-    transition: clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: clip-path var(--duration-reveal) var(--ease-out-expo);
     transition-delay: var(--mask-delay, 0ms);
   }
   [data-mask-reveal].is-revealed,
@@ -73,7 +79,7 @@
   /* Inner image: micro-scale settles */
   [data-mask-reveal] > img {
     transform: scale(1.1);
-    transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 1100ms var(--ease-out-expo);
     transition-delay: var(--mask-delay, 0ms);
   }
   [data-mask-reveal].is-revealed > img,
