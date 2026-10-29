@@ -91,18 +91,18 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
   name: "Strapi + Astro Starter",
-  heroTransition: "fade",
-  heroEffect: "none",
-  heroAlign: "center",
-  heroStyle: "fade",
-  motion: {
-    smooth: "medium",
-  },
-  header: {
-    width: "full",
-    submenuLayout: "full-bleed",
-  },
-  description: "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
+    heroTransition: "slide",
+    heroEffect: "none",
+    heroAlign: "center",
+    heroStyle: "slide",
+    motion: {
+      smooth: "medium",
+    },
+    header: {
+      width: "full",
+      submenuLayout: "full-bleed",
+    },
+    description: "Boilerplate Strapi 5 + Astro 7 con layout, SEO e fetch CMS già cablati.",
   url: "https://example.com",
   locale: "it-IT",
   company: {
