@@ -1,0 +1,11 @@
+---
+import TabsPrimitive from "@starwind-ui/astro/tabs";
+import type { HTMLAttributes } from "astro/types";
+import { tabsIndicator } from "./variants";
+
+type Props = HTMLAttributes<"span">;
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<TabsPrimitive.Indicator class={tabsIndicator({ class: className })} {...rest} />

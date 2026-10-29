@@ -1,0 +1,52 @@
+---
+import {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
+} from "@/components/starwind/tabs";
+import "@/styles/starwind.css";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabs Dev Fixture</title>
+  </head>
+  <body class="bg-background text-foreground p-8">
+    <h1 class="mb-8 text-2xl font-bold">Tabs Skeleton Collaudo</h1>
+
+    <div class="mx-auto max-w-xl">
+      <h2 class="mb-4 text-lg font-semibold">Horizontal (default)</h2>
+      <Tabs defaultValue="tab-1" data-testid="tabs-horizontal">
+        <TabsList>
+          <TabsTrigger value="tab-1">Panoramica</TabsTrigger>
+          <TabsTrigger value="tab-2">Funzionalità</TabsTrigger>
+          <TabsTrigger value="tab-3">Prezzi</TabsTrigger>
+          <TabsIndicator />
+        </TabsList>
+        <TabsContent value="tab-1">
+          <p>
+            La panoramica del prodotto offre una visione d'insieme delle caratteristiche principali
+            e dei vantaggi.
+          </p>
+        </TabsContent>
+        <TabsContent value="tab-2">
+          <p>
+            Le funzionalità includono gestione contenuti, API REST, e un sistema di plugin
+            estensibile.
+          </p>
+        </TabsContent>
+        <TabsContent value="tab-3">
+          <p>
+            I piani partono dalla versione community gratuita fino alle soluzioni enterprise
+            personalizzate.
+          </p>
+        </TabsContent>
+      </Tabs>
+    </div>
+  </body>
+</html>

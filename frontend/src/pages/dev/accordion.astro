@@ -1,0 +1,68 @@
+---
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/starwind/accordion";
+import "@/styles/starwind.css";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accordion Dev Fixture</title>
+  </head>
+  <body class="bg-background text-foreground p-8">
+    <h1 class="mb-8 text-2xl font-bold">Accordion Skeleton Collaudo</h1>
+
+    <div class="mx-auto max-w-xl">
+      <h2 class="mb-4 text-lg font-semibold">Single (default, collapsible)</h2>
+      <Accordion data-testid="accordion-single">
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Cos'è Astro?</AccordionTrigger>
+          <AccordionContent>
+            Astro è un framework web moderno che genera siti statici veloci con meno JavaScript lato
+            client.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-2" disabled>
+          <AccordionTrigger>Elemento disabilitato</AccordionTrigger>
+          <AccordionContent>Questo contenuto non dovrebbe essere raggiungibile.</AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-3">
+          <AccordionTrigger>Come funziona Strapi?</AccordionTrigger>
+          <AccordionContent>
+            Strapi è un headless CMS open-source che espone i contenuti tramite API REST o GraphQL.
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
+
+    <div class="mx-auto mt-12 max-w-xl">
+      <h2 class="mb-4 text-lg font-semibold">Multiple</h2>
+      <Accordion type="multiple" data-testid="accordion-multiple">
+        <AccordionItem value="m-1">
+          <AccordionTrigger>Primo elemento</AccordionTrigger>
+          <AccordionContent>
+            In modalità multiple, più sezioni possono restare aperte contemporaneamente.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="m-2">
+          <AccordionTrigger>Secondo elemento</AccordionTrigger>
+          <AccordionContent>
+            Ogni sezione si apre e chiude indipendentemente dalle altre.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="m-3">
+          <AccordionTrigger>Terzo elemento</AccordionTrigger>
+          <AccordionContent>
+            Utile quando l'utente ha bisogno di confrontare contenuti affiancati.
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  </body>
+</html>
