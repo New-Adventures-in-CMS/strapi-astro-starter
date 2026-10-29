@@ -7,3 +7,4 @@ export * from "./reveal.js";
 export * from "./smooth-scroll.js";
 export * from "./form-validation.js";
 export * from "./scrollspy.js";
+export * from "./lightbox.js";

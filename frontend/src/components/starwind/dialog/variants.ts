@@ -21,6 +21,22 @@ export const dialogContent = tv({
     "data-[state=open]:data-nested-dialog-open:scale-[calc(1-var(--nested-scale)*var(--nested-dialogs,1))]",
     "max-sm:data-[state=open]:data-nested-dialog-open:translate-y-[calc(var(--nested-offset)*var(--nested-dialogs,1))]",
   ],
+  variants: {
+    surface: {
+      card: "",
+      lightbox: [
+        "inset-0 top-0 left-0 w-screen h-screen max-w-none max-h-none",
+        "translate-x-0 translate-y-0 sm:top-0 sm:translate-y-0",
+        "rounded-none border-0 p-0 shadow-none",
+        "bg-foreground text-background",
+        "fade-in fade-out zoom-in-100 zoom-out-100 slide-in-from-bottom-0 slide-out-to-bottom-0",
+        "motion-reduce:!duration-0",
+      ],
+    },
+  },
+  defaultVariants: {
+    surface: "card",
+  },
 });
 
 export const dialogCloseButton = tv({
@@ -29,6 +45,15 @@ export const dialogCloseButton = tv({
     "absolute top-5.5 right-5.5 rounded-sm [&>svg]:opacity-70 hover:[&>svg]:opacity-100",
     "focus-visible:ring-outline/50 transition-[color,box-shadow] outline-none focus-visible:ring-3",
   ],
+  variants: {
+    surface: {
+      card: "",
+      lightbox: "text-background [&>svg]:opacity-90",
+    },
+  },
+  defaultVariants: {
+    surface: "card",
+  },
 });
 
 export const dialogDescription = tv({

@@ -16,6 +16,7 @@ export type CarouselOpts = {
   };
   transition?: "slide" | "fade";
   align?: EmblaOptionsType["align"];
+  startIndex?: number;
 };
 
 export type CarouselAPI = {
@@ -40,6 +41,7 @@ export function createCarousel(root: HTMLElement, opts: CarouselOpts = {}): Caro
   const emblaOpts: EmblaOptionsType = {
     loop: opts.loop ?? false,
     ...(opts.align !== undefined ? { align: opts.align } : {}),
+    ...(opts.startIndex !== undefined ? { startIndex: opts.startIndex } : {}),
     ...(useFade ? { watchDrag: false } : {}),
     ...(useFade && reducedMotion ? { duration: 0 } : {}),
   };
