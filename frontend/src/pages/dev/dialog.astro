@@ -1,0 +1,57 @@
+---
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/starwind/dialog";
+import "@/styles/starwind.css";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dialog Dev Fixture</title>
+  </head>
+  <body class="bg-background p-8">
+    <h1 class="mb-6 text-2xl font-bold">Dialog Skeleton Collaudo</h1>
+
+    <Dialog>
+      <DialogTrigger data-testid="dialog-trigger">Apri dialog</DialogTrigger>
+
+      <DialogContent data-testid="dialog-content">
+        <DialogHeader>
+          <DialogTitle>Titolo del dialog</DialogTitle>
+          <DialogDescription>
+            Descrizione breve che spiega lo scopo di questo dialog modale.
+          </DialogDescription>
+        </DialogHeader>
+
+        <p class="py-4">
+          Corpo del dialog. Qui va il contenuto principale: form, conferme, dettagli.
+        </p>
+
+        <DialogFooter>
+          <button
+            class="rounded-md border px-4 py-2"
+            data-sw-dialog-close
+            data-testid="dialog-cancel"
+          >
+            Annulla
+          </button>
+          <button
+            class="bg-primary text-primary-foreground rounded-md px-4 py-2"
+            data-testid="dialog-confirm"
+          >
+            Conferma
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </body>
+</html>
