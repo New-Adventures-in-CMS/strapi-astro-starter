@@ -1,0 +1,78 @@
+---
+import type { SharedCard } from "@/types";
+import {
+  Card as UICard,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/starwind/card";
+import { Button } from "@/components/starwind/button";
+import StrapiImage from "@/components/StrapiImage.astro";
+
+interface Props {
+  card: SharedCard;
+  onDark?: boolean;
+  index?: number;
+}
+
+const { card, onDark = false, index } = Astro.props;
+const hasImage = card.image != null;
+const hasMaskReveal = hasImage && index != null;
+const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal && "pt-0"]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<UICard class={cardClass}>
+  {hasImage ? (
+    hasMaskReveal ? (
+      <div
+        data-mask-reveal
+        class="overflow-hidden rounded-t-xl"
+        style={`--mask-delay:${index! * 100}ms`}
+      >
+        <StrapiImage
+          image={card.image}
+          alt={card.image?.alternativeText || card.title || ""}
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          class="w-full object-cover aspect-video"
+        />
+      </div>
+    ) : (
+      <StrapiImage
+        image={card.image}
+        alt={card.image?.alternativeText || card.title || ""}
+        sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+        class="w-full rounded-t-lg object-cover aspect-video"
+      />
+    )
+  ) : (
+    <div
+      class="w-full rounded-t-lg aspect-video flex items-center justify-center bg-muted/40 text-muted-foreground"
+      aria-hidden="true"
+    >
+      <svg
+        class="h-12 w-12 fill-current opacity-60"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM5 19h14l-4.5-6-3.5 4.5L8.5 14 5 19zM8.5 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+      </svg>
+    </div>
+  )}
+  <CardHeader>
+    {card.eyebrow && (
+      <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">{card.eyebrow}</p>
+    )}
+    <CardTitle>{card.title}</CardTitle>
+    {card.description && <CardDescription>{card.description}</CardDescription>}
+  </CardHeader>
+  {card.link_url && card.link_text && (
+    <CardFooter>
+      <Button variant="ghost" size="sm" href={card.link_url}>
+        {card.link_text}
+      </Button>
+    </CardFooter>
+  )}
+</UICard>

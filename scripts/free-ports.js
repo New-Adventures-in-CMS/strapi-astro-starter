@@ -12,10 +12,7 @@ for (const port of PORTS) {
     // lsof esce con codice 1 se nessun processo, oppure non esiste
     if (e.status === 1 && e.stdout.trim() === "") {
       console.log(`  porta ${port}: già libera`);
-    } else if (
-      e.code === "ENOENT" ||
-      /not found|command not found/i.test(e.message)
-    ) {
+    } else if (e.code === "ENOENT" || /not found|command not found/i.test(e.message)) {
       console.log(`  porta ${port}: lsof non disponibile, salto`);
     } else {
       // lsof assente su questo OS — degrada silenziosamente

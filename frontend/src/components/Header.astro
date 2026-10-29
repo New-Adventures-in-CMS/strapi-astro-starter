@@ -1,8 +1,11 @@
 ---
 import { getHeaderNav } from "@/lib/navigation";
+import { getSiteSettings } from "@/lib/strapi";
 import { site } from "@/config/site";
-import { Container } from "@/components/layout";
+import { Container, headerWrapper } from "@/components/layout";
 import Logo from "@/components/Logo.astro";
+import NavigationMenuBand from "@/components/nav/NavigationMenuBand.astro";
+import { submenuDropdownList } from "@/components/nav/submenu-variants";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -26,6 +29,8 @@ interface Props {
 const { overlay = false } = Astro.props;
 
 const navItems = await getHeaderNav();
+const { headerWidth, submenuLayout } = await getSiteSettings();
+
 const path = Astro.url.pathname;
 const isActive = (href: string | undefined): boolean =>
   href ? (href === "/" ? path === "/" : path.startsWith(href)) : false;
@@ -33,66 +38,124 @@ const isActive = (href: string | undefined): boolean =>
 
 <header
   class:list={[
-    "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
+    "fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[transform,background-color] duration-300",
     !overlay && "bg-background text-foreground border-b border-border",
   ]}
   data-overlay={overlay ? "true" : "false"}
   data-state={overlay ? "transparent" : undefined}
   data-hidden="false"
+  data-header-width={headerWidth}
+  data-submenu-layout={submenuLayout}
 >
-  <Container width="wide" class="flex items-center justify-between py-5">
+  <div class={headerWrapper({ width: headerWidth })}>
     <!-- Brand —logo lockup contains both mark and wordmark -->
-    <a href="/" aria-label={site.name}>
+    <a href="/" aria-label={site.name} class="self-center">
       <Logo class="h-8 w-auto" />
     </a>
 
-    <!-- Desktop nav (md and up) -->
+    <!-- Desktop nav (lg and up) -->
     <nav aria-label="Navigazione principale" class="hidden lg:flex">
-      <NavigationMenu size="sm">
-        <NavigationMenuList>
-          {navItems.map((item) =>
-            item.children?.length ? (
-              <NavigationMenuItem value={item.label}>
-                <NavigationMenuTrigger class="text-sm font-medium">{item.label}</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul class="w-fit min-w-[180px] py-1">
-                    {item.children.map((child) => (
-                      <li>
-                        <NavigationMenuLink
-                          href={child.href}
-                          target={child.external ? "_blank" : undefined}
-                          rel={child.external ? "noopener noreferrer" : undefined}
-                          active={isActive(child.href)}
-                          aria-current={isActive(child.href) ? "page" : undefined}
-                        >
-                          {child.label}
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ) : (
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  href={item.href}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  active={isActive(item.href)}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  class="text-sm font-medium"
-                >
-                  {item.label}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            )
-          )}
-        </NavigationMenuList>
-      </NavigationMenu>
+      {submenuLayout === "full-bleed" ? (
+        <NavigationMenuBand size="sm">
+          <NavigationMenuList>
+            {navItems.map((item) =>
+              item.children?.length ? (
+                <NavigationMenuItem value={item.label}>
+                  <NavigationMenuTrigger class="text-sm font-medium">
+                    {item.label}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent class="opacity-100! transition-none! duration-0!">
+                    <Container width={headerWidth} class="py-8">
+                      <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
+                        {item.children.map((child) => (
+                          <li>
+                            <NavigationMenuLink
+                              href={child.href}
+                              target={child.external ? "_blank" : undefined}
+                              rel={child.external ? "noopener noreferrer" : undefined}
+                              active={isActive(child.href)}
+                              aria-current={isActive(child.href) ? "page" : undefined}
+                              class="flex-col items-start gap-1"
+                            >
+                              <span class="text-sm font-medium">{child.label}</span>
+                              {child.description && (
+                                <span class="text-muted-foreground text-xs leading-snug">
+                                  {child.description}
+                                </span>
+                              )}
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </Container>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    active={isActive(item.href)}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    class="text-sm font-medium"
+                  >
+                    {item.label}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ),
+            )}
+          </NavigationMenuList>
+        </NavigationMenuBand>
+      ) : (
+        <NavigationMenu size="sm">
+          <NavigationMenuList>
+            {navItems.map((item) =>
+              item.children?.length ? (
+                <NavigationMenuItem value={item.label}>
+                  <NavigationMenuTrigger class="text-sm font-medium">
+                    {item.label}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul class={submenuDropdownList()}>
+                      {item.children.map((child) => (
+                        <li>
+                          <NavigationMenuLink
+                            href={child.href}
+                            target={child.external ? "_blank" : undefined}
+                            rel={child.external ? "noopener noreferrer" : undefined}
+                            active={isActive(child.href)}
+                            aria-current={isActive(child.href) ? "page" : undefined}
+                          >
+                            {child.label}
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    active={isActive(item.href)}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    class="text-sm font-medium"
+                  >
+                    {item.label}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ),
+            )}
+          </NavigationMenuList>
+        </NavigationMenu>
+      )}
     </nav>
 
     <!-- Mobile hamburger trigger (Sheet drawer) -->
-    <div class="lg:hidden">
+    <div class="self-center lg:hidden">
       <Sheet>
         <SheetTrigger
           aria-label="Apri menu di navigazione"
@@ -148,7 +211,9 @@ const isActive = (href: string | undefined): boolean =>
                               ? "bg-muted text-foreground"
                               : "text-muted-foreground hover:bg-muted hover:text-foreground",
                           ]}
-                        >{child.label}</a>
+                        >
+                          {child.label}
+                        </a>
                       </li>
                     ))}
                   </ul>
@@ -165,26 +230,45 @@ const isActive = (href: string | undefined): boolean =>
                       ? "bg-muted text-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   ]}
-                >{item.label}</a>
-              )
+                >
+                  {item.label}
+                </a>
+              ),
             )}
           </nav>
         </SheetContent>
       </Sheet>
     </div>
-  </Container>
+  </div>
 
-  {overlay && (
-    <script>
-      import { initScrollState } from "@skeleton/scroll-state.js";
-      const sentinel = document.getElementById("header-overlay-sentinel");
-      const header = document.querySelector<HTMLElement>("header[data-overlay='true']");
-      if (sentinel && header) {
+  {overlay && <script>
+    import { initScrollState } from "@skeleton/scroll-state.js";
+    const header = document.querySelector<HTMLElement>("header[data-overlay='true']");
+    if (header) {
+      const stickyMain = document.querySelector<HTMLElement>("[data-sticky-hero]");
+      if (stickyMain && stickyMain.children.length > 1) {
+        const sentinel = document.createElement("div");
+        sentinel.className = "pointer-events-none h-px";
+        sentinel.setAttribute("aria-hidden", "true");
+        stickyMain.insertBefore(sentinel, stickyMain.children[1]);
         initScrollState(header, sentinel);
+      } else {
+        const sentinel = document.getElementById("header-overlay-sentinel");
+        if (sentinel) initScrollState(header, sentinel);
       }
-    </script>
-  )}
+    }
+  </script>}
 
+  <!-- Keep megamenu open while cursor stays on header -->
+  <script>
+    import { initHeaderKeepOpen } from "@/components/nav/header-keep-open";
+    initHeaderKeepOpen();
+  </script>
+  <!-- Sync header background with megamenu open/close lifecycle -->
+  <script>
+    import { initHeaderMenuBackground } from "@/components/nav/header-menu-background";
+    initHeaderMenuBackground();
+  </script>
   <!-- Auto-hide: directional scroll detection with focus reveal -->
   <script>
     import { initHideOnScroll } from "@skeleton/hide-on-scroll.js";

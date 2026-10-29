@@ -32,7 +32,9 @@
         "blocks.hero",
         "blocks.rich-text",
         "blocks.image-text",
-        "blocks.card-grid"
+        "blocks.card-grid",
+        "blocks.carousel",
+        "blocks.form"
       ]
     }
   }

@@ -10,9 +10,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Hero slider — multi-slide carousel", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("carousel root is within viewport bounds (boundingBox)", async ({
-    page,
-  }) => {
+  test("carousel root is within viewport bounds (boundingBox)", async ({ page }) => {
     await page.goto("/dev/hero-slider");
     const root = page.locator("[data-hero-carousel]").first();
     await expect(root).toBeVisible();
@@ -24,9 +22,7 @@ test.describe("Hero slider — multi-slide carousel", () => {
     expect(box!.height).toBeGreaterThan(0);
   });
 
-  test("carousel has role=region and aria-roledescription=carousel", async ({
-    page,
-  }) => {
+  test("carousel has role=region and aria-roledescription=carousel", async ({ page }) => {
     await page.goto("/dev/hero-slider");
     const root = page.locator("[data-hero-carousel]").first();
     await expect(root).toHaveAttribute("role", "region");

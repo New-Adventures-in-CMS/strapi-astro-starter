@@ -1,0 +1,136 @@
+---
+import type { BlockWidth, SectionSpacing, SharedCard } from "@/types";
+import { Section, Container } from "@/components/layout";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Card from "./Card.astro";
+import { carousel as cv } from "./variants";
+
+interface Props {
+  heading?: string | null;
+  eyebrow?: string | null;
+  lead?: string | null;
+  tone?: "light" | "dark" | null;
+  cards: SharedCard[];
+  loop?: boolean | null;
+  autoplay?: boolean | null;
+  width?: BlockWidth;
+  spacing?: SectionSpacing;
+}
+
+const { heading, eyebrow, lead, tone, cards, loop, autoplay, width, spacing } = Astro.props;
+const sectionTone = tone === "dark" ? "dark" : "default";
+const onDark = sectionTone === "dark";
+---
+
+<Section tone={sectionTone} spacing={spacing ?? "xl"}>
+  <Container width={width ?? "contained"}>
+    <div data-reveal>
+      <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="left" onDark={onDark} />
+    </div>
+  </Container>
+  <Container width={width ?? "contained"}>
+    <div
+      data-block-carousel
+      data-loop={loop || undefined}
+      data-autoplay={autoplay || undefined}
+      tabindex="0"
+      class="relative mt-10"
+    >
+      <div class={cv.viewport()} data-carousel-viewport>
+        <div class={cv.track()}>
+          {cards.map((c) => (
+            <div class={cv.slide()}>
+              <Card card={c} onDark={onDark} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class={cv.controls()}>
+        <button class={cv.navBtn()} data-carousel-prev type="button" aria-label="Precedente">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <button class={cv.navBtn()} data-carousel-next type="button" aria-label="Successivo">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+        <div class={cv.scrollbar()} data-carousel-bar aria-hidden="true">
+          <div class={cv.scrollbarThumb()} data-carousel-bar-thumb></div>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Section>
+
+<style is:global>
+  [data-block-carousel] [data-carousel-dots] button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-muted-foreground);
+    opacity: 0.4;
+    border: none;
+    cursor: pointer;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+  }
+  [data-block-carousel] [data-carousel-dots] button[data-active] {
+    opacity: 1;
+    transform: scale(1.25);
+    background: var(--color-foreground);
+  }
+</style>
+
+<script>
+  import { createCarousel } from "@skeleton/carousel.js";
+  document.querySelectorAll<HTMLElement>("[data-block-carousel]").forEach((root) => {
+    const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
+    const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
+    const loop = root.hasAttribute("data-loop");
+    const autoplay = root.hasAttribute("data-autoplay") ? { delayMs: 5000 } : undefined;
+    const api = createCarousel(root, {
+      loop,
+      autoplay,
+      prevBtn,
+      nextBtn,
+      align: "start",
+      labels: {
+        prev: "Precedente",
+        next: "Successivo",
+        slide: (i) => `Slide ${i + 1}`,
+      },
+    });
+
+    const thumb = root.querySelector<HTMLElement>("[data-carousel-bar-thumb]");
+    if (thumb) {
+      let n = Math.max(1, api.snapCount());
+      function sizeThumb() {
+        n = Math.max(1, api.snapCount());
+        thumb!.style.width = `${100 / n}%`;
+      }
+      function moveThumb() {
+        thumb!.style.transform = `translateX(${api.selectedIndex() * 100}%)`;
+      }
+      sizeThumb();
+      moveThumb();
+      api.on("select", moveThumb);
+      api.on("reInit", () => {
+        sizeThumb();
+        moveThumb();
+      });
+    }
+  });
+</script>

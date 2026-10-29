@@ -1,10 +1,11 @@
 ---
-import type { HeroSlide, StrapiMedia } from "@/types";
+import type { HeroSlide, StrapiMedia, HeroAlign, HeroStyle } from "@/types";
 import { Section, Container } from "@/components/layout";
+import { heroContent } from "@/components/layout/variants";
 import { Button } from "@/components/starwind/button";
-import { strapiMediaUrl } from "@/lib/strapi";
+import StrapiImage from "@/components/StrapiImage.astro";
 import { site } from "@/config/site";
-import type { HeroTransition } from "@/config/site";
+import type { HeroTransition, HeroEffect } from "@/config/site";
 
 interface Props {
   heading: string;
@@ -17,6 +18,9 @@ interface Props {
   slides?: HeroSlide[] | null;
   autoplayDelay?: number;
   transition?: HeroTransition;
+  effect?: HeroEffect;
+  align?: HeroAlign | null;
+  heroStyle?: HeroStyle | null;
 }
 
 const {
@@ -30,10 +34,34 @@ const {
   slides,
   autoplayDelay = 5000,
   transition,
+  effect,
+  align,
+  heroStyle,
 } = Astro.props;
 
-const strategy: HeroTransition = transition ?? site.heroTransition;
-const isParallax = strategy === "parallax";
+const HERO_PRESETS: Record<HeroStyle, { transition: HeroTransition; effect: HeroEffect }> = {
+  fade: { transition: "fade", effect: "none" },
+  slide: { transition: "slide", effect: "none" },
+  drift: { transition: "slide", effect: "drift" },
+  focus: { transition: "slide", effect: "focus" },
+  dim: { transition: "slide", effect: "dim" },
+  parallax: { transition: "fade", effect: "parallax" },
+  tilt: { transition: "fade", effect: "tilt" },
+  "ken-burns": { transition: "fade", effect: "ken-burns" },
+};
+const presetPair = HERO_PRESETS[heroStyle ?? site.heroStyle];
+const heroTransition: HeroTransition = transition ?? presetPair.transition;
+const requestedEffect: HeroEffect = effect ?? presetPair.effect;
+const blockAlign: HeroAlign = align ?? site.heroAlign;
+const SCROLL_EFFECTS: HeroEffect[] = ["drift", "focus", "dim"]; // pattern A → richiedono slide
+const heroEffect: HeroEffect =
+  SCROLL_EFFECTS.includes(requestedEffect) && heroTransition !== "slide" ? "none" : requestedEffect;
+if (import.meta.env.DEV && heroEffect !== requestedEffect) {
+  console.warn(
+    `[BlockHero] effect "${requestedEffect}" richiede transition "slide" (attuale "${heroTransition}") → degradato a "none".`,
+  );
+}
+const isDrift = heroEffect === "drift";
 const multiSlide = slides && slides.length >= 2;
 
 // Static display: first slide content or top-level fields
@@ -42,18 +70,23 @@ const staticSlide: HeroSlide =
     ? slides[0]
     : { heading, eyebrow, subheading, cta_text, cta_url, image };
 
-function slideImageUrl(s: HeroSlide) {
-  return s.image ? strapiMediaUrl(s.image.url) : null;
-}
+const staticAlign: HeroAlign = staticSlide.align ?? blockAlign;
+const staticHC = heroContent({ align: staticAlign });
+
+const HERO_SIZES = "100vw";
+const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 ---
 
 <Section
   tone="dark"
   spacing="none"
   class:list={[
-    "relative overflow-hidden flex items-center justify-center",
+    `overflow-hidden flex ${staticHC.wrap()}`,
     immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
   ]}
+  data-block="hero"
+  data-hero-static={multiSlide ? undefined : ""}
+  data-hero-effect={multiSlide ? undefined : heroEffect}
 >
   {multiSlide ? (
     /* ── CAROUSEL MODE ──────────────────────────────────────── */
@@ -61,54 +94,99 @@ function slideImageUrl(s: HeroSlide) {
       class="absolute inset-0"
       data-hero-carousel
       data-autoplay-delay={autoplayDelay}
-      data-hero-strategy={strategy}
+      data-hero-transition={heroTransition}
+      data-hero-effect={heroEffect}
       tabindex="0"
     >
       {/* Embla viewport — overflow:hidden + explicit h-full so Embla can measure */}
       <div class="overflow-hidden h-full" data-carousel-viewport>
         <div class="flex h-full touch-pan-y">
           {slides.map((slide) => {
-            const imgUrl = slideImageUrl(slide);
             const showCta = slide.cta_text && slide.cta_url;
+            const a: HeroAlign = slide.align ?? blockAlign;
+            const hc = heroContent({ align: a });
             return (
-              <div class="relative flex-[0_0_100%] h-full flex items-center justify-center" data-hero-slide>
-                {imgUrl ? (
+              <div
+                class={`relative flex-[0_0_100%] h-full flex ${hc.wrap()} overflow-hidden`}
+                data-hero-slide
+              >
+                {slide.image ? (
                   <>
-                    {isParallax ? (
-                      <div class="hero-slide__parallax" data-parallax-layer>
-                        <img
-                          src={imgUrl}
-                          alt={slide.image?.alternativeText || ""}
+                    {isDrift ? (
+                      <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
+                        <StrapiImage
+                          image={slide.image}
+                          sizes={HERO_SIZES}
+                          widths={HERO_WIDTHS}
+                          loading="eager"
+                          fetchpriority="high"
                           class="absolute inset-0 h-full w-full object-cover"
                         />
                       </div>
                     ) : (
-                      <img
-                        src={imgUrl}
-                        alt={slide.image?.alternativeText || ""}
+                      <StrapiImage
+                        image={slide.image}
+                        sizes={HERO_SIZES}
+                        widths={HERO_WIDTHS}
+                        loading="eager"
+                        fetchpriority="high"
                         class="absolute inset-0 h-full w-full object-cover"
+                        data-hero-media
                       />
                     )}
+                    <div
+                      class="absolute inset-0 bg-black pointer-events-none"
+                      data-hero-dim-overlay
+                      style="opacity: 0"
+                    ></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
                   </>
-                ) : isParallax ? (
-                  <div class="hero-slide__parallax" data-parallax-layer>
-                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
-                  </div>
+                ) : isDrift ? (
+                  <>
+                    <div class="hero-slide__parallax" data-parallax-layer data-hero-media>
+                      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                    </div>
+                    <div
+                      class="absolute inset-0 bg-black pointer-events-none"
+                      data-hero-dim-overlay
+                      style="opacity: 0"
+                    ></div>
+                  </>
                 ) : (
-                  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+                  <>
+                    <div
+                      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+                      data-hero-media
+                    />
+                    <div
+                      class="absolute inset-0 bg-black pointer-events-none"
+                      data-hero-dim-overlay
+                      style="opacity: 0"
+                    ></div>
+                  </>
                 )}
-                <Container width="default" class="relative z-10 text-center py-24">
+                <Container
+                  width="default"
+                  class={`relative z-10 py-24 ${hc.text()}`}
+                  data-hero-content
+                >
                   {slide.eyebrow && (
                     <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
                       {slide.eyebrow}
                     </p>
                   )}
-                  <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+                  <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
                     {slide.heading}
                   </h1>
                   {slide.subheading && (
-                    <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
+                    <p
+                      class:list={[
+                        "mt-6 text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+                        a.includes("left") && "mr-auto text-left",
+                        a.includes("center") && "mx-auto text-center",
+                        a.includes("right") && "ml-auto text-right",
+                      ]}
+                    >
                       {slide.subheading}
                     </p>
                   )}
@@ -137,8 +215,19 @@ function slideImageUrl(s: HeroSlide) {
         data-carousel-prev
         type="button"
       >
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        <svg
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
       </button>
 
@@ -148,7 +237,13 @@ function slideImageUrl(s: HeroSlide) {
         data-carousel-next
         type="button"
       >
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -162,30 +257,44 @@ function slideImageUrl(s: HeroSlide) {
   ) : (
     /* ── STATIC MODE (single slide or top-level fields) ─────── */
     <>
-      {slideImageUrl(staticSlide) ? (
+      {staticSlide.image ? (
         <>
-          <img
-            src={slideImageUrl(staticSlide)!}
-            alt={staticSlide.image?.alternativeText || ""}
+          <StrapiImage
+            image={staticSlide.image}
+            sizes={HERO_SIZES}
+            widths={HERO_WIDTHS}
+            loading="eager"
+            fetchpriority="high"
             class="absolute inset-0 h-full w-full object-cover"
+            data-hero-media
           />
           <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
         </>
       ) : (
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]" />
+        <div
+          class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+          data-hero-media
+        />
       )}
 
-      <Container width="default" class="relative z-10 text-center">
+      <Container width="default" class={`relative z-10 ${staticHC.text()}`} data-hero-content>
         {staticSlide.eyebrow && (
           <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
             {staticSlide.eyebrow}
           </p>
         )}
-        <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)]">
+        <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
           {staticSlide.heading}
         </h1>
         {staticSlide.subheading && (
-          <p class="mt-6 text-lg md:text-xl leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl mx-auto">
+          <p
+            class:list={[
+              "mt-6 text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+              staticAlign.includes("left") && "mr-auto text-left",
+              staticAlign.includes("center") && "mx-auto text-center",
+              staticAlign.includes("right") && "ml-auto text-right",
+            ]}
+          >
             {staticSlide.subheading}
           </p>
         )}
@@ -206,7 +315,11 @@ function slideImageUrl(s: HeroSlide) {
   )}
 
   {immersive && (
-    <div id="header-overlay-sentinel" class="pointer-events-none absolute bottom-0 h-px w-full z-30" aria-hidden="true"></div>
+    <div
+      id="header-overlay-sentinel"
+      class="pointer-events-none absolute bottom-0 h-px w-full z-30"
+      aria-hidden="true"
+    ></div>
   )}
 </Section>
 
@@ -219,11 +332,14 @@ function slideImageUrl(s: HeroSlide) {
     right: -10%;
     will-change: transform;
   }
+  [data-hero-dim-overlay] {
+    will-change: opacity;
+  }
   .hero-carousel-arrow {
     background: color-mix(in srgb, var(--section-dark-fg) 15%, transparent);
     color: var(--section-dark-fg);
     backdrop-filter: blur(4px);
-    transition: background 0.15s;
+    transition: background 0.2s ease-out;
   }
   .hero-carousel-arrow:hover {
     background: color-mix(in srgb, var(--section-dark-fg) 30%, transparent);
@@ -240,7 +356,9 @@ function slideImageUrl(s: HeroSlide) {
     opacity: 0.4;
     border: none;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
   [data-hero-carousel] [data-carousel-dots] button[data-active] {
     opacity: 1;
@@ -250,14 +368,29 @@ function slideImageUrl(s: HeroSlide) {
 
 <script>
   import { createCarousel } from "@skeleton/carousel.js";
+  import { setupHeroDrift } from "@/lib/hero-drift.js";
   import { setupHeroParallax } from "@/lib/hero-parallax.js";
+  import { setupHeroTilt } from "@/lib/hero-tilt.js";
+  import { setupHeroFocus } from "@/lib/hero-focus.js";
+  import { setupHeroDim } from "@/lib/hero-dim.js";
+  import { setupHeroKenBurns } from "@/lib/hero-ken-burns.js";
+
+  document.querySelectorAll<HTMLElement>("[data-hero-static]").forEach((root) => {
+    const heroEffect = root.dataset.heroEffect ?? "none";
+    if (heroEffect === "tilt") {
+      const cleanup = setupHeroTilt(root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+  });
 
   document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
     const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
     const dots = root.querySelector<HTMLElement>("[data-carousel-dots]") ?? undefined;
     const delay = parseInt(root.dataset.autoplayDelay ?? "5000", 10);
-    const strategy = (root.dataset.heroStrategy ?? "fade") as "parallax" | "fade" | "slide";
+    const heroTransition = (root.dataset.heroTransition ?? "fade") as "slide" | "fade";
+    const heroEffect = (root.dataset.heroEffect ?? "none") as
+      "none" | "drift" | "parallax" | "tilt" | "focus" | "dim" | "ken-burns";
 
     const api = createCarousel(root, {
       loop: true,
@@ -265,12 +398,32 @@ function slideImageUrl(s: HeroSlide) {
       prevBtn,
       nextBtn,
       dots,
-      ...(strategy === "fade" ? { transition: "fade" } : {}),
+      ...(heroTransition === "fade" ? { transition: "fade" as const } : {}),
     });
 
-    if (strategy === "parallax") {
-      const cleanupParallax = setupHeroParallax(api, root);
-      document.addEventListener("astro:before-swap", cleanupParallax, { once: true });
+    if (heroEffect === "drift") {
+      const cleanup = setupHeroDrift(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "parallax") {
+      const cleanup = setupHeroParallax(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "tilt") {
+      const cleanup = setupHeroTilt(root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "focus") {
+      const cleanup = setupHeroFocus(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "dim") {
+      const cleanup = setupHeroDim(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "ken-burns") {
+      const cleanup = setupHeroKenBurns(api, root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
   });
 </script>

@@ -1,0 +1,64 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site settings",
+    "description": "Impostazioni globali del sito (singleton). Layout di header, submenu e footer."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "submenuLayout": {
+      "type": "enumeration",
+      "enum": ["full-bleed", "dropdown"],
+      "default": "full-bleed",
+      "required": true
+    },
+    "headerWidth": {
+      "type": "enumeration",
+      "enum": ["full", "contained"],
+      "default": "full",
+      "required": true
+    },
+    "footerWidth": {
+      "type": "enumeration",
+      "enum": ["full", "contained"],
+      "default": "full",
+      "required": true
+    },
+    "footerTone": {
+      "type": "enumeration",
+      "enum": ["muted", "dark"],
+      "default": "dark",
+      "required": true
+    },
+    "stickyShell": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "imageMaskReveal": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "companyName": {
+      "type": "string"
+    },
+    "vatNumber": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social-link"
+    }
+  }
+}

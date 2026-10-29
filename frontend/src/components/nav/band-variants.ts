@@ -1,0 +1,43 @@
+import { tv } from "tailwind-variants";
+
+// Full-bleed banda via Positioner: Runtime places the Positioner under the trigger
+// (side=bottom, sideOffset=0); we force it edge-to-edge (left:0, w:100vw, no max)
+// so the popup extends across the whole viewport. Popup fills the Positioner (w-full),
+// Viewport is the height-animated container that morphs between panels.
+
+export const navigationMenuBandPositioner = tv({
+  base: [
+    // absolute! → keeps Positioner out of the header's flex flow so the nav
+    // list doesn't wrap. Sibling of List inside Root; combined with `static!`
+    // on Root, its containing-block resolves up to <header> (fixed = a CB).
+    // top-full! (top: 100%) with CB=header lands the popup at header.bottom;
+    // overrides the Runtime's inline `top` (trigger-bottom via floating-ui).
+    "absolute! left-0! top-full! w-screen! max-w-none! z-40",
+    "pointer-events-none",
+  ],
+});
+
+export const navigationMenuBandPopup = tv({
+  base: [
+    "relative pointer-events-auto w-full!",
+    "bg-background text-foreground shadow-lg",
+    "data-[state=closed]:pointer-events-none",
+    "data-starting-style:h-0! data-ending-style:h-0!",
+    "transition-[height] duration-[360ms] ease-out",
+    "data-ending-style:duration-[200ms]",
+    "motion-reduce:transition-none motion-reduce:duration-0",
+    // Hover bridge: transparent zone above popup so diagonal cursor movement
+    // from trigger row stays inside a pointer-events-auto area.
+    "before:absolute before:left-0 before:right-0 before:bottom-full before:h-6",
+  ],
+});
+
+export const navigationMenuBandViewport = tv({
+  base: [
+    "relative! w-full! overflow-hidden",
+    "data-starting-style:h-0! data-ending-style:h-0!",
+    "transition-[height] duration-[360ms] ease-out",
+    "data-ending-style:duration-[200ms]",
+    "motion-reduce:transition-none motion-reduce:duration-0",
+  ],
+});

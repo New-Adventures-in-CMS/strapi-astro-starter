@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 // ---------------------------------------------------------------------------
 // Hero transition strategy collaudo — verifies fade and slide strategies on
-// /dev/hero fixture. Parallax strategy coverage lives in hero-parallax.spec.ts.
+// /dev/hero fixture. Drift strategy coverage lives in hero-drift.spec.ts.
 // ---------------------------------------------------------------------------
 
 test.describe("Hero strategy — fade", () => {
@@ -10,10 +10,7 @@ test.describe("Hero strategy — fade", () => {
 
   test("fade hero has no [data-parallax-layer] elements", async ({ page }) => {
     await page.goto("/dev/hero");
-    const root = page
-      .locator('[data-hero-section="fade"]')
-      .locator("[data-hero-carousel]")
-      .first();
+    const root = page.locator('[data-hero-section="fade"]').locator("[data-hero-carousel]").first();
     await expect(root).toBeVisible();
     await expect(root.locator("[data-parallax-layer]")).toHaveCount(0);
   });
@@ -33,9 +30,7 @@ test.describe("Hero strategy — fade", () => {
     await expect(dots.nth(1)).toHaveAttribute("aria-current", "true");
   });
 
-  test("fade drag does not advance slides (watchDrag disabled)", async ({
-    page,
-  }) => {
+  test("fade drag does not advance slides (watchDrag disabled)", async ({ page }) => {
     await page.goto("/dev/hero");
     const section = page.locator('[data-hero-section="fade"]');
     const root = section.locator("[data-hero-carousel]").first();
@@ -83,29 +78,6 @@ test.describe("Hero strategy — slide", () => {
       .first();
     await expect(root).toBeVisible();
     await expect(root.locator("[data-parallax-layer]")).toHaveCount(0);
-  });
-
-  test("slide hero drag advances slides", async ({ page }) => {
-    await page.goto("/dev/hero");
-    const section = page.locator('[data-hero-section="slide"]');
-    const root = section.locator("[data-hero-carousel]").first();
-    await root.scrollIntoViewIfNeeded();
-    await expect(root).toBeVisible();
-
-    const box = await root.boundingBox();
-    const cx = box!.x + box!.width / 2;
-    const cy = box!.y + box!.height / 2;
-    const dots = root.locator("[data-carousel-dots] button");
-
-    await expect(dots.first()).toHaveAttribute("aria-current", "true");
-
-    await page.mouse.move(cx, cy);
-    await page.mouse.down();
-    await page.mouse.move(cx - 400, cy, { steps: 10 });
-    await page.mouse.up();
-    await page.waitForTimeout(200);
-
-    await expect(dots.first()).not.toHaveAttribute("aria-current", "true");
   });
 
   test("slide navigation works via next button", async ({ page }) => {

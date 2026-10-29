@@ -6,6 +6,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { Font } from "astro:assets";
 import { site } from "@/config/site";
+import { getSiteSettings } from "@/lib/strapi";
 
 interface Props {
   title?: string;
@@ -17,7 +18,9 @@ interface Props {
 }
 
 const { title, description, image, canonical, noindex, headerOverlay = false } = Astro.props;
+const { stickyShell, imageMaskReveal } = await getSiteSettings();
 ---
+
 <!doctype html>
 <html lang={site.locale.split("-")[0]}>
   <head>
@@ -28,11 +31,27 @@ const { title, description, image, canonical, noindex, headerOverlay = false } =
     <Font cssVariable="--font-inter" preload />
     <SEO {title} {description} {image} {canonical} {noindex} />
   </head>
-  <body class="flex min-h-screen flex-col">
+  <body
+    class="flex min-h-screen flex-col"
+    data-sticky-footer={stickyShell ? "" : undefined}
+    data-mask-images={imageMaskReveal ? "" : undefined}
+  >
     <Header overlay={headerOverlay} />
-    <main class:list={[!headerOverlay && "pt-[var(--header-h)]", "flex-1"]}>
+    <main
+      class:list={[!headerOverlay && "pt-[var(--header-h)]", "flex-1"]}
+      data-sticky-hero={headerOverlay && stickyShell ? "" : undefined}
+    >
       <slot />
     </main>
     <Footer />
+    <script>
+      import { initReveal } from "@skeleton/reveal.js";
+      import { initMaskReveal } from "@skeleton/mask-reveal.js";
+      import { initSmoothScroll } from "@skeleton/smooth-scroll.js";
+      import { site } from "@/config/site";
+      initSmoothScroll(site.motion.smooth);
+      initReveal();
+      initMaskReveal();
+    </script>
   </body>
 </html>

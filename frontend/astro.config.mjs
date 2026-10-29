@@ -1,11 +1,34 @@
 // frontend/astro.config.mjs
 import { defineConfig, envField, fontProviders } from "astro/config";
+import { loadEnv } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
 
 // Keep in sync with frontend/src/config/site.ts → site.url
 const SITE_URL = "https://example.com";
+
+const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
+const cmsUrl = env.PUBLIC_STRAPI_URL || env.STRAPI_URL || "";
+
+function remotePatterns() {
+  /** @type {{ protocol: string; hostname: string }[]} */
+  const patterns = [{ protocol: "http", hostname: "localhost" }];
+  if (cmsUrl) {
+    try {
+      const u = new URL(cmsUrl);
+      if (u.hostname !== "localhost") {
+        patterns.push({
+          protocol: u.protocol.replace(":", ""),
+          hostname: u.hostname,
+        });
+      }
+    } catch {
+      /* env malformed — keep localhost only */
+    }
+  }
+  return patterns;
+}
 
 export default defineConfig({
   site: SITE_URL,
@@ -53,10 +76,7 @@ export default defineConfig({
     // i18n: not active — see SETUP.md → "i18n (predisposto)"
   ],
   image: {
-    remotePatterns: [
-      { protocol: "http", hostname: "localhost" },
-      // { protocol: "https", hostname: "cms.example.com" }, // produzione
-    ],
+    remotePatterns: remotePatterns(),
   },
   vite: {
     plugins: [tailwindcss()],

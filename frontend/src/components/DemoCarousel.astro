@@ -50,10 +50,7 @@ const isFade = transition === "fade";
   </button>
 
   <!-- Dots container: skeleton generates bare <button> elements here -->
-  <div
-    class="absolute bottom-3 left-0 right-0 flex justify-center gap-2"
-    data-carousel-dots
-  ></div>
+  <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-2" data-carousel-dots></div>
 </div>
 
 <style is:global>
@@ -66,7 +63,9 @@ const isFade = transition === "fade";
     opacity: 0.4;
     border: none;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
   [data-carousel-dots] button[data-active] {
     opacity: 1;

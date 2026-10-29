@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./motion.css";
+@import "./hero-effects.css";
 @plugin "@tailwindcss/forms";
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -28,17 +30,8 @@
 
 @theme inline {
   /* Typography: font families and scale */
-  --font-sans:
-    var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-heading: var(--font-sora), var(--font-sans);
-
-  /* Fluid type scale */
-  --fs-display: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
-  --fs-h1: var(--fs-display);
-  --fs-h2: clamp(2rem, 1.4rem + 2.4vw, 3rem);
-  --fs-h3: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
-  --fs-lead: 1.125rem;
-  --fs-body: 1rem;
 
   /* Color tokens */
   --color-background: var(--background);
@@ -140,7 +133,7 @@
   --input: var(--gray-9);
   --outline: var(--gray-12);
   --radius: 0.625rem;
-  --header-h: 4.5rem;
+  --header-h: 4.8125rem;
 
   /* sidebar — mirrors neutral roles, single-mode */
   --sidebar-background: var(--gray-2);
@@ -159,16 +152,8 @@
   --section-dark-fg-subtle: color-mix(in srgb, var(--white) 70%, transparent);
   --section-dark-cta-bg: var(--white);
   --section-dark-cta-fg: #202020; /* literal near-black — NOT var(--gray-12) */
-  --section-dark-cta-bg-hover: color-mix(
-    in srgb,
-    var(--white) 90%,
-    transparent
-  );
-  --section-dark-overlay-from: color-mix(
-    in srgb,
-    var(--black) 70%,
-    transparent
-  );
+  --section-dark-cta-bg-hover: color-mix(in srgb, var(--white) 90%, transparent);
+  --section-dark-overlay-from: color-mix(in srgb, var(--black) 70%, transparent);
   --section-dark-overlay-via: color-mix(in srgb, var(--black) 50%, transparent);
   --section-dark-overlay-to: color-mix(in srgb, var(--black) 30%, transparent);
   --section-dark-accent: color-mix(in srgb, var(--white) 8%, transparent);
@@ -195,6 +180,78 @@
   /* the single dual-step semantic token */
   --popover: var(--gray-3);
 }
+
+/* >>> tokens:sync START (spacing) — from nsp-ds-tokens semantic/layout.json — DO NOT EDIT */
+:root {
+  --page-margin-sm: 16px;
+  --page-margin-md: 16px;
+  --page-margin-lg: 16px;
+  --section-gap-sm: 24px;
+  --section-gap-md: 32px;
+  --section-gap-lg: 48px;
+  --section-padding-sm: 16px;
+  --section-padding-md: 24px;
+  --section-padding-lg: 32px;
+  --section-padding-xl: 40px;
+  --section-padding-2xl: 48px;
+}
+@media (min-width: 768px) {
+  :root {
+    --page-margin-sm: 16px;
+    --page-margin-md: 24px;
+    --page-margin-lg: 32px;
+    --section-gap-sm: 32px;
+    --section-gap-md: 48px;
+    --section-gap-lg: 80px;
+    --section-padding-sm: 24px;
+    --section-padding-md: 32px;
+    --section-padding-lg: 48px;
+    --section-padding-xl: 64px;
+    --section-padding-2xl: 80px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --page-margin-sm: 32px;
+    --page-margin-md: 64px;
+    --page-margin-lg: 80px;
+    --section-gap-sm: 64px;
+    --section-gap-md: 96px;
+    --section-gap-lg: 128px;
+    --section-padding-sm: 32px;
+    --section-padding-md: 48px;
+    --section-padding-lg: 80px;
+    --section-padding-xl: 120px;
+    --section-padding-2xl: 160px;
+  }
+}
+/* <<< tokens:sync END (spacing) */
+
+/* >>> tokens:sync START (type-size) — from nsp-ds-tokens responsive/type-size.json — DO NOT EDIT */
+:root {
+  --fs-display: clamp(2.5rem, calc(0.43651rem + 8.46561vw), 4.5rem);
+  --fs-h1: clamp(2rem, calc(0.45238rem + 6.34921vw), 3.5rem);
+  --fs-h2: clamp(1.75rem, calc(0.46032rem + 5.29101vw), 3rem);
+  --fs-h3: clamp(1.5rem, calc(0.72619rem + 3.1746vw), 2.25rem);
+  --fs-h4: clamp(1.25rem, calc(0.73413rem + 2.1164vw), 1.75rem);
+  --fs-h5: clamp(1.25rem, calc(0.99206rem + 1.0582vw), 1.5rem);
+  --fs-h6: clamp(1.125rem, calc(0.99603rem + 0.5291vw), 1.25rem);
+  --fs-body-large: clamp(1.125rem, calc(0.99603rem + 0.5291vw), 1.25rem);
+  --fs-body: 1rem;
+  --fs-body-small: 0.875rem;
+}
+@media (min-width: 768px) {
+  :root {
+    --fs-display: clamp(4.5rem, calc(3.33333rem + 2.43056vw), 6.25rem);
+    --fs-h1: clamp(3.5rem, calc(2.5rem + 2.08333vw), 5rem);
+    --fs-h2: clamp(3rem, calc(2.5rem + 1.04167vw), 3.75rem);
+    --fs-h3: clamp(2.25rem, calc(1.75rem + 1.04167vw), 3rem);
+    --fs-h4: clamp(1.75rem, calc(1.41667rem + 0.69444vw), 2.25rem);
+    --fs-h5: clamp(1.5rem, calc(1.25rem + 0.52083vw), 1.875rem);
+    --fs-h6: clamp(1.25rem, calc(1.08333rem + 0.34722vw), 1.5rem);
+  }
+}
+/* <<< tokens:sync END (type-size) */
 
 @layer base {
   /* Global reset */
@@ -262,7 +319,7 @@
   }
 
   .lead {
-    font-size: var(--fs-lead);
+    font-size: var(--fs-body-large);
     line-height: 1.6;
     color: var(--color-muted-foreground);
   }
@@ -313,6 +370,30 @@
     color: var(--foreground);
   }
 
+  /* Megamenu open → header adopts solid look even in transparent overlay.
+     Driven by [data-menu-open] set/removed by header-menu-background.ts
+     with a delayed removal so the white bg persists during panel collapse. */
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"] {
+    background: var(--background);
+    color: var(--foreground);
+    border-bottom-color: transparent;
+  }
+
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"] a {
+    color: var(--foreground);
+  }
+
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"]
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-trigger"],
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"]
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-link"] {
+    color: var(--foreground);
+  }
+
   /* ========================================================================
    * NAV ITEM STYLING (ALL FIRST-LEVEL ITEMS — TRIGGERS + LINKS)
    * Underline on hover/focus/open/active via animated ::after pseudo-element
@@ -322,14 +403,8 @@
    * ======================================================================== */
 
   /* Base state — all first-level items: position for pseudo-element */
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-link"],
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"] {
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
     position: relative;
     text-decoration: none !important;
     background: transparent !important;
@@ -368,43 +443,29 @@
   }
 
   /* Animated underline pseudo-element: ::after on all first-level items */
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-link"]::after,
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"]::after {
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
     content: "";
     position: absolute;
     left: 0.625rem;
     right: 0.625rem;
-    bottom: 0.25rem;
-    height: 2px;
+    bottom: 0;
+    height: 1px;
     background: currentColor;
     transform: scaleX(0);
-    transform-origin: left center;
+    transform-origin: center center;
     transition: transform 200ms ease-out;
   }
 
-  /* Hover / focus / open — animate underline to full width */
+  /* Focus / open — animate underline to full width */
   header
     [data-slot="navigation-menu-list"]
     > *
-    > [data-slot="navigation-menu-link"]:hover::after,
+    > [data-slot="navigation-menu-link"]:focus-visible::after,
   header
     [data-slot="navigation-menu-list"]
     > *
-    > [data-slot="navigation-menu-link"]:focus::after,
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"]:hover::after,
-  header
-    [data-slot="navigation-menu-list"]
-    > *
-    > [data-slot="navigation-menu-trigger"]:focus::after,
+    > [data-slot="navigation-menu-trigger"]:focus-visible::after,
   header
     [data-slot="navigation-menu-list"]
     > *
@@ -412,27 +473,73 @@
     transform: scaleX(1);
   }
 
-  /* Active nav link: persistent underline (no animation on persistent state) */
+  /* Active state: opacity-based (no underline).
+     Non-active items attenuated; active + hover/focus restore full opacity. */
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
+    opacity: 0.72;
+    transition:
+      opacity 200ms ease,
+      color 250ms ease;
+  }
+
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:focus-visible,
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"][data-active],
   header
     [data-slot="navigation-menu-list"]
     > *
-    > [data-slot="navigation-menu-link"][data-active]::after {
-    transform: scaleX(1);
-    transition: none;
+    > [data-slot="navigation-menu-trigger"]:focus-visible,
+  header
+    [data-slot="navigation-menu-list"]
+    > *
+    > [data-slot="navigation-menu-trigger"][data-state="open"] {
+    opacity: 1;
+  }
+
+  /* Hover — gated to pointer devices to prevent sticky :hover on touch */
+  @media (hover: hover) and (pointer: fine) {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover::after,
+    header
+      [data-slot="navigation-menu-list"]
+      > *
+      > [data-slot="navigation-menu-trigger"]:hover::after {
+      transform: scaleX(1);
+    }
+
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]:hover,
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]:hover {
+      opacity: 1;
+    }
   }
 
   /* Reduced motion: disable animation */
   @media (prefers-reduced-motion: reduce) {
-    header
-      [data-slot="navigation-menu-list"]
-      > *
-      > [data-slot="navigation-menu-link"]::after,
-    header
-      [data-slot="navigation-menu-list"]
-      > *
-      > [data-slot="navigation-menu-trigger"]::after {
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"],
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"] {
       transition: none;
     }
+
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"]::after,
+    header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"]::after {
+      transition: none;
+    }
+  }
+
+  /* ========================================================================
+   * HEADER HEIGHT FILL — stretch chain so nav items fill header height
+   * ======================================================================== */
+
+  header [data-slot="navigation-menu"] {
+    align-items: stretch !important;
+  }
+
+  header [data-slot="navigation-menu-list"] {
+    align-items: stretch !important;
+  }
+
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-trigger"],
+  header [data-slot="navigation-menu-list"] > * > [data-slot="navigation-menu-link"] {
+    height: 100% !important;
   }
 
   /* ========================================================================
@@ -452,36 +559,57 @@
   }
 
   /* Solid state: standard light hamburger */
-  header[data-overlay="true"][data-state="solid"]
-    button[aria-label="Apri menu di navigazione"],
+  header[data-overlay="true"][data-state="solid"] button[aria-label="Apri menu di navigazione"],
   header[data-overlay="false"] button[aria-label="Apri menu di navigazione"] {
     color: var(--foreground);
   }
 
   header[data-overlay="true"][data-state="solid"]
     button[aria-label="Apri menu di navigazione"]:hover,
-  header[data-overlay="false"]
-    button[aria-label="Apri menu di navigazione"]:hover {
+  header[data-overlay="false"] button[aria-label="Apri menu di navigazione"]:hover {
     background: var(--muted);
   }
 
   /* ========================================================================
-   * MOTION PREFERENCES
-   * Transition for auto-hide; respects prefers-reduced-motion
+   * STICKY HERO — hero stays in place, content scrolls over it
+   * Activated by [data-sticky-hero] on <main> (immersive hero, ≥768px only).
    * ======================================================================== */
 
-  @media (prefers-reduced-motion: no-preference) {
-    header[data-hidden] {
-      transition:
-        transform 300ms ease,
-        background 300ms ease,
-        color 300ms ease;
+  [data-block="hero"] {
+    position: relative;
+  }
+
+  @media (min-width: 768px) {
+    [data-sticky-hero] > :first-child {
+      position: sticky;
+      top: var(--sticky-top, 0px);
+      z-index: 0;
+    }
+
+    [data-sticky-hero] > :first-child ~ * {
+      position: relative;
+      z-index: 1;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    header[data-hidden] {
-      transition: none;
+  /* ========================================================================
+   * STICKY FOOTER — footer stays in place, content scrolls over it
+   * Activated by [data-sticky-footer] on <body> (global, ≥768px only).
+   * Specular to sticky hero: content (main) is opaque and elevated above
+   * the footer; scrolling to the bottom reveals the footer underneath.
+   * ======================================================================== */
+
+  @media (min-width: 768px) {
+    [data-sticky-footer] main {
+      position: relative;
+      z-index: 1;
+      background: var(--background);
+    }
+
+    [data-sticky-footer] footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 0;
     }
   }
 }

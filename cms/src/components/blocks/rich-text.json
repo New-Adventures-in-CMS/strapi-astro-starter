@@ -15,6 +15,11 @@
       "type": "enumeration",
       "enum": ["left", "center", "right"],
       "default": "left"
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "xl"
     }
   }
 }

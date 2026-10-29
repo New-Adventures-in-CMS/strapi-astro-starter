@@ -1,0 +1,20 @@
+---
+import type { SectionSpacing } from "@/types";
+import { Section, Container } from "@/components/layout";
+import DynamicForm from "@/components/DynamicForm.astro";
+
+interface Props {
+  form?: { slug: string } | null;
+  spacing?: SectionSpacing;
+}
+
+const { form, spacing } = Astro.props;
+---
+
+{form?.slug && (
+  <Section spacing={spacing ?? "xl"}>
+    <Container width="prose">
+      <DynamicForm slug={form.slug} />
+    </Container>
+  </Section>
+)}

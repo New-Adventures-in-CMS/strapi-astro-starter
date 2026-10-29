@@ -1,7 +1,7 @@
 {
   "name": "strapi-astro-starter",
   "version": "0.1.0",
-  "description": "Production-ready starter kit — Strapi 5 headless CMS + Astro 7 frontend, with dynamic forms, navigation plugin, and Tailwind CSS v4",
+  "description": "Headless CMS starter: Strapi 5 + Astro 7, content-driven navigation, dynamic forms, Tailwind CSS v4.",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -15,10 +15,14 @@
     "test": "npm --prefix frontend test",
     "test:e2e": "npm --prefix frontend run test:e2e",
     "db:reset": "find . -path '*/.tmp/data.db' -delete",
-    "tokens:sync": "node scripts/tokens-sync.mjs"
+    "tokens:sync": "node scripts/tokens-sync.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "concurrently": "^9.0.0"
+    "concurrently": "^9.0.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1"
   },
   "engines": {
     "node": ">=22.12.0 <23",

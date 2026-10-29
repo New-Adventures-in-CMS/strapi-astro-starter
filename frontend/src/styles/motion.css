@@ -1,0 +1,113 @@
+/* Motion system — Fase A: scroll-reveal nativo. Isolato per estrazione futura in @team/ui. */
+
+:root {
+  /* Motion tokens (locali, non DS-synced). Usati in questo file. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-reveal: 800ms;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
+}
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* stagger: il wrapper non anima; animano i figli diretti, scaglionati via JS (transition-delay) */
+[data-reveal="stagger"] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+[data-reveal="stagger"] > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
+}
+[data-reveal="stagger"].is-revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-reveal="stagger"] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* --- Mask-reveal -------------------------------------------------- */
+
+/* Card grid: amplified fade-up (40px instead of default 24px) */
+[data-reveal="stagger"][data-mask-grid] > * {
+  transform: translateY(40px);
+}
+[data-reveal="stagger"].is-revealed[data-mask-grid] > * {
+  transform: none;
+}
+
+/* --- Mask-reveal gate: active only when [data-mask-images] is on <body> --- */
+
+[data-mask-images] {
+  /* Skip stagger animation on elements that use mask-reveal instead */
+  [data-reveal="stagger"] > [data-mask-skip] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Wrapper: clip-path hides, then reveals */
+  [data-mask-reveal] {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path var(--duration-reveal) var(--ease-out-expo);
+    transition-delay: var(--mask-delay, 0ms);
+  }
+  [data-mask-reveal].is-revealed,
+  [data-reveal="stagger"].is-revealed [data-mask-reveal] {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* Inner image: micro-scale settles */
+  [data-mask-reveal] > img {
+    transform: scale(1.06);
+    transition: transform 900ms var(--ease-out-expo);
+    transition-delay: var(--mask-delay, 0ms);
+  }
+  [data-mask-reveal].is-revealed > img,
+  [data-reveal="stagger"].is-revealed [data-mask-reveal] > img {
+    transform: scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-mask-reveal],
+    [data-mask-reveal] > img {
+      clip-path: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* Lenis smooth-scroll: evita conflitti di scroll-behavior nativo quando attivo */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}

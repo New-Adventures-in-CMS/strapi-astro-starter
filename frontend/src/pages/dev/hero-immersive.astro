@@ -1,0 +1,16 @@
+---
+// Dev fixture — not linked in nav. Layout in overlay + hero immersive:
+// attiva header data-overlay='true' + #header-overlay-sentinel, per i test overlay header.
+import Layout from "@/layouts/Layout.astro";
+import BlockHero from "@/components/blocks/BlockHero.astro";
+---
+
+<Layout title="Dev — Immersive hero (overlay)" headerOverlay={true}>
+  <BlockHero
+    eyebrow="OVERLAY"
+    heading="Immersive hero"
+    subheading="Fixture per i test dell'header overlay (transparent → solid)."
+    immersive={true}
+  />
+  <section style="min-height: 150vh" aria-hidden="true"></section>
+</Layout>

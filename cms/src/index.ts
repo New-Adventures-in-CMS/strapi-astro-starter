@@ -1,6 +1,7 @@
 import type { Core } from "@strapi/strapi";
 import fs from "node:fs";
 import path from "node:path";
+import { registerMenuItemRequiredIf } from "./api/menu-item/middlewares/required-if";
 
 const PUBLIC_COLLECTION_UIDS: string[] = [
   "api::form.form",
@@ -8,7 +9,7 @@ const PUBLIC_COLLECTION_UIDS: string[] = [
   "api::menu-item.menu-item",
 ];
 
-const PUBLIC_SINGLE_UIDS: string[] = [];
+const PUBLIC_SINGLE_UIDS: string[] = ["api::site-setting.site-setting"];
 
 const SEED_ASSETS_DIR = path.join(process.cwd(), "seed-assets");
 
@@ -77,14 +78,66 @@ async function uploadSeedImage(
   }
 }
 
-async function seedDemoPages(strapi: Core.Strapi) {
+async function seedDemoForm(strapi: Core.Strapi): Promise<string | null> {
+  try {
+    const existing = await strapi.documents("api::form.form" as any).findMany({
+      filters: { slug: { $eq: "contatti" } },
+    });
+    if (existing.length > 0) {
+      strapi.log.debug("[seed] Form 'contatti' already exists, skipping");
+      return (existing[0] as any).documentId as string;
+    }
+
+    const form = await strapi.documents("api::form.form" as any).create({
+      data: {
+        nome: "Contatti",
+        slug: "contatti",
+        emailDestinatario: "info@example.com",
+        messaggioSuccesso: "Grazie! Il tuo messaggio è stato inviato.",
+        campi: [
+          {
+            __component: "form.campo-testo",
+            label: "Nome",
+            nome: "nome",
+            required: true,
+          },
+          {
+            __component: "form.campo-email",
+            label: "Email",
+            nome: "email",
+            required: true,
+          },
+          {
+            __component: "form.campo-textarea",
+            label: "Messaggio",
+            nome: "messaggio",
+          },
+        ],
+      },
+    });
+
+    strapi.log.info("[seed] Seeded demo form: contatti");
+    return form.documentId as string;
+  } catch (err) {
+    strapi.log.error("[seed] Seeding demo form failed: " + String(err));
+    return null;
+  }
+}
+
+async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
   try {
     // Upload seed images (idempotent)
-    const heroImg = await uploadSeedImage(
+    const heroSvg = await uploadSeedImage(
       strapi,
       "hero-home.svg",
       "Abstract dark editorial hero background",
     );
+    const heroPhoto = await uploadSeedImage(
+      strapi,
+      "photo-hero.jpg",
+      "Synthetic raster placeholder for image pipeline testing",
+    );
+    const heroImg = heroPhoto ?? heroSvg;
     const aboutImg = await uploadSeedImage(
       strapi,
       "image-text-about.svg",
@@ -93,11 +146,13 @@ async function seedDemoPages(strapi: Core.Strapi) {
 
     // Upload card images (light grid + dark grid)
     const cardImgs = {
-      cms: await uploadSeedImage(
-        strapi,
-        "cards/card-01-cms.svg",
-        "Headless CMS abstract illustration",
-      ),
+      cms:
+        heroPhoto ??
+        (await uploadSeedImage(
+          strapi,
+          "cards/card-01-cms.svg",
+          "Headless CMS abstract illustration",
+        )),
       blocks: await uploadSeedImage(
         strapi,
         "cards/card-02-blocks.svg",
@@ -242,8 +297,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
             cards: [
               {
                 title: "Clone and run",
-                description:
-                  "install:all, dev, done. No manual env plumbing, no missing steps.",
+                description: "install:all, dev, done. No manual env plumbing, no missing steps.",
                 image: cardImgs.clone?.id ?? undefined,
               },
               {
@@ -300,7 +354,7 @@ async function seedDemoPages(strapi: Core.Strapi) {
         title: "Servizi",
         slug: "services",
         seo_desc:
-          "The starter ships with a page skeleton at /pagine/services — use it as a template for landing pages, product pages, or service breakdowns.",
+          "The starter ships with a page skeleton at /services — use it as a template for landing pages, product pages, or service breakdowns.",
         blocks: [
           {
             __component: "blocks.rich-text",
@@ -311,25 +365,64 @@ async function seedDemoPages(strapi: Core.Strapi) {
       status: "published",
     });
 
-    // Contacts — replace placeholder with sensible skeleton
+    // Contacts — form block wired to the seeded "contatti" form
     await strapi.documents("api::page.page").create({
       data: {
         title: "Contatti",
         slug: "contacts",
-        seo_desc:
-          "Contact page skeleton. Pair it with a dynamic form from the Strapi admin to collect enquiries.",
+        seo_desc: "Contact page with a working form. Submissions land in the Strapi admin.",
         blocks: [
           {
-            __component: "blocks.rich-text",
-            body: "## Get in touch\n\nReplace this content with a contact form (see `DynamicForm.astro` and the `form` content-type) or a plain description of how to reach you.\n\nForm submissions land in the Strapi admin under **Content Manager → Form submission**.",
+            __component: "blocks.form",
+            form: formDocId ? { connect: [{ documentId: formDocId }] } : undefined,
           },
         ],
       } as any,
       status: "published",
     });
 
+    // Servizio A
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Servizio A",
+        slug: "servizio-a",
+        body: "Pagina demo per il Servizio A. Sostituisci questo contenuto con la descrizione reale del servizio offerto.",
+      } as any,
+      status: "published",
+    });
+
+    // Servizio B
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Servizio B",
+        slug: "servizio-b",
+        body: "Pagina demo per il Servizio B. Sostituisci questo contenuto con la descrizione reale del servizio offerto.",
+      } as any,
+      status: "published",
+    });
+
+    // Privacy
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Privacy",
+        slug: "privacy",
+        body: "Questa è una pagina segnaposto. Inserisci qui la tua informativa sulla privacy.",
+      } as any,
+      status: "published",
+    });
+
+    // Termini
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Termini",
+        slug: "termini",
+        body: "Questa è una pagina segnaposto. Inserisci qui i tuoi termini e condizioni di servizio.",
+      } as any,
+      status: "published",
+    });
+
     strapi.log.info(
-      "[seed] Seeded demo pages: home, about, services, contacts",
+      "[seed] Seeded demo pages: home, about, services, contacts, servizio-a, servizio-b, privacy, termini",
     );
   } catch (err) {
     strapi.log.error("[seed] Seeding demo pages failed: " + String(err));
@@ -338,30 +431,22 @@ async function seedDemoPages(strapi: Core.Strapi) {
 
 async function seedMenuItems(strapi: Core.Strapi) {
   try {
-    const count = await strapi
-      .documents("api::menu-item.menu-item" as any)
-      .count({});
+    const count = await strapi.documents("api::menu-item.menu-item" as any).count({});
     if (count > 0) return;
 
-    const pages = await strapi
-      .documents("api::page.page")
-      .findMany({ status: "published" });
+    const pages = await strapi.documents("api::page.page").findMany({ status: "published" });
     const bySlug: Record<string, { documentId: string }> = Object.fromEntries(
-      pages.map((p) => [
-        p.slug as string,
-        { documentId: p.documentId as string },
-      ]),
+      pages.map((p) => [p.slug as string, { documentId: p.documentId as string }]),
     );
 
     const connectPage = (slug: string) =>
-      bySlug[slug]
-        ? { connect: [{ documentId: bySlug[slug].documentId }] }
-        : undefined;
+      bySlug[slug] ? { connect: [{ documentId: bySlug[slug].documentId }] } : undefined;
 
     // Root items
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Home",
+        linkMode: "internal",
         area: "both",
         order: 1,
         page: connectPage("home"),
@@ -372,6 +457,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Chi siamo",
+        linkMode: "internal",
         area: "header",
         order: 2,
         page: connectPage("about"),
@@ -379,21 +465,21 @@ async function seedMenuItems(strapi: Core.Strapi) {
       status: "published",
     });
 
-    const servizi = await strapi
-      .documents("api::menu-item.menu-item" as any)
-      .create({
-        data: {
-          label: "Servizi",
-          area: "header",
-          order: 3,
-          page: connectPage("services"),
-        },
-        status: "published",
-      });
+    const servizi = await strapi.documents("api::menu-item.menu-item" as any).create({
+      data: {
+        label: "Servizi",
+        linkMode: "internal",
+        area: "header",
+        order: 3,
+        page: connectPage("services"),
+      },
+      status: "published",
+    });
 
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Contatti",
+        linkMode: "internal",
         area: "both",
         order: 4,
         page: connectPage("contacts"),
@@ -404,6 +490,7 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Documentazione",
+        linkMode: "external",
         area: "header",
         order: 5,
         externalUrl: "https://docs.astro.build",
@@ -415,9 +502,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizio A",
+        linkMode: "internal",
         area: "header",
         order: 1,
-        externalUrl: "/servizi/a",
+        page: connectPage("servizio-a"),
         parent: { connect: [{ documentId: servizi.documentId as string }] },
       },
       status: "published",
@@ -426,9 +514,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Servizio B",
+        linkMode: "internal",
         area: "header",
         order: 2,
-        externalUrl: "/servizi/b",
+        page: connectPage("servizio-b"),
         parent: { connect: [{ documentId: servizi.documentId as string }] },
       },
       status: "published",
@@ -438,9 +527,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Privacy",
+        linkMode: "internal",
         area: "footer",
         order: 1,
-        externalUrl: "/privacy",
+        page: connectPage("privacy"),
         footerColumn: "Legale",
       },
       status: "published",
@@ -449,9 +539,10 @@ async function seedMenuItems(strapi: Core.Strapi) {
     await strapi.documents("api::menu-item.menu-item" as any).create({
       data: {
         label: "Termini",
+        linkMode: "internal",
         area: "footer",
         order: 2,
-        externalUrl: "/termini",
+        page: connectPage("termini"),
         footerColumn: "Legale",
       },
       status: "published",
@@ -464,7 +555,9 @@ async function seedMenuItems(strapi: Core.Strapi) {
 }
 
 export default {
-  register() {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    registerMenuItemRequiredIf(strapi);
+  },
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     const publicRole = await strapi.db
@@ -476,9 +569,7 @@ export default {
       return;
     }
 
-    const permissionRepo = strapi.db.query(
-      "plugin::users-permissions.permission",
-    );
+    const permissionRepo = strapi.db.query("plugin::users-permissions.permission");
 
     const desired: string[] = [];
 
@@ -504,19 +595,49 @@ export default {
     }
 
     if (created > 0) {
-      strapi.log.info(
-        `[bootstrap] Aggiunti ${created} permessi al ruolo Public`,
-      );
+      strapi.log.info(`[bootstrap] Aggiunti ${created} permessi al ruolo Public`);
     }
 
+    // Seed demo form (idempotent) before pages so contacts can reference it
+    const formDocId = await seedDemoForm(strapi);
+
     // Seed default pages if none exist
-    const pageCount = await strapi
-      .documents("api::page.page")
-      .count({ status: "published" });
+    const pageCount = await strapi.documents("api::page.page").count({ status: "published" });
     if (pageCount === 0) {
-      await seedDemoPages(strapi);
+      await seedDemoPages(strapi, formDocId);
     }
 
     await seedMenuItems(strapi);
+    await seedSiteSetting(strapi);
   },
 };
+
+async function seedSiteSetting(strapi: Core.Strapi) {
+  try {
+    const existing = await strapi.documents("api::site-setting.site-setting" as any).findFirst({});
+    if (existing) return;
+    await strapi.documents("api::site-setting.site-setting" as any).create({
+      data: {
+        submenuLayout: "full-bleed",
+        headerWidth: "full",
+        footerWidth: "full",
+        footerTone: "dark",
+        stickyShell: true,
+        imageMaskReveal: true,
+        companyName: "Strapi + Astro Starter",
+        vatNumber: "IT00000000000",
+        address: "Via Example 1\n00100 Roma (RM)\nItalia",
+        socialLinks: [
+          { platform: "linkedin", url: "https://linkedin.com/company/example" },
+          { platform: "instagram", url: "https://instagram.com/example" },
+          { platform: "facebook", url: "https://facebook.com/example" },
+        ],
+      } as any,
+    });
+    strapi.log.info(
+      "[bootstrap] Seeded site-setting con default (header full + full-bleed + footer full/dark)",
+    );
+  } catch (err) {
+    strapi.log.warn("[bootstrap] Seed site-setting fallito: " + String(err));
+  }
+}

@@ -7,7 +7,8 @@
     "start": "strapi start",
     "build": "strapi build",
     "deploy": "strapi deploy",
-    "setup": "node scripts/generate-env.js"
+    "setup": "node scripts/generate-env.js",
+    "test": "vitest run"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.52.1",
@@ -18,13 +19,15 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "strapi-dz-component-duplicator": "0.1.7",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.3"
   },
   "engines": {
     "node": ">=22.12.0 <23",

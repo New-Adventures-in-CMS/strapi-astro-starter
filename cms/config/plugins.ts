@@ -26,9 +26,7 @@ const deniedExecutableTypes = [
   "application/x-mach-binary",
 ];
 
-const config = ({
-  env,
-}: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
+const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
   email: {
     config: {
       provider: "nodemailer",
@@ -62,6 +60,9 @@ const config = ({
         deniedTypes: deniedExecutableTypes,
       },
     },
+  },
+  "strapi-dz-component-duplicator": {
+    enabled: true,
   },
   // i18n è bundled con Strapi 5 — abilitare se il sito ha più lingue.
   // IMPORTANTE: attivare subito se serve, non si aggiunge facilmente dopo.

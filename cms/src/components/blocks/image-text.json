@@ -26,6 +26,16 @@
       "type": "enumeration",
       "enum": ["left", "right"],
       "default": "left"
+    },
+    "width": {
+      "type": "enumeration",
+      "enum": ["full", "contained", "bleed"],
+      "default": "contained"
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "xl"
     }
   }
 }

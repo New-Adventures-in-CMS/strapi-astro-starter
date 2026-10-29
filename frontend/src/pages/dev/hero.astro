@@ -1,9 +1,48 @@
 ---
 // frontend/src/pages/dev/hero.astro
 // Dev fixture — not linked in nav. Tests BlockHero transition strategies.
-// Three labeled sections (parallax / fade / slide) + single-slide static.
+// Three labeled sections (drift / fade / slide) + single-slide static.
 import BlockHero from "@/components/blocks/BlockHero.astro";
+import type { StrapiMedia } from "@/types";
 import "@/styles/starwind.css";
+
+const svgMedia = (svg: string, alt: string): StrapiMedia => ({
+  id: 0,
+  url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+  name: "dev-fixture",
+  mime: "image/svg+xml",
+  size: 0,
+  alternativeText: alt,
+});
+
+const SVG1 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#6d28d9'/><stop offset='.5' stop-color='#db2777'/>
+    <stop offset='1' stop-color='#f59e0b'/></linearGradient></defs>
+  <rect width='1600' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <circle cx='420' cy='300' r='130'/><circle cx='1180' cy='640' r='210'/>
+    <path d='M0 220 L1600 420'/><path d='M0 520 L1600 760'/></g></svg>`;
+
+const SVG2 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#0d9488'/><stop offset='.5' stop-color='#0284c7'/>
+    <stop offset='1' stop-color='#1e3a8a'/></linearGradient></defs>
+  <rect width='1600' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <rect x='200' y='180' width='320' height='320'/>
+    <rect x='980' y='420' width='420' height='260'/>
+    <path d='M0 700 L1600 300'/><path d='M0 120 L1600 500'/></g></svg>`;
+
+const SVG3 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#ea580c'/><stop offset='.5' stop-color='#dc2626'/>
+    <stop offset='1' stop-color='#7f1d1d'/></linearGradient></defs>
+  <rect width='1600' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <polygon points='300,700 560,240 820,700'/>
+    <polygon points='900,720 1200,320 1500,720'/>
+    <path d='M0 460 L1600 460'/></g></svg>`;
 
 const THREE_SLIDES = [
   {
@@ -12,7 +51,7 @@ const THREE_SLIDES = [
     subheading: "A production-ready foundation for content-driven sites.",
     cta_text: "Explore",
     cta_url: "#",
-    image: null,
+    image: svgMedia(SVG1, "Test slide 1"),
   },
   {
     eyebrow: "SLIDE TWO",
@@ -20,7 +59,7 @@ const THREE_SLIDES = [
     subheading: "Hero, rich text, image + text, card grids.",
     cta_text: "See blocks",
     cta_url: "#",
-    image: null,
+    image: svgMedia(SVG2, "Test slide 2"),
   },
   {
     eyebrow: "SLIDE THREE",
@@ -28,7 +67,18 @@ const THREE_SLIDES = [
     subheading: "Semantic tokens, fluid type scale, dark bands.",
     cta_text: "Read guide",
     cta_url: "#",
-    image: null,
+    image: svgMedia(SVG3, "Test slide 3"),
+  },
+];
+
+const TILT_SINGLE = [
+  {
+    eyebrow: "TILT · SINGLE",
+    heading: "Depth on a single slide.",
+    subheading: "Pointer-driven — nessun carosello.",
+    cta_text: null,
+    cta_url: null,
+    image: svgMedia(SVG1, "Tilt single demo"),
   },
 ];
 
@@ -52,18 +102,88 @@ const ONE_SLIDE = [
     <title>Hero Transition Strategy Fixture</title>
   </head>
   <body>
-    <!-- Parallax strategy (3 slides, 3000ms autoplay) -->
-    <div data-hero-section="parallax">
+    <!-- Drift strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="drift">
+      <div class="test-label">
+        <strong>DRIFT</strong> Lo sfondo deriva lateralmente, più lento del testo. ✓ se il fondo
+        "resta indietro" rispetto al titolo durante la transizione.
+      </div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
         autoplayDelay={3000}
-        transition="parallax"
+        transition="slide"
+        effect="drift"
+      />
+    </div>
+
+    <div data-hero-section="parallax">
+      <div class="test-label">
+        <strong>PARALLAX</strong> (align=<code>bottom-left</code>) Entrata scaglionata a bandiera:
+        testo in basso a sinistra, sfondo e testo entrano lateralmente sfasati e si ricompongono. ✓
+        osserva il momento del cambio slide.
+      </div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="fade"
+        effect="parallax"
+        align="bottom-left"
+      />
+    </div>
+
+    <div data-hero-section="tilt">
+      <div class="test-label">
+        <strong>TILT</strong> Profondità al puntatore: muovi il mouse, sfondo e testo reagiscono a
+        velocità diverse. Pointer-driven (su touch è statico). Supporto slide singola in arrivo con
+        align.
+      </div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="fade"
+        effect="tilt"
+      />
+    </div>
+
+    <!-- Focus (scale) strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="focus">
+      <div class="test-label">
+        <strong>FOCUS</strong> La slide attiva è ingrandita (~8%) e si rimpicciolisce uscendo. ✓ se
+        l'immagine attiva "respira".
+      </div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="slide"
+        effect="focus"
+      />
+    </div>
+
+    <!-- Dim (brightness neighbors) strategy (3 slides, 3000ms autoplay) -->
+    <div data-hero-section="dim">
+      <div class="test-label">
+        <strong>DIM</strong> La slide che esce si scurisce; l'attiva resta a piena luce. ✓ se c'è
+        uno stacco netto di luminosità in transizione.
+      </div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="slide"
+        effect="dim"
       />
     </div>
 
     <!-- Fade strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="fade">
+      <div class="test-label">
+        <strong>FADE</strong> Dissolvenza incrociata: cambia solo l'opacità, nessun
+        movimento/scala/luce. ✓ se non c'è slittamento né zoom.
+      </div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
@@ -74,6 +194,10 @@ const ONE_SLIDE = [
 
     <!-- Slide strategy (3 slides, 3000ms autoplay) -->
     <div data-hero-section="slide">
+      <div class="test-label">
+        <strong>SLIDE</strong> Scorrimento orizzontale netto, nessun effetto sul media. ✓ se è un
+        semplice slittamento.
+      </div>
       <BlockHero
         heading="Ship editorial content, fast."
         slides={THREE_SLIDES}
@@ -82,12 +206,88 @@ const ONE_SLIDE = [
       />
     </div>
 
-    <!-- Single-slide static degradation -->
-    <div data-hero-single>
+    <div data-hero-section="ken-burns">
+      <div class="test-label">
+        <strong>KEN-BURNS</strong> Zoom + pan lento e continuo sulla slide attiva, riavviato a ogni
+        cambio. Pattern B (state/time). ✓ osserva lo zoom lento durante la sosta.
+      </div>
       <BlockHero
-        heading="Static single slide."
-        slides={ONE_SLIDE}
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        transition="fade"
+        effect="ken-burns"
       />
     </div>
+
+    <div data-hero-section="preset-default">
+      <div class="test-label">
+        <strong>PRESET · default</strong> Nessun heroStyle/transition/effect → default preset{" "}
+        <code>fade</code> (transition fade + effect none).
+      </div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+      />
+    </div>
+
+    <div data-hero-section="preset-parallax">
+      <div class="test-label">
+        <strong>PRESET · parallax</strong> Scelto via heroStyle (mappa a fade + parallax). ✓ stesso
+        risultato del parallax, ma da un solo campo.
+      </div>
+      <BlockHero
+        heading="Ship editorial content, fast."
+        slides={THREE_SLIDES}
+        autoplayDelay={3000}
+        heroStyle="parallax"
+        align="bottom-left"
+      />
+    </div>
+
+    <div data-hero-section="tilt-single">
+      <div class="test-label">
+        <strong>TILT · SINGLE</strong> Tilt su hero a slide singola (percorso static, nessun
+        carosello). ✓ muovi il mouse.
+      </div>
+      <BlockHero heading="Depth on a single slide." slides={TILT_SINGLE} effect="tilt" />
+    </div>
+
+    <!-- Single-slide static degradation -->
+    <div data-hero-single>
+      <div class="test-label">
+        <strong>SINGLE</strong> Slide singola: nessun controllo carousel (frecce/dot) e nessun
+        effetto. ✓ se non compaiono controlli.
+      </div>
+      <BlockHero heading="Static single slide." slides={ONE_SLIDE} />
+    </div>
+    <style>
+      [data-hero-section],
+      [data-hero-single] {
+        position: relative;
+      }
+      .test-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.72);
+        color: #fff;
+        font:
+          500 12px/1.5 ui-monospace,
+          "SF Mono",
+          Menlo,
+          monospace;
+        letter-spacing: 0.02em;
+        padding: 8px 14px;
+      }
+      .test-label strong {
+        letter-spacing: 0.12em;
+        margin-right: 10px;
+      }
+    </style>
   </body>
 </html>

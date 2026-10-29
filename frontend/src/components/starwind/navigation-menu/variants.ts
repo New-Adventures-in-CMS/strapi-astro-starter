@@ -7,13 +7,13 @@ export const navigationMenu = tv({
 export const navigationMenuList = tv({
   base: [
     "group flex flex-1 list-none items-center justify-center",
-    "group-data-[size=sm]/nav-menu:gap-0 group-data-[size=md]/nav-menu:gap-1",
+    "group-data-[size=sm]/nav-menu:gap-3 group-data-[size=md]/nav-menu:gap-1",
     "group-data-[orientation=vertical]/nav-menu:flex-col group-data-[orientation=vertical]/nav-menu:items-stretch",
   ],
 });
 
 export const navigationMenuItem = tv({
-  base: "relative",
+  base: "relative flex items-stretch",
 });
 
 export const navigationMenuTrigger = tv({

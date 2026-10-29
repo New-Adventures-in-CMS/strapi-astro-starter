@@ -27,6 +27,21 @@
       "type": "media",
       "allowedTypes": ["images"],
       "multiple": false
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": [
+        "center",
+        "top-left",
+        "top-center",
+        "top-right",
+        "middle-left",
+        "middle-right",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right"
+      ],
+      "default": "center"
     }
   }
 }

@@ -1,0 +1,91 @@
+---
+import { Picture } from "astro:assets";
+import type { StrapiMedia } from "@/types";
+import { strapiMediaUrl } from "@/lib/strapi";
+
+interface Props {
+  image: StrapiMedia | null | undefined;
+  sizes: string;
+  widths?: number[];
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  alt?: string;
+  [key: string]: unknown;
+}
+
+const DEFAULT_WIDTHS = [320, 640, 768, 1024, 1280, 1536, 1920, 2560];
+const NOMINAL_WIDTH = 1920;
+const NOMINAL_HEIGHT = 1080;
+
+const {
+  image,
+  sizes,
+  widths: widthsOverride,
+  loading = "lazy",
+  fetchpriority,
+  class: className,
+  alt,
+  ...rest
+} = Astro.props;
+
+if (!image) return;
+
+const src = strapiMediaUrl(image.url);
+if (!src) return;
+
+const resolvedAlt = alt ?? image.alternativeText ?? "";
+
+const isSvg =
+  image.mime === "image/svg+xml" ||
+  image.ext?.toLowerCase() === ".svg" ||
+  image.url.toLowerCase().endsWith(".svg");
+
+function dataAttrs(obj: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k.startsWith("data-")) out[k] = v;
+  }
+  return out;
+}
+
+const forwarded = dataAttrs(rest);
+
+const intrinsicW = image.width ?? NOMINAL_WIDTH;
+const intrinsicH = image.height ?? NOMINAL_HEIGHT;
+
+const ladder = widthsOverride ?? DEFAULT_WIDTHS;
+const cappedWidths = ladder.filter((w) => w <= intrinsicW);
+if (!cappedWidths.includes(intrinsicW)) cappedWidths.push(intrinsicW);
+cappedWidths.sort((a, b) => a - b);
+---
+
+{isSvg ? (
+  <img
+    src={src}
+    width={image.width}
+    height={image.height}
+    alt={resolvedAlt}
+    class={className}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    {...forwarded}
+  />
+) : (
+  <Picture
+    src={src}
+    formats={["avif", "webp"]}
+    width={intrinsicW}
+    height={intrinsicH}
+    widths={cappedWidths}
+    sizes={sizes}
+    alt={resolvedAlt}
+    class={className}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    pictureAttributes={{ class: "contents" }}
+    {...forwarded}
+  />
+)}

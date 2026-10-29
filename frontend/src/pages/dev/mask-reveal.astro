@@ -1,0 +1,76 @@
+---
+// Dev fixture — tests mask-reveal CSS gate (data-mask-images on body).
+// Not linked in nav. Used by e2e/effects-switches.spec.ts.
+import "@/styles/starwind.css";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mask Reveal Fixture</title>
+  </head>
+  <body data-mask-images>
+    <div style="height: 150vh; padding: 4rem 2rem;" data-fixture-spacer>
+      <h1>Mask-reveal fixture</h1>
+      <p>Blocks below are out of viewport at load.</p>
+    </div>
+
+    <div data-fixture-block="card-grid">
+      <div data-reveal="stagger" data-mask-grid>
+        <div data-fixture-card>
+          <div data-mask-reveal class="overflow-hidden" style="--mask-delay:0ms">
+            <img
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' fill='%23888'%3E%3Crect width='400' height='225'/%3E%3C/svg%3E"
+              alt=""
+              width="400"
+              height="225"
+            />
+          </div>
+          <p>Card one</p>
+        </div>
+        <div data-fixture-card>
+          <div data-mask-reveal class="overflow-hidden" style="--mask-delay:100ms">
+            <img
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' fill='%23888'%3E%3Crect width='400' height='225'/%3E%3C/svg%3E"
+              alt=""
+              width="400"
+              height="225"
+            />
+          </div>
+          <p>Card two</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 60vh;"></div>
+
+    <div data-fixture-block="image-text">
+      <div data-reveal="stagger">
+        <div data-mask-skip>
+          <div data-mask-reveal class="overflow-hidden">
+            <img
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' fill='%23666'%3E%3Crect width='600' height='400'/%3E%3C/svg%3E"
+              alt=""
+              width="600"
+              height="400"
+            />
+          </div>
+        </div>
+        <div>
+          <p>Text content for image-text block.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 40vh;"></div>
+
+    <script>
+      import { initReveal } from "@skeleton/reveal.js";
+      import { initMaskReveal } from "@skeleton/mask-reveal.js";
+      initReveal();
+      initMaskReveal();
+    </script>
+  </body>
+</html>

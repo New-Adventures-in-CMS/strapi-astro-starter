@@ -2,8 +2,7 @@ const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
 export function trapFocus(container: HTMLElement): () => void {
-  const focusables = () =>
-    Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
+  const focusables = () => Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
 
   function onKeyDown(e: KeyboardEvent) {
     if (e.key !== "Tab") return;

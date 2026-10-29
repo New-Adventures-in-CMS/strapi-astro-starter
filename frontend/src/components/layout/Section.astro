@@ -1,9 +1,9 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import { section } from "./variants";
+import { section, type SectionTone } from "./variants";
 
-type Tone = "default" | "muted" | "dark";
-type Spacing = "default" | "sm" | "none";
+type Tone = SectionTone;
+type Spacing = "none" | "sm" | "md" | "lg" | "xl";
 
 interface Props extends HTMLAttributes<"section"> {
   tone?: Tone;
@@ -14,7 +14,7 @@ interface Props extends HTMLAttributes<"section"> {
 
 const {
   tone = "default",
-  spacing = "default",
+  spacing = "xl",
   as: Tag = "section",
   class: className,
   ...rest
