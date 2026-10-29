@@ -6,3 +6,4 @@ export * from "./carousel.js";
 export * from "./reveal.js";
 export * from "./smooth-scroll.js";
 export * from "./form-validation.js";
+export * from "./scrollspy.js";

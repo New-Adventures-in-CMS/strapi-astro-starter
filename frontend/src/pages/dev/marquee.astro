@@ -1,0 +1,67 @@
+---
+import Marquee from "@/components/skeleton/Marquee.astro";
+import "@/styles/starwind.css";
+
+const logos = ["Acme", "Globex", "Initech", "Umbrella", "Cyberdyne", "Weyland"];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marquee Fixture</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        padding: 4rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+      }
+      h2 {
+        text-align: center;
+        margin: 0;
+      }
+      .logo-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 2rem;
+        background: var(--surface-2, #f5f5f5);
+        border-radius: 0.5rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <section data-fixture="default">
+      <h2>Default (left, pause on hover)</h2>
+      <Marquee>
+        {logos.map((name) => (
+          <span class="logo-item">{name}</span>
+        ))}
+      </Marquee>
+    </section>
+
+    <section data-fixture="reverse">
+      <h2>Direction: right</h2>
+      <Marquee direction="right">
+        {logos.map((name) => (
+          <span class="logo-item">{name}</span>
+        ))}
+      </Marquee>
+    </section>
+
+    <section data-fixture="no-pause">
+      <h2>pauseOnHover: false</h2>
+      <Marquee pauseOnHover={false}>
+        {logos.map((name) => (
+          <span class="logo-item">{name}</span>
+        ))}
+      </Marquee>
+    </section>
+  </body>
+</html>

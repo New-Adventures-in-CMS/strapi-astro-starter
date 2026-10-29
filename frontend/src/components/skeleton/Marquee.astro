@@ -1,0 +1,60 @@
+---
+interface Props {
+  speed?: number;
+  gap?: string;
+  direction?: "left" | "right";
+  pauseOnHover?: boolean;
+}
+
+const { speed = 30, gap = "2rem", direction = "left", pauseOnHover = true } = Astro.props;
+
+const animDir = direction === "right" ? "reverse" : "normal";
+---
+
+<div
+  class:list={["marquee", { "marquee--pause-hover": pauseOnHover }]}
+  style={`--marquee-gap: ${gap}; --marquee-duration: ${speed}s; --marquee-direction: ${animDir};`}
+>
+  <div class="marquee__track">
+    <slot />
+  </div>
+  <div class="marquee__track" aria-hidden="true">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    gap: var(--marquee-gap);
+  }
+
+  .marquee__track {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--marquee-gap);
+    min-width: 100%;
+    animation: marquee-scroll var(--marquee-duration) linear infinite;
+    animation-direction: var(--marquee-direction);
+  }
+
+  .marquee--pause-hover:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--marquee-gap)));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>
