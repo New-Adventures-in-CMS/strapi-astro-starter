@@ -1,0 +1,97 @@
+---
+import BlockGallery from "@/components/blocks/BlockGallery.astro";
+import "@/styles/starwind.css";
+import type { StrapiMedia } from "@/types";
+
+const mockImages: StrapiMedia[] = [
+  {
+    id: 1,
+    url: "/_test/gallery/1.svg",
+    name: "1.svg",
+    alternativeText: "Sample image 1",
+    caption: "First image with a caption",
+    width: 800,
+    height: 600,
+    mime: "image/svg+xml",
+    ext: ".svg",
+    size: 1,
+  },
+  {
+    id: 2,
+    url: "/_test/gallery/2.svg",
+    name: "2.svg",
+    alternativeText: "Sample image 2",
+    width: 800,
+    height: 600,
+    mime: "image/svg+xml",
+    ext: ".svg",
+    size: 1,
+  },
+  {
+    id: 3,
+    url: "/_test/gallery/3.svg",
+    name: "3.svg",
+    alternativeText: "Sample image 3",
+    caption: "Third image — also captioned",
+    width: 800,
+    height: 600,
+    mime: "image/svg+xml",
+    ext: ".svg",
+    size: 1,
+  },
+  {
+    id: 4,
+    url: "/_test/gallery/4.svg",
+    name: "4.svg",
+    alternativeText: "Sample image 4",
+    width: 800,
+    height: 600,
+    mime: "image/svg+xml",
+    ext: ".svg",
+    size: 1,
+  },
+  {
+    id: 5,
+    url: "/_test/gallery/5.svg",
+    name: "5.svg",
+    alternativeText: "Sample image 5",
+    caption: "Fifth image caption for testing",
+    width: 800,
+    height: 600,
+    mime: "image/svg+xml",
+    ext: ".svg",
+    size: 1,
+  },
+  {
+    id: 6,
+    url: "/_test/gallery/6.svg",
+    name: "6.svg",
+    alternativeText: "Sample image 6",
+    width: 800,
+    height: 600,
+    mime: "image/svg+xml",
+    ext: ".svg",
+    size: 1,
+  },
+];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gallery Dev Fixture</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <main class="py-8">
+      <BlockGallery
+        eyebrow="SHOWCASE"
+        heading="Gallery block fixture"
+        lead="Mock data — images 1, 3, 5 have captions; 2, 4, 6 do not."
+        tone="light"
+        images={mockImages}
+      />
+    </main>
+  </body>
+</html>

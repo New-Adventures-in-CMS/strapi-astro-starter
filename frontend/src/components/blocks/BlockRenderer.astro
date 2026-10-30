@@ -6,6 +6,7 @@ import BlockImageText from "./BlockImageText.astro";
 import BlockCardGrid from "./BlockCardGrid.astro";
 import BlockCarousel from "./BlockCarousel.astro";
 import BlockForm from "./BlockForm.astro";
+import BlockGallery from "./BlockGallery.astro";
 
 interface Props {
   blocks: PageBlock[];
@@ -28,6 +29,8 @@ const { blocks } = Astro.props;
       return <BlockCarousel {...block} />;
     case "blocks.form":
       return <BlockForm {...block} />;
+    case "blocks.gallery":
+      return <BlockGallery {...block} />;
     default:
       return null;
   }

@@ -13,6 +13,7 @@ export interface StrapiMedia {
   url: string;
   name: string;
   alternativeText?: string | null;
+  caption?: string | null;
   width?: number;
   height?: number;
   mime: string;
@@ -121,8 +122,25 @@ export interface BlockForm {
   spacing?: SectionSpacing;
 }
 
+export interface BlockGallery {
+  __component: "blocks.gallery";
+  heading?: string | null;
+  eyebrow?: string | null;
+  lead?: string | null;
+  tone?: "light" | "dark" | null;
+  images: StrapiMedia[];
+  width?: BlockWidth;
+  spacing?: SectionSpacing;
+}
+
 export type PageBlock =
-  BlockHero | BlockRichText | BlockImageText | BlockCardGrid | BlockCarousel | BlockForm;
+  | BlockHero
+  | BlockRichText
+  | BlockImageText
+  | BlockCardGrid
+  | BlockCarousel
+  | BlockForm
+  | BlockGallery;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
 import type { SectionTone } from "@/components/layout/variants";

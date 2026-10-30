@@ -36,6 +36,9 @@ export const pageBlocksPopulate = {
       "blocks.form": {
         populate: { form: { fields: ["slug"] } },
       },
+      "blocks.gallery": {
+        populate: { images: true },
+      },
     },
   },
 } as const;

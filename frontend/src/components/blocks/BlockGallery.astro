@@ -1,0 +1,171 @@
+---
+import type { BlockWidth, SectionSpacing, StrapiMedia } from "@/types";
+import { Section, Container } from "@/components/layout";
+import SectionHeader from "@/components/SectionHeader.astro";
+import StrapiImage from "@/components/StrapiImage.astro";
+import DialogPrimitive from "@starwind-ui/astro/dialog";
+import {
+  dialogBackdrop,
+  dialogContent,
+  dialogCloseButton,
+} from "@/components/starwind/dialog/variants";
+
+interface Props {
+  heading?: string | null;
+  eyebrow?: string | null;
+  lead?: string | null;
+  tone?: "light" | "dark" | null;
+  images: StrapiMedia[];
+  width?: BlockWidth;
+  spacing?: SectionSpacing;
+}
+
+const { heading, eyebrow, lead, tone, images, width, spacing } = Astro.props;
+const sectionTone = tone === "dark" ? "dark" : "default";
+const onDark = sectionTone === "dark";
+---
+
+<Section tone={sectionTone} spacing={spacing ?? "xl"}>
+  <Container width={width ?? "contained"}>
+    <div data-reveal>
+      <SectionHeader
+        eyebrow={eyebrow}
+        heading={heading}
+        lead={lead}
+        align="center"
+        onDark={onDark}
+      />
+    </div>
+
+    {images.length > 0 && (
+      <div data-lightbox>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" data-reveal="stagger">
+          {images.map((img, i) => (
+            <button
+              type="button"
+              data-lightbox-thumb
+              data-index={i}
+              class="cursor-pointer overflow-hidden rounded-lg border border-border focus-visible:ring-outline/50 focus-visible:ring-3 outline-none transition-shadow"
+            >
+              <StrapiImage
+                image={img}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                class="aspect-[3/2] w-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+
+        <DialogPrimitive.Root
+          closeOnEscape={true}
+          closeOnOutsideInteract={false}
+          modal={true}
+          data-slot="dialog"
+        >
+          <DialogPrimitive.Backdrop
+            class={dialogBackdrop()}
+            data-state="closed"
+            hidden
+            data-slot="dialog-backdrop"
+          />
+
+          <DialogPrimitive.Popup
+            class={dialogContent({ surface: "lightbox" })}
+            data-state="closed"
+            aria-label="Galleria immagini"
+            data-slot="dialog-content"
+          >
+            <div
+              data-lightbox-carousel
+              tabindex="0"
+              class="flex h-full w-full flex-col items-center justify-center outline-none"
+            >
+              <div class="relative flex w-full flex-1 items-center" data-carousel-viewport>
+                <div class="flex h-full w-full">
+                  {images.map((img) => (
+                    <div class="min-w-0 shrink-0 grow-0 basis-full flex items-center justify-center">
+                      <figure class="flex h-full w-full flex-col items-center justify-center">
+                        <StrapiImage
+                          image={img}
+                          sizes="100vw"
+                          loading="lazy"
+                          class="mx-auto max-h-[calc(100vh-8rem)] w-full object-contain"
+                        />
+                        {img.caption && (
+                          <figcaption class="mt-3 text-center text-sm text-background/70">
+                            {img.caption}
+                          </figcaption>
+                        )}
+                      </figure>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                data-carousel-prev
+                class="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/20 p-3 text-background shadow transition hover:bg-background/40 disabled:opacity-30"
+                aria-label="Precedente"
+              >
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                data-carousel-next
+                class="absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-background/20 p-3 text-background shadow transition hover:bg-background/40 disabled:opacity-30"
+                aria-label="Successivo"
+              >
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              data-sw-dialog-close
+              class={dialogCloseButton({ surface: "lightbox" })}
+              aria-label="Chiudi"
+              data-slot="dialog-close"
+            >
+              <svg
+                class="size-6 transition-opacity"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              <span class="sr-only">Chiudi</span>
+            </button>
+          </DialogPrimitive.Popup>
+        </DialogPrimitive.Root>
+      </div>
+    )}
+  </Container>
+</Section>
+
+<script>
+  import { createLightbox } from "@skeleton/lightbox.js";
+  document.querySelectorAll<HTMLElement>("[data-lightbox]").forEach((root) => {
+    createLightbox(root);
+  });
+</script>
