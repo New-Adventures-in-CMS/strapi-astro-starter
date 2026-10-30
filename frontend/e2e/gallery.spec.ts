@@ -81,4 +81,41 @@ test.describe("BlockGallery", () => {
     await page.locator("[data-sw-dialog-close]").click();
     await expect(dialog).toBeHidden();
   });
+
+  test("grid has reveal hooks like card-grid", async ({ page }) => {
+    const headerWrapper = page.locator("[data-reveal]:not([data-reveal='stagger'])");
+    await expect(headerWrapper).toHaveCount(1);
+
+    const grid = page.locator("[data-reveal='stagger'][data-mask-grid]");
+    await expect(grid).toHaveCount(1);
+  });
+
+  test("caption overlay present only for images with caption", async ({ page }) => {
+    const captions = page.locator("[data-gallery-caption]");
+    await expect(captions).toHaveCount(3);
+
+    const thumb2 = page.locator("[data-lightbox-thumb][data-index='1']");
+    await expect(thumb2.locator("[data-gallery-caption]")).toHaveCount(0);
+
+    const thumb4 = page.locator("[data-lightbox-thumb][data-index='3']");
+    await expect(thumb4.locator("[data-gallery-caption]")).toHaveCount(0);
+  });
+
+  test("caption overlay visible on hover", async ({ page }) => {
+    const thumb = page.locator("[data-lightbox-thumb][data-index='0']");
+    const caption = thumb.locator("[data-gallery-caption]");
+    await expect(caption).toHaveCSS("opacity", "0");
+
+    await thumb.hover();
+    await expect(caption).toHaveCSS("opacity", "1");
+  });
+
+  test("caption overlay visible on focus", async ({ page }) => {
+    const thumb = page.locator("[data-lightbox-thumb][data-index='0']");
+    const caption = thumb.locator("[data-gallery-caption]");
+    await expect(caption).toHaveCSS("opacity", "0");
+
+    await thumb.focus();
+    await expect(caption).toHaveCSS("opacity", "1");
+  });
 });

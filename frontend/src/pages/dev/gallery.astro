@@ -83,7 +83,7 @@ const mockImages: StrapiMedia[] = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gallery Dev Fixture</title>
   </head>
-  <body class="bg-background text-foreground">
+  <body class="bg-background text-foreground" data-mask-images>
     <main class="py-8">
       <BlockGallery
         eyebrow="SHOWCASE"
@@ -93,5 +93,11 @@ const mockImages: StrapiMedia[] = [
         images={mockImages}
       />
     </main>
+    <script>
+      import { initReveal } from "@skeleton/reveal.js";
+      import { initMaskReveal } from "@skeleton/mask-reveal.js";
+      initReveal();
+      initMaskReveal();
+    </script>
   </body>
 </html>

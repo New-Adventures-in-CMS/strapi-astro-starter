@@ -39,19 +39,29 @@ const onDark = sectionTone === "dark";
 
     {images.length > 0 && (
       <div data-lightbox>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" data-reveal="stagger">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" data-reveal="stagger" data-mask-grid>
           {images.map((img, i) => (
             <button
               type="button"
               data-lightbox-thumb
               data-index={i}
-              class="cursor-pointer overflow-hidden rounded-lg border border-border focus-visible:ring-outline/50 focus-visible:ring-3 outline-none transition-shadow"
+              class="group relative cursor-pointer overflow-hidden rounded-lg border border-border focus-visible:ring-outline/50 focus-visible:ring-3 outline-none transition-shadow"
             >
-              <StrapiImage
-                image={img}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                class="aspect-[3/2] w-full object-cover"
-              />
+              <div data-mask-reveal class="overflow-hidden" style={`--mask-delay:${i * 100}ms`}>
+                <StrapiImage
+                  image={img}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  class="aspect-[3/2] w-full object-cover"
+                />
+              </div>
+              {img.caption && (
+                <div
+                  class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-3 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+                  data-gallery-caption
+                >
+                  <p class="text-xs text-background">{img.caption}</p>
+                </div>
+              )}
             </button>
           ))}
         </div>
