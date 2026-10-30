@@ -42,6 +42,7 @@ const cv = imageText({ width, imagePosition: image_position });
               alt={image.alternativeText || heading || ""}
               sizes="(min-width: 768px) 50vw, 100vw"
               class="w-full h-full object-cover"
+              loadingIndicator="blur"
             />
           </div>
         ) : (

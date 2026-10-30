@@ -52,6 +52,7 @@ const onDark = sectionTone === "dark";
                   image={img}
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   class="aspect-[3/2] w-full object-cover"
+                  loadingIndicator="blur"
                 />
               </div>
               {img.caption && (
@@ -100,6 +101,8 @@ const onDark = sectionTone === "dark";
                           sizes="100vw"
                           loading="lazy"
                           class="mx-auto max-h-[calc(100vh-8rem)] w-full object-contain"
+                          loadingIndicator="spinner"
+                          wrapperClass="flex items-center justify-center w-full h-full"
                         />
                         {img.caption && (
                           <figcaption class="mt-3 text-center text-sm text-background/70">

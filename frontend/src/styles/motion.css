@@ -97,6 +97,68 @@
   }
 }
 
+/* --- Image-loading indicator ---------------------------------------- */
+
+/* Blur-up placeholder (behind main image via -z-10 + isolate wrapper) */
+.si-blur {
+  filter: blur(20px);
+  transform: scale(1.1);
+  transition: opacity 300ms var(--ease-out-expo);
+}
+[data-si-loading].is-loaded .si-blur {
+  opacity: 0;
+}
+
+/* Spinner (lightbox — anti-flicker: 150ms delay before showing) */
+[data-si-loading] .si-indicator--spinner {
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 300ms var(--ease-out-expo);
+  transition-delay: 150ms;
+}
+[data-si-loading]:not(.is-loaded) .si-indicator--spinner {
+  opacity: 1;
+  transition-delay: 150ms;
+}
+[data-si-loading].is-loaded .si-indicator--spinner {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.si-indicator--spinner::after {
+  content: "";
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid transparent;
+  border-top-color: var(--background);
+  border-radius: 50%;
+  animation: si-spin 0.8s linear infinite;
+}
+
+@keyframes si-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .si-blur {
+    transition: none !important;
+  }
+  [data-si-loading] .si-indicator--spinner,
+  [data-si-loading]:not(.is-loaded) .si-indicator--spinner,
+  [data-si-loading].is-loaded .si-indicator--spinner {
+    transition: none !important;
+    transition-delay: 0s !important;
+  }
+  .si-indicator--spinner::after {
+    animation: none !important;
+    border-top-color: var(--background);
+    border-right-color: var(--background);
+  }
+}
+
 /* Lenis smooth-scroll: evita conflitti di scroll-behavior nativo quando attivo */
 html.lenis,
 html.lenis body {

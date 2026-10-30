@@ -1,0 +1,101 @@
+---
+import BlockHero from "@/components/blocks/BlockHero.astro";
+import type { StrapiMedia } from "@/types";
+import "@/styles/starwind.css";
+
+const origin = Astro.url.origin;
+
+const raster = (id: number, alt: string): StrapiMedia => ({
+  id,
+  url: `${origin}/_test/pixel.png`,
+  name: `hero-raster-${id}.png`,
+  alternativeText: alt,
+  width: 800,
+  height: 600,
+  mime: "image/png",
+  ext: ".png",
+  size: 10,
+});
+
+const CAROUSEL_SLIDES = [
+  {
+    eyebrow: "SLIDE 1",
+    heading: "Carousel raster slide one",
+    subheading: "Testing blur-up on carousel path.",
+    cta_text: null,
+    cta_url: null,
+    image: raster(1, "Carousel raster 1"),
+  },
+  {
+    eyebrow: "SLIDE 2",
+    heading: "Carousel raster slide two",
+    subheading: null,
+    cta_text: null,
+    cta_url: null,
+    image: raster(2, "Carousel raster 2"),
+  },
+];
+
+const DRIFT_SLIDES = [
+  {
+    eyebrow: "DRIFT 1",
+    heading: "Drift raster slide one",
+    subheading: null,
+    cta_text: null,
+    cta_url: null,
+    image: raster(3, "Drift raster 1"),
+  },
+  {
+    eyebrow: "DRIFT 2",
+    heading: "Drift raster slide two",
+    subheading: null,
+    cta_text: null,
+    cta_url: null,
+    image: raster(4, "Drift raster 2"),
+  },
+];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero Image Box Fixture</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <div data-hero-section="static">
+      <BlockHero
+        heading="Static hero with raster image"
+        image={raster(0, "Static hero raster")}
+        immersive={false}
+      />
+    </div>
+
+    <div data-hero-section="carousel">
+      <BlockHero
+        heading="Carousel raster"
+        slides={CAROUSEL_SLIDES}
+        autoplayDelay={8000}
+        transition="fade"
+      />
+    </div>
+
+    <div data-hero-section="drift">
+      <BlockHero
+        heading="Drift raster"
+        slides={DRIFT_SLIDES}
+        autoplayDelay={8000}
+        transition="slide"
+        effect="drift"
+      />
+    </div>
+
+    <script>
+      import { createCarousel } from "@skeleton/carousel.js";
+      import { setupHeroDrift } from "@/lib/hero-drift.js";
+      import { initImageLoading } from "@skeleton/image-loading.js";
+      initImageLoading();
+    </script>
+  </body>
+</html>

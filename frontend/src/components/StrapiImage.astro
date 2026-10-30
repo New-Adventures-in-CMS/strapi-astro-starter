@@ -1,5 +1,5 @@
 ---
-import { Picture } from "astro:assets";
+import { Picture, getImage } from "astro:assets";
 import type { StrapiMedia } from "@/types";
 import { strapiMediaUrl } from "@/lib/strapi";
 
@@ -11,6 +11,8 @@ interface Props {
   fetchpriority?: "high" | "low" | "auto";
   class?: string;
   alt?: string;
+  loadingIndicator?: "blur" | "spinner";
+  wrapperClass?: string;
   [key: string]: unknown;
 }
 
@@ -26,6 +28,8 @@ const {
   fetchpriority,
   class: className,
   alt,
+  loadingIndicator,
+  wrapperClass,
   ...rest
 } = Astro.props;
 
@@ -58,9 +62,77 @@ const ladder = widthsOverride ?? DEFAULT_WIDTHS;
 const cappedWidths = ladder.filter((w) => w <= intrinsicW);
 if (!cappedWidths.includes(intrinsicW)) cappedWidths.push(intrinsicW);
 cappedWidths.sort((a, b) => a - b);
+
+const useBlur = loadingIndicator === "blur" && !isSvg;
+const useSpinner = loadingIndicator === "spinner";
+const hasWrapper = useBlur || useSpinner;
+
+// wrapperClass controls position when it includes one; relative is the default
+const wrapperHasPosition =
+  !!wrapperClass && /\b(absolute|fixed|relative|sticky|static)\b/.test(wrapperClass);
+
+let lqipSrc: string | undefined;
+if (useBlur) {
+  const lqipW = 32;
+  const lqipH = Math.round((intrinsicH / intrinsicW) * lqipW);
+  const lqip = await getImage({ src, width: lqipW, height: lqipH, format: "webp", quality: 20 });
+  lqipSrc = lqip.src;
+}
 ---
 
-{isSvg ? (
+{hasWrapper ? (
+  <div
+    data-si-loading
+    class:list={[!wrapperHasPosition && "relative", useBlur && "isolate", wrapperClass]}
+  >
+    {isSvg ? (
+      <img
+        src={src}
+        width={image.width}
+        height={image.height}
+        alt={resolvedAlt}
+        class={className}
+        loading={loading}
+        decoding="async"
+        fetchpriority={fetchpriority}
+        {...forwarded}
+      />
+    ) : (
+      <Picture
+        src={src}
+        formats={["avif", "webp"]}
+        width={intrinsicW}
+        height={intrinsicH}
+        widths={cappedWidths}
+        sizes={sizes}
+        alt={resolvedAlt}
+        class={className}
+        loading={loading}
+        decoding="async"
+        fetchpriority={fetchpriority}
+        pictureAttributes={{ class: "contents" }}
+        {...forwarded}
+      />
+    )}
+    {useBlur && lqipSrc ? (
+      <img
+        src={lqipSrc}
+        alt=""
+        class="si-blur absolute inset-0 w-full h-full object-cover -z-10 pointer-events-none"
+        aria-hidden="true"
+        data-variant="blur"
+        loading="eager"
+        decoding="sync"
+      />
+    ) : useSpinner ? (
+      <div
+        class="si-indicator si-indicator--spinner absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+        data-variant="spinner"
+      />
+    ) : null}
+  </div>
+) : isSvg ? (
   <img
     src={src}
     width={image.width}

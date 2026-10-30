@@ -3,29 +3,31 @@ import BlockGallery from "@/components/blocks/BlockGallery.astro";
 import "@/styles/starwind.css";
 import type { StrapiMedia } from "@/types";
 
+const origin = Astro.url.origin;
+
 const mockImages: StrapiMedia[] = [
   {
     id: 1,
-    url: "/_test/gallery/1.svg",
-    name: "1.svg",
-    alternativeText: "Sample image 1",
+    url: `${origin}/_test/pixel.png`,
+    name: "pixel.png",
+    alternativeText: "Sample raster 1",
     caption: "First image with a caption",
     width: 800,
     height: 600,
-    mime: "image/svg+xml",
-    ext: ".svg",
-    size: 1,
+    mime: "image/png",
+    ext: ".png",
+    size: 10,
   },
   {
     id: 2,
-    url: "/_test/gallery/2.svg",
-    name: "2.svg",
-    alternativeText: "Sample image 2",
+    url: `${origin}/_test/pixel.png`,
+    name: "pixel2.png",
+    alternativeText: "Sample raster 2",
     width: 800,
     height: 600,
-    mime: "image/svg+xml",
-    ext: ".svg",
-    size: 1,
+    mime: "image/png",
+    ext: ".png",
+    size: 10,
   },
   {
     id: 3,
@@ -52,15 +54,15 @@ const mockImages: StrapiMedia[] = [
   },
   {
     id: 5,
-    url: "/_test/gallery/5.svg",
-    name: "5.svg",
-    alternativeText: "Sample image 5",
+    url: `${origin}/_test/pixel.png`,
+    name: "pixel3.png",
+    alternativeText: "Sample raster 5",
     caption: "Fifth image caption for testing",
     width: 800,
     height: 600,
-    mime: "image/svg+xml",
-    ext: ".svg",
-    size: 1,
+    mime: "image/png",
+    ext: ".png",
+    size: 10,
   },
   {
     id: 6,
@@ -88,7 +90,7 @@ const mockImages: StrapiMedia[] = [
       <BlockGallery
         eyebrow="SHOWCASE"
         heading="Gallery block fixture"
-        lead="Mock data — images 1, 3, 5 have captions; 2, 4, 6 do not."
+        lead="Mock data — images 1, 2, 5 are raster (blur-up); 3, 4, 6 are SVG (plain). Captions on 1, 3, 5."
         tone="light"
         images={mockImages}
       />
@@ -96,8 +98,10 @@ const mockImages: StrapiMedia[] = [
     <script>
       import { initReveal } from "@skeleton/reveal.js";
       import { initMaskReveal } from "@skeleton/mask-reveal.js";
+      import { initImageLoading } from "@skeleton/image-loading.js";
       initReveal();
       initMaskReveal();
+      initImageLoading();
     </script>
   </body>
 </html>

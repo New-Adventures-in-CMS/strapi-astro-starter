@@ -47,11 +47,13 @@ const { stickyShell, imageMaskReveal } = await getSiteSettings();
     <script>
       import { initReveal } from "@skeleton/reveal.js";
       import { initMaskReveal } from "@skeleton/mask-reveal.js";
+      import { initImageLoading } from "@skeleton/image-loading.js";
       import { initSmoothScroll } from "@skeleton/smooth-scroll.js";
       import { site } from "@/config/site";
       initSmoothScroll(site.motion.smooth);
       initReveal();
       initMaskReveal();
+      initImageLoading();
     </script>
   </body>
 </html>

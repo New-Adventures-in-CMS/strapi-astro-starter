@@ -81,7 +81,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
   tone="dark"
   spacing="none"
   class:list={[
-    `overflow-hidden flex ${staticHC.wrap()}`,
+    `relative overflow-hidden flex ${staticHC.wrap()}`,
     immersive ? "min-h-[100svh]" : "min-h-[70vh] md:min-h-[80vh]",
   ]}
   data-block="hero"
@@ -121,6 +121,8 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                           loading="eager"
                           fetchpriority="high"
                           class="absolute inset-0 h-full w-full object-cover"
+                          loadingIndicator="blur"
+                          wrapperClass="absolute inset-0"
                         />
                       </div>
                     ) : (
@@ -132,6 +134,8 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                         fetchpriority="high"
                         class="absolute inset-0 h-full w-full object-cover"
                         data-hero-media
+                        loadingIndicator="blur"
+                        wrapperClass="absolute inset-0"
                       />
                     )}
                     <div
@@ -267,6 +271,8 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
             fetchpriority="high"
             class="absolute inset-0 h-full w-full object-cover"
             data-hero-media
+            loadingIndicator="blur"
+            wrapperClass="absolute inset-0"
           />
           <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
         </>
