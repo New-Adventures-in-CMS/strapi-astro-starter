@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_blocks_galleries",
+  "info": {
+    "displayName": "Gallery",
+    "icon": "landscape",
+    "description": "Image gallery with lightbox"
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "lead": {
+      "type": "text"
+    },
+    "tone": {
+      "type": "enumeration",
+      "default": "light",
+      "enum": ["light", "dark"]
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
+    "width": {
+      "type": "enumeration",
+      "enum": ["full", "contained"],
+      "default": "contained"
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "xl"
+    }
+  }
+}

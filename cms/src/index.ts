@@ -22,6 +22,7 @@ async function uploadSeedImage(
   strapi: Core.Strapi,
   filename: string,
   alt: string,
+  caption?: string,
 ): Promise<{ id: number; documentId: string } | null> {
   try {
     // Idempotence: use basename for lookup (subpaths not stored in name)
@@ -58,7 +59,7 @@ async function uploadSeedImage(
       data: {
         fileInfo: {
           alternativeText: alt,
-          caption: alt,
+          caption: caption != null ? caption : alt,
           name: basename,
         },
       },
@@ -195,6 +196,31 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       ),
     };
 
+    // Upload gallery images (captions only on 2-3 to demo opt-in)
+    const galleryImgs = [
+      await uploadSeedImage(
+        strapi,
+        "gallery/gallery-01.svg",
+        "Abstract circles composition",
+        "Circles and lines on dark ground",
+      ),
+      await uploadSeedImage(strapi, "gallery/gallery-02.svg", "Nested diamond shapes"),
+      await uploadSeedImage(
+        strapi,
+        "gallery/gallery-03.svg",
+        "Vertical columns composition",
+        "Two columns with a connecting node",
+      ),
+      await uploadSeedImage(strapi, "gallery/gallery-04.svg", "Flowing curves abstract"),
+      await uploadSeedImage(
+        strapi,
+        "gallery/gallery-05.svg",
+        "Concentric triangles abstract",
+        "Three nested triangles converging to center",
+      ),
+      await uploadSeedImage(strapi, "gallery/gallery-06.svg", "Intersecting ellipses abstract"),
+    ];
+
     // Home — immersive hero with image + two card grids (light + dark statement) + rich text
     await strapi.documents("api::page.page").create({
       data: {
@@ -313,6 +339,14 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 image: cardImgs.tokens?.id ?? undefined,
               },
             ],
+          },
+          {
+            __component: "blocks.gallery",
+            eyebrow: "VISUAL SHOWCASE",
+            heading: "Gallery block with lightbox",
+            lead: "Click any image to open the full-screen lightbox. Captions appear only where the media file has one.",
+            tone: "light",
+            images: galleryImgs.filter(Boolean).map((img) => img!.id),
           },
           {
             __component: "blocks.rich-text",
