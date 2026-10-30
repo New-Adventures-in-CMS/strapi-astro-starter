@@ -35,7 +35,8 @@
         "blocks.card-grid",
         "blocks.carousel",
         "blocks.form",
-        "blocks.gallery"
+        "blocks.gallery",
+        "blocks.faq"
       ]
     }
   }

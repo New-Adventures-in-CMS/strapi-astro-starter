@@ -1,0 +1,44 @@
+---
+import type { FaqItem, SectionSpacing } from "@/types";
+import { Section, Container } from "@/components/layout";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { Prose } from "@/components/starwind/prose";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionContent,
+  AccordionTrigger,
+} from "@/components/starwind/accordion";
+import { renderMarkdown } from "@/lib/markdown";
+
+interface Props {
+  eyebrow?: string | null;
+  heading?: string | null;
+  items: FaqItem[];
+  spacing?: SectionSpacing;
+}
+
+const { eyebrow, heading, items, spacing } = Astro.props;
+---
+
+<Section spacing={spacing ?? "xl"}>
+  <Container width="prose">
+    <div data-reveal>
+      <SectionHeader eyebrow={eyebrow} heading={heading} align="center" />
+    </div>
+    <Accordion type="single" collapsible>
+      {items.map((item, i) => (
+        <AccordionItem value={`faq-${i}`}>
+          <h3>
+            <AccordionTrigger>{item.question}</AccordionTrigger>
+          </h3>
+          <AccordionContent>
+            <Prose class="max-w-none">
+              <div set:html={renderMarkdown(item.answer)} />
+            </Prose>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  </Container>
+</Section>

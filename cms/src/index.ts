@@ -377,6 +377,33 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             __component: "blocks.rich-text",
             body: "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
           },
+          {
+            __component: "blocks.faq",
+            eyebrow: "DOMANDE FREQUENTI",
+            heading: "FAQ",
+            items: [
+              {
+                question: "What is this starter?",
+                answer:
+                  "A **production-ready** foundation combining [Strapi 5](https://strapi.io) as the headless CMS and Astro for server-rendered pages. It ships with a block-based page builder, dynamic forms, and a tuned design system.",
+              },
+              {
+                question: "Do I need to know Strapi to use it?",
+                answer:
+                  "Not in depth. The content model is already set up — you manage pages, navigation, and forms from the Strapi admin panel. The [setup guide](https://docs.strapi.io) covers everything you need to get started.",
+              },
+              {
+                question: "Can I add my own blocks?",
+                answer:
+                  "Yes. Drop a component schema in `cms/src/components/blocks/`, register it on the page dynamic zone, and create a matching Astro renderer in `frontend/src/components/blocks/`. The FAQ block you're reading was built exactly this way.",
+              },
+              {
+                question: "How do I deploy to production?",
+                answer:
+                  "Astro runs in SSR mode on any **Node 22** host. Build the frontend with `npm run build`, start with `node dist/server/entry.mjs`. Strapi needs its own Node process and a persistent database (SQLite for dev, PostgreSQL recommended for production).",
+              },
+            ],
+          },
         ],
       } as any,
       status: "published",

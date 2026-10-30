@@ -133,6 +133,19 @@ export interface BlockGallery {
   spacing?: SectionSpacing;
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface BlockFaq {
+  __component: "blocks.faq";
+  eyebrow?: string | null;
+  heading?: string | null;
+  items: FaqItem[];
+  spacing?: SectionSpacing;
+}
+
 export type PageBlock =
   | BlockHero
   | BlockRichText
@@ -140,7 +153,8 @@ export type PageBlock =
   | BlockCardGrid
   | BlockCarousel
   | BlockForm
-  | BlockGallery;
+  | BlockGallery
+  | BlockFaq;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
 import type { SectionTone } from "@/components/layout/variants";

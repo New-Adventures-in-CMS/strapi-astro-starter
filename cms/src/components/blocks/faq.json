@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_blocks_faqs",
+  "info": {
+    "displayName": "FAQ",
+    "icon": "question",
+    "description": "Frequently asked questions with accordion"
+  },
+  "options": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "component": "faq.faq-item",
+      "repeatable": true,
+      "required": true,
+      "min": 1
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "xl"
+    }
+  }
+}

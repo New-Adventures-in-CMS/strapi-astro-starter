@@ -1,0 +1,47 @@
+---
+import BlockFaq from "@/components/blocks/BlockFaq.astro";
+import "@/styles/starwind.css";
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAQ Dev Fixture</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <main class="py-8">
+      <BlockFaq
+        eyebrow="DOMANDE FREQUENTI"
+        heading="FAQ"
+        items={[
+          {
+            question: "What is this starter?",
+            answer:
+              "A **production-ready** foundation combining [Strapi 5](https://strapi.io) as the headless CMS and Astro for server-rendered pages.",
+          },
+          {
+            question: "Do I need to know Strapi to use it?",
+            answer:
+              "Not in depth. The content model is already set up — you manage pages, navigation, and forms from the Strapi admin panel.",
+          },
+          {
+            question: "Can I add my own blocks?",
+            answer:
+              "Yes. Drop a component schema in `cms/src/components/blocks/`, register it on the page dynamic zone, and create a matching Astro renderer.",
+          },
+          {
+            question: "How do I deploy to production?",
+            answer:
+              "Astro runs in SSR mode on any **Node 22** host. Build the frontend with `npm run build`, start with `node dist/server/entry.mjs`.",
+          },
+        ]}
+      />
+    </main>
+    <script>
+      import { initReveal } from "@skeleton/reveal.js";
+      initReveal();
+    </script>
+  </body>
+</html>
