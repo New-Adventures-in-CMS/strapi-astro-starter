@@ -148,6 +148,13 @@ Where things live:
   passthrough. In SSR, `/_image` processes per-request — **production needs a
   caching layer** (reverse-proxy, CDN, or `Cache-Control` middleware) in front of
   it. See SETUP.md → "Image optimization caching (SSR)".
+- **Upload resize:** raster images uploaded to Strapi are **automatically
+  resized and recompressed** before storage when their long side exceeds
+  `maxLongSide` (default 2560 px, quality 82). SVG/GIF untouched. Config in
+  `cms/src/config/image-resize.ts`. Implemented as a Strapi plugin extension
+  (`cms/src/extensions/upload/strapi-server.ts`) that replaces `optimize()` in
+  the `image-manipulation` service. **Destructive** — the full-resolution
+  original is not preserved. See SETUP.md → "Upload resize".
 
 **Golden sequence for a structural change:** edit schema → **restart Strapi**
 (schema discovery happens only at boot) → update Astro types → then fill content.

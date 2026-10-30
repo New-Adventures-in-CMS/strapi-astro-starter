@@ -884,6 +884,24 @@ server. In production you need a caching layer in front of `/_image`:
 This is gated by the deploy model (indeterminate in the starter) and is the
 deployer's responsibility. The starter provides no built-in caching middleware.
 
+### Upload resize
+
+Raster images (JPEG, PNG, WebP, TIFF, AVIF) uploaded to Strapi are automatically resized and recompressed **before storage** when their long side exceeds a configurable threshold. SVG and GIF files are not touched.
+
+**Config:** `cms/src/config/image-resize.ts`
+
+| Setting       | Default | Description                                          |
+| ------------- | ------- | ---------------------------------------------------- |
+| `maxLongSide` | 2560    | Max pixels on the longest side (never upscales)      |
+| `quality`     | 82      | Recompression quality (JPEG/WebP/AVIF/TIFF/PNG)      |
+| `enabled`     | true    | Kill switch — set to `false` to bypass entirely      |
+
+**How it works:** the CMS extension (`cms/src/extensions/upload/strapi-server.ts`) replaces `optimize()` in Strapi's `image-manipulation` service. The resize runs _before_ dimension extraction, thumbnail generation, and responsive format generation — so all downstream metadata and variants are consistent with the resized file.
+
+**Destructive by design:** the full-resolution original is not preserved. The decision was intentional — no backup copy is stored.
+
+**Seed images:** on `db:reset`, seed assets pass through the same hook. The shipped hero image (2048 px) is below the default threshold; SVG assets are untouched.
+
 ---
 
 ## Gotcha noti

@@ -14,7 +14,7 @@
     "build": "npm --prefix cms run build && npm --prefix frontend run build",
     "test": "npm --prefix frontend test",
     "test:e2e": "npm --prefix frontend run test:e2e",
-    "db:reset": "find . -path '*/.tmp/data.db' -delete",
+    "db:reset": "find . -path '*/.tmp/data.db' -delete && find cms/public/uploads -type f ! -name '.gitkeep' -delete",
     "tokens:sync": "node scripts/tokens-sync.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
