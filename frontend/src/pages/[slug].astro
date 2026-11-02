@@ -15,13 +15,18 @@ if (!slug) return Astro.redirect("/404");
 
 if (slug === "home") return Astro.redirect("/");
 
+const isPreview = Astro.cookies.get("__strapi_preview")?.value === "true";
 let page: Page | null = null;
 
 try {
-  const res = await strapiFind<Page>("pages", {
-    filters: { slug: { $eq: slug } },
-    populate: pageBlocksPopulate,
-  });
+  const res = await strapiFind<Page>(
+    "pages",
+    {
+      filters: { slug: { $eq: slug } },
+      populate: pageBlocksPopulate,
+    },
+    { preview: isPreview },
+  );
   page = res.data[0] ?? null;
 } catch {
   // CMS unreachable — treat as not found
@@ -55,5 +60,16 @@ const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.im
         </article>
       </Container>
     </Section>
+  )}
+  {isPreview && (
+    <div class="fixed bottom-0 left-0 right-0 z-50 bg-amber-500 py-2 text-center text-sm font-medium text-amber-950">
+      Anteprima bozza —{" "}
+      <a
+        href={`/api/exit-preview?url=${encodeURIComponent(Astro.url.pathname)}`}
+        class="underline hover:no-underline"
+      >
+        Esci dall'anteprima
+      </a>
+    </div>
   )}
 </Layout>

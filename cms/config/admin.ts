@@ -20,24 +20,24 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => 
     promoteEE: env.bool("FLAG_PROMOTE_EE", false),
     docLinks: env.bool("FLAG_DOC_LINKS", true),
   },
-  // Preview opzionale — decommentare e adattare per collection con slug
-  // preview: {
-  //   enabled: true,
-  //   config: {
-  //     allowedOrigins: [env("CLIENT_URL", "http://localhost:4321")],
-  //     async handler(uid, { documentId }) {
-  //       const document = await strapi.documents(uid as any).findOne({ documentId });
-  //       if (!document) return null;
-  //       const slug = (document as any).slug as string | undefined;
-  //       if (!slug) return null;
-  //       const params = new URLSearchParams({
-  //         url: `/pagine/${slug}`,
-  //         secret: env("PREVIEW_SECRET", "change-me"),
-  //       });
-  //       return `${env("CLIENT_URL", "http://localhost:4321")}/api/preview?${params}`;
-  //     },
-  //   },
-  // },
+  preview: {
+    enabled: true,
+    config: {
+      allowedOrigins: [env("CLIENT_URL", "http://localhost:4321")],
+      async handler(uid, { documentId }) {
+        const document = await strapi.documents(uid as any).findOne({ documentId });
+        if (!document) return null;
+        const slug = (document as any).slug as string | undefined;
+        if (!slug) return null;
+        const url = slug === "home" ? "/" : `/${slug}`;
+        const params = new URLSearchParams({
+          url,
+          secret: env("PREVIEW_SECRET", "change-me"),
+        });
+        return `${env("CLIENT_URL", "http://localhost:4321")}/api/preview?${params}`;
+      },
+    },
+  },
 });
 
 export default config;

@@ -64,6 +64,11 @@ export default defineConfig({
         access: "secret",
         optional: true,
       }),
+      PREVIEW_SECRET: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
       PUBLIC_STRAPI_URL: envField.string({
         context: "client",
         access: "public",

@@ -79,12 +79,22 @@ function buildQs(params: Record<string, unknown>): string {
   return parts.length ? `?${parts.join("&")}` : "";
 }
 
+type FetchOptions = { preview?: boolean };
+
 export async function strapiFind<T>(
   pluralApiId: string,
   params: Record<string, unknown> = {},
+  options: FetchOptions = {},
 ): Promise<StrapiListResponse<T>> {
+  if (options.preview) params = { ...params, status: "draft" };
   const qs = buildQs(params);
-  const res = await fetch(`${STRAPI_URL}/api/${pluralApiId}${qs}`);
+  const headers: Record<string, string> = {};
+  if (options.preview && STRAPI_API_TOKEN) {
+    headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
+  }
+  const res = await fetch(`${STRAPI_URL}/api/${pluralApiId}${qs}`, {
+    headers: Object.keys(headers).length ? headers : undefined,
+  });
   if (!res.ok) throw new Error(`Strapi GET /api/${pluralApiId} → ${res.status}`);
   return res.json() as Promise<StrapiListResponse<T>>;
 }
@@ -92,9 +102,17 @@ export async function strapiFind<T>(
 export async function strapiFindOne<T>(
   singularApiId: string,
   params: Record<string, unknown> = {},
+  options: FetchOptions = {},
 ): Promise<StrapiSingleResponse<T>> {
+  if (options.preview) params = { ...params, status: "draft" };
   const qs = buildQs(params);
-  const res = await fetch(`${STRAPI_URL}/api/${singularApiId}${qs}`);
+  const headers: Record<string, string> = {};
+  if (options.preview && STRAPI_API_TOKEN) {
+    headers["Authorization"] = `Bearer ${STRAPI_API_TOKEN}`;
+  }
+  const res = await fetch(`${STRAPI_URL}/api/${singularApiId}${qs}`, {
+    headers: Object.keys(headers).length ? headers : undefined,
+  });
   if (!res.ok) throw new Error(`Strapi GET /api/${singularApiId} → ${res.status}`);
   return res.json() as Promise<StrapiSingleResponse<T>>;
 }
