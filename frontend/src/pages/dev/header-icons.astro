@@ -1,0 +1,24 @@
+---
+// Dev fixture — validates overlay-aware icon slot in all header states:
+// transparent (over hero), solid (scrolled), megamenu-open.
+import Layout from "@/layouts/Layout.astro";
+import BlockHero from "@/components/blocks/BlockHero.astro";
+import Search from "@tabler/icons/outline/search.svg";
+---
+
+<Layout title="Dev — Header icon slot" headerOverlay={true}>
+  <button
+    slot="header-actions"
+    class="rounded p-2 transition-colors hover:bg-black/10"
+    aria-label="Cerca"
+  >
+    <Search class="size-5" />
+  </button>
+  <BlockHero
+    eyebrow="ICON SLOT"
+    heading="Header icon demo"
+    subheading="Icona lingua demo nello slot azioni. Verificare: on-dark (transparent), foreground (solid), foreground (megamenu aperto)."
+    immersive={true}
+  />
+  <section style="min-height: 150vh" aria-hidden="true"></section>
+</Layout>

@@ -36,7 +36,9 @@ const { stickyShell, imageMaskReveal } = await getSiteSettings();
     data-sticky-footer={stickyShell ? "" : undefined}
     data-mask-images={imageMaskReveal ? "" : undefined}
   >
-    <Header overlay={headerOverlay} />
+    <Header overlay={headerOverlay}>
+      <slot name="header-actions" slot="actions" />
+    </Header>
     <main
       class:list={[!headerOverlay && "pt-[var(--header-h)]", "flex-1"]}
       data-sticky-hero={headerOverlay && stickyShell ? "" : undefined}

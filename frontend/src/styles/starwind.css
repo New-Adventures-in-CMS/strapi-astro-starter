@@ -571,6 +571,27 @@
   }
 
   /* ========================================================================
+   * HEADER ACTIONS SLOT — overlay-aware colors for icon buttons
+   * ======================================================================== */
+
+  /* Transparent state: on-dark icons */
+  header[data-overlay="true"][data-state="transparent"] [data-slot="header-actions"] {
+    color: var(--section-dark-fg);
+  }
+
+  /* Solid state: standard foreground icons */
+  header[data-overlay="true"][data-state="solid"] [data-slot="header-actions"],
+  header[data-overlay="false"] [data-slot="header-actions"] {
+    color: var(--foreground);
+  }
+
+  /* Megamenu open in transparent → force solid colors */
+  header[data-overlay="true"][data-state="transparent"][data-menu-open="true"]
+    [data-slot="header-actions"] {
+    color: var(--foreground);
+  }
+
+  /* ========================================================================
    * STICKY HERO — hero stays in place, content scrolls over it
    * Activated by [data-sticky-hero] on <main> (immersive hero, ≥768px only).
    * ======================================================================== */

@@ -53,20 +53,73 @@ const isActive = (href: string | undefined): boolean =>
       <Logo class="h-8 w-auto" />
     </a>
 
-    <!-- Desktop nav (lg and up) -->
-    <nav aria-label="Navigazione principale" class="hidden lg:flex">
-      {submenuLayout === "full-bleed" ? (
-        <NavigationMenuBand size="sm">
-          <NavigationMenuList>
-            {navItems.map((item) =>
-              item.children?.length ? (
-                <NavigationMenuItem value={item.label}>
-                  <NavigationMenuTrigger class="text-sm font-medium">
-                    {item.label}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent class="opacity-100! transition-none! duration-0!">
-                    <Container width={headerWidth} class="py-8">
-                      <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
+    <!-- Right group: nav + actions + mobile hamburger -->
+    <div class="flex items-stretch">
+      <!-- Desktop nav (lg and up) -->
+      <nav aria-label="Navigazione principale" class="hidden lg:flex">
+        {submenuLayout === "full-bleed" ? (
+          <NavigationMenuBand size="sm">
+            <NavigationMenuList>
+              {navItems.map((item) =>
+                item.children?.length ? (
+                  <NavigationMenuItem value={item.label}>
+                    <NavigationMenuTrigger class="text-sm font-medium">
+                      {item.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent class="opacity-100! transition-none! duration-0!">
+                      <Container width={headerWidth} class="py-8">
+                        <ul class="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-3 lg:grid-cols-4">
+                          {item.children.map((child) => (
+                            <li>
+                              <NavigationMenuLink
+                                href={child.href}
+                                target={child.external ? "_blank" : undefined}
+                                rel={child.external ? "noopener noreferrer" : undefined}
+                                active={isActive(child.href)}
+                                aria-current={isActive(child.href) ? "page" : undefined}
+                                class="flex-col items-start gap-1"
+                              >
+                                <span class="text-sm font-medium">{child.label}</span>
+                                {child.description && (
+                                  <span class="text-muted-foreground text-xs leading-snug">
+                                    {child.description}
+                                  </span>
+                                )}
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </Container>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      href={item.href}
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                      active={isActive(item.href)}
+                      aria-current={isActive(item.href) ? "page" : undefined}
+                      class="text-sm font-medium"
+                    >
+                      {item.label}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ),
+              )}
+            </NavigationMenuList>
+          </NavigationMenuBand>
+        ) : (
+          <NavigationMenu size="sm">
+            <NavigationMenuList>
+              {navItems.map((item) =>
+                item.children?.length ? (
+                  <NavigationMenuItem value={item.label}>
+                    <NavigationMenuTrigger class="text-sm font-medium">
+                      {item.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul class={submenuDropdownList()}>
                         {item.children.map((child) => (
                           <li>
                             <NavigationMenuLink
@@ -75,169 +128,125 @@ const isActive = (href: string | undefined): boolean =>
                               rel={child.external ? "noopener noreferrer" : undefined}
                               active={isActive(child.href)}
                               aria-current={isActive(child.href) ? "page" : undefined}
-                              class="flex-col items-start gap-1"
                             >
-                              <span class="text-sm font-medium">{child.label}</span>
-                              {child.description && (
-                                <span class="text-muted-foreground text-xs leading-snug">
-                                  {child.description}
-                                </span>
-                              )}
+                              {child.label}
                             </NavigationMenuLink>
                           </li>
                         ))}
                       </ul>
-                    </Container>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              ) : (
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href={item.href}
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                    active={isActive(item.href)}
-                    aria-current={isActive(item.href) ? "page" : undefined}
-                    class="text-sm font-medium"
-                  >
-                    {item.label}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ),
-            )}
-          </NavigationMenuList>
-        </NavigationMenuBand>
-      ) : (
-        <NavigationMenu size="sm">
-          <NavigationMenuList>
-            {navItems.map((item) =>
-              item.children?.length ? (
-                <NavigationMenuItem value={item.label}>
-                  <NavigationMenuTrigger class="text-sm font-medium">
-                    {item.label}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul class={submenuDropdownList()}>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink
+                      href={item.href}
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                      active={isActive(item.href)}
+                      aria-current={isActive(item.href) ? "page" : undefined}
+                      class="text-sm font-medium"
+                    >
+                      {item.label}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ),
+              )}
+            </NavigationMenuList>
+          </NavigationMenu>
+        )}
+      </nav>
+
+      {Astro.slots.has("actions") && (
+        <div data-slot="header-actions" class="flex items-center gap-1 pl-2">
+          <slot name="actions" />
+        </div>
+      )}
+
+      <!-- Mobile hamburger trigger (Sheet drawer) -->
+      <div class="self-center lg:hidden">
+        <Sheet>
+          <SheetTrigger
+            aria-label="Apri menu di navigazione"
+            class:list={[
+              "rounded p-2 transition-colors",
+              !overlay && "text-muted-foreground hover:bg-muted hover:text-foreground",
+            ]}
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </SheetTrigger>
+          <SheetContent side="left" class="px-4 pt-4">
+            <SheetHeader class="p-0">
+              <SheetTitle class="sr-only">Navigazione</SheetTitle>
+            </SheetHeader>
+            <nav aria-label="Navigazione mobile" class="mt-8 flex flex-col">
+              {navItems.map((item) =>
+                item.children?.length ? (
+                  <details class="group">
+                    <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground [&::-webkit-details-marker]:hidden">
+                      {item.label}
+                      <svg
+                        class="h-3 w-3 transition-transform group-open:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </summary>
+                    <ul class="mt-1 pl-3">
                       {item.children.map((child) => (
                         <li>
-                          <NavigationMenuLink
+                          <a
                             href={child.href}
                             target={child.external ? "_blank" : undefined}
                             rel={child.external ? "noopener noreferrer" : undefined}
-                            active={isActive(child.href)}
                             aria-current={isActive(child.href) ? "page" : undefined}
+                            class:list={[
+                              "block rounded-md px-3 py-1.5 text-sm",
+                              isActive(child.href)
+                                ? "bg-muted text-foreground"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                            ]}
                           >
                             {child.label}
-                          </NavigationMenuLink>
+                          </a>
                         </li>
                       ))}
                     </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              ) : (
-                <NavigationMenuItem>
-                  <NavigationMenuLink
+                  </details>
+                ) : (
+                  <a
                     href={item.href}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noopener noreferrer" : undefined}
-                    active={isActive(item.href)}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    class="text-sm font-medium"
+                    class:list={[
+                      "block rounded-md px-3 py-2 text-sm",
+                      isActive(item.href)
+                        ? "bg-muted text-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ]}
                   >
                     {item.label}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ),
-            )}
-          </NavigationMenuList>
-        </NavigationMenu>
-      )}
-    </nav>
-
-    <!-- Mobile hamburger trigger (Sheet drawer) -->
-    <div class="self-center lg:hidden">
-      <Sheet>
-        <SheetTrigger
-          aria-label="Apri menu di navigazione"
-          class:list={[
-            "rounded p-2 transition-colors",
-            !overlay && "text-muted-foreground hover:bg-muted hover:text-foreground",
-          ]}
-        >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </SheetTrigger>
-        <SheetContent side="left" class="px-4 pt-4">
-          <SheetHeader class="p-0">
-            <SheetTitle class="sr-only">Navigazione</SheetTitle>
-          </SheetHeader>
-          <nav aria-label="Navigazione mobile" class="mt-8 flex flex-col">
-            {navItems.map((item) =>
-              item.children?.length ? (
-                <details class="group">
-                  <summary class="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground [&::-webkit-details-marker]:hidden">
-                    {item.label}
-                    <svg
-                      class="h-3 w-3 transition-transform group-open:rotate-180"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </summary>
-                  <ul class="mt-1 pl-3">
-                    {item.children.map((child) => (
-                      <li>
-                        <a
-                          href={child.href}
-                          target={child.external ? "_blank" : undefined}
-                          rel={child.external ? "noopener noreferrer" : undefined}
-                          aria-current={isActive(child.href) ? "page" : undefined}
-                          class:list={[
-                            "block rounded-md px-3 py-1.5 text-sm",
-                            isActive(child.href)
-                              ? "bg-muted text-foreground"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                          ]}
-                        >
-                          {child.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ) : (
-                <a
-                  href={item.href}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  class:list={[
-                    "block rounded-md px-3 py-2 text-sm",
-                    isActive(item.href)
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                  ]}
-                >
-                  {item.label}
-                </a>
-              ),
-            )}
-          </nav>
-        </SheetContent>
-      </Sheet>
+                  </a>
+                ),
+              )}
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   </div>
 
