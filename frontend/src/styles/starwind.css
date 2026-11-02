@@ -613,3 +613,14 @@
     }
   }
 }
+
+/* ==========================================================================
+ * RICH-TEXT COMPACT — collapse first/last content margin when spacing=none.
+ * Unlayered so it beats .sw-prose rules (also unlayered, lower specificity).
+ * ========================================================================== */
+[data-richtext-compact] .sw-prose > div > :first-child {
+  margin-top: 0;
+}
+[data-richtext-compact] .sw-prose > div > :last-child {
+  margin-bottom: 0;
+}

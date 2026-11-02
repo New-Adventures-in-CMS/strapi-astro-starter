@@ -17,9 +17,10 @@ const alignClass =
     : align === "right"
       ? "text-right [&_h1]:text-right [&_h2]:text-right [&_h3]:text-right [&_p]:text-right [&_li]:text-right"
       : undefined;
+const compact = (spacing ?? "xl") === "none";
 ---
 
-<Section spacing={spacing ?? "xl"}>
+<Section spacing={spacing ?? "xl"} data-richtext-compact={compact ? "" : undefined}>
   <Container width="prose" class={alignClass} data-reveal>
     <Prose class={alignClass}>
       <div set:html={html} />
