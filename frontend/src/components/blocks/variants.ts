@@ -4,7 +4,7 @@ export const imageText = tv({
   slots: {
     grid: "grid grid-cols-1 md:grid-cols-2 items-center",
     imageCol: "",
-    image: "w-full object-cover aspect-[4/3]",
+    image: "w-full [&_[data-si-loading]]:h-full [&_[data-si-loading]]:w-full",
     textCol: "",
   },
   variants: {
@@ -20,6 +20,14 @@ export const imageText = tv({
       bleed: {
         grid: "gap-0",
       },
+    },
+    aspectRatio: {
+      "4:3": { image: "aspect-[4/3]" },
+      "1:1": { image: "aspect-square" },
+    },
+    imageFit: {
+      cover: { image: "object-cover object-center" },
+      contain: { image: "object-contain object-center" },
     },
     imagePosition: {
       left: {
@@ -55,6 +63,8 @@ export const imageText = tv({
   ],
   defaultVariants: {
     width: "contained",
+    aspectRatio: "4:3",
+    imageFit: "cover",
     imagePosition: "left",
   },
 });

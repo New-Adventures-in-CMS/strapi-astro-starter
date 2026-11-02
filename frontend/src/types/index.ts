@@ -76,6 +76,8 @@ export interface BlockImageText {
   body: string;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
+  image_fit?: ImageFit;
+  aspect_ratio?: AspectRatio;
   width?: BlockWidth;
   spacing?: SectionSpacing;
 }
@@ -113,6 +115,8 @@ export interface BlockCarousel {
   spacing?: SectionSpacing;
 }
 
+export type ImageFit = "cover" | "contain";
+export type AspectRatio = "4:3" | "1:1";
 export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 

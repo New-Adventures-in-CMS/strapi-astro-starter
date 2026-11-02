@@ -1,5 +1,5 @@
 ---
-import type { BlockWidth, SectionSpacing, StrapiMedia } from "@/types";
+import type { AspectRatio, BlockWidth, ImageFit, SectionSpacing, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -13,6 +13,8 @@ interface Props {
   body: string;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
+  image_fit?: ImageFit;
+  aspect_ratio?: AspectRatio;
   width?: BlockWidth;
   spacing?: SectionSpacing;
 }
@@ -23,12 +25,19 @@ const {
   body,
   image,
   image_position = "left",
+  image_fit = "cover",
+  aspect_ratio = "4:3",
   width = "contained",
   spacing = "xl",
 } = Astro.props;
 
 const html = renderMarkdown(body);
-const cv = imageText({ width, imagePosition: image_position });
+const cv = imageText({
+  width,
+  aspectRatio: aspect_ratio,
+  imageFit: image_fit,
+  imagePosition: image_position,
+});
 ---
 
 <Section spacing={spacing}>
@@ -41,7 +50,7 @@ const cv = imageText({ width, imagePosition: image_position });
               image={image}
               alt={image.alternativeText || heading || ""}
               sizes="(min-width: 768px) 50vw, 100vw"
-              class="w-full h-full object-cover"
+              class={`w-full h-full ${image_fit === "contain" ? "object-contain object-center" : "object-cover object-center"}`}
               loadingIndicator="blur"
             />
           </div>

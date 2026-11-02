@@ -27,6 +27,16 @@
       "enum": ["left", "right"],
       "default": "left"
     },
+    "image_fit": {
+      "type": "enumeration",
+      "enum": ["cover", "contain"],
+      "default": "cover"
+    },
+    "aspect_ratio": {
+      "type": "enumeration",
+      "enum": ["4:3", "1:1"],
+      "default": "4:3"
+    },
     "width": {
       "type": "enumeration",
       "enum": ["full", "contained", "bleed"],
