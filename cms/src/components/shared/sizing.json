@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_sizings",
+  "info": {
+    "displayName": "Sizing",
+    "icon": "arrows-alt",
+    "description": "Section width tier"
+  },
+  "options": {},
+  "attributes": {
+    "width": {
+      "type": "enumeration",
+      "enum": ["full", "contained", "bleed"],
+      "default": "contained"
+    }
+  }
+}

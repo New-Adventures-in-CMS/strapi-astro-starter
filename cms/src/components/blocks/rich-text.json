@@ -20,6 +20,11 @@
       "type": "enumeration",
       "enum": ["none", "sm", "md", "lg", "xl"],
       "default": "xl"
+    },
+    "background": {
+      "type": "component",
+      "component": "shared.background",
+      "repeatable": false
     }
   }
 }

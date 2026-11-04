@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_backgrounds",
+  "info": {
+    "displayName": "Background",
+    "icon": "paint-roller",
+    "description": "Section background tone"
+  },
+  "options": {},
+  "attributes": {
+    "tone": {
+      "type": "enumeration",
+      "enum": ["default", "muted", "dark"],
+      "default": "default"
+    }
+  }
+}

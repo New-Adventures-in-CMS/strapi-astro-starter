@@ -37,15 +37,15 @@
       "enum": ["4:3", "1:1"],
       "default": "4:3"
     },
-    "width": {
-      "type": "enumeration",
-      "enum": ["full", "contained", "bleed"],
-      "default": "contained"
+    "background": {
+      "type": "component",
+      "component": "shared.background",
+      "repeatable": false
     },
-    "spacing": {
-      "type": "enumeration",
-      "enum": ["none", "sm", "md", "lg", "xl"],
-      "default": "xl"
+    "sizing": {
+      "type": "component",
+      "component": "shared.sizing",
+      "repeatable": false
     }
   }
 }
