@@ -108,3 +108,19 @@ export const carousel = {
   }),
   dots: tv({ base: "ml-auto flex items-center gap-2" }),
 } as const;
+
+export const gallery = tv({
+  slots: {
+    grid: "grid grid-cols-2 sm:grid-cols-3",
+    thumb:
+      "group relative cursor-pointer overflow-hidden border border-border focus-visible:ring-outline/50 focus-visible:ring-3 outline-none transition-shadow",
+  },
+  variants: {
+    width: {
+      contained: { grid: "gap-4", thumb: "rounded-lg" },
+      full: { grid: "gap-4", thumb: "rounded-lg" },
+      bleed: { grid: "gap-0", thumb: "rounded-none border-0" },
+    },
+  },
+  defaultVariants: { width: "contained" },
+});

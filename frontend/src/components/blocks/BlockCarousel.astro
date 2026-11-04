@@ -1,5 +1,5 @@
 ---
-import type { BlockWidth, SectionSpacing, SharedCard } from "@/types";
+import type { SectionSpacing, SharedBackground, SharedCard, SharedSizing } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Card from "./Card.astro";
@@ -9,26 +9,27 @@ interface Props {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
-  tone?: "light" | "dark" | null;
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
-  width?: BlockWidth;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
-const { heading, eyebrow, lead, tone, cards, loop, autoplay, width, spacing } = Astro.props;
-const sectionTone = tone === "dark" ? "dark" : "default";
-const onDark = sectionTone === "dark";
+const { heading, eyebrow, lead, cards, loop, autoplay, spacing, background, sizing } = Astro.props;
+const tone = background?.tone ?? "default";
+const width = sizing?.width ?? "contained";
+const onDark = tone === "dark";
 ---
 
-<Section tone={sectionTone} spacing={spacing ?? "xl"}>
-  <Container width={width ?? "contained"}>
+<Section tone={tone} spacing={spacing ?? "xl"}>
+  <Container width={width}>
     <div data-reveal>
       <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="left" onDark={onDark} />
     </div>
   </Container>
-  <Container width={width ?? "contained"}>
+  <Container width={width}>
     <div
       data-block-carousel
       data-loop={loop || undefined}

@@ -1,5 +1,5 @@
 ---
-import type { BlockWidth, SectionSpacing, StrapiMedia } from "@/types";
+import type { SectionSpacing, SharedBackground, SharedSizing, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
@@ -9,24 +9,27 @@ import {
   dialogContent,
   dialogCloseButton,
 } from "@/components/starwind/dialog/variants";
+import { gallery as galleryTv } from "./variants";
 
 interface Props {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
-  tone?: "light" | "dark" | null;
   images: StrapiMedia[];
-  width?: BlockWidth;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
-const { heading, eyebrow, lead, tone, images, width, spacing } = Astro.props;
-const sectionTone = tone === "dark" ? "dark" : "default";
-const onDark = sectionTone === "dark";
+const { heading, eyebrow, lead, images, spacing, background, sizing } = Astro.props;
+const tone = background?.tone ?? "default";
+const width = sizing?.width ?? "contained";
+const onDark = tone === "dark";
+const gv = galleryTv({ width });
 ---
 
-<Section tone={sectionTone} spacing={spacing ?? "xl"}>
-  <Container width={width ?? "contained"}>
+<Section tone={tone} spacing={spacing ?? "xl"}>
+  <Container width={width}>
     <div data-reveal>
       <SectionHeader
         eyebrow={eyebrow}
@@ -39,14 +42,9 @@ const onDark = sectionTone === "dark";
 
     {images.length > 0 && (
       <div data-lightbox>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" data-reveal="stagger" data-mask-grid>
+        <div class={gv.grid()} data-reveal="stagger" data-mask-grid>
           {images.map((img, i) => (
-            <button
-              type="button"
-              data-lightbox-thumb
-              data-index={i}
-              class="group relative cursor-pointer overflow-hidden rounded-lg border border-border focus-visible:ring-outline/50 focus-visible:ring-3 outline-none transition-shadow"
-            >
+            <button type="button" data-lightbox-thumb data-index={i} class={gv.thumb()}>
               <div data-mask-reveal class="overflow-hidden" style={`--mask-delay:${i * 100}ms`}>
                 <StrapiImage
                   image={img}

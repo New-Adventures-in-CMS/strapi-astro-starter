@@ -1,5 +1,12 @@
 ---
-import type { AspectRatio, BlockWidth, ImageFit, SectionSpacing, StrapiMedia } from "@/types";
+import type {
+  AspectRatio,
+  ImageFit,
+  SectionSpacing,
+  SharedBackground,
+  SharedSizing,
+  StrapiMedia,
+} from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -15,8 +22,9 @@ interface Props {
   image_position: "left" | "right";
   image_fit?: ImageFit;
   aspect_ratio?: AspectRatio;
-  width?: BlockWidth;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
 const {
@@ -27,10 +35,13 @@ const {
   image_position = "left",
   image_fit = "cover",
   aspect_ratio = "4:3",
-  width = "contained",
   spacing = "xl",
+  background,
+  sizing,
 } = Astro.props;
 
+const tone = background?.tone ?? "default";
+const width = sizing?.width ?? "contained";
 const html = renderMarkdown(body);
 const cv = imageText({
   width,
@@ -40,7 +51,7 @@ const cv = imageText({
 });
 ---
 
-<Section spacing={spacing}>
+<Section tone={tone} spacing={spacing}>
   <Container width={width}>
     <div class={cv.grid()} data-reveal="stagger">
       <div class={cv.imageCol()} data-mask-skip>
