@@ -535,12 +535,51 @@ Questo è marcato come **estensione** — non incluso nel boilerplate base.
 
 ---
 
+## Preview (draft)
+
+Permette di vedere una pagina in bozza dal frontend prima di pubblicarla, tramite
+la preview nativa di Strapi 5.
+
+### Attivazione
+
+1. **API Token** — Strapi admin → Settings → API Tokens → crea un token Content API
+   con permesso `find` sulla collection `page`. Copialo in `frontend/.env` come
+   `STRAPI_API_TOKEN`.
+2. **PREVIEW_SECRET** — scegli un valore robusto (almeno 32 char random) e impostalo
+   **identico** in `cms/.env` e `frontend/.env`. Se i due valori non combaciano,
+   l'endpoint rifiuta con 403.
+
+### Flusso
+
+```
+Content Manager → "Open preview"
+  → GET /api/preview?url=/<slug>&secret=<PREVIEW_SECRET>
+  → endpoint valida secret, setta cookie __strapi_preview (1h, httpOnly,
+    sameSite lax, secure in prod), redirect alla pagina
+  → [slug].astro / index.astro: cookie presente → fetch con status=draft
+    + Authorization Bearer → rendering bozza + banner "Anteprima bozza"
+  → GET /api/exit-preview → cancella cookie, redirect alla pagina pubblica
+```
+
+Il handler è configurato in `cms/config/admin.ts` (`preview.config.handler`).
+Lo slug `home` viene mappato a `/`.
+
+### Sicurezza
+
+- Senza cookie valido il flusso pubblico è invariato: solo contenuti pubblicati,
+  nessun header di autenticazione.
+- Il token `STRAPI_API_TOKEN` resta nelle chiamate server-side (SSR) e non arriva
+  mai al browser (né cookie, né URL, né HTML).
+- Il secret transita nell'URL una sola volta (redirect dall'admin); dopo il redirect
+  il cookie è l'unico segnale. In produzione servire il frontend su HTTPS.
+
+---
+
 ## Estensioni possibili
 
 Non incluse nel boilerplate, documentate qui come punto di partenza:
 
 - **Dynamic zone** — aggiungi un campo `blocchi` al content-type `page` per un page builder
-- **Preview / draft mode** — Strapi 5 supporta il draft mode via API con token dedicato
 - **Immagini ottimizzate** — usa il componente `<Image />` di Astro con `strapiMediaUrl()`
 - **Sitemap dinamica** — aggiungi `customPages` in `astro.config.mjs` per includere le pagine Strapi
 - **i18n attivo** — vedi sezione "i18n (predisposto)" sopra
@@ -786,6 +825,7 @@ PREVIEW_SECRET=change-me
 STRAPI_URL=http://localhost:1337
 STRAPI_API_TOKEN=
 PUBLIC_STRAPI_URL=http://localhost:1337
+PREVIEW_SECRET=
 ```
 
 `PUBLIC_STRAPI_URL` serve per DynamicForm — fetch lato client (browser), richiede prefisso `PUBLIC_`.

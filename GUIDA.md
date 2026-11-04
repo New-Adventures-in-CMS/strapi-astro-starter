@@ -571,6 +571,21 @@ Le variabili d'ambiente sono valori di configurazione separati dal codice. Servo
 
 ---
 
+## Anteprima delle bozze (preview)
+
+Dal Content Manager di Strapi, ogni pagina con modifiche non ancora pubblicate
+mostra il pulsante **"Open preview"**. Cliccandolo si apre il sito con la
+versione in bozza della pagina.
+
+Un banner ambra **"Anteprima bozza"** in fondo allo schermo segnala che stai
+vedendo una versione non pubblicata. Il link **"Esci dall'anteprima"** nel banner
+riporta alla vista pubblica normale.
+
+> **Nota:** la preview richiede una configurazione iniziale (API Token e secret
+> condiviso). Per i dettagli vedi [SETUP.md → Preview (draft)](SETUP.md#preview-draft).
+
+---
+
 ## Avviare i server in sviluppo
 
 Dopo la prima configurazione, per riprendere a lavorare basta un comando dalla root:
