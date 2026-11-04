@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_sections",
+  "info": {
+    "displayName": "Section",
+    "icon": "layer-group",
+    "description": "Section tone and vertical spacing"
+  },
+  "options": {},
+  "attributes": {
+    "tone": {
+      "type": "enumeration",
+      "enum": ["default", "muted", "dark"],
+      "default": "default"
+    },
+    "spacing": {
+      "type": "enumeration",
+      "enum": ["none", "sm", "md", "lg", "xl"],
+      "default": "xl"
+    }
+  }
+}

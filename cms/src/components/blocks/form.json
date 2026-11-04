@@ -12,14 +12,9 @@
       "relation": "oneToOne",
       "target": "api::form.form"
     },
-    "spacing": {
-      "type": "enumeration",
-      "enum": ["none", "sm", "md", "lg", "xl"],
-      "default": "xl"
-    },
-    "background": {
+    "section": {
       "type": "component",
-      "component": "shared.background",
+      "component": "shared.section",
       "repeatable": false
     }
   }

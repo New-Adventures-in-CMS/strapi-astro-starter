@@ -274,7 +274,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "WHAT'S INSIDE",
             heading: "Everything a modern content site needs",
             lead: "Batteries included, no lock-in: swap fonts, tokens, or blocks without unwiring the stack.",
-            background: { tone: "default" },
+            section: { tone: "default" },
             cards: [
               {
                 title: "Headless CMS",
@@ -319,7 +319,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "FOR AGENCIES AND SOLO BUILDERS",
             heading: "Skip the first forty hours of every project.",
             lead: "This is the boilerplate we wish we had on the last five sites.",
-            background: { tone: "dark" },
+            section: { tone: "dark" },
             cards: [
               {
                 title: "Clone and run",
@@ -345,7 +345,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "VISUAL SHOWCASE",
             heading: "Gallery block with lightbox",
             lead: "Click any image to open the full-screen lightbox. Captions appear only where the media file has one.",
-            background: { tone: "default" },
+            section: { tone: "default" },
             images: galleryImgs.filter(Boolean).map((img) => img!.id),
           },
           {

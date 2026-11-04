@@ -37,9 +37,9 @@
       "enum": ["4:3", "1:1"],
       "default": "4:3"
     },
-    "background": {
+    "section": {
       "type": "component",
-      "component": "shared.background",
+      "component": "shared.section",
       "repeatable": false
     },
     "sizing": {

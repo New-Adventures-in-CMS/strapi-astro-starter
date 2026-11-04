@@ -16,14 +16,9 @@
       "enum": ["left", "center", "right"],
       "default": "left"
     },
-    "spacing": {
-      "type": "enumeration",
-      "enum": ["none", "sm", "md", "lg", "xl"],
-      "default": "xl"
-    },
-    "background": {
+    "section": {
       "type": "component",
-      "component": "shared.background",
+      "component": "shared.section",
       "repeatable": false
     }
   }
