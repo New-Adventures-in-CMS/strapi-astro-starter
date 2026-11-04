@@ -1,5 +1,5 @@
 ---
-import type { FaqItem, SectionSpacing } from "@/types";
+import type { FaqItem, SharedSection } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { Prose } from "@/components/starwind/prose";
@@ -15,16 +15,19 @@ interface Props {
   eyebrow?: string | null;
   heading?: string | null;
   items: FaqItem[];
-  spacing?: SectionSpacing;
+  section?: SharedSection;
 }
 
-const { eyebrow, heading, items, spacing } = Astro.props;
+const { eyebrow, heading, items, section: sec } = Astro.props;
+const tone = sec?.tone ?? "default";
+const spacing = sec?.spacing ?? "xl";
+const onDark = tone === "dark";
 ---
 
-<Section spacing={spacing ?? "xl"}>
+<Section tone={tone} spacing={spacing}>
   <Container width="prose">
     <div data-reveal>
-      <SectionHeader eyebrow={eyebrow} heading={heading} align="center" />
+      <SectionHeader eyebrow={eyebrow} heading={heading} align="center" onDark={onDark} />
     </div>
     <Accordion type="single" collapsible>
       {items.map((item, i) => (

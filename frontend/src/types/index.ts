@@ -155,7 +155,7 @@ export interface BlockFaq {
   eyebrow?: string | null;
   heading?: string | null;
   items: FaqItem[];
-  spacing?: SectionSpacing;
+  section?: SharedSection;
 }
 
 export type PageBlock =

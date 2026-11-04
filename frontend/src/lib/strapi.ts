@@ -49,7 +49,7 @@ export const pageBlocksPopulate = {
       "blocks.gallery": {
         populate: { images: true, section: true, container: true },
       },
-      "blocks.faq": { populate: { items: true } },
+      "blocks.faq": { populate: { items: true, section: true } },
     },
   },
 } as const;

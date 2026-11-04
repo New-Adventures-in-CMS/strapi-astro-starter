@@ -20,10 +20,10 @@
       "required": true,
       "min": 1
     },
-    "spacing": {
-      "type": "enumeration",
-      "enum": ["none", "sm", "md", "lg", "xl"],
-      "default": "xl"
+    "section": {
+      "type": "component",
+      "component": "shared.section",
+      "repeatable": false
     }
   }
 }
