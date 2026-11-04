@@ -1,7 +1,7 @@
 {
-  "collectionName": "components_shared_sizings",
+  "collectionName": "components_shared_containers",
   "info": {
-    "displayName": "Sizing",
+    "displayName": "Width",
     "icon": "arrows-alt",
     "description": "Section width tier"
   },

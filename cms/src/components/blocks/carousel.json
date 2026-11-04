@@ -34,9 +34,9 @@
       "component": "shared.section",
       "repeatable": false
     },
-    "sizing": {
+    "container": {
       "type": "component",
-      "component": "shared.sizing",
+      "component": "shared.container",
       "repeatable": false
     }
   }
