@@ -1,3 +1,5 @@
+import type { SectionTone } from "@/components/layout/variants";
+
 // Tipi base Strapi — ogni contenuto ha sempre id e documentId
 export interface StrapiBase {
   id: number;
@@ -67,6 +69,7 @@ export interface BlockRichText {
   body: string;
   align?: "left" | "center" | "right" | null;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
 }
 
 export interface BlockImageText {
@@ -78,8 +81,8 @@ export interface BlockImageText {
   image_position: "left" | "right";
   image_fit?: ImageFit;
   aspect_ratio?: AspectRatio;
-  width?: BlockWidth;
-  spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
 export interface SharedCard {
@@ -96,10 +99,10 @@ export interface BlockCardGrid {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
-  tone?: "light" | "dark" | null;
   cards: SharedCard[];
-  width?: BlockWidth;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
 export interface BlockCarousel {
@@ -107,12 +110,12 @@ export interface BlockCarousel {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
-  tone?: "light" | "dark" | null;
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
-  width?: BlockWidth;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
 export type ImageFit = "cover" | "contain";
@@ -120,10 +123,19 @@ export type AspectRatio = "4:3" | "1:1";
 export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 
+export interface SharedBackground {
+  tone?: SectionTone;
+}
+
+export interface SharedSizing {
+  width?: BlockWidth;
+}
+
 export interface BlockForm {
   __component: "blocks.form";
   form?: { slug: string } | null;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
 }
 
 export interface BlockGallery {
@@ -131,10 +143,10 @@ export interface BlockGallery {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
-  tone?: "light" | "dark" | null;
   images: StrapiMedia[];
-  width?: BlockWidth;
   spacing?: SectionSpacing;
+  background?: SharedBackground;
+  sizing?: SharedSizing;
 }
 
 export interface FaqItem {
@@ -161,7 +173,6 @@ export type PageBlock =
   | BlockFaq;
 
 // Single-type "site-setting" — layout globali di header, submenu e footer
-import type { SectionTone } from "@/components/layout/variants";
 
 export type SubmenuLayout = "full-bleed" | "dropdown";
 export type HeaderWidth = "full" | "contained";
