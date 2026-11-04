@@ -68,8 +68,7 @@ export interface BlockRichText {
   __component: "blocks.rich-text";
   body: string;
   align?: "left" | "center" | "right" | null;
-  spacing?: SectionSpacing;
-  background?: SharedBackground;
+  section?: SharedSection;
 }
 
 export interface BlockImageText {
@@ -81,7 +80,7 @@ export interface BlockImageText {
   image_position: "left" | "right";
   image_fit?: ImageFit;
   aspect_ratio?: AspectRatio;
-  background?: SharedBackground;
+  section?: SharedSection;
   sizing?: SharedSizing;
 }
 
@@ -100,8 +99,7 @@ export interface BlockCardGrid {
   eyebrow?: string | null;
   lead?: string | null;
   cards: SharedCard[];
-  spacing?: SectionSpacing;
-  background?: SharedBackground;
+  section?: SharedSection;
   sizing?: SharedSizing;
 }
 
@@ -113,8 +111,7 @@ export interface BlockCarousel {
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
-  spacing?: SectionSpacing;
-  background?: SharedBackground;
+  section?: SharedSection;
   sizing?: SharedSizing;
 }
 
@@ -123,8 +120,9 @@ export type AspectRatio = "4:3" | "1:1";
 export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 
-export interface SharedBackground {
+export interface SharedSection {
   tone?: SectionTone;
+  spacing?: SectionSpacing;
 }
 
 export interface SharedSizing {
@@ -134,8 +132,7 @@ export interface SharedSizing {
 export interface BlockForm {
   __component: "blocks.form";
   form?: { slug: string } | null;
-  spacing?: SectionSpacing;
-  background?: SharedBackground;
+  section?: SharedSection;
 }
 
 export interface BlockGallery {
@@ -144,8 +141,7 @@ export interface BlockGallery {
   eyebrow?: string | null;
   lead?: string | null;
   images: StrapiMedia[];
-  spacing?: SectionSpacing;
-  background?: SharedBackground;
+  section?: SharedSection;
   sizing?: SharedSizing;
 }
 

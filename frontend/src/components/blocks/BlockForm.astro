@@ -1,20 +1,20 @@
 ---
-import type { SectionSpacing, SharedBackground } from "@/types";
+import type { SharedSection } from "@/types";
 import { Section, Container } from "@/components/layout";
 import DynamicForm from "@/components/DynamicForm.astro";
 
 interface Props {
   form?: { slug: string } | null;
-  spacing?: SectionSpacing;
-  background?: SharedBackground;
+  section?: SharedSection;
 }
 
-const { form, spacing, background } = Astro.props;
-const tone = background?.tone ?? "default";
+const { form, section: sec } = Astro.props;
+const tone = sec?.tone ?? "default";
+const spacing = sec?.spacing ?? "xl";
 ---
 
 {form?.slug && (
-  <Section tone={tone} spacing={spacing ?? "xl"}>
+  <Section tone={tone} spacing={spacing}>
     <Container width="prose">
       <DynamicForm slug={form.slug} />
     </Container>

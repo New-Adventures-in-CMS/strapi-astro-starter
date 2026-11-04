@@ -1,5 +1,5 @@
 ---
-import type { SharedBackground } from "@/types";
+import type { SharedSection } from "@/types";
 import { Prose } from "@/components/starwind/prose";
 import { Section, Container } from "@/components/layout";
 import { renderMarkdown } from "@/lib/markdown";
@@ -7,12 +7,12 @@ import { renderMarkdown } from "@/lib/markdown";
 interface Props {
   body: string;
   align?: "left" | "center" | "right" | null;
-  spacing?: "none" | "sm" | "md" | "lg" | "xl";
-  background?: SharedBackground;
+  section?: SharedSection;
 }
 
-const { body, align, spacing, background } = Astro.props;
-const tone = background?.tone ?? "default";
+const { body, align, section: sec } = Astro.props;
+const tone = sec?.tone ?? "default";
+const spacing = sec?.spacing ?? "xl";
 const html = renderMarkdown(body);
 const alignClass =
   align === "center"
@@ -23,7 +23,7 @@ const alignClass =
 const compact = (spacing ?? "xl") === "none";
 ---
 
-<Section tone={tone} spacing={spacing ?? "xl"} data-richtext-compact={compact ? "" : undefined}>
+<Section tone={tone} spacing={spacing} data-richtext-compact={compact ? "" : undefined}>
   <Container width="prose" class={alignClass} data-reveal>
     <Prose class={alignClass}>
       <div set:html={html} />

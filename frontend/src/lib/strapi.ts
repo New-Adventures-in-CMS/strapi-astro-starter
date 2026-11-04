@@ -25,29 +25,29 @@ export const pageBlocksPopulate = {
       "blocks.hero": {
         populate: { image: true, slides: { populate: { image: true } } },
       },
-      "blocks.rich-text": { populate: { background: true } },
+      "blocks.rich-text": { populate: { section: true } },
       "blocks.image-text": {
-        populate: { image: true, background: true, sizing: true },
+        populate: { image: true, section: true, sizing: true },
       },
       "blocks.card-grid": {
         populate: {
           cards: { populate: { image: true } },
-          background: true,
+          section: true,
           sizing: true,
         },
       },
       "blocks.carousel": {
         populate: {
           cards: { populate: { image: true } },
-          background: true,
+          section: true,
           sizing: true,
         },
       },
       "blocks.form": {
-        populate: { form: { fields: ["slug"] }, background: true },
+        populate: { form: { fields: ["slug"] }, section: true },
       },
       "blocks.gallery": {
-        populate: { images: true, background: true, sizing: true },
+        populate: { images: true, section: true, sizing: true },
       },
       "blocks.faq": { populate: { items: true } },
     },
