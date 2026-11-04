@@ -1,5 +1,5 @@
 ---
-import type { SharedSection, SharedSizing, StrapiMedia } from "@/types";
+import type { SharedSection, SharedContainer, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
@@ -17,13 +17,13 @@ interface Props {
   lead?: string | null;
   images: StrapiMedia[];
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
-const { heading, eyebrow, lead, images, section: sec, sizing } = Astro.props;
+const { heading, eyebrow, lead, images, section: sec, container } = Astro.props;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
-const width = sizing?.width ?? "contained";
+const width = container?.width ?? "contained";
 const onDark = tone === "dark";
 const gv = galleryTv({ width });
 ---

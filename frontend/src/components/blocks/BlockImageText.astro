@@ -1,5 +1,5 @@
 ---
-import type { AspectRatio, ImageFit, SharedSection, SharedSizing, StrapiMedia } from "@/types";
+import type { AspectRatio, ImageFit, SharedSection, SharedContainer, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -16,7 +16,7 @@ interface Props {
   image_fit?: ImageFit;
   aspect_ratio?: AspectRatio;
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
 const {
@@ -28,12 +28,12 @@ const {
   image_fit = "cover",
   aspect_ratio = "4:3",
   section: sec,
-  sizing,
+  container,
 } = Astro.props;
 
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
-const width = sizing?.width ?? "contained";
+const width = container?.width ?? "contained";
 const html = renderMarkdown(body);
 const cv = imageText({
   width,

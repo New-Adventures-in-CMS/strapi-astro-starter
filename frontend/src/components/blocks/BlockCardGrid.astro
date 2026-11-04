@@ -1,5 +1,5 @@
 ---
-import type { SharedSection, SharedCard, SharedSizing } from "@/types";
+import type { SharedSection, SharedCard, SharedContainer } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Card from "./Card.astro";
@@ -10,13 +10,13 @@ interface Props {
   lead?: string | null;
   cards: SharedCard[];
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
-const { heading, eyebrow, lead, cards, section: sec, sizing } = Astro.props;
+const { heading, eyebrow, lead, cards, section: sec, container } = Astro.props;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
-const width = sizing?.width ?? "contained";
+const width = container?.width ?? "contained";
 const onDark = tone === "dark";
 ---
 

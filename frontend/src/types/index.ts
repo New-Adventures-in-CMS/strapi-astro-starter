@@ -81,7 +81,7 @@ export interface BlockImageText {
   image_fit?: ImageFit;
   aspect_ratio?: AspectRatio;
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
 export interface SharedCard {
@@ -100,7 +100,7 @@ export interface BlockCardGrid {
   lead?: string | null;
   cards: SharedCard[];
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
 export interface BlockCarousel {
@@ -112,7 +112,7 @@ export interface BlockCarousel {
   loop?: boolean | null;
   autoplay?: boolean | null;
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
 export type ImageFit = "cover" | "contain";
@@ -125,7 +125,7 @@ export interface SharedSection {
   spacing?: SectionSpacing;
 }
 
-export interface SharedSizing {
+export interface SharedContainer {
   width?: BlockWidth;
 }
 
@@ -142,7 +142,7 @@ export interface BlockGallery {
   lead?: string | null;
   images: StrapiMedia[];
   section?: SharedSection;
-  sizing?: SharedSizing;
+  container?: SharedContainer;
 }
 
 export interface FaqItem {

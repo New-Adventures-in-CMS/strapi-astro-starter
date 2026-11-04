@@ -27,27 +27,27 @@ export const pageBlocksPopulate = {
       },
       "blocks.rich-text": { populate: { section: true } },
       "blocks.image-text": {
-        populate: { image: true, section: true, sizing: true },
+        populate: { image: true, section: true, container: true },
       },
       "blocks.card-grid": {
         populate: {
           cards: { populate: { image: true } },
           section: true,
-          sizing: true,
+          container: true,
         },
       },
       "blocks.carousel": {
         populate: {
           cards: { populate: { image: true } },
           section: true,
-          sizing: true,
+          container: true,
         },
       },
       "blocks.form": {
         populate: { form: { fields: ["slug"] }, section: true },
       },
       "blocks.gallery": {
-        populate: { images: true, section: true, sizing: true },
+        populate: { images: true, section: true, container: true },
       },
       "blocks.faq": { populate: { items: true } },
     },
