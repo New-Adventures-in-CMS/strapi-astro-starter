@@ -21,6 +21,6 @@ const {
 } = Astro.props;
 ---
 
-<Tag class={section({ tone, spacing, class: className })} {...rest}>
+<Tag data-tone={tone} class={section({ tone, spacing, class: className })} {...rest}>
   <slot />
 </Tag>

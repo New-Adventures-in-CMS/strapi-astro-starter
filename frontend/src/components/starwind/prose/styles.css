@@ -590,3 +590,17 @@
 .sw-prose :is(sub, sup):not(:where(.not-sw-prose *)) {
   font-size: 0.75em;
 }
+
+/* --------------------------------------------------------------------------
+ * Dark Section — full color inversion
+ * -------------------------------------------------------------------------- */
+
+[data-tone="dark"] .sw-prose {
+  --foreground: var(--section-dark-fg);
+  --muted-foreground: var(--section-dark-fg-muted);
+  --border: var(--section-dark-accent);
+  --muted: var(--section-dark-accent);
+  --primary-accent: var(--section-dark-fg-muted);
+
+  --sw-prose-link-hover-color: var(--section-dark-fg);
+}

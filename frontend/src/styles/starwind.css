@@ -159,6 +159,14 @@
   --section-dark-accent: color-mix(in srgb, var(--white) 8%, transparent);
 }
 
+/* Accordion inside dark Section */
+[data-tone="dark"] [data-slot="accordion-item"] {
+  --border: var(--section-dark-accent);
+}
+[data-tone="dark"] [data-slot="accordion-trigger"] {
+  --muted-foreground: var(--section-dark-fg-muted);
+}
+
 .dark {
   /* Only the primitive ramp flips. Everything semantic cascades. */
   /* >>> tokens:sync START (dark) — generated from nsp-ds-tokens core/color.json — DO NOT EDIT */
