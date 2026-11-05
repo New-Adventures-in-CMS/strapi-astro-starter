@@ -643,23 +643,85 @@ Già gestita via `STRAPI_MCP_ENABLED` in `cms/.env` (attivo per default in dev, 
 
 Endpoint: `POST http://localhost:1337/mcp` (stateless, autenticato a ogni richiesta).
 
-### Creare l'Admin token (passo manuale, una tantum, per-utente)
+### Passo 1 — Creare l'Admin Token in Strapi
 
-1. Avvia lo starter, crea l'account admin.
-2. **Settings → Administration Panel → Admin Tokens → Create new Admin Token**.
-3. Nome (es. `claude-code`), durata a scelta, permessi minimi necessari (principio least privilege: concedi solo i content type e le azioni che servono).
-4. Copia la chiave — **viene mostrata una sola volta**.
+> **Importante:** serve un **Admin Token** (pannello Administration), **non** un Content API Token (pannello API Tokens). Un Content API Token viene rifiutato con errore 401.
 
-### Collegare Claude Code
+1. Avvia lo starter (`npm run dev`) e crea l'account admin se non l'hai già fatto.
+2. Apri il pannello admin: `http://localhost:1337/admin`.
+3. Vai in **Settings → Administration Panel → API Tokens** (non "API Tokens" sotto _Users & Permissions_ — quello è il Content API Token, che qui non serve).
+4. Clicca **Create new API Token**.
+5. Compila:
+   - **Name:** un nome descrittivo, es. `claude-code`
+   - **Token duration:** a scelta (7 days, 30 days, Unlimited)
+   - **Token type:** `Full access` per iniziare (oppure `Custom` con solo i content-type e le azioni che servono — principio least privilege)
+6. Clicca **Save**. Il token viene mostrato **una sola volta** — copialo subito e conservalo in un posto sicuro (es. password manager). Se lo perdi, dovrai crearne uno nuovo.
+
+### Passo 2 — Collegare Claude Code
+
+Il collegamento avviene con un **comando da terminale** (non è un testo da incollare in un file di configurazione).
+
+**Da quale cartella:** apri il terminale nella **root del progetto** (la cartella `strapi-astro-starter/`, dove si trova questo file). Lo scope di default (`local`) lega il server MCP alla cartella da cui lanci il comando — quindi deve essere la stessa da cui apri Claude Code per questo progetto. Non lanciarlo da `cms/` o `frontend/`.
+
+**Il comando:**
 
 ```bash
 claude mcp add strapi-mcp --transport http http://localhost:1337/mcp \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
 ```
 
-Riavvia Claude Code → `/mcp` → `strapi-mcp` deve risultare connesso.
+Sostituisci `YOUR_ADMIN_TOKEN` con il token copiato al passo precedente. Mantieni `Bearer ` (con lo spazio) davanti al token, e mantieni le virgolette attorno all'intero header. Esempio con un token fittizio:
 
-> **Sicurezza:** l'Admin token è una credenziale — non committarlo, non metterlo in file versionati, non esporlo lato client. Non condividere l'URL `/mcp` pubblicamente.
+```bash
+claude mcp add strapi-mcp --transport http http://localhost:1337/mcp \
+  -H "Authorization: Bearer a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+```
+
+### Passo 3 — Verificare
+
+Chiudi e riapri Claude Code (dalla root del progetto), poi verifica:
+
+```bash
+claude mcp list
+```
+
+Deve comparire `strapi-mcp` con tipo `http`. Per controllare i dettagli della configurazione (URL, header):
+
+```bash
+claude mcp get strapi-mcp
+```
+
+> **Attenzione:** `claude mcp get` stampa il token in chiaro nel terminale. Usalo solo per debug, non in sessioni condivise o registrate.
+
+Dentro Claude Code, digita `/mcp` — `strapi-mcp` deve risultare **connected**.
+
+#### Problemi comuni
+
+| Sintomo | Causa probabile | Soluzione |
+| --- | --- | --- |
+| `already exists in local config` | Il server era già registrato (magari con un token vecchio) | Rimuovi e riaggiungi: `claude mcp remove strapi-mcp` poi ripeti il passo 2 |
+| `strapi-mcp: failed to connect` | Più cause possibili — vedi sotto | Esegui la diagnosi sotto prima di concludere che Strapi è down |
+| MCP non compare in `/mcp` | Claude Code aperto da una cartella diversa | Chiudi e riaprilo dalla root del progetto |
+
+#### Diagnosi di `failed to connect`
+
+`failed to connect` **non** significa necessariamente che Strapi è spento. Prima di tutto:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:1337/mcp
+```
+
+| Risposta | Significato | Azione |
+| --- | --- | --- |
+| `405` | L'endpoint MCP è attivo (accetta solo POST, il GET torna 405) | Il problema è il **token** (tipo sbagliato, scaduto, revocato) oppure la **sessione** (aperta dalla cartella sbagliata). Verifica con `claude mcp get strapi-mcp` |
+| `404` | L'endpoint MCP non è abilitato | Controlla che `STRAPI_MCP_ENABLED=true` in `cms/.env` e riavvia Strapi |
+| `000` / connection refused | Strapi non è in esecuzione | Avvia Strapi con `npm run dev` |
+
+### Sicurezza
+
+- **Non usare `--scope project`:** con `--scope project` il token finisce in chiaro nel file `.mcp.json` nella root del repo, che è versionato. Con lo scope di default (`local`) il token resta nella tua configurazione locale (`~/.claude/`) e non entra nel repo.
+- L'Admin token è una credenziale privilegiata — non committarlo, non metterlo in file versionati, non esporlo lato client.
+- Non condividere l'URL `/mcp` pubblicamente.
 
 ### Limiti noti
 
