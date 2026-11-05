@@ -444,6 +444,9 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
         blocks: [
           {
             __component: "blocks.form",
+            eyebrow: "Contatti",
+            heading: "Scrivici un messaggio",
+            lead: "Compila il modulo e ti risponderemo il prima possibile.",
             form: formDocId ? { connect: [{ documentId: formDocId }] } : undefined,
             section: {},
           },
@@ -698,6 +701,9 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           },
           {
             __component: "blocks.form",
+            eyebrow: "Richiedi informazioni",
+            heading: "Ti interessa? Parliamone",
+            lead: "Compila il modulo qui sotto per richiedere una consulenza gratuita.",
             form: formDocId ? { connect: [{ documentId: formDocId }] } : undefined,
             section: {},
           },

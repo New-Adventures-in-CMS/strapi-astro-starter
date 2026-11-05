@@ -7,6 +7,15 @@
   },
   "options": {},
   "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "lead": {
+      "type": "text"
+    },
     "form": {
       "type": "relation",
       "relation": "oneToOne",

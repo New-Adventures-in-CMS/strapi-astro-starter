@@ -131,6 +131,9 @@ export interface SharedContainer {
 
 export interface BlockForm {
   __component: "blocks.form";
+  eyebrow?: string | null;
+  heading?: string | null;
+  lead?: string | null;
   form?: { slug: string } | null;
   section?: SharedSection;
 }

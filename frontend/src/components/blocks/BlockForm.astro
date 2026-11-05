@@ -1,21 +1,33 @@
 ---
 import type { SharedSection } from "@/types";
 import { Section, Container } from "@/components/layout";
+import SectionHeader from "@/components/SectionHeader.astro";
 import DynamicForm from "@/components/DynamicForm.astro";
 
 interface Props {
+  eyebrow?: string | null;
+  heading?: string | null;
+  lead?: string | null;
   form?: { slug: string } | null;
   section?: SharedSection;
 }
 
-const { form, section: sec } = Astro.props;
+const { eyebrow, heading, lead, form, section: sec } = Astro.props;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
+const onDark = tone === "dark";
 ---
 
 {form?.slug && (
   <Section tone={tone} spacing={spacing}>
     <Container width="prose">
+      <SectionHeader
+        eyebrow={eyebrow}
+        heading={heading}
+        lead={lead}
+        align="center"
+        onDark={onDark}
+      />
       <DynamicForm slug={form.slug} />
     </Container>
   </Section>
