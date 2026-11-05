@@ -11,6 +11,12 @@
       "type": "richtext",
       "required": true
     },
+    "cta_text": {
+      "type": "string"
+    },
+    "cta_url": {
+      "type": "string"
+    },
     "align": {
       "type": "enumeration",
       "enum": ["left", "center", "right"],

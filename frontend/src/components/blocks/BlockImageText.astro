@@ -2,6 +2,7 @@
 import type { AspectRatio, ImageFit, SharedSection, SharedContainer, StrapiMedia } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
+import { Button } from "@/components/starwind/button";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { renderMarkdown } from "@/lib/markdown";
 import StrapiImage from "@/components/StrapiImage.astro";
@@ -11,6 +12,8 @@ interface Props {
   heading?: string | null;
   eyebrow?: string | null;
   body: string;
+  cta_text?: string | null;
+  cta_url?: string | null;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
   image_fit?: ImageFit;
@@ -23,6 +26,8 @@ const {
   heading,
   eyebrow,
   body,
+  cta_text,
+  cta_url,
   image,
   image_position = "left",
   image_fit = "cover",
@@ -31,6 +36,7 @@ const {
   container,
 } = Astro.props;
 
+const showCta = cta_text && cta_url;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
@@ -66,6 +72,13 @@ const cv = imageText({
         <Prose class={heading || eyebrow ? "mt-6" : ""}>
           <div set:html={html} />
         </Prose>
+        {showCta && (
+          <div class="mt-8">
+            <Button variant="default" size="lg" href={cta_url}>
+              {cta_text}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   </Container>

@@ -537,6 +537,8 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           {
             __component: "blocks.rich-text",
             body: "## What you're looking at\n\nThis page exercises **every block type** shipped with the starter, including variants the home page doesn't touch: muted and dark tones, full and bleed widths, and the carousel block (seeded here for the first time).\n\nIt's a developer tool, not a landing page — use it to audit rendering, spacing, and dark-mode behavior across all combinations.",
+            cta_text: "Read the setup guide",
+            cta_url: "/about",
             section: { tone: "muted" },
           },
           {
@@ -544,6 +546,8 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "BLEED WIDTH",
             heading: "Image flush left, text padded.",
             body: "This image-text block uses `width: bleed` — the image breaks out of the container to touch the viewport edge, while the text column keeps its padding.\n\nThe asymmetry creates visual tension and helps anchor a section visually.",
+            cta_text: "Explore the layout",
+            cta_url: "/about",
             image_position: "left",
             image: aboutImg ? aboutImg.id : undefined,
             section: { spacing: "none" },

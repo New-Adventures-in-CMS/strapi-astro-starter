@@ -1,16 +1,20 @@
 ---
 import type { SharedSection } from "@/types";
 import { Prose } from "@/components/starwind/prose";
+import { Button } from "@/components/starwind/button";
 import { Section, Container } from "@/components/layout";
 import { renderMarkdown } from "@/lib/markdown";
 
 interface Props {
   body: string;
+  cta_text?: string | null;
+  cta_url?: string | null;
   align?: "left" | "center" | "right" | null;
   section?: SharedSection;
 }
 
-const { body, align, section: sec } = Astro.props;
+const { body, cta_text, cta_url, align, section: sec } = Astro.props;
+const showCta = cta_text && cta_url;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const html = renderMarkdown(body);
@@ -28,5 +32,18 @@ const compact = (spacing ?? "xl") === "none";
     <Prose class={alignClass}>
       <div set:html={html} />
     </Prose>
+    {showCta && (
+      <div
+        class:list={[
+          "mt-8",
+          align === "center" && "text-center",
+          align === "right" && "text-right",
+        ]}
+      >
+        <Button variant="default" size="lg" href={cta_url}>
+          {cta_text}
+        </Button>
+      </div>
+    )}
   </Container>
 </Section>

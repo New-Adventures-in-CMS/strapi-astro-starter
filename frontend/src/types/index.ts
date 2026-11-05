@@ -67,6 +67,8 @@ export interface BlockHero {
 export interface BlockRichText {
   __component: "blocks.rich-text";
   body: string;
+  cta_text?: string | null;
+  cta_url?: string | null;
   align?: "left" | "center" | "right" | null;
   section?: SharedSection;
 }
@@ -76,6 +78,8 @@ export interface BlockImageText {
   heading?: string | null;
   eyebrow?: string | null;
   body: string;
+  cta_text?: string | null;
+  cta_url?: string | null;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
   image_fit?: ImageFit;

@@ -22,6 +22,12 @@
       "allowedTypes": ["images"],
       "multiple": false
     },
+    "cta_text": {
+      "type": "string"
+    },
+    "cta_url": {
+      "type": "string"
+    },
     "image_position": {
       "type": "enumeration",
       "enum": ["left", "right"],
