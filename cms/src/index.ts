@@ -492,8 +492,222 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       status: "published",
     });
 
+    // Showcase — block catalog exercising every block type and untested variants
+    await strapi.documents("api::page.page").create({
+      data: {
+        title: "Showcase",
+        slug: "showcase",
+        seo_desc:
+          "Block showcase page exercising every available block type and visual variant: tones, widths, and spacing options.",
+        blocks: [
+          {
+            __component: "blocks.hero",
+            eyebrow: "BLOCK SHOWCASE",
+            heading: "Every block, one page.",
+            subheading:
+              "A developer-facing catalog of all available blocks and their visual variants — tones, widths, and layout options exercised in one place.",
+            cta_text: "Back to home",
+            cta_url: "/",
+            immersive: true,
+            image: heroImg ? heroImg.id : undefined,
+            slides: [
+              {
+                eyebrow: "BLOCK SHOWCASE",
+                heading: "Every block, one page.",
+                subheading:
+                  "A developer-facing catalog of all available blocks and their visual variants — tones, widths, and layout options exercised in one place.",
+                cta_text: "Back to home",
+                cta_url: "/",
+                image: heroImg ? heroImg.id : undefined,
+              },
+              {
+                eyebrow: "VISUAL AUDIT",
+                heading: "Tone, width, spacing — all covered.",
+                subheading:
+                  "Default, muted, and dark tones. Contained, full, and bleed widths. This page exists so you can see them all without setting each one by hand.",
+                cta_text: "View the design system",
+                cta_url: "/about",
+                image: heroImg ? heroImg.id : undefined,
+              },
+            ],
+          },
+          {
+            __component: "blocks.rich-text",
+            body: "## What you're looking at\n\nThis page exercises **every block type** shipped with the starter, including variants the home page doesn't touch: muted and dark tones, full and bleed widths, and the carousel block (seeded here for the first time).\n\nIt's a developer tool, not a landing page — use it to audit rendering, spacing, and dark-mode behavior across all combinations.",
+            section: { tone: "muted" },
+          },
+          {
+            __component: "blocks.image-text",
+            eyebrow: "BLEED WIDTH",
+            heading: "Image flush left, text padded.",
+            body: "This image-text block uses `width: bleed` — the image breaks out of the container to touch the viewport edge, while the text column keeps its padding.\n\nThe asymmetry creates visual tension and helps anchor a section visually.",
+            image_position: "left",
+            image: aboutImg ? aboutImg.id : undefined,
+            section: { spacing: "none" },
+            container: { width: "bleed" },
+          },
+          {
+            __component: "blocks.image-text",
+            eyebrow: "ZIG-ZAG PAIR",
+            heading: "Now the image flips to the right.",
+            body: "Placing two image-text blocks back to back with alternating `image_position` creates the classic editorial zig-zag pattern.\n\nBoth use `width: bleed`, so the images alternate between left edge and right edge.",
+            image_position: "right",
+            image: heroSvg ? heroSvg.id : undefined,
+            section: { spacing: "none" },
+            container: { width: "bleed" },
+          },
+          {
+            __component: "blocks.card-grid",
+            eyebrow: "FULL WIDTH · DARK TONE",
+            heading: "Card grid at full bleed on a dark band",
+            lead: "Nine cards on a dark background with full width — exercising both the dark section tone and the full container variant.",
+            section: { tone: "dark" },
+            container: { width: "full" },
+            cards: [
+              {
+                title: "Headless CMS",
+                description: "Content model versioned as JSON. No vendor lock-in.",
+                image: cardImgs.cms?.id ?? undefined,
+              },
+              {
+                title: "Block builder",
+                description:
+                  "Compose pages from reusable blocks — add new ones with a schema and a renderer.",
+                image: cardImgs.blocks?.id ?? undefined,
+              },
+              {
+                title: "Design system",
+                description:
+                  "Section and Container primitives, fluid type scale, semantic token layer.",
+                image: cardImgs.design?.id ?? undefined,
+              },
+              {
+                title: "Dynamic forms",
+                description:
+                  "Form definitions in the CMS, submissions in the admin, honeypot on the frontend.",
+                image: cardImgs.forms?.id ?? undefined,
+              },
+              {
+                title: "SEO ready",
+                description: "Server-rendered pages, per-page meta, sitemap at build time.",
+                image: cardImgs.seo?.id ?? undefined,
+              },
+              {
+                title: "Deploy anywhere",
+                description: "Astro SSR on Node, TypeScript everywhere. Ship to any Node host.",
+                image: cardImgs.deploy?.id ?? undefined,
+              },
+              {
+                title: "Clone and run",
+                description: "install:all, dev, done. No manual env plumbing.",
+                image: cardImgs.clone?.id ?? undefined,
+              },
+              {
+                title: "Editorial taste",
+                description:
+                  "Dark bands, uppercase display headlines, generous rhythm — tuned, not vanilla.",
+                image: cardImgs.editorial?.id ?? undefined,
+              },
+              {
+                title: "Repointable tokens",
+                description:
+                  "Semantic color layer isolated from Tailwind — swap to Radix without touching components.",
+                image: cardImgs.tokens?.id ?? undefined,
+              },
+            ],
+          },
+          {
+            __component: "blocks.gallery",
+            eyebrow: "BLEED GALLERY",
+            heading: "Edge-to-edge image grid",
+            lead: "Gallery at bleed width: images fill the viewport edge to edge with zero gap, creating a mosaic effect.",
+            section: { tone: "default" },
+            container: { width: "bleed" },
+            images: galleryImgs.filter(Boolean).map((img) => img!.id),
+          },
+          {
+            __component: "blocks.carousel",
+            eyebrow: "CAROUSEL",
+            heading: "Card carousel with peek rail",
+            lead: "The carousel block, seeded here for the first time. Cards peek from the edges, hinting that more content is available.",
+            loop: true,
+            section: { tone: "default" },
+            container: {},
+            cards: [
+              {
+                title: "Abstract circles",
+                description: "Circles and lines on dark ground — a minimal geometric composition.",
+                image: galleryImgs[0]?.id ?? undefined,
+              },
+              {
+                title: "Nested diamonds",
+                description:
+                  "Diamond shapes nested concentrically, exploring depth through repetition.",
+                image: galleryImgs[1]?.id ?? undefined,
+              },
+              {
+                title: "Vertical columns",
+                description: "Two columns with a connecting node — structure and relationship.",
+                image: galleryImgs[2]?.id ?? undefined,
+              },
+              {
+                title: "Flowing curves",
+                description:
+                  "Organic curves in contrast with the geometric vocabulary of the other slides.",
+                image: galleryImgs[3]?.id ?? undefined,
+              },
+              {
+                title: "Concentric triangles",
+                description: "Three nested triangles converging to center — focal point and depth.",
+                image: galleryImgs[4]?.id ?? undefined,
+              },
+              {
+                title: "Intersecting ellipses",
+                description: "Overlapping ellipses create a sense of motion and intersection.",
+                image: galleryImgs[5]?.id ?? undefined,
+              },
+            ],
+          },
+          {
+            __component: "blocks.faq",
+            eyebrow: "FAQ · DARK TONE",
+            heading: "Frequently asked questions",
+            section: { tone: "dark" },
+            items: [
+              {
+                question: "What is this starter?",
+                answer:
+                  "A **production-ready** foundation combining [Strapi 5](https://strapi.io) as the headless CMS and Astro for server-rendered pages. It ships with a block-based page builder, dynamic forms, and a tuned design system.",
+              },
+              {
+                question: "Do I need to know Strapi to use it?",
+                answer:
+                  "Not in depth. The content model is already set up — you manage pages, navigation, and forms from the Strapi admin panel. The [setup guide](https://docs.strapi.io) covers everything you need to get started.",
+              },
+              {
+                question: "Can I add my own blocks?",
+                answer:
+                  "Yes. Drop a component schema in `cms/src/components/blocks/`, register it on the page dynamic zone, and create a matching Astro renderer in `frontend/src/components/blocks/`. The FAQ block you're reading was built exactly this way.",
+              },
+              {
+                question: "How do I deploy to production?",
+                answer:
+                  "Astro runs in SSR mode on any **Node 22** host. Build the frontend with `npm run build`, start with `node dist/server/entry.mjs`. Strapi needs its own Node process and a persistent database (SQLite for dev, PostgreSQL recommended for production).",
+              },
+            ],
+          },
+          {
+            __component: "blocks.form",
+            form: formDocId ? { connect: [{ documentId: formDocId }] } : undefined,
+            section: {},
+          },
+        ],
+      } as any,
+      status: "published",
+    });
+
     strapi.log.info(
-      "[seed] Seeded demo pages: home, about, services, contacts, servizio-a, servizio-b, privacy, termini",
+      "[seed] Seeded demo pages: home, about, services, contacts, servizio-a, servizio-b, privacy, termini, showcase",
     );
   } catch (err) {
     strapi.log.error("[seed] Seeding demo pages failed: " + String(err));

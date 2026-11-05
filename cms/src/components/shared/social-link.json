@@ -10,7 +10,8 @@
     "platform": {
       "type": "enumeration",
       "enum": ["facebook", "instagram", "x", "youtube", "linkedin", "tiktok"],
-      "required": true
+      "required": true,
+      "default": "instagram"
     },
     "url": {
       "type": "string",
