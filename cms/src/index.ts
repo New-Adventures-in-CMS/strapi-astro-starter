@@ -275,6 +275,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             heading: "Everything a modern content site needs",
             lead: "Batteries included, no lock-in: swap fonts, tokens, or blocks without unwiring the stack.",
             section: { tone: "default" },
+            container: {},
             cards: [
               {
                 title: "Headless CMS",
@@ -320,6 +321,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             heading: "Skip the first forty hours of every project.",
             lead: "This is the boilerplate we wish we had on the last five sites.",
             section: { tone: "dark" },
+            container: {},
             cards: [
               {
                 title: "Clone and run",
@@ -346,11 +348,13 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             heading: "Gallery block with lightbox",
             lead: "Click any image to open the full-screen lightbox. Captions appear only where the media file has one.",
             section: { tone: "default" },
+            container: {},
             images: galleryImgs.filter(Boolean).map((img) => img!.id),
           },
           {
             __component: "blocks.rich-text",
             body: "## Where to go next\n\nEdit this page from the Strapi admin at [localhost:1337/admin](http://localhost:1337/admin), or start fresh by removing the seeded pages and creating your own. The [setup guide](https://github.com/New-Adventures-in-CMS/strapi-astro-starter) walks through the block system, seed, and deployment.",
+            section: {},
           },
         ],
       } as any,
@@ -372,15 +376,19 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             body: "This starter isn't a demo. It's what we wish we'd had on the last five content-driven projects — extracted, cleaned up, and shared.\n\nStrapi handles the content model. Astro renders it. The design system carries the taste so day-one pages already read like a magazine, not a template.",
             image_position: "left",
             image: aboutImg ? aboutImg.id : undefined,
+            section: {},
+            container: {},
           },
           {
             __component: "blocks.rich-text",
             body: "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
+            section: {},
           },
           {
             __component: "blocks.faq",
             eyebrow: "DOMANDE FREQUENTI",
             heading: "FAQ",
+            section: {},
             items: [
               {
                 question: "What is this starter?",
@@ -420,6 +428,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           {
             __component: "blocks.rich-text",
             body: "## Services\n\nThis page is a skeleton, ready to be replaced. Drop in blocks from the Strapi admin — hero banners, card grids, image + text sections — to describe what you offer.\n\nDelete this content and start fresh, or duplicate the structure for other landing pages.",
+            section: {},
           },
         ],
       } as any,
@@ -436,6 +445,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           {
             __component: "blocks.form",
             form: formDocId ? { connect: [{ documentId: formDocId }] } : undefined,
+            section: {},
           },
         ],
       } as any,

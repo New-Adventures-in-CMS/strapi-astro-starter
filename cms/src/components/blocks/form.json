@@ -15,7 +15,8 @@
     "section": {
       "type": "component",
       "component": "shared.section",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     }
   }
 }

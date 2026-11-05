@@ -24,12 +24,14 @@
     "section": {
       "type": "component",
       "component": "shared.section",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "container": {
       "type": "component",
       "component": "shared.container",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     }
   }
 }
