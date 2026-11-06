@@ -17,5 +17,19 @@
       "type": "string",
       "required": true
     }
+  },
+  "config": {
+    "metadatas": {
+      "platform": {
+        "edit": {
+          "description": "Social network del link: determina l'icona mostrata."
+        }
+      },
+      "url": {
+        "edit": {
+          "description": "Indirizzo completo del profilo (https://...)."
+        }
+      }
+    }
   }
 }

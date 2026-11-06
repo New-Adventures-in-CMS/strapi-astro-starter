@@ -17,5 +17,19 @@
       "enum": ["none", "sm", "md", "lg", "xl"],
       "default": "xl"
     }
+  },
+  "config": {
+    "metadatas": {
+      "tone": {
+        "edit": {
+          "description": "Sfondo della sezione: default (sfondo pagina), muted (tenue), dark (scuro, con testo chiaro)."
+        }
+      },
+      "spacing": {
+        "edit": {
+          "description": "Spazio verticale sopra e sotto la sezione, da none (nessuno) a xl (massimo). Usa none per attaccare due blocchi senza stacco."
+        }
+      }
+    }
   }
 }

@@ -57,5 +57,44 @@
       "enum": ["fade", "slide", "drift", "focus", "dim", "parallax", "tilt", "ken-burns"],
       "default": "fade"
     }
+  },
+  "config": {
+    "metadatas": {
+      "cta_text": {
+        "edit": {
+          "description": "Testo del pulsante. La CTA compare solo se compili sia il testo sia il link."
+        }
+      },
+      "cta_url": {
+        "edit": {
+          "description": "Destinazione del pulsante: un URL completo (https://...) o un percorso interno del sito (es. /contatti)."
+        }
+      },
+      "image": {
+        "edit": {
+          "description": "Immagine dell'hero. Se sono presenti delle slide, questa vale come sfondo di riserva."
+        }
+      },
+      "immersive": {
+        "edit": {
+          "description": "Se attivo, l'hero occupa tutta l'altezza dello schermo e l'header ci va sopra in trasparenza. Se spento, hero di altezza normale."
+        }
+      },
+      "slides": {
+        "edit": {
+          "description": "Più slide rendono l'hero uno slider. Lascia vuoto per un hero singolo."
+        }
+      },
+      "align": {
+        "edit": {
+          "description": "Posizione del contenuto sull'immagine: center (default), oppure uno dei nove punti della griglia (es. top-left, bottom-center)."
+        }
+      },
+      "heroStyle": {
+        "edit": {
+          "description": "Effetto di transizione tra le slide: fade (dissolvenza), slide (scorrimento), drift (parallasse), focus (zoom-in), dim (oscuramento), parallax (profondità), tilt (inclinazione 3D), ken-burns (zoom lento continuo)."
+        }
+      }
+    }
   }
 }

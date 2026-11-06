@@ -39,5 +39,24 @@
         "blocks.faq"
       ]
     }
+  },
+  "config": {
+    "metadatas": {
+      "slug": {
+        "edit": {
+          "description": "Parte finale dell'indirizzo (es. \"chi-siamo\" per /chi-siamo). Minuscolo, senza spazi."
+        }
+      },
+      "seo_desc": {
+        "edit": {
+          "description": "Descrizione breve per motori di ricerca e anteprime social (circa 150-160 caratteri)."
+        }
+      },
+      "body": {
+        "edit": {
+          "description": "Contenuto testuale per le pagine semplici, senza blocchi."
+        }
+      }
+    }
   }
 }

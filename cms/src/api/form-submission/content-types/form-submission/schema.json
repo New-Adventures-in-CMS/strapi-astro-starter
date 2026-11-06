@@ -26,5 +26,19 @@
       "type": "boolean",
       "default": false
     }
+  },
+  "config": {
+    "metadatas": {
+      "dati": {
+        "edit": {
+          "description": "Dati inviati dall'utente (sola lettura)."
+        }
+      },
+      "letto": {
+        "edit": {
+          "description": "Segna la compilazione come letta o gestita."
+        }
+      }
+    }
   }
 }

@@ -28,5 +28,14 @@
     "link_text": {
       "type": "string"
     }
+  },
+  "config": {
+    "metadatas": {
+      "link_url": {
+        "edit": {
+          "description": "Destinazione della card al clic: URL completo o percorso interno."
+        }
+      }
+    }
   }
 }

@@ -32,5 +32,19 @@
       "repeatable": false,
       "required": true
     }
+  },
+  "config": {
+    "metadatas": {
+      "reading_width": {
+        "edit": {
+          "description": "Larghezza della colonna: normal (misura di lettura standard) o wide (più larga, circa 860px). Tienila su normal per la massima leggibilità."
+        }
+      },
+      "form": {
+        "edit": {
+          "description": "Il modulo da mostrare: scegli un Form creato nella sezione Form."
+        }
+      }
+    }
   }
 }

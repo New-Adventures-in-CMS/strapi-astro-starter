@@ -70,5 +70,34 @@
       "type": "text",
       "description": "Descrizione — riga secondaria opzionale mostrata nel megamenu banda"
     }
+  },
+  "config": {
+    "metadatas": {
+      "linkMode": {
+        "edit": {
+          "description": "Tipo di voce: internal (collegamento a una pagina del sito) o external (URL esterno)."
+        }
+      },
+      "externalUrl": {
+        "edit": {
+          "description": "URL esterno completo, usato solo se la voce è di tipo external."
+        }
+      },
+      "area": {
+        "edit": {
+          "description": "Dove compare la voce: header (solo navigazione), footer (solo footer), both (entrambi)."
+        }
+      },
+      "footerColumn": {
+        "edit": {
+          "description": "In quale colonna del footer va la voce, se la voce è nel footer."
+        }
+      },
+      "order": {
+        "edit": {
+          "description": "Ordine tra le voci dello stesso gruppo: numero più basso, prima."
+        }
+      }
+    }
   }
 }

@@ -41,5 +41,19 @@
       "repeatable": false,
       "required": true
     }
+  },
+  "config": {
+    "metadatas": {
+      "autoplay": {
+        "edit": {
+          "description": "Se attivo, il carosello scorre da solo. Valuta l'accessibilità prima di attivarlo."
+        }
+      },
+      "loop": {
+        "edit": {
+          "description": "Se attivo, dopo l'ultima slide il carosello riparte dalla prima (scorrimento infinito)."
+        }
+      }
+    }
   }
 }

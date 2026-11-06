@@ -12,5 +12,14 @@
       "enum": ["full", "contained", "bleed"],
       "default": "contained"
     }
+  },
+  "config": {
+    "metadatas": {
+      "width": {
+        "edit": {
+          "description": "Larghezza del blocco: contained (incolonnato, con margini), full (quasi tutta la pagina), bleed (a filo dei bordi, senza margini)."
+        }
+      }
+    }
   }
 }

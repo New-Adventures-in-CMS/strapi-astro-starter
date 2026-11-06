@@ -14,5 +14,19 @@
       "enum": ["full", "half", "third"],
       "default": "full"
     }
+  },
+  "config": {
+    "metadatas": {
+      "larghezza": {
+        "edit": {
+          "description": "Larghezza del campo nella riga: full (tutta la riga), half (metà), third (un terzo). Imposta half o third su campi consecutivi per affiancarli su due o tre colonne."
+        }
+      },
+      "nome": {
+        "edit": {
+          "description": "Nome tecnico del campo, usato nei dati inviati e nelle email. Senza spazi (es. nome_cognome). Non visibile a chi compila."
+        }
+      }
+    }
   }
 }

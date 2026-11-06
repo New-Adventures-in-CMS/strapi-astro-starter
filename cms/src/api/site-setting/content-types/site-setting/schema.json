@@ -60,5 +60,39 @@
       "repeatable": true,
       "component": "shared.social-link"
     }
+  },
+  "config": {
+    "metadatas": {
+      "submenuLayout": {
+        "edit": {
+          "description": "Layout dei sottomenu dell'header: full-bleed (banda a tutta larghezza) o dropdown (menu a tendina compatto)."
+        }
+      },
+      "headerWidth": {
+        "edit": {
+          "description": "Larghezza dell'header: full (a tutta pagina, con margini editoriali) o contained (incolonnato, allineato ai contenuti)."
+        }
+      },
+      "footerWidth": {
+        "edit": {
+          "description": "Larghezza del footer: full (a tutta pagina, con margini editoriali) o contained (incolonnato, allineato ai contenuti)."
+        }
+      },
+      "footerTone": {
+        "edit": {
+          "description": "Tono di sfondo del footer: muted (tenue, con testo scuro) o dark (scuro, con testo chiaro)."
+        }
+      },
+      "stickyShell": {
+        "edit": {
+          "description": "Se attivo, header e hero restano agganciati in cima durante lo scroll."
+        }
+      },
+      "imageMaskReveal": {
+        "edit": {
+          "description": "Se attivo, le immagini si rivelano con un effetto maschera quando entrano nello schermo."
+        }
+      }
+    }
   }
 }
