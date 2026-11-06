@@ -1,5 +1,5 @@
 ---
-import type { SharedSection } from "@/types";
+import type { ReadingWidth, SharedSection } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import DynamicForm from "@/components/DynamicForm.astro";
@@ -8,11 +8,13 @@ interface Props {
   eyebrow?: string | null;
   heading?: string | null;
   lead?: string | null;
+  reading_width?: ReadingWidth | null;
   form?: { slug: string } | null;
   section?: SharedSection;
 }
 
-const { eyebrow, heading, lead, form, section: sec } = Astro.props;
+const { eyebrow, heading, lead, reading_width, form, section: sec } = Astro.props;
+const containerWidth = reading_width === "wide" ? "reading-wide" : "prose";
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const onDark = tone === "dark";
@@ -20,7 +22,7 @@ const onDark = tone === "dark";
 
 {form?.slug && (
   <Section tone={tone} spacing={spacing}>
-    <Container width="prose">
+    <Container width={containerWidth}>
       <SectionHeader
         eyebrow={eyebrow}
         heading={heading}

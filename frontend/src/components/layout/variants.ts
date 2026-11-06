@@ -18,6 +18,7 @@ export const container = tv({
   variants: {
     width: {
       prose: "max-w-[70ch]",
+      "reading-wide": "max-w-[54rem]",
       default: "max-w-[1200px]",
       contained: "max-w-[1400px]",
       full: "max-w-none px-[var(--page-margin-lg)] md:px-[var(--page-margin-lg)] lg:px-[var(--page-margin-lg)]",

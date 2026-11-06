@@ -679,6 +679,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             __component: "blocks.faq",
             eyebrow: "FAQ · DARK TONE",
             heading: "Frequently asked questions",
+            reading_width: "wide",
             section: { tone: "dark" },
             items: [
               {

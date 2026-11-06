@@ -16,6 +16,11 @@
     "lead": {
       "type": "text"
     },
+    "reading_width": {
+      "type": "enumeration",
+      "enum": ["normal", "wide"],
+      "default": "normal"
+    },
     "form": {
       "type": "relation",
       "relation": "oneToOne",

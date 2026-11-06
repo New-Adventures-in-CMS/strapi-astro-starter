@@ -103,7 +103,7 @@ function getSpan(larghezza?: Larghezza): string {
       data-slug={slug}
       data-success={formDef.messaggioSuccesso ?? "Grazie! Il tuo messaggio è stato inviato."}
     >
-      <div class="grid grid-cols-6 gap-4 max-w-[640px]">
+      <div class="grid grid-cols-6 gap-4">
         {formDef.campi.map((campo) => {
           const id = "dform-" + slug + "-" + campo.nome;
           const errId = id + "-error";
@@ -248,7 +248,7 @@ function getSpan(larghezza?: Larghezza): string {
 
     <div
       id={"dform-" + slug + "-success"}
-      class="hidden mt-6 max-w-[640px] bg-success/10 border border-success/40 rounded p-5"
+      class="hidden mt-6 bg-success/10 border border-success/40 rounded p-5"
     >
       <p class="m-0 font-medium text-success-foreground" id={"dform-" + slug + "-success-msg"}></p>
     </div>

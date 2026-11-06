@@ -22,6 +22,11 @@
       "enum": ["left", "center", "right"],
       "default": "left"
     },
+    "reading_width": {
+      "type": "enumeration",
+      "enum": ["normal", "wide"],
+      "default": "normal"
+    },
     "section": {
       "type": "component",
       "component": "shared.section",

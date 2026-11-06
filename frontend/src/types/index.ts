@@ -70,6 +70,7 @@ export interface BlockRichText {
   cta_text?: string | null;
   cta_url?: string | null;
   align?: "left" | "center" | "right" | null;
+  reading_width?: ReadingWidth | null;
   section?: SharedSection;
 }
 
@@ -121,6 +122,7 @@ export interface BlockCarousel {
 
 export type ImageFit = "cover" | "contain";
 export type AspectRatio = "4:3" | "1:1";
+export type ReadingWidth = "normal" | "wide";
 export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 
@@ -138,6 +140,7 @@ export interface BlockForm {
   eyebrow?: string | null;
   heading?: string | null;
   lead?: string | null;
+  reading_width?: ReadingWidth | null;
   form?: { slug: string } | null;
   section?: SharedSection;
 }
@@ -161,6 +164,7 @@ export interface BlockFaq {
   __component: "blocks.faq";
   eyebrow?: string | null;
   heading?: string | null;
+  reading_width?: ReadingWidth | null;
   items: FaqItem[];
   section?: SharedSection;
 }

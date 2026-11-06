@@ -1,5 +1,5 @@
 ---
-import type { SharedSection } from "@/types";
+import type { ReadingWidth, SharedSection } from "@/types";
 import { Prose } from "@/components/starwind/prose";
 import { Button } from "@/components/starwind/button";
 import { Section, Container } from "@/components/layout";
@@ -10,10 +10,13 @@ interface Props {
   cta_text?: string | null;
   cta_url?: string | null;
   align?: "left" | "center" | "right" | null;
+  reading_width?: ReadingWidth | null;
   section?: SharedSection;
 }
 
-const { body, cta_text, cta_url, align, section: sec } = Astro.props;
+const { body, cta_text, cta_url, align, reading_width, section: sec } = Astro.props;
+const isWide = reading_width === "wide";
+const containerWidth = isWide ? "reading-wide" : "prose";
 const showCta = cta_text && cta_url;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
@@ -28,8 +31,8 @@ const compact = (spacing ?? "xl") === "none";
 ---
 
 <Section tone={tone} spacing={spacing} data-richtext-compact={compact ? "" : undefined}>
-  <Container width="prose" class={alignClass} data-reveal>
-    <Prose class={alignClass}>
+  <Container width={containerWidth} class={alignClass} data-reveal>
+    <Prose class:list={[alignClass, isWide && "max-w-none"]}>
       <div set:html={html} />
     </Prose>
     {showCta && (

@@ -1,5 +1,5 @@
 ---
-import type { FaqItem, SharedSection } from "@/types";
+import type { FaqItem, ReadingWidth, SharedSection } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { Prose } from "@/components/starwind/prose";
@@ -14,18 +14,20 @@ import { renderMarkdown } from "@/lib/markdown";
 interface Props {
   eyebrow?: string | null;
   heading?: string | null;
+  reading_width?: ReadingWidth | null;
   items: FaqItem[];
   section?: SharedSection;
 }
 
-const { eyebrow, heading, items, section: sec } = Astro.props;
+const { eyebrow, heading, reading_width, items, section: sec } = Astro.props;
+const containerWidth = reading_width === "wide" ? "reading-wide" : "prose";
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const onDark = tone === "dark";
 ---
 
 <Section tone={tone} spacing={spacing}>
-  <Container width="prose">
+  <Container width={containerWidth}>
     <div data-reveal>
       <SectionHeader eyebrow={eyebrow} heading={heading} align="center" onDark={onDark} />
     </div>

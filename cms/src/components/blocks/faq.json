@@ -13,6 +13,11 @@
     "heading": {
       "type": "string"
     },
+    "reading_width": {
+      "type": "enumeration",
+      "enum": ["normal", "wide"],
+      "default": "normal"
+    },
     "items": {
       "type": "component",
       "component": "faq.faq-item",
