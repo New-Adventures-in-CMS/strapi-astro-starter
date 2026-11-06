@@ -28,6 +28,9 @@ const S_DARK_END = "/* <<< tokens:sync END (dark) */";
 const S_SPACING_START =
   "/* >>> tokens:sync START (spacing) — from nsp-ds-tokens semantic/layout.json — DO NOT EDIT */";
 const S_SPACING_END = "/* <<< tokens:sync END (spacing) */";
+const S_RHYTHM_START =
+  "/* >>> tokens:sync START (content-rhythm) — from nsp-ds-tokens semantic/rhythm.json — DO NOT EDIT */";
+const S_RHYTHM_END = "/* <<< tokens:sync END (content-rhythm) */";
 const S_TYPE_SIZE_START =
   "/* >>> tokens:sync START (type-size) — from nsp-ds-tokens responsive/type-size.json — DO NOT EDIT */";
 const S_TYPE_SIZE_END = "/* <<< tokens:sync END (type-size) */";
@@ -181,6 +184,9 @@ try {
   const layoutJson = JSON.parse(
     readFileSync(join(tmpDir, "tokens", "semantic", "layout.json"), "utf8"),
   );
+  const rhythmJson = JSON.parse(
+    readFileSync(join(tmpDir, "tokens", "semantic", "rhythm.json"), "utf8"),
+  );
   const spacingJson = JSON.parse(
     readFileSync(join(tmpDir, "tokens", "core", "spacing.json"), "utf8"),
   );
@@ -226,11 +232,12 @@ try {
     { accessor: (j) => j["page-margin"], prefix: "page-margin" },
     { accessor: (j) => j["section-gap"], prefix: "section-gap" },
     { accessor: (j) => j["section"]?.["padding"], prefix: "section-padding" },
+    { accessor: (j) => j["content-rhythm"], prefix: "content-rhythm", json: rhythmJson },
   ];
 
   const spacingVars = [];
-  for (const { accessor, prefix } of FAMILIES) {
-    const group = accessor(layoutJson);
+  for (const { accessor, prefix, json } of FAMILIES) {
+    const group = accessor(json ?? layoutJson);
     if (!group) {
       console.error(`Error: ${prefix} not found in layout.json`);
       process.exit(1);
@@ -255,11 +262,12 @@ try {
         mobile: resolveRef(modes.mobile, ctx),
         tablet: resolveRef(modes.tablet, ctx),
         desktop: resolveRef(modes.desktop, ctx),
+        region: json ? "rhythm" : "spacing",
       });
     }
   }
 
-  function buildSpacing() {
+  function buildResponsiveBlock(vars) {
     const w1 = TYPE_ANCHORS.composeMobile;
     const w2 = BREAKPOINTS.tablet;
     const w3 = TYPE_ANCHORS.composeDesktop;
@@ -267,7 +275,7 @@ try {
     const lines = [];
 
     lines.push(":root {");
-    for (const v of spacingVars) {
+    for (const v of vars) {
       const mobilePx = parseFloat(v.mobile);
       const tabletPx = parseFloat(v.tablet);
       if (mobilePx === tabletPx) {
@@ -278,7 +286,7 @@ try {
     }
     lines.push("}");
 
-    const mediaVars = spacingVars.filter((v) => parseFloat(v.tablet) !== parseFloat(v.desktop));
+    const mediaVars = vars.filter((v) => parseFloat(v.tablet) !== parseFloat(v.desktop));
     if (mediaVars.length > 0) {
       lines.push(`@media (min-width: ${w2}px) {`);
       lines.push("  :root {");
@@ -294,7 +302,10 @@ try {
     return lines.join("\n");
   }
 
-  const spacingBlock = buildSpacing();
+  const layoutVars = spacingVars.filter((v) => v.region === "spacing");
+  const rhythmVars = spacingVars.filter((v) => v.region === "rhythm");
+  const spacingBlock = buildResponsiveBlock(layoutVars);
+  const rhythmBlock = buildResponsiveBlock(rhythmVars);
 
   // ── TYPE-SIZE TOKENS ────────────────────────────────────────────────────
 
@@ -413,6 +424,7 @@ try {
     let result = spliceRegion(css, S_ROOT_START, S_ROOT_END, lightBlock);
     result = spliceRegion(result, S_DARK_START, S_DARK_END, darkBlock);
     result = spliceRegion(result, S_SPACING_START, S_SPACING_END, spacingBlock);
+    result = spliceRegion(result, S_RHYTHM_START, S_RHYTHM_END, rhythmBlock);
     return spliceRegion(result, S_TYPE_SIZE_START, S_TYPE_SIZE_END, typeSizeBlock);
   }
 
@@ -538,7 +550,7 @@ try {
   const sw3 = TYPE_ANCHORS.composeDesktop;
   let spacingChecks = 0;
 
-  for (const v of spacingVars) {
+  for (const v of layoutVars) {
     const mobilePx = parseFloat(v.mobile);
     const tabletPx = parseFloat(v.tablet);
     const desktopPx = parseFloat(v.desktop);
@@ -622,6 +634,119 @@ try {
         diffs++;
       }
       spacingChecks++;
+    }
+  }
+
+  // G1b-rhythm: content-rhythm — same verification as spacing
+  function extractRhythmBlocks(css) {
+    const startIdx = css.indexOf(S_RHYTHM_START);
+    const endIdx = css.indexOf(S_RHYTHM_END);
+    const afterStart = css.indexOf("\n", startIdx) + 1;
+    const beforeEnd = css.lastIndexOf("\n", endIdx) + 1;
+    const region = css.substring(afterStart, beforeEnd);
+    const rootVars = {};
+    const mediaVars = {};
+    let inMedia = false;
+    for (const line of region.split("\n")) {
+      if (/@media/.test(line)) {
+        inMedia = true;
+        continue;
+      }
+      const varMatch = line.match(/--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/);
+      if (varMatch) {
+        (inMedia ? mediaVars : rootVars)[varMatch[1]] = varMatch[2].trim();
+      }
+    }
+    return { rootVars, mediaVars };
+  }
+
+  const { rootVars: rhRootVars, mediaVars: rhMediaVars } = extractRhythmBlocks(writtenCss);
+  let rhythmChecks = 0;
+
+  for (const v of rhythmVars) {
+    const mobilePx = parseFloat(v.mobile);
+    const tabletPx = parseFloat(v.tablet);
+    const desktopPx = parseFloat(v.desktop);
+    const rootVal = rhRootVars[v.name];
+
+    if (rootVal == null) {
+      console.error(`DIFF: --${v.name} NOT FOUND in :root (rhythm)`);
+      diffs++;
+      rhythmChecks++;
+      continue;
+    }
+
+    if (mobilePx === tabletPx) {
+      const pm = rootVal.match(plainRe);
+      if (!pm) {
+        console.error(`DIFF: --${v.name} :root: expected plain rem, got "${rootVal}"`);
+        diffs++;
+        rhythmChecks++;
+      } else {
+        const valuePx = parseFloat(pm[1]) * 16;
+        if (!approx(valuePx, mobilePx)) {
+          console.error(`DIFF: --${v.name} :root: value ${valuePx}px !~= source ${mobilePx}px`);
+          diffs++;
+        }
+        rhythmChecks++;
+      }
+    } else {
+      const c = parseClamp(rootVal);
+      if (!c) {
+        console.error(`DIFF: --${v.name} :root: expected clamp(), got "${rootVal}"`);
+        diffs++;
+        rhythmChecks++;
+      } else {
+        const checks = [
+          [c.min, mobilePx, ":root min !~= mobile"],
+          [c.max, tabletPx, ":root max !~= tablet"],
+          [c.constPx + (c.coeff * sw1) / 100, mobilePx, `:root eval@${sw1} !~= mobile`],
+          [c.constPx + (c.coeff * sw2) / 100, tabletPx, `:root eval@${sw2} !~= tablet`],
+        ];
+        for (const [actual, expected, label] of checks) {
+          if (!approx(actual, expected)) {
+            console.error(`DIFF: --${v.name}: ${label} (${actual} vs ${expected})`);
+            diffs++;
+          }
+          rhythmChecks++;
+        }
+      }
+    }
+
+    if (tabletPx !== desktopPx) {
+      const mediaVal = rhMediaVars[v.name];
+      if (mediaVal == null) {
+        console.error(`DIFF: --${v.name} NOT FOUND in @media (rhythm)`);
+        diffs++;
+        rhythmChecks++;
+      } else {
+        const c = parseClamp(mediaVal);
+        if (!c) {
+          console.error(`DIFF: --${v.name} @media: expected clamp(), got "${mediaVal}"`);
+          diffs++;
+          rhythmChecks++;
+        } else {
+          const checks = [
+            [c.min, tabletPx, "@media min !~= tablet"],
+            [c.max, desktopPx, "@media max !~= desktop"],
+            [c.constPx + (c.coeff * sw2) / 100, tabletPx, `@media eval@${sw2} !~= tablet`],
+            [c.constPx + (c.coeff * sw3) / 100, desktopPx, `@media eval@${sw3} !~= desktop`],
+          ];
+          for (const [actual, expected, label] of checks) {
+            if (!approx(actual, expected)) {
+              console.error(`DIFF: --${v.name}: ${label} (${actual} vs ${expected})`);
+              diffs++;
+            }
+            rhythmChecks++;
+          }
+        }
+      }
+    } else {
+      if (rhMediaVars[v.name] != null) {
+        console.error(`DIFF: --${v.name} should NOT be in @media (tablet === desktop)`);
+        diffs++;
+      }
+      rhythmChecks++;
     }
   }
 
@@ -737,7 +862,7 @@ try {
     }
   }
 
-  const total = colorEntries.length + spacingChecks + typeSizeChecks;
+  const total = colorEntries.length + spacingChecks + rhythmChecks + typeSizeChecks;
   if (diffs > 0) {
     console.error(`G1: STOP — ${total} comparisons, ${diffs} differences`);
     process.exit(1);

@@ -68,17 +68,19 @@ const cv = imageText({
         )}
       </div>
       <div class={cv.textCol()}>
-        <SectionHeader eyebrow={eyebrow} heading={heading} class="!mb-0" />
-        <Prose class={heading || eyebrow ? "mt-6" : ""}>
-          <div set:html={html} />
-        </Prose>
-        {showCta && (
-          <div class="mt-8">
-            <Button variant="default" size="lg" href={cta_url}>
-              {cta_text}
-            </Button>
-          </div>
-        )}
+        <div>
+          <SectionHeader eyebrow={eyebrow} heading={heading} gap="md" />
+          <Prose>
+            <div set:html={html} />
+          </Prose>
+          {showCta && (
+            <div class="mt-[var(--content-rhythm-lg)]">
+              <Button variant="default" size="lg" href={cta_url}>
+                {cta_text}
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   </Container>

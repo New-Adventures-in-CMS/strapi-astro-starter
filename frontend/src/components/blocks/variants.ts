@@ -96,7 +96,7 @@ export const carousel = {
   slide: tv({
     base: "pl-6 basis-[82%] sm:basis-[46%] lg:basis-[31%] shrink-0 grow-0 min-w-0",
   }),
-  controls: tv({ base: "mt-8 flex items-center gap-4" }),
+  controls: tv({ base: "mt-[var(--content-rhythm-lg)] flex items-center gap-4" }),
   navBtn: tv({
     base: "rounded-full border border-border bg-background/80 p-2 text-foreground shadow-sm transition hover:bg-background disabled:opacity-40 disabled:cursor-not-allowed",
   }),

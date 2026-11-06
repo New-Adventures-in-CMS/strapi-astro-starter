@@ -175,7 +175,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                   data-hero-content
                 >
                   {slide.eyebrow && (
-                    <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+                    <p class="mb-[var(--content-rhythm-sm)] text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
                       {slide.eyebrow}
                     </p>
                   )}
@@ -185,7 +185,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                   {slide.subheading && (
                     <p
                       class:list={[
-                        "mt-6 text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+                        "mt-[var(--content-rhythm-md)] text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
                         a.includes("left") && "mr-auto text-left",
                         a.includes("center") && "mx-auto text-center",
                         a.includes("right") && "ml-auto text-right",
@@ -195,7 +195,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                     </p>
                   )}
                   {showCta && (
-                    <div class="mt-10">
+                    <div class="mt-[var(--content-rhythm-lg)]">
                       <Button
                         variant="default"
                         size="lg"
@@ -285,7 +285,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 
       <Container width="default" class={`relative z-10 ${staticHC.text()}`} data-hero-content>
         {staticSlide.eyebrow && (
-          <p class="mb-4 text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+          <p class="mb-[var(--content-rhythm-sm)] text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
             {staticSlide.eyebrow}
           </p>
         )}
@@ -295,7 +295,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
         {staticSlide.subheading && (
           <p
             class:list={[
-              "mt-6 text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+              "mt-[var(--content-rhythm-md)] text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
               staticAlign.includes("left") && "mr-auto text-left",
               staticAlign.includes("center") && "mx-auto text-center",
               staticAlign.includes("right") && "ml-auto text-right",
@@ -305,7 +305,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
           </p>
         )}
         {staticSlide.cta_text && staticSlide.cta_url && (
-          <div class="mt-10">
+          <div class="mt-[var(--content-rhythm-lg)]">
             <Button
               variant="default"
               size="lg"
