@@ -633,6 +633,17 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             images: galleryImgs.filter(Boolean).map((img) => img!.id),
           },
           {
+            __component: "blocks.gallery",
+            eyebrow: "CAROUSEL GALLERY",
+            heading: "Gallery as inline carousel",
+            lead: "Same images, carousel display: horizontal track with peek rail, snap navigation and loop. Click any slide for the lightbox.",
+            display: "carousel",
+            loop: true,
+            section: { tone: "default" },
+            container: {},
+            images: galleryImgs.filter(Boolean).map((img) => img!.id),
+          },
+          {
             __component: "blocks.carousel",
             eyebrow: "CAROUSEL",
             heading: "Card carousel with peek rail",

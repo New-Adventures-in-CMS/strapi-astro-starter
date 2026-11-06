@@ -145,11 +145,15 @@ export interface BlockForm {
   section?: SharedSection;
 }
 
+export type GalleryDisplay = "grid" | "carousel";
+
 export interface BlockGallery {
   __component: "blocks.gallery";
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  display?: GalleryDisplay | null;
+  loop?: boolean | null;
   images: StrapiMedia[];
   section?: SharedSection;
   container?: SharedContainer;

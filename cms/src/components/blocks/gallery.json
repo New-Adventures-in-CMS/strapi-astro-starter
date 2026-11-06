@@ -16,6 +16,15 @@
     "lead": {
       "type": "text"
     },
+    "display": {
+      "type": "enumeration",
+      "enum": ["grid", "carousel"],
+      "default": "grid"
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
     "images": {
       "type": "media",
       "multiple": true,
@@ -32,6 +41,20 @@
       "component": "shared.container",
       "repeatable": false,
       "required": true
+    }
+  },
+  "config": {
+    "metadatas": {
+      "display": {
+        "edit": {
+          "description": "Come mostrare le immagini: griglia di thumbnail o carosello scorrevole con peek."
+        }
+      },
+      "loop": {
+        "edit": {
+          "description": "Se attivo, il carosello riparte dalla prima immagine dopo l'ultima. Ha effetto solo in vista carosello."
+        }
+      }
     }
   }
 }

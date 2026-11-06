@@ -1,5 +1,5 @@
 ---
-import type { SharedSection, SharedContainer, StrapiMedia } from "@/types";
+import type { SharedSection, SharedContainer, StrapiMedia, GalleryDisplay } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
@@ -9,61 +9,150 @@ import {
   dialogContent,
   dialogCloseButton,
 } from "@/components/starwind/dialog/variants";
-import { gallery as galleryTv } from "./variants";
+import { gallery as galleryTv, carousel as cv } from "./variants";
 
 interface Props {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  display?: GalleryDisplay | null;
+  loop?: boolean | null;
   images: StrapiMedia[];
   section?: SharedSection;
   container?: SharedContainer;
 }
 
-const { heading, eyebrow, lead, images, section: sec, container } = Astro.props;
+const { heading, eyebrow, lead, display, loop, images, section: sec, container } = Astro.props;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
 const onDark = tone === "dark";
+const isCarousel = display === "carousel";
 const gv = galleryTv({ width });
+const thumbSizes = isCarousel
+  ? "(min-width: 1024px) 46vw, (min-width: 640px) 46vw, 82vw"
+  : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";
 ---
 
 <Section tone={tone} spacing={spacing}>
+  {isCarousel && (
+    <Container width={width}>
+      <div data-reveal>
+        <SectionHeader
+          eyebrow={eyebrow}
+          heading={heading}
+          lead={lead}
+          align="left"
+          onDark={onDark}
+        />
+      </div>
+    </Container>
+  )}
+
   <Container width={width}>
-    <div data-reveal>
-      <SectionHeader
-        eyebrow={eyebrow}
-        heading={heading}
-        lead={lead}
-        align="center"
-        onDark={onDark}
-      />
-    </div>
+    {!isCarousel && (
+      <div data-reveal>
+        <SectionHeader
+          eyebrow={eyebrow}
+          heading={heading}
+          lead={lead}
+          align="center"
+          onDark={onDark}
+        />
+      </div>
+    )}
 
     {images.length > 0 && (
       <div data-lightbox>
-        <div class={gv.grid()} data-reveal="stagger" data-mask-grid>
-          {images.map((img, i) => (
-            <button type="button" data-lightbox-thumb data-index={i} class={gv.thumb()}>
-              <div data-mask-reveal class="overflow-hidden" style={`--mask-delay:${i * 100}ms`}>
-                <StrapiImage
-                  image={img}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  class="aspect-[3/2] w-full object-cover"
-                  loadingIndicator="blur"
-                />
-              </div>
-              {img.caption && (
-                <div
-                  class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-3 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
-                  data-gallery-caption
-                >
-                  <p class="text-xs text-background">{img.caption}</p>
+        {!isCarousel && (
+          <div class={gv.grid()} data-reveal="stagger" data-mask-grid>
+            {images.map((img, i) => (
+              <button type="button" data-lightbox-thumb data-index={i} class={gv.thumb()}>
+                <div data-mask-reveal class="overflow-hidden" style={`--mask-delay:${i * 100}ms`}>
+                  <StrapiImage
+                    image={img}
+                    sizes={thumbSizes}
+                    class="aspect-[3/2] w-full object-cover"
+                    loadingIndicator="blur"
+                  />
                 </div>
-              )}
-            </button>
-          ))}
-        </div>
+                {img.caption && (
+                  <div
+                    class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-3 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+                    data-gallery-caption
+                  >
+                    <p class="text-xs text-background">{img.caption}</p>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {isCarousel && (
+          <div
+            data-gallery-carousel
+            data-loop={loop || undefined}
+            tabindex="0"
+            class="relative mt-10"
+            data-reveal
+          >
+            <div class={cv.viewport()} data-carousel-viewport>
+              <div class={cv.track()}>
+                {images.map((img, i) => (
+                  <div class={gv.carouselSlide()}>
+                    <button
+                      type="button"
+                      data-lightbox-thumb
+                      data-index={i}
+                      class:list={[gv.thumb(), "block w-full h-full"]}
+                    >
+                      <StrapiImage
+                        image={img}
+                        sizes={thumbSizes}
+                        class="aspect-[3/2] w-full object-cover"
+                        loadingIndicator="blur"
+                      />
+                      {img.caption && (
+                        <div
+                          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-3 pb-2 pt-6 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+                          data-gallery-caption
+                        >
+                          <p class="text-xs text-background">{img.caption}</p>
+                        </div>
+                      )}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div class={cv.controls()}>
+              <button class={cv.navBtn()} data-carousel-prev type="button" aria-label="Precedente">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <button class={cv.navBtn()} data-carousel-next type="button" aria-label="Successivo">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+              <div class={cv.scrollbar()} data-carousel-bar aria-hidden="true">
+                <div class={cv.scrollbarThumb()} data-carousel-bar-thumb></div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <DialogPrimitive.Root
           closeOnEscape={true}
@@ -176,7 +265,45 @@ const gv = galleryTv({ width });
 
 <script>
   import { createLightbox } from "@skeleton/lightbox.js";
+  import { createCarousel } from "@skeleton/carousel.js";
+
   document.querySelectorAll<HTMLElement>("[data-lightbox]").forEach((root) => {
     createLightbox(root);
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-gallery-carousel]").forEach((root) => {
+    const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
+    const nextBtn = root.querySelector<HTMLElement>("[data-carousel-next]") ?? undefined;
+    const loop = root.hasAttribute("data-loop");
+    const api = createCarousel(root, {
+      loop,
+      align: "start",
+      prevBtn,
+      nextBtn,
+      labels: {
+        prev: "Precedente",
+        next: "Successivo",
+        slide: (i) => `Immagine ${i + 1}`,
+      },
+    });
+
+    const thumb = root.querySelector<HTMLElement>("[data-carousel-bar-thumb]");
+    if (thumb) {
+      let n = Math.max(1, api.snapCount());
+      function sizeThumb() {
+        n = Math.max(1, api.snapCount());
+        thumb!.style.width = `${100 / n}%`;
+      }
+      function moveThumb() {
+        thumb!.style.transform = `translateX(${api.selectedIndex() * 100}%)`;
+      }
+      sizeThumb();
+      moveThumb();
+      api.on("select", moveThumb);
+      api.on("reInit", () => {
+        sizeThumb();
+        moveThumb();
+      });
+    }
   });
 </script>
