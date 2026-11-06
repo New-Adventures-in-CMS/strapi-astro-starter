@@ -5,7 +5,7 @@ export const imageText = tv({
     grid: "grid grid-cols-1 md:grid-cols-2 items-center",
     imageCol: "",
     image: "w-full [&_[data-si-loading]]:h-full [&_[data-si-loading]]:w-full",
-    textCol: "",
+    textCol: "flex flex-col justify-center",
   },
   variants: {
     width: {

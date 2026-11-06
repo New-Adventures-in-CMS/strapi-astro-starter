@@ -191,46 +191,31 @@
 
 /* >>> tokens:sync START (spacing) — from nsp-ds-tokens semantic/layout.json — DO NOT EDIT */
 :root {
-  --page-margin-sm: 16px;
-  --page-margin-md: 16px;
-  --page-margin-lg: 16px;
-  --section-gap-sm: 24px;
-  --section-gap-md: 32px;
-  --section-gap-lg: 48px;
-  --section-padding-sm: 16px;
-  --section-padding-md: 24px;
-  --section-padding-lg: 32px;
-  --section-padding-xl: 40px;
-  --section-padding-2xl: 48px;
+  --page-margin-sm: 1rem;
+  --page-margin-md: clamp(1rem, calc(0.48413rem + 2.1164vw), 1.5rem);
+  --page-margin-lg: clamp(1rem, calc(-0.03175rem + 4.2328vw), 2rem);
+  --section-gap-sm: clamp(1.5rem, calc(0.98413rem + 2.1164vw), 2rem);
+  --section-gap-md: clamp(2rem, calc(0.96825rem + 4.2328vw), 3rem);
+  --section-gap-lg: clamp(3rem, calc(0.93651rem + 8.46561vw), 5rem);
+  --section-padding-sm: clamp(1rem, calc(0.48413rem + 2.1164vw), 1.5rem);
+  --section-padding-md: clamp(1.5rem, calc(0.98413rem + 2.1164vw), 2rem);
+  --section-padding-lg: clamp(2rem, calc(0.96825rem + 4.2328vw), 3rem);
+  --section-padding-xl: clamp(2.5rem, calc(0.95238rem + 6.34921vw), 4rem);
+  --section-padding-2xl: clamp(3rem, calc(0.93651rem + 8.46561vw), 5rem);
 }
 @media (min-width: 768px) {
   :root {
-    --page-margin-sm: 16px;
-    --page-margin-md: 24px;
-    --page-margin-lg: 32px;
-    --section-gap-sm: 32px;
-    --section-gap-md: 48px;
-    --section-gap-lg: 80px;
-    --section-padding-sm: 24px;
-    --section-padding-md: 32px;
-    --section-padding-lg: 48px;
-    --section-padding-xl: 64px;
-    --section-padding-2xl: 80px;
-  }
-}
-@media (min-width: 1024px) {
-  :root {
-    --page-margin-sm: 32px;
-    --page-margin-md: 64px;
-    --page-margin-lg: 80px;
-    --section-gap-sm: 64px;
-    --section-gap-md: 96px;
-    --section-gap-lg: 128px;
-    --section-padding-sm: 32px;
-    --section-padding-md: 48px;
-    --section-padding-lg: 80px;
-    --section-padding-xl: 120px;
-    --section-padding-2xl: 160px;
+    --page-margin-sm: clamp(1rem, calc(0.33333rem + 1.38889vw), 2rem);
+    --page-margin-md: clamp(1.5rem, calc(-0.16667rem + 3.47222vw), 4rem);
+    --page-margin-lg: clamp(2rem, calc(0rem + 4.16667vw), 5rem);
+    --section-gap-sm: clamp(2rem, calc(0.66667rem + 2.77778vw), 4rem);
+    --section-gap-md: clamp(3rem, calc(1rem + 4.16667vw), 6rem);
+    --section-gap-lg: clamp(5rem, calc(3rem + 4.16667vw), 8rem);
+    --section-padding-sm: clamp(1.5rem, calc(1.16667rem + 0.69444vw), 2rem);
+    --section-padding-md: clamp(2rem, calc(1.33333rem + 1.38889vw), 3rem);
+    --section-padding-lg: clamp(3rem, calc(1.66667rem + 2.77778vw), 5rem);
+    --section-padding-xl: clamp(4rem, calc(1.66667rem + 4.86111vw), 7.5rem);
+    --section-padding-2xl: clamp(5rem, calc(1.66667rem + 6.94444vw), 10rem);
   }
 }
 /* <<< tokens:sync END (spacing) */
