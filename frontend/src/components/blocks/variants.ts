@@ -11,7 +11,7 @@ export const aspectRatioClass: Record<AspectRatio, string> = {
 
 export const imageText = tv({
   slots: {
-    grid: "grid grid-cols-1 md:grid-cols-2 items-center",
+    grid: "grid grid-cols-1 md:grid-cols-2 items-center py-[var(--section-gap-sm)] md:py-0",
     imageCol: "",
     image: "w-full [&_[data-si-loading]]:h-full [&_[data-si-loading]]:w-full",
     textCol: "flex flex-col justify-center",
@@ -27,7 +27,7 @@ export const imageText = tv({
         image: "rounded-lg",
       },
       bleed: {
-        grid: "gap-0",
+        grid: "gap-10 md:gap-0",
       },
     },
     aspectRatio: {
