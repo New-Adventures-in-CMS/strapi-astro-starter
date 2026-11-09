@@ -16,6 +16,11 @@
     "lead": {
       "type": "text"
     },
+    "aspect_ratio": {
+      "type": "enumeration",
+      "enum": ["16:9", "3:2", "4:3", "1:1", "4:5"],
+      "default": "3:2"
+    },
     "display": {
       "type": "enumeration",
       "enum": ["grid", "carousel"],
@@ -53,6 +58,11 @@
       "loop": {
         "edit": {
           "description": "Se attivo, il carosello riparte dalla prima immagine dopo l'ultima. Ha effetto solo in vista carosello."
+        }
+      },
+      "aspect_ratio": {
+        "edit": {
+          "description": "Proporzione delle immagini del blocco (ritaglio cover, altezza uniforme)."
         }
       }
     }

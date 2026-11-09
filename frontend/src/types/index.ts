@@ -103,6 +103,7 @@ export interface BlockCardGrid {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  aspect_ratio?: AspectRatio;
   cards: SharedCard[];
   section?: SharedSection;
   container?: SharedContainer;
@@ -113,6 +114,7 @@ export interface BlockCarousel {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  aspect_ratio?: AspectRatio;
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
@@ -121,7 +123,7 @@ export interface BlockCarousel {
 }
 
 export type ImageFit = "cover" | "contain";
-export type AspectRatio = "4:3" | "1:1";
+export type AspectRatio = "16:9" | "3:2" | "4:3" | "1:1" | "4:5";
 export type ReadingWidth = "normal" | "wide";
 export type BlockWidth = "full" | "contained" | "bleed";
 export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
@@ -152,6 +154,7 @@ export interface BlockGallery {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  aspect_ratio?: AspectRatio;
   display?: GalleryDisplay | null;
   loop?: boolean | null;
   images: StrapiMedia[];

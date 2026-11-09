@@ -568,6 +568,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "FULL WIDTH · DARK TONE",
             heading: "Card grid at full bleed on a dark band",
             lead: "Nine cards on a dark background with full width — exercising both the dark section tone and the full container variant.",
+            aspect_ratio: "1:1",
             section: { tone: "dark" },
             container: { width: "full" },
             cards: [
@@ -638,6 +639,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "CAROUSEL GALLERY",
             heading: "Swipe through the set",
             lead: "Gallery in carousel view: the same images in a horizontal track with a peek of the next one, header aligned left.",
+            aspect_ratio: "4:5",
             display: "carousel",
             loop: false,
             section: { tone: "default" },
@@ -649,6 +651,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "CAROUSEL",
             heading: "Card carousel with peek rail",
             lead: "The carousel block, seeded here for the first time. Cards peek from the edges, hinting that more content is available.",
+            aspect_ratio: "4:3",
             loop: true,
             section: { tone: "default" },
             container: {},

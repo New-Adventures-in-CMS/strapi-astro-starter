@@ -1,5 +1,11 @@
 ---
-import type { SharedSection, SharedContainer, StrapiMedia, GalleryDisplay } from "@/types";
+import type {
+  SharedSection,
+  SharedContainer,
+  StrapiMedia,
+  GalleryDisplay,
+  AspectRatio,
+} from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
@@ -9,12 +15,13 @@ import {
   dialogContent,
   dialogCloseButton,
 } from "@/components/starwind/dialog/variants";
-import { gallery as galleryTv, carousel as cv } from "./variants";
+import { gallery as galleryTv, carousel as cv, aspectRatioClass } from "./variants";
 
 interface Props {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  aspect_ratio?: AspectRatio;
   display?: GalleryDisplay | null;
   loop?: boolean | null;
   images: StrapiMedia[];
@@ -22,7 +29,18 @@ interface Props {
   container?: SharedContainer;
 }
 
-const { heading, eyebrow, lead, display, loop, images, section: sec, container } = Astro.props;
+const {
+  heading,
+  eyebrow,
+  lead,
+  aspect_ratio,
+  display,
+  loop,
+  images,
+  section: sec,
+  container,
+} = Astro.props;
+const arClass = aspectRatioClass[aspect_ratio ?? "3:2"];
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
@@ -72,7 +90,7 @@ const thumbSizes = isCarousel
                   <StrapiImage
                     image={img}
                     sizes={thumbSizes}
-                    class="aspect-[3/2] w-full object-cover"
+                    class={`${arClass} w-full object-cover`}
                     loadingIndicator="blur"
                   />
                 </div>
@@ -110,7 +128,7 @@ const thumbSizes = isCarousel
                       <StrapiImage
                         image={img}
                         sizes={thumbSizes}
-                        class="aspect-[3/2] w-full object-cover"
+                        class={`${arClass} w-full object-cover`}
                         loadingIndicator="blur"
                       />
                       {img.caption && (

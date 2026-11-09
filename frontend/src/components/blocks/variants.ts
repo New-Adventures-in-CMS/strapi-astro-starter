@@ -1,4 +1,13 @@
 import { tv } from "tailwind-variants";
+import type { AspectRatio } from "@/types";
+
+export const aspectRatioClass: Record<AspectRatio, string> = {
+  "16:9": "aspect-video",
+  "3:2": "aspect-[3/2]",
+  "4:3": "aspect-[4/3]",
+  "1:1": "aspect-square",
+  "4:5": "aspect-[4/5]",
+};
 
 export const imageText = tv({
   slots: {
@@ -22,8 +31,11 @@ export const imageText = tv({
       },
     },
     aspectRatio: {
-      "4:3": { image: "aspect-[4/3]" },
-      "1:1": { image: "aspect-square" },
+      "16:9": { image: aspectRatioClass["16:9"] },
+      "3:2": { image: aspectRatioClass["3:2"] },
+      "4:3": { image: aspectRatioClass["4:3"] },
+      "1:1": { image: aspectRatioClass["1:1"] },
+      "4:5": { image: aspectRatioClass["4:5"] },
     },
     imageFit: {
       cover: { image: "object-cover object-center" },

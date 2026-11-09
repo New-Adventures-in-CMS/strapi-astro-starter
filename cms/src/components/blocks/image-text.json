@@ -40,7 +40,7 @@
     },
     "aspect_ratio": {
       "type": "enumeration",
-      "enum": ["4:3", "1:1"],
+      "enum": ["16:9", "3:2", "4:3", "1:1", "4:5"],
       "default": "4:3"
     },
     "section": {
@@ -80,7 +80,7 @@
       },
       "aspect_ratio": {
         "edit": {
-          "description": "Proporzione del riquadro immagine: 4:3 (orizzontale) o 1:1 (quadrato)."
+          "description": "Proporzione del riquadro immagine (ritaglio cover)."
         }
       }
     }

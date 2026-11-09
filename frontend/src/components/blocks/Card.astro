@@ -1,5 +1,5 @@
 ---
-import type { SharedCard } from "@/types";
+import type { SharedCard, AspectRatio } from "@/types";
 import {
   Card as UICard,
   CardHeader,
@@ -9,14 +9,17 @@ import {
 } from "@/components/starwind/card";
 import { Button } from "@/components/starwind/button";
 import StrapiImage from "@/components/StrapiImage.astro";
+import { aspectRatioClass } from "./variants";
 
 interface Props {
   card: SharedCard;
   onDark?: boolean;
   index?: number;
+  aspectRatio?: AspectRatio;
 }
 
-const { card, onDark = false, index } = Astro.props;
+const { card, onDark = false, index, aspectRatio = "16:9" } = Astro.props;
+const arClass = aspectRatioClass[aspectRatio];
 const hasImage = card.image != null;
 const hasMaskReveal = hasImage && index != null;
 const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal && "pt-0"]
@@ -36,7 +39,7 @@ const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal 
           image={card.image}
           alt={card.image?.alternativeText || card.title || ""}
           sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-          class="w-full object-cover aspect-video"
+          class={`w-full object-cover ${arClass}`}
           loadingIndicator="blur"
         />
       </div>
@@ -45,13 +48,13 @@ const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal 
         image={card.image}
         alt={card.image?.alternativeText || card.title || ""}
         sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-        class="w-full rounded-t-lg object-cover aspect-video"
+        class={`w-full rounded-t-lg object-cover ${arClass}`}
         loadingIndicator="blur"
       />
     )
   ) : (
     <div
-      class="w-full rounded-t-lg aspect-video flex items-center justify-center bg-muted/40 text-muted-foreground"
+      class={`w-full rounded-t-lg ${arClass} flex items-center justify-center bg-muted/40 text-muted-foreground`}
       aria-hidden="true"
     >
       <svg

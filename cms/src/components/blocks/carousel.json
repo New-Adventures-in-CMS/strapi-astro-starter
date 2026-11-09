@@ -24,6 +24,11 @@
     "lead": {
       "type": "text"
     },
+    "aspect_ratio": {
+      "type": "enumeration",
+      "enum": ["16:9", "3:2", "4:3", "1:1", "4:5"],
+      "default": "16:9"
+    },
     "cards": {
       "type": "component",
       "component": "shared.card",
@@ -52,6 +57,11 @@
       "loop": {
         "edit": {
           "description": "Se attivo, dopo l'ultima slide il carosello riparte dalla prima (scorrimento infinito)."
+        }
+      },
+      "aspect_ratio": {
+        "edit": {
+          "description": "Proporzione delle immagini del blocco (ritaglio cover, altezza uniforme)."
         }
       }
     }

@@ -1,5 +1,5 @@
 ---
-import type { SharedSection, SharedCard, SharedContainer } from "@/types";
+import type { SharedSection, SharedCard, SharedContainer, AspectRatio } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Card from "./Card.astro";
@@ -8,12 +8,14 @@ interface Props {
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
+  aspect_ratio?: AspectRatio;
   cards: SharedCard[];
   section?: SharedSection;
   container?: SharedContainer;
 }
 
-const { heading, eyebrow, lead, cards, section: sec, container } = Astro.props;
+const { heading, eyebrow, lead, aspect_ratio, cards, section: sec, container } = Astro.props;
+const aspectRatio = aspect_ratio ?? "16:9";
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
@@ -37,7 +39,7 @@ const onDark = tone === "dark";
       data-mask-grid
     >
       {cards.map((c, i) => (
-        <Card card={c} onDark={onDark} index={i} />
+        <Card card={c} onDark={onDark} index={i} aspectRatio={aspectRatio} />
       ))}
     </div>
   </Container>
