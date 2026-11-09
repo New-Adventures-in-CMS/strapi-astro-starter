@@ -1,13 +1,6 @@
 ---
 import type { SharedCard, AspectRatio } from "@/types";
-import {
-  Card as UICard,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/starwind/card";
-import { Button } from "@/components/starwind/button";
+import { Card as UICard, CardHeader, CardTitle, CardDescription } from "@/components/starwind/card";
 import StrapiImage from "@/components/StrapiImage.astro";
 import { aspectRatioClass } from "./variants";
 
@@ -74,10 +67,13 @@ const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal 
     {card.description && <CardDescription>{card.description}</CardDescription>}
   </CardHeader>
   {card.link_url && card.link_text && (
-    <CardFooter>
-      <Button variant="ghost" size="sm" href={card.link_url}>
-        {card.link_text}
-      </Button>
-    </CardFooter>
+    <div class="px-(--card-spacing) pb-1">
+      <a
+        href={card.link_url}
+        class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+      >
+        {card.link_text} &rarr;
+      </a>
+    </div>
   )}
 </UICard>
