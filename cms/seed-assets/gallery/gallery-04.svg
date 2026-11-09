@@ -1,13 +1,14 @@
-<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="g4bg" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" style="stop-color:#141414"/>
-      <stop offset="100%" style="stop-color:#0a0a0a"/>
+    <linearGradient id="bg-gallery-gallery-04-svg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a855f7"/>
+      <stop offset=".5" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#5b21b6"/>
     </linearGradient>
   </defs>
-  <rect width="800" height="600" fill="url(#g4bg)"/>
-  <path d="M0,400 Q200,200 400,350 T800,250" stroke="#2a2a2a" stroke-width="3" fill="none" opacity="0.6"/>
-  <path d="M0,450 Q200,250 400,400 T800,300" stroke="#222" stroke-width="2" fill="none" opacity="0.4"/>
-  <circle cx="650" cy="150" r="80" fill="#1e1e1e" opacity="0.5"/>
-  <rect x="50" y="50" width="120" height="120" rx="60" fill="#252525" opacity="0.4"/>
+  <rect width="1200" height="800" fill="url(#bg-gallery-gallery-04-svg)"/>
+  <g fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="3">
+    <path d="M0 600 Q300 100 600 400 T1200 300"/><path d="M0 500 Q300 200 600 500 T1200 400"/><circle cx="300" cy="250" r="80"/><circle cx="900" cy="350" r="60"/>
+  </g>
 </svg>

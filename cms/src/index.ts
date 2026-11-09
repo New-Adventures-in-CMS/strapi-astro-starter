@@ -138,7 +138,13 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       "photo-hero.jpg",
       "Synthetic raster placeholder for image pipeline testing",
     );
+    const heroPhoto2 = await uploadSeedImage(
+      strapi,
+      "photo-hero-2.jpg",
+      "Second hero slide gradient placeholder (cold palette)",
+    );
     const heroImg = heroPhoto ?? heroSvg;
+    const heroImg2 = heroPhoto2 ?? heroImg;
     const aboutImg = await uploadSeedImage(
       strapi,
       "image-text-about.svg",
@@ -256,7 +262,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                   "Hero, rich text, image + text, card grids — add new blocks by dropping a schema and an Astro renderer.",
                 cta_text: "See what's inside",
                 cta_url: "/about",
-                image: heroImg ? heroImg.id : undefined,
+                image: heroImg2 ? heroImg2.id : undefined,
               },
               {
                 eyebrow: "DESIGN SYSTEM",
@@ -265,7 +271,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                   "Semantic token layer, fluid type scale, dark statement bands out of the box. Swap the accent in one variable.",
                 cta_text: "Read the guide",
                 cta_url: "/about",
-                image: heroImg ? heroImg.id : undefined,
+                image: heroImg2 ? heroImg2.id : undefined,
               },
             ],
           },
@@ -530,7 +536,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                   "Default, muted, and dark tones. Contained, full, and bleed widths. This page exists so you can see them all without setting each one by hand.",
                 cta_text: "View the design system",
                 cta_url: "/about",
-                image: heroImg ? heroImg.id : undefined,
+                image: heroImg2 ? heroImg2.id : undefined,
               },
             ],
           },

@@ -1,13 +1,14 @@
-<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="g5bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#101010"/>
-      <stop offset="100%" style="stop-color:#1e1e1e"/>
+    <linearGradient id="bg-gallery-gallery-05-svg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eab308"/>
+      <stop offset=".5" stop-color="#ca8a04"/>
+      <stop offset="1" stop-color="#78350f"/>
     </linearGradient>
   </defs>
-  <rect width="800" height="600" fill="url(#g5bg)"/>
-  <polygon points="100,500 400,100 700,500" fill="none" stroke="#2a2a2a" stroke-width="2" opacity="0.6"/>
-  <polygon points="200,500 400,200 600,500" fill="#1c1c1c" opacity="0.5"/>
-  <polygon points="300,500 400,300 500,500" fill="#262626" opacity="0.4"/>
-  <circle cx="400" cy="380" r="30" fill="#333" opacity="0.5"/>
+  <rect width="1200" height="800" fill="url(#bg-gallery-gallery-05-svg)"/>
+  <g fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="3">
+    <polygon points="600,100 800,320 720,580 480,580 400,320"/><polygon points="600,200 700,340 660,500 540,500 500,340"/><path d="M0 650 L1200 650"/>
+  </g>
 </svg>
