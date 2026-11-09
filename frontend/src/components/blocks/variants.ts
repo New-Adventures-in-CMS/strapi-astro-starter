@@ -11,7 +11,7 @@ export const aspectRatioClass: Record<AspectRatio, string> = {
 
 export const imageText = tv({
   slots: {
-    grid: "grid grid-cols-1 md:grid-cols-2 items-center py-[var(--section-gap-sm)] md:py-0",
+    grid: "grid grid-cols-1 lg:grid-cols-2 items-center py-[var(--section-gap-sm)] lg:py-0",
     imageCol: "",
     image: "w-full [&_[data-si-loading]]:h-full [&_[data-si-loading]]:w-full",
     textCol: "flex flex-col justify-center",
@@ -19,15 +19,15 @@ export const imageText = tv({
   variants: {
     width: {
       contained: {
-        grid: "gap-10 md:gap-16",
+        grid: "gap-10 lg:gap-16",
         image: "rounded-lg",
       },
       full: {
-        grid: "gap-10 md:gap-16",
+        grid: "gap-10 lg:gap-16",
         image: "rounded-lg",
       },
       bleed: {
-        grid: "gap-10 md:gap-0",
+        grid: "gap-10 lg:gap-0",
       },
     },
     aspectRatio: {
@@ -43,12 +43,12 @@ export const imageText = tv({
     },
     imagePosition: {
       left: {
-        imageCol: "md:order-1",
-        textCol: "md:order-2",
+        imageCol: "lg:order-1",
+        textCol: "lg:order-2",
       },
       right: {
-        imageCol: "md:order-2",
-        textCol: "md:order-1",
+        imageCol: "lg:order-2",
+        textCol: "lg:order-1",
       },
     },
   },
@@ -60,7 +60,7 @@ export const imageText = tv({
       imagePosition: "left",
       class: {
         image: "rounded-none",
-        textCol: "px-[var(--page-margin-lg)] md:pl-16 md:pr-20 lg:pl-[120px] lg:pr-[160px]",
+        textCol: "px-[var(--page-margin-lg)] lg:pl-16 lg:pr-20 xl:pl-[120px] xl:pr-[160px]",
       },
     },
     // bleed + image right: image flush right, text padded left
@@ -69,7 +69,7 @@ export const imageText = tv({
       imagePosition: "right",
       class: {
         image: "rounded-none",
-        textCol: "px-[var(--page-margin-lg)] md:pr-16 md:pl-20 lg:pr-[120px] lg:pl-[160px]",
+        textCol: "px-[var(--page-margin-lg)] lg:pr-16 lg:pl-20 xl:pr-[120px] xl:pl-[160px]",
       },
     },
   ],
