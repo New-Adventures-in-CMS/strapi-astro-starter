@@ -1,21 +1,31 @@
 ---
-import type { SharedCard, AspectRatio } from "@/types";
+import type { SharedCard, AspectRatio, CtaStyle } from "@/types";
 import { Card as UICard, CardHeader, CardTitle, CardDescription } from "@/components/starwind/card";
 import StrapiImage from "@/components/StrapiImage.astro";
-import { aspectRatioClass } from "./variants";
+import { aspectRatioClass, ctaStyleClass } from "./variants";
 
 interface Props {
   card: SharedCard;
   onDark?: boolean;
   index?: number;
   aspectRatio?: AspectRatio;
+  ctaStyle?: CtaStyle;
 }
 
-const { card, onDark = false, index, aspectRatio = "16:9" } = Astro.props;
+const { card, onDark = false, index, aspectRatio = "16:9", ctaStyle = "button" } = Astro.props;
 const arClass = aspectRatioClass[aspectRatio];
 const hasImage = card.image != null;
 const hasMaskReveal = hasImage && index != null;
-const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal && "pt-0"]
+const isFullCard = ctaStyle === "full_card";
+const hasCta = !!(card.link_url && card.link_text);
+const clickable = isFullCard && hasCta;
+const zoomClass = clickable && hasImage ? ctaStyleClass.full_card.image : "";
+const cardClass = [
+  onDark && "bg-background/80 border-border/50",
+  hasMaskReveal && "pt-0",
+  ctaStyleClass[ctaStyle].card,
+  clickable && "cursor-pointer",
+]
   .filter(Boolean)
   .join(" ");
 ---
@@ -32,18 +42,20 @@ const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal 
           image={card.image}
           alt={card.image?.alternativeText || card.title || ""}
           sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-          class={`w-full object-cover ${arClass}`}
+          class={`w-full object-cover ${arClass} ${zoomClass}`}
           loadingIndicator="blur"
         />
       </div>
     ) : (
-      <StrapiImage
-        image={card.image}
-        alt={card.image?.alternativeText || card.title || ""}
-        sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-        class={`w-full rounded-t-lg object-cover ${arClass}`}
-        loadingIndicator="blur"
-      />
+      <div class="overflow-hidden rounded-t-lg">
+        <StrapiImage
+          image={card.image}
+          alt={card.image?.alternativeText || card.title || ""}
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          class={`w-full object-cover ${arClass} ${zoomClass}`}
+          loadingIndicator="blur"
+        />
+      </div>
     )
   ) : (
     <div
@@ -66,7 +78,7 @@ const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal 
     <CardTitle>{card.title}</CardTitle>
     {card.description && <CardDescription>{card.description}</CardDescription>}
   </CardHeader>
-  {card.link_url && card.link_text && (
+  {!isFullCard && hasCta && (
     <div class="px-(--card-spacing) pb-1">
       <a
         href={card.link_url}
@@ -75,5 +87,10 @@ const cardClass = [onDark && "bg-background/80 border-border/50", hasMaskReveal 
         {card.link_text} &rarr;
       </a>
     </div>
+  )}
+  {clickable && (
+    <a href={card.link_url} class="after:absolute after:inset-0 after:z-10">
+      <span class="sr-only">{card.link_text}</span>
+    </a>
   )}
 </UICard>

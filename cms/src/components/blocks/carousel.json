@@ -29,6 +29,11 @@
       "enum": ["16:9", "3:2", "4:3", "1:1", "4:5"],
       "default": "16:9"
     },
+    "cta_style": {
+      "type": "enumeration",
+      "enum": ["button", "full_card"],
+      "default": "button"
+    },
     "cards": {
       "type": "component",
       "component": "shared.card",
@@ -62,6 +67,11 @@
       "aspect_ratio": {
         "edit": {
           "description": "Proporzione delle immagini del blocco (ritaglio cover, altezza uniforme)."
+        }
+      },
+      "cta_style": {
+        "edit": {
+          "description": "Come appaiono le CTA delle card: button visibile, oppure intera card cliccabile con zoom dell'immagine in hover."
         }
       }
     }

@@ -697,6 +697,85 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             ],
           },
           {
+            __component: "blocks.card-grid",
+            eyebrow: "FULL CARD · DARK TONE",
+            heading: "Clickable cards with image zoom",
+            lead: "Cards in full_card mode: the entire surface is a link and the image zooms on hover. No visible button — the affordance is the zoom.",
+            aspect_ratio: "3:2",
+            cta_style: "full_card",
+            section: { tone: "dark" },
+            container: {},
+            cards: [
+              {
+                title: "Headless CMS",
+                description: "Content model versioned as JSON. No vendor lock-in.",
+                link_url: "/about",
+                link_text: "Learn more",
+                image: cardImgs.cms?.id ?? undefined,
+              },
+              {
+                title: "Block builder",
+                description:
+                  "Compose pages from reusable blocks — add new ones with a schema and a renderer.",
+                link_url: "/about",
+                link_text: "Explore blocks",
+                image: cardImgs.blocks?.id ?? undefined,
+              },
+              {
+                title: "Design system",
+                description:
+                  "Section and Container primitives, fluid type scale, semantic token layer.",
+                link_url: "/about",
+                link_text: "View tokens",
+                image: cardImgs.design?.id ?? undefined,
+              },
+            ],
+          },
+          {
+            __component: "blocks.carousel",
+            eyebrow: "FULL CARD CAROUSEL",
+            heading: "Swipe clickable cards",
+            lead: "Carousel in full_card mode — each card is a link. Image zoom on hover signals interactivity.",
+            aspect_ratio: "4:3",
+            cta_style: "full_card",
+            loop: true,
+            section: { tone: "default" },
+            container: {},
+            cards: [
+              {
+                title: "Clone and run",
+                description: "install:all, dev, done. No manual env plumbing.",
+                link_url: "/about",
+                link_text: "Get started",
+                image: cardImgs.clone?.id ?? undefined,
+              },
+              {
+                title: "Editorial taste",
+                description:
+                  "Dark bands, uppercase display headlines, generous rhythm — tuned, not vanilla.",
+                link_url: "/about",
+                link_text: "See the design",
+                image: cardImgs.editorial?.id ?? undefined,
+              },
+              {
+                title: "Repointable tokens",
+                description:
+                  "Semantic color layer isolated from Tailwind — swap to Radix without touching components.",
+                link_url: "/about",
+                link_text: "Read the guide",
+                image: cardImgs.tokens?.id ?? undefined,
+              },
+              {
+                title: "Dynamic forms",
+                description:
+                  "Form definitions in the CMS, submissions in the admin, honeypot on the frontend.",
+                link_url: "/contacts",
+                link_text: "Try the form",
+                image: cardImgs.forms?.id ?? undefined,
+              },
+            ],
+          },
+          {
             __component: "blocks.faq",
             eyebrow: "FAQ · DARK TONE",
             heading: "Frequently asked questions",

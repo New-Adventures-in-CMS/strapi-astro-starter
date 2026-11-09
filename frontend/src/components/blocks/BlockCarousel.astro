@@ -1,5 +1,5 @@
 ---
-import type { SharedSection, SharedCard, SharedContainer, AspectRatio } from "@/types";
+import type { SharedSection, SharedCard, SharedContainer, AspectRatio, CtaStyle } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Card from "./Card.astro";
@@ -10,6 +10,7 @@ interface Props {
   eyebrow?: string | null;
   lead?: string | null;
   aspect_ratio?: AspectRatio;
+  cta_style?: CtaStyle;
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
@@ -22,6 +23,7 @@ const {
   eyebrow,
   lead,
   aspect_ratio,
+  cta_style,
   cards,
   loop,
   autoplay,
@@ -29,6 +31,7 @@ const {
   container,
 } = Astro.props;
 const aspectRatio = aspect_ratio ?? "16:9";
+const ctaStyle = cta_style ?? "button";
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
@@ -53,7 +56,7 @@ const onDark = tone === "dark";
         <div class={cv.track()}>
           {cards.map((c) => (
             <div class={cv.slide()}>
-              <Card card={c} onDark={onDark} aspectRatio={aspectRatio} />
+              <Card card={c} onDark={onDark} aspectRatio={aspectRatio} ctaStyle={ctaStyle} />
             </div>
           ))}
         </div>

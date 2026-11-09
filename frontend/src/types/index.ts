@@ -104,6 +104,7 @@ export interface BlockCardGrid {
   eyebrow?: string | null;
   lead?: string | null;
   aspect_ratio?: AspectRatio;
+  cta_style?: CtaStyle;
   cards: SharedCard[];
   section?: SharedSection;
   container?: SharedContainer;
@@ -115,6 +116,7 @@ export interface BlockCarousel {
   eyebrow?: string | null;
   lead?: string | null;
   aspect_ratio?: AspectRatio;
+  cta_style?: CtaStyle;
   cards: SharedCard[];
   loop?: boolean | null;
   autoplay?: boolean | null;
@@ -122,6 +124,7 @@ export interface BlockCarousel {
   container?: SharedContainer;
 }
 
+export type CtaStyle = "button" | "full_card";
 export type ImageFit = "cover" | "contain";
 export type AspectRatio = "16:9" | "3:2" | "4:3" | "1:1" | "4:5";
 export type ReadingWidth = "normal" | "wide";

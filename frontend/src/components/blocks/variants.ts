@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-import type { AspectRatio } from "@/types";
+import type { AspectRatio, CtaStyle } from "@/types";
 
 export const aspectRatioClass: Record<AspectRatio, string> = {
   "16:9": "aspect-video",
@@ -7,6 +7,14 @@ export const aspectRatioClass: Record<AspectRatio, string> = {
   "4:3": "aspect-[4/3]",
   "1:1": "aspect-square",
   "4:5": "aspect-[4/5]",
+};
+
+export const ctaStyleClass: Record<CtaStyle, { card: string; image: string }> = {
+  button: { card: "", image: "" },
+  full_card: {
+    card: "relative",
+    image: "motion-safe:group-hover/card:scale-105 transition-transform duration-500 ease-out",
+  },
 };
 
 export const imageText = tv({
