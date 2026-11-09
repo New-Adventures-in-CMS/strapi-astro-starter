@@ -478,7 +478,9 @@ test.describe("Header v2 — underline nav styling", () => {
   test("active nav link is marked by full opacity, not underline", async ({ page }) => {
     await page.goto("/");
 
-    const activeLink = page.locator("header [data-slot='navigation-menu-link'][data-active]");
+    const activeLink = page.locator(
+      "header[data-hidden] [data-slot='navigation-menu-link'][data-active]",
+    );
     const count = await activeLink.count();
     expect(count).toBeGreaterThan(0);
 
@@ -719,7 +721,7 @@ test.describe("Desktop nav — banda fixture (/dev/megamenu)", () => {
     await page.keyboard.press("Enter");
     await expect(trigger).toHaveAttribute("data-state", "open");
 
-    const header = page.locator("header");
+    const header = page.locator("header[data-hidden]");
     const popup = page.locator("[data-sw-nav-menu-popup]");
     const headerBox = await header.boundingBox();
     const popupBox = await popup.boundingBox();
@@ -753,7 +755,7 @@ test.describe("Desktop nav — header keep-open", () => {
     await trigger.hover();
     await expect(trigger).toHaveAttribute("data-state", "open");
 
-    const logo = page.locator('header a[href="/"]');
+    const logo = page.locator('header[data-hidden] a[href="/"]');
     await logo.hover();
 
     // Wait longer than closeDelay (280ms) to confirm menu stays open
@@ -775,7 +777,7 @@ test.describe("Desktop nav — header keep-open", () => {
     await expect(trigger).toHaveAttribute("data-state", "open");
 
     // Move to logo (inside header)
-    const logo = page.locator('header a[href="/"]');
+    const logo = page.locator('header[data-hidden] a[href="/"]');
     await logo.hover();
     await page.waitForTimeout(100);
 

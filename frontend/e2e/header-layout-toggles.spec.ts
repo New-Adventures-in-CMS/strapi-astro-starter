@@ -10,14 +10,14 @@ test.describe("Header layout toggles — data attributes and fallback", () => {
 
   test("<header> exposes data-header-width and data-submenu-layout", async ({ page }) => {
     await page.goto("/");
-    const header = page.locator("header").first();
+    const header = page.locator("header[data-hidden]");
     await expect(header).toHaveAttribute("data-header-width", /^(full|contained)$/);
     await expect(header).toHaveAttribute("data-submenu-layout", /^(full-bleed|dropdown)$/);
   });
 
   test("fallback path uses site.header defaults (full + full-bleed)", async ({ page }) => {
     await page.goto("/");
-    const header = page.locator("header").first();
+    const header = page.locator("header[data-hidden]");
     await expect(header).toHaveAttribute("data-header-width", "full");
     await expect(header).toHaveAttribute("data-submenu-layout", "full-bleed");
   });
@@ -40,7 +40,7 @@ test.describe("Footer width toggle — data attribute, fallback, inset parity", 
 
   test("full footer inset matches full header inset (same --page-margin-lg)", async ({ page }) => {
     await page.goto("/");
-    const header = page.locator("header").first();
+    const header = page.locator("header[data-hidden]");
     const footer = page.locator("footer").first();
     await expect(header).toHaveAttribute("data-header-width", "full");
     await expect(footer).toHaveAttribute("data-footer-width", "full");

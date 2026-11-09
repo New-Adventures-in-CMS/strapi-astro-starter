@@ -35,7 +35,7 @@ test.describe("Sticky footer (desktop ≥768px)", () => {
 
   test("header is elevated above main (z-index)", async ({ page }) => {
     await page.goto("/");
-    const headerZ = await page.locator("header").evaluate((el) => {
+    const headerZ = await page.locator("header[data-hidden]").evaluate((el) => {
       return parseInt(getComputedStyle(el).zIndex, 10);
     });
     const mainZ = await page.locator("main").evaluate((el) => {
