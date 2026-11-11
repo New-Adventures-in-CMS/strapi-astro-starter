@@ -62,6 +62,16 @@
     }
   },
   "config": {
+    "layouts": {
+      "edit": [
+        [{ "name": "submenuLayout", "size": 6 }, { "name": "headerWidth", "size": 6 }],
+        [{ "name": "footerWidth", "size": 6 }, { "name": "footerTone", "size": 6 }],
+        [{ "name": "stickyShell", "size": 6 }, { "name": "imageMaskReveal", "size": 6 }],
+        [{ "name": "companyName", "size": 6 }, { "name": "vatNumber", "size": 6 }],
+        [{ "name": "address", "size": 12 }],
+        [{ "name": "socialLinks", "size": 12 }]
+      ]
+    },
     "metadatas": {
       "submenuLayout": {
         "edit": {

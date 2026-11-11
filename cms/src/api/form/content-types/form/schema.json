@@ -48,6 +48,14 @@
     }
   },
   "config": {
+    "layouts": {
+      "edit": [
+        [{ "name": "nome", "size": 6 }, { "name": "slug", "size": 6 }],
+        [{ "name": "emailDestinatario", "size": 6 }, { "name": "messaggioSuccesso", "size": 6 }],
+        [{ "name": "campi", "size": 12 }],
+        [{ "name": "submissions", "size": 12 }]
+      ]
+    },
     "metadatas": {
       "emailDestinatario": {
         "edit": {

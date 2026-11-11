@@ -61,6 +61,19 @@
     }
   },
   "config": {
+    "layouts": {
+      "edit": [
+        [{ "name": "heading", "size": 6 }, { "name": "eyebrow", "size": 6 }],
+        [{ "name": "body", "size": 12 }],
+        [{ "name": "image", "size": 12 }],
+        [{ "name": "image_position", "size": 6 }, { "name": "image_fit", "size": 6 }],
+        [{ "name": "aspect_ratio", "size": 6 }],
+        [{ "name": "cta_primary", "size": 12 }],
+        [{ "name": "cta_secondary", "size": 12 }],
+        [{ "name": "section", "size": 12 }],
+        [{ "name": "container", "size": 12 }]
+      ]
+    },
     "metadatas": {
       "cta_primary": {
         "edit": {

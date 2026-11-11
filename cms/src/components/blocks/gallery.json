@@ -27,7 +27,12 @@
     },
     "loop": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "display" }, "carousel"]
+        }
+      }
     },
     "images": {
       "type": "media",
@@ -58,6 +63,19 @@
     }
   },
   "config": {
+    "layouts": {
+      "edit": [
+        [{ "name": "eyebrow", "size": 6 }, { "name": "heading", "size": 6 }],
+        [{ "name": "lead", "size": 12 }],
+        [{ "name": "images", "size": 12 }],
+        [{ "name": "aspect_ratio", "size": 6 }],
+        [{ "name": "display", "size": 6 }, { "name": "loop", "size": 6 }],
+        [{ "name": "cta_primary", "size": 12 }],
+        [{ "name": "cta_secondary", "size": 12 }],
+        [{ "name": "section", "size": 12 }],
+        [{ "name": "container", "size": 12 }]
+      ]
+    },
     "metadatas": {
       "display": {
         "edit": {

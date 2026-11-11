@@ -63,6 +63,19 @@
     }
   },
   "config": {
+    "layouts": {
+      "edit": [
+        [{ "name": "heading", "size": 6 }, { "name": "eyebrow", "size": 6 }],
+        [{ "name": "lead", "size": 12 }],
+        [{ "name": "cards", "size": 12 }],
+        [{ "name": "aspect_ratio", "size": 6 }, { "name": "cta_style", "size": 6 }],
+        [{ "name": "autoplay", "size": 6 }, { "name": "loop", "size": 6 }],
+        [{ "name": "cta_primary", "size": 12 }],
+        [{ "name": "cta_secondary", "size": 12 }],
+        [{ "name": "section", "size": 12 }],
+        [{ "name": "container", "size": 12 }]
+      ]
+    },
     "metadatas": {
       "autoplay": {
         "edit": {
