@@ -588,6 +588,8 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             heading: "Card grid at full bleed on a dark band",
             lead: "Nine cards on a dark background with full width — exercising both the dark section tone and the full container variant.",
             aspect_ratio: "1:1",
+            cta_primary: ctaFromUrl("Explore all features", "/about"),
+            cta_secondary: ctaFromUrl("Back to home", "/"),
             section: { tone: "dark" },
             container: { width: "full" },
             cards: [
@@ -672,6 +674,12 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             lead: "The carousel block, seeded here for the first time. Cards peek from the edges, hinting that more content is available.",
             aspect_ratio: "4:3",
             loop: true,
+            cta_primary: ctaFromUrl("View all items", "/about"),
+            cta_secondary: {
+              label: "External link",
+              linkMode: "external" as const,
+              externalUrl: "https://docs.astro.build",
+            },
             section: { tone: "default" },
             container: {},
             cards: [

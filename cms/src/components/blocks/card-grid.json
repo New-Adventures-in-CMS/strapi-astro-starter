@@ -42,6 +42,16 @@
       "component": "shared.container",
       "repeatable": false,
       "required": true
+    },
+    "cta_primary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "cta_secondary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
     }
   },
   "config": {

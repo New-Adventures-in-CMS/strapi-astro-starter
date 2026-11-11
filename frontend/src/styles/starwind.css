@@ -167,6 +167,16 @@
   --muted-foreground: var(--section-dark-fg-muted);
 }
 
+/* Button / CTA inside dark Section — auto-invert like Prose */
+[data-tone="dark"] [data-slot="button"] {
+  --foreground: var(--section-dark-cta-bg);
+  --background: var(--section-dark-cta-fg);
+  --muted: var(--section-dark-accent);
+  --border: var(--section-dark-fg-muted);
+  --input: var(--section-dark-fg-muted);
+  --outline: var(--section-dark-fg-muted);
+}
+
 .dark {
   /* Only the primitive ramp flips. Everything semantic cascades. */
   /* >>> tokens:sync START (dark) — generated from nsp-ds-tokens core/color.json — DO NOT EDIT */

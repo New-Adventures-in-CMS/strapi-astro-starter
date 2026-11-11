@@ -116,6 +116,8 @@ export interface BlockCardGrid {
   aspect_ratio?: AspectRatio;
   cta_style?: CtaStyle;
   cards: SharedCard[];
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   section?: SharedSection;
   container?: SharedContainer;
 }
@@ -128,6 +130,8 @@ export interface BlockCarousel {
   aspect_ratio?: AspectRatio;
   cta_style?: CtaStyle;
   cards: SharedCard[];
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   loop?: boolean | null;
   autoplay?: boolean | null;
   section?: SharedSection;
@@ -171,6 +175,8 @@ export interface BlockGallery {
   display?: GalleryDisplay | null;
   loop?: boolean | null;
   images: StrapiMedia[];
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   section?: SharedSection;
   container?: SharedContainer;
 }

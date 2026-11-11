@@ -1,0 +1,83 @@
+---
+import BlockCardGrid from "@/components/blocks/BlockCardGrid.astro";
+import BlockCarousel from "@/components/blocks/BlockCarousel.astro";
+import BlockGallery from "@/components/blocks/BlockGallery.astro";
+import type { SharedLink, SharedCard, SharedSection } from "@/types";
+import "@/styles/starwind.css";
+
+const internalCta: SharedLink = {
+  label: "View all",
+  linkMode: "internal",
+  page: { slug: "about" },
+};
+
+const externalCta: SharedLink = {
+  label: "Docs",
+  linkMode: "external",
+  externalUrl: "https://example.com",
+  target: "blank",
+};
+
+const cards: SharedCard[] = [
+  { title: "Card A", description: "Description A", image: null },
+  { title: "Card B", description: "Description B", image: null },
+];
+
+const darkSection: SharedSection = { tone: "dark" };
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Section CTA Fixture</title>
+  </head>
+  <body>
+    <div data-section="card-grid-cta">
+      <BlockCardGrid
+        heading="Card grid with CTA"
+        cards={cards}
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+      />
+    </div>
+    <div data-section="card-grid-no-cta">
+      <BlockCardGrid heading="Card grid without CTA" cards={cards} />
+    </div>
+    <div data-section="carousel-cta">
+      <BlockCarousel
+        heading="Carousel with CTA"
+        cards={cards}
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+      />
+    </div>
+    <div data-section="gallery-grid-cta">
+      <BlockGallery
+        heading="Gallery grid with CTA"
+        images={[]}
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+      />
+    </div>
+    <div data-section="gallery-carousel-cta">
+      <BlockGallery
+        heading="Gallery carousel with CTA"
+        display="carousel"
+        images={[]}
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+      />
+    </div>
+    <div data-section="card-grid-dark">
+      <BlockCardGrid
+        heading="Card grid dark with CTA"
+        cards={cards}
+        section={darkSection}
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+      />
+    </div>
+  </body>
+</html>

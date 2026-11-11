@@ -5,9 +5,11 @@ import type {
   StrapiMedia,
   GalleryDisplay,
   AspectRatio,
+  SharedLink,
 } from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
+import CtaLink from "@/components/CtaLink.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
 import DialogPrimitive from "@starwind-ui/astro/dialog";
 import {
@@ -25,6 +27,8 @@ interface Props {
   display?: GalleryDisplay | null;
   loop?: boolean | null;
   images: StrapiMedia[];
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   section?: SharedSection;
   container?: SharedContainer;
 }
@@ -37,6 +41,8 @@ const {
   display,
   loop,
   images,
+  cta_primary,
+  cta_secondary,
   section: sec,
   container,
 } = Astro.props;
@@ -46,6 +52,8 @@ const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
 const onDark = tone === "dark";
 const isCarousel = display === "carousel";
+const showCta = cta_primary || cta_secondary;
+const ctaAlignClass = isCarousel ? "" : "justify-center";
 const gv = galleryTv({ width });
 const thumbSizes = isCarousel
   ? "(min-width: 1024px) 46vw, (min-width: 640px) 46vw, 82vw"
@@ -276,6 +284,15 @@ const thumbSizes = isCarousel
             </button>
           </DialogPrimitive.Popup>
         </DialogPrimitive.Root>
+      </div>
+    )}
+    {showCta && (
+      <div
+        class:list={["mt-[var(--content-rhythm-xl)] flex flex-wrap gap-3", ctaAlignClass]}
+        data-section-cta
+      >
+        {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
+        {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}
       </div>
     )}
   </Container>

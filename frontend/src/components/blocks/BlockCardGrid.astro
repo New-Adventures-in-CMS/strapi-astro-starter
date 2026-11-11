@@ -1,7 +1,15 @@
 ---
-import type { SharedSection, SharedCard, SharedContainer, AspectRatio, CtaStyle } from "@/types";
+import type {
+  SharedSection,
+  SharedCard,
+  SharedContainer,
+  AspectRatio,
+  CtaStyle,
+  SharedLink,
+} from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
+import CtaLink from "@/components/CtaLink.astro";
 import Card from "./Card.astro";
 
 interface Props {
@@ -11,6 +19,8 @@ interface Props {
   aspect_ratio?: AspectRatio;
   cta_style?: CtaStyle;
   cards: SharedCard[];
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   section?: SharedSection;
   container?: SharedContainer;
 }
@@ -22,6 +32,8 @@ const {
   aspect_ratio,
   cta_style,
   cards,
+  cta_primary,
+  cta_secondary,
   section: sec,
   container,
 } = Astro.props;
@@ -31,6 +43,7 @@ const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
 const onDark = tone === "dark";
+const showCta = cta_primary || cta_secondary;
 ---
 
 <Section tone={tone} spacing={spacing}>
@@ -53,5 +66,14 @@ const onDark = tone === "dark";
         <Card card={c} onDark={onDark} index={i} aspectRatio={aspectRatio} ctaStyle={ctaStyle} />
       ))}
     </div>
+    {showCta && (
+      <div
+        class="mt-[var(--content-rhythm-xl)] flex flex-wrap justify-center gap-3"
+        data-section-cta
+      >
+        {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
+        {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}
+      </div>
+    )}
   </Container>
 </Section>

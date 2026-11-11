@@ -1,7 +1,15 @@
 ---
-import type { SharedSection, SharedCard, SharedContainer, AspectRatio, CtaStyle } from "@/types";
+import type {
+  SharedSection,
+  SharedCard,
+  SharedContainer,
+  AspectRatio,
+  CtaStyle,
+  SharedLink,
+} from "@/types";
 import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
+import CtaLink from "@/components/CtaLink.astro";
 import Card from "./Card.astro";
 import { carousel as cv } from "./variants";
 
@@ -12,6 +20,8 @@ interface Props {
   aspect_ratio?: AspectRatio;
   cta_style?: CtaStyle;
   cards: SharedCard[];
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   loop?: boolean | null;
   autoplay?: boolean | null;
   section?: SharedSection;
@@ -25,6 +35,8 @@ const {
   aspect_ratio,
   cta_style,
   cards,
+  cta_primary,
+  cta_secondary,
   loop,
   autoplay,
   section: sec,
@@ -36,6 +48,7 @@ const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
 const onDark = tone === "dark";
+const showCta = cta_primary || cta_secondary;
 ---
 
 <Section tone={tone} spacing={spacing}>
@@ -87,6 +100,12 @@ const onDark = tone === "dark";
         </div>
       </div>
     </div>
+    {showCta && (
+      <div class="mt-[var(--content-rhythm-xl)] flex flex-wrap gap-3" data-section-cta>
+        {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
+        {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}
+      </div>
+    )}
   </Container>
 </Section>
 
