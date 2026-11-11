@@ -227,8 +227,83 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       await uploadSeedImage(strapi, "gallery/gallery-06.svg", "Intersecting ellipses abstract"),
     ];
 
+    // ── shared.link CTA helpers ──────────────────────────────
+    const pageDocIds: Record<string, string> = {};
+    const connectSeedPage = (slug: string) =>
+      pageDocIds[slug] ? { connect: [{ documentId: pageDocIds[slug] }] } : undefined;
+    const ctaFromUrl = (label: string, url: string) => {
+      if (url.startsWith("http")) {
+        return { label, linkMode: "external" as const, externalUrl: url };
+      }
+      const slug = url === "/" ? "home" : url.replace(/^\//, "");
+      return {
+        label,
+        linkMode: "internal" as const,
+        page: connectSeedPage(slug),
+      };
+    };
+
+    // ── Create pages in dependency order so CTA page relations resolve ──
+
+    // About — image+text + rich text (created first: referenced by Home + Showcase CTAs)
+    const aboutPage = await strapi.documents("api::page.page").create({
+      data: {
+        title: "Chi siamo",
+        slug: "about",
+        seo_desc:
+          "Extracted from real production work — this starter exists so the next site can begin with the interesting problems, not the plumbing.",
+        blocks: [
+          {
+            __component: "blocks.image-text",
+            eyebrow: "BEHIND THE STARTER",
+            heading: "Built from real production work.",
+            body: "This starter isn't a demo. It's what we wish we'd had on the last five content-driven projects — extracted, cleaned up, and shared.\n\nStrapi handles the content model. Astro renders it. The design system carries the taste so day-one pages already read like a magazine, not a template.",
+            image_position: "left",
+            image: aboutImg ? aboutImg.id : undefined,
+            section: {},
+            container: {},
+          },
+          {
+            __component: "blocks.rich-text",
+            body: "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
+            section: {},
+          },
+          {
+            __component: "blocks.faq",
+            eyebrow: "DOMANDE FREQUENTI",
+            heading: "FAQ",
+            section: {},
+            items: [
+              {
+                question: "What is this starter?",
+                answer:
+                  "A **production-ready** foundation combining [Strapi 5](https://strapi.io) as the headless CMS and Astro for server-rendered pages. It ships with a block-based page builder, dynamic forms, and a tuned design system.",
+              },
+              {
+                question: "Do I need to know Strapi to use it?",
+                answer:
+                  "Not in depth. The content model is already set up — you manage pages, navigation, and forms from the Strapi admin panel. The [setup guide](https://docs.strapi.io) covers everything you need to get started.",
+              },
+              {
+                question: "Can I add my own blocks?",
+                answer:
+                  "Yes. Drop a component schema in `cms/src/components/blocks/`, register it on the page dynamic zone, and create a matching Astro renderer in `frontend/src/components/blocks/`. The FAQ block you're reading was built exactly this way.",
+              },
+              {
+                question: "How do I deploy to production?",
+                answer:
+                  "Astro runs in SSR mode on any **Node 22** host. Build the frontend with `npm run build`, start with `node dist/server/entry.mjs`. Strapi needs its own Node process and a persistent database (SQLite for dev, PostgreSQL recommended for production).",
+              },
+            ],
+          },
+        ],
+      } as any,
+      status: "published",
+    });
+    pageDocIds["about"] = aboutPage.documentId;
+
     // Home — immersive hero with image + two card grids (light + dark statement) + rich text
-    await strapi.documents("api::page.page").create({
+    const homePage = await strapi.documents("api::page.page").create({
       data: {
         title: "Home",
         slug: "home",
@@ -241,8 +316,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             heading: "Ship editorial content, fast.",
             subheading:
               "A production-ready foundation for content-driven sites: Strapi handles the CMS, Astro renders on the server, the design system carries the taste.",
-            cta_text: "Explore the design system",
-            cta_url: "/esempio",
+            cta_primary: ctaFromUrl("Explore the design system", "/esempio"),
             immersive: true,
             image: heroImg ? heroImg.id : undefined,
             slides: [
@@ -251,8 +325,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 heading: "Ship editorial content, fast.",
                 subheading:
                   "A production-ready foundation for content-driven sites: Strapi handles the CMS, Astro renders on the server, the design system carries the taste.",
-                cta_text: "Explore the design system",
-                cta_url: "/esempio",
+                cta_primary: ctaFromUrl("Explore the design system", "/esempio"),
                 image: heroImg ? heroImg.id : undefined,
               },
               {
@@ -260,8 +333,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 heading: "Compose pages without code.",
                 subheading:
                   "Hero, rich text, image + text, card grids — add new blocks by dropping a schema and an Astro renderer.",
-                cta_text: "See what's inside",
-                cta_url: "/about",
+                cta_primary: ctaFromUrl("See what's inside", "/about"),
                 image: heroImg2 ? heroImg2.id : undefined,
               },
               {
@@ -269,8 +341,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 heading: "Taste included, not bolted on.",
                 subheading:
                   "Semantic token layer, fluid type scale, dark statement bands out of the box. Swap the accent in one variable.",
-                cta_text: "Read the guide",
-                cta_url: "/about",
+                cta_primary: ctaFromUrl("Read the guide", "/about"),
                 image: heroImg2 ? heroImg2.id : undefined,
               },
             ],
@@ -366,65 +437,10 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       } as any,
       status: "published",
     });
-
-    // About — image+text + rich text
-    await strapi.documents("api::page.page").create({
-      data: {
-        title: "Chi siamo",
-        slug: "about",
-        seo_desc:
-          "Extracted from real production work — this starter exists so the next site can begin with the interesting problems, not the plumbing.",
-        blocks: [
-          {
-            __component: "blocks.image-text",
-            eyebrow: "BEHIND THE STARTER",
-            heading: "Built from real production work.",
-            body: "This starter isn't a demo. It's what we wish we'd had on the last five content-driven projects — extracted, cleaned up, and shared.\n\nStrapi handles the content model. Astro renders it. The design system carries the taste so day-one pages already read like a magazine, not a template.",
-            image_position: "left",
-            image: aboutImg ? aboutImg.id : undefined,
-            section: {},
-            container: {},
-          },
-          {
-            __component: "blocks.rich-text",
-            body: "## What's included\n\n- **Dynamic navigation** — header and footer menus modelled in Strapi, resolved at request time.\n- **Block page builder** — hero, rich text, image + text, card grids. Add new blocks by dropping a component schema and an Astro renderer.\n- **Form system** — form definitions in the CMS, submissions in the admin, honeypot on the frontend.\n- **Design system** — Section + Container primitives, fluid type scale, semantic token layer, opt-in immersive hero with a scroll-aware header overlay.\n- **DX** — TypeScript on both sides, hot reload, environment scaffolding on first `dev`, seed idempotent.",
-            section: {},
-          },
-          {
-            __component: "blocks.faq",
-            eyebrow: "DOMANDE FREQUENTI",
-            heading: "FAQ",
-            section: {},
-            items: [
-              {
-                question: "What is this starter?",
-                answer:
-                  "A **production-ready** foundation combining [Strapi 5](https://strapi.io) as the headless CMS and Astro for server-rendered pages. It ships with a block-based page builder, dynamic forms, and a tuned design system.",
-              },
-              {
-                question: "Do I need to know Strapi to use it?",
-                answer:
-                  "Not in depth. The content model is already set up — you manage pages, navigation, and forms from the Strapi admin panel. The [setup guide](https://docs.strapi.io) covers everything you need to get started.",
-              },
-              {
-                question: "Can I add my own blocks?",
-                answer:
-                  "Yes. Drop a component schema in `cms/src/components/blocks/`, register it on the page dynamic zone, and create a matching Astro renderer in `frontend/src/components/blocks/`. The FAQ block you're reading was built exactly this way.",
-              },
-              {
-                question: "How do I deploy to production?",
-                answer:
-                  "Astro runs in SSR mode on any **Node 22** host. Build the frontend with `npm run build`, start with `node dist/server/entry.mjs`. Strapi needs its own Node process and a persistent database (SQLite for dev, PostgreSQL recommended for production).",
-              },
-            ],
-          },
-        ],
-      } as any,
-      status: "published",
-    });
+    pageDocIds["home"] = homePage.documentId;
 
     // Services — replace placeholder with sensible skeleton
-    await strapi.documents("api::page.page").create({
+    const servicesPage = await strapi.documents("api::page.page").create({
       data: {
         title: "Servizi",
         slug: "services",
@@ -440,9 +456,10 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       } as any,
       status: "published",
     });
+    pageDocIds["services"] = servicesPage.documentId;
 
     // Contacts — form block wired to the seeded "contatti" form
-    await strapi.documents("api::page.page").create({
+    const contactsPage = await strapi.documents("api::page.page").create({
       data: {
         title: "Contatti",
         slug: "contacts",
@@ -460,6 +477,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       } as any,
       status: "published",
     });
+    pageDocIds["contacts"] = contactsPage.documentId;
 
     // Servizio A
     await strapi.documents("api::page.page").create({
@@ -515,8 +533,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             heading: "Every block, one page.",
             subheading:
               "A developer-facing catalog of all available blocks and their visual variants — tones, widths, and layout options exercised in one place.",
-            cta_text: "Back to home",
-            cta_url: "/",
+            cta_primary: ctaFromUrl("Back to home", "/"),
             immersive: true,
             image: heroImg ? heroImg.id : undefined,
             slides: [
@@ -525,8 +542,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 heading: "Every block, one page.",
                 subheading:
                   "A developer-facing catalog of all available blocks and their visual variants — tones, widths, and layout options exercised in one place.",
-                cta_text: "Back to home",
-                cta_url: "/",
+                cta_primary: ctaFromUrl("Back to home", "/"),
                 image: heroImg ? heroImg.id : undefined,
               },
               {
@@ -534,8 +550,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 heading: "Tone, width, spacing — all covered.",
                 subheading:
                   "Default, muted, and dark tones. Contained, full, and bleed widths. This page exists so you can see them all without setting each one by hand.",
-                cta_text: "View the design system",
-                cta_url: "/about",
+                cta_primary: ctaFromUrl("View the design system", "/about"),
                 image: heroImg2 ? heroImg2.id : undefined,
               },
             ],
@@ -543,8 +558,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           {
             __component: "blocks.rich-text",
             body: "## What you're looking at\n\nThis page exercises **every block type** shipped with the starter, including variants the home page doesn't touch: muted and dark tones, full and bleed widths, and the carousel block (seeded here for the first time).\n\nIt's a developer tool, not a landing page — use it to audit rendering, spacing, and dark-mode behavior across all combinations.",
-            cta_text: "Read the setup guide",
-            cta_url: "/about",
+            cta_primary: ctaFromUrl("Read the setup guide", "/about"),
             section: { tone: "muted" },
           },
           {
@@ -552,8 +566,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "BLEED WIDTH",
             heading: "Image flush left, text padded.",
             body: "This image-text block uses `width: bleed` — the image breaks out of the container to touch the viewport edge, while the text column keeps its padding.\n\nThe asymmetry creates visual tension and helps anchor a section visually.",
-            cta_text: "Explore the layout",
-            cta_url: "/about",
+            cta_primary: ctaFromUrl("Explore the layout", "/about"),
             image_position: "left",
             image: aboutImg ? aboutImg.id : undefined,
             section: { spacing: "none" },
@@ -709,24 +722,21 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
               {
                 title: "Headless CMS",
                 description: "Content model versioned as JSON. No vendor lock-in.",
-                link_url: "/about",
-                link_text: "Learn more",
+                cta_primary: ctaFromUrl("Learn more", "/about"),
                 image: cardImgs.cms?.id ?? undefined,
               },
               {
                 title: "Block builder",
                 description:
                   "Compose pages from reusable blocks — add new ones with a schema and a renderer.",
-                link_url: "/about",
-                link_text: "Explore blocks",
+                cta_primary: ctaFromUrl("Explore blocks", "/about"),
                 image: cardImgs.blocks?.id ?? undefined,
               },
               {
                 title: "Design system",
                 description:
                   "Section and Container primitives, fluid type scale, semantic token layer.",
-                link_url: "/about",
-                link_text: "View tokens",
+                cta_primary: ctaFromUrl("View tokens", "/about"),
                 image: cardImgs.design?.id ?? undefined,
               },
             ],
@@ -745,32 +755,28 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
               {
                 title: "Clone and run",
                 description: "install:all, dev, done. No manual env plumbing.",
-                link_url: "/about",
-                link_text: "Get started",
+                cta_primary: ctaFromUrl("Get started", "/about"),
                 image: cardImgs.clone?.id ?? undefined,
               },
               {
                 title: "Editorial taste",
                 description:
                   "Dark bands, uppercase display headlines, generous rhythm — tuned, not vanilla.",
-                link_url: "/about",
-                link_text: "See the design",
+                cta_primary: ctaFromUrl("See the design", "/about"),
                 image: cardImgs.editorial?.id ?? undefined,
               },
               {
                 title: "Repointable tokens",
                 description:
                   "Semantic color layer isolated from Tailwind — swap to Radix without touching components.",
-                link_url: "/about",
-                link_text: "Read the guide",
+                cta_primary: ctaFromUrl("Read the guide", "/about"),
                 image: cardImgs.tokens?.id ?? undefined,
               },
               {
                 title: "Dynamic forms",
                 description:
                   "Form definitions in the CMS, submissions in the admin, honeypot on the frontend.",
-                link_url: "/contacts",
-                link_text: "Try the form",
+                cta_primary: ctaFromUrl("Try the form", "/contacts"),
                 image: cardImgs.forms?.id ?? undefined,
               },
             ],
@@ -818,7 +824,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
     });
 
     strapi.log.info(
-      "[seed] Seeded demo pages: home, about, services, contacts, servizio-a, servizio-b, privacy, termini, showcase",
+      "[seed] Seeded demo pages: about, home, services, contacts, servizio-a, servizio-b, privacy, termini, showcase",
     );
   } catch (err) {
     strapi.log.error("[seed] Seeding demo pages failed: " + String(err));

@@ -17,11 +17,15 @@
     "subheading": {
       "type": "text"
     },
-    "cta_text": {
-      "type": "string"
+    "cta_primary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
     },
-    "cta_url": {
-      "type": "string"
+    "cta_secondary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
     },
     "image": {
       "type": "media",
@@ -60,14 +64,14 @@
   },
   "config": {
     "metadatas": {
-      "cta_text": {
+      "cta_primary": {
         "edit": {
-          "description": "Testo del pulsante. La CTA compare solo se compili sia il testo sia il link."
+          "description": "CTA principale. Compare solo se compili almeno il testo."
         }
       },
-      "cta_url": {
+      "cta_secondary": {
         "edit": {
-          "description": "Destinazione del pulsante: un URL completo (https://...) o un percorso interno del sito (es. /contatti)."
+          "description": "CTA secondaria (opzionale), affiancata alla principale."
         }
       },
       "image": {

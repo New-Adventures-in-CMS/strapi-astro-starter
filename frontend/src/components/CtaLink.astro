@@ -1,0 +1,33 @@
+---
+import type { SharedLink } from "@/types";
+import { resolveCta } from "@/lib/links";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  link: SharedLink;
+  variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+
+const { link, variant = "primary", size = "lg", class: className } = Astro.props;
+
+const resolved = resolveCta(link);
+if (!resolved.label || resolved.href === "#") return;
+
+const buttonVariant = variant === "secondary" ? "outline" : "default";
+const relAttr = resolved.target === "_blank" ? "noopener noreferrer" : undefined;
+const classes =
+  [variant === "secondary" && "bg-transparent", className].filter(Boolean).join(" ") || undefined;
+---
+
+<Button
+  variant={buttonVariant}
+  size={size}
+  href={resolved.href}
+  target={resolved.target}
+  rel={relAttr}
+  class={classes}
+>
+  {resolved.label}
+</Button>

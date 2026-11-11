@@ -11,11 +11,15 @@
       "type": "richtext",
       "required": true
     },
-    "cta_text": {
-      "type": "string"
+    "cta_primary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
     },
-    "cta_url": {
-      "type": "string"
+    "cta_secondary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
     },
     "align": {
       "type": "enumeration",
@@ -36,6 +40,16 @@
   },
   "config": {
     "metadatas": {
+      "cta_primary": {
+        "edit": {
+          "description": "CTA principale sotto il testo."
+        }
+      },
+      "cta_secondary": {
+        "edit": {
+          "description": "CTA secondaria (opzionale), affiancata alla principale."
+        }
+      },
       "align": {
         "edit": {
           "description": "Allineamento del testo: left (sinistra), center (centrato), right (destra)."

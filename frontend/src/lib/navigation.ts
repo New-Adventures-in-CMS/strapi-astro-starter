@@ -1,5 +1,6 @@
 import { strapiFind } from "@/lib/strapi";
 import { site, type NavItem } from "@/config/site";
+import { resolveHrefCore } from "@/lib/links";
 import type { LinkMode } from "@/types";
 
 export const FOOTER_NAV_COLUMNS = ["Prodotto", "Azienda", "Supporto"] as const;
@@ -26,21 +27,7 @@ export interface FooterData {
 }
 
 function resolveHref(item: MenuItem): { href: string; external: boolean } {
-  switch (item.linkMode) {
-    case "external": {
-      if (!item.externalUrl) return { href: "#", external: false };
-      const isExternal = /^https?:\/\//.test(item.externalUrl);
-      return { href: item.externalUrl, external: isExternal };
-    }
-    case "internal":
-    default: {
-      if (!item.page?.slug) return { href: "#", external: false };
-      return {
-        href: item.page.slug === "home" ? "/" : `/${item.page.slug}`,
-        external: false,
-      };
-    }
-  }
+  return resolveHrefCore(item);
 }
 
 async function fetchMenuItems(): Promise<MenuItem[] | null> {

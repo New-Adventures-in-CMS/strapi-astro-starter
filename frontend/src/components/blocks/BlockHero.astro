@@ -1,8 +1,8 @@
 ---
-import type { HeroSlide, StrapiMedia, HeroAlign, HeroStyle } from "@/types";
+import type { HeroSlide, StrapiMedia, HeroAlign, HeroStyle, SharedLink } from "@/types";
 import { Section, Container } from "@/components/layout";
 import { heroContent } from "@/components/layout/variants";
-import { Button } from "@/components/starwind/button";
+import CtaLink from "@/components/CtaLink.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
 import { site } from "@/config/site";
 import type { HeroTransition, HeroEffect } from "@/config/site";
@@ -10,8 +10,8 @@ import type { HeroTransition, HeroEffect } from "@/config/site";
 interface Props {
   heading: string;
   subheading?: string | null;
-  cta_text?: string | null;
-  cta_url?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   image?: StrapiMedia | null;
   eyebrow?: string | null;
   immersive?: boolean | null;
@@ -26,8 +26,8 @@ interface Props {
 const {
   heading,
   subheading,
-  cta_text,
-  cta_url,
+  cta_primary,
+  cta_secondary,
   image,
   eyebrow,
   immersive,
@@ -53,7 +53,7 @@ const presetPair = HERO_PRESETS[heroStyle ?? site.heroStyle];
 const heroTransition: HeroTransition = transition ?? presetPair.transition;
 const requestedEffect: HeroEffect = effect ?? presetPair.effect;
 const blockAlign: HeroAlign = align ?? site.heroAlign;
-const SCROLL_EFFECTS: HeroEffect[] = ["drift", "focus", "dim"]; // pattern A → richiedono slide
+const SCROLL_EFFECTS: HeroEffect[] = ["drift", "focus", "dim"];
 const heroEffect: HeroEffect =
   SCROLL_EFFECTS.includes(requestedEffect) && heroTransition !== "slide" ? "none" : requestedEffect;
 if (import.meta.env.DEV && heroEffect !== requestedEffect) {
@@ -64,11 +64,10 @@ if (import.meta.env.DEV && heroEffect !== requestedEffect) {
 const isDrift = heroEffect === "drift";
 const multiSlide = slides && slides.length >= 2;
 
-// Static display: first slide content or top-level fields
 const staticSlide: HeroSlide =
   slides && slides.length >= 1
     ? slides[0]
-    : { heading, eyebrow, subheading, cta_text, cta_url, image };
+    : { heading, eyebrow, subheading, cta_primary, cta_secondary, image };
 
 const staticAlign: HeroAlign = staticSlide.align ?? blockAlign;
 const staticHC = heroContent({ align: staticAlign });
@@ -102,7 +101,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
       <div class="overflow-hidden h-full" data-carousel-viewport>
         <div class="flex h-full touch-pan-y">
           {slides.map((slide) => {
-            const showCta = slide.cta_text && slide.cta_url;
+            const showCta = slide.cta_primary || slide.cta_secondary;
             const a: HeroAlign = slide.align ?? blockAlign;
             const hc = heroContent({ align: a });
             return (
@@ -195,15 +194,27 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                     </p>
                   )}
                   {showCta && (
-                    <div class="mt-[var(--content-rhythm-lg)]">
-                      <Button
-                        variant="default"
-                        size="lg"
-                        href={slide.cta_url}
-                        class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
-                      >
-                        {slide.cta_text}
-                      </Button>
+                    <div
+                      class:list={[
+                        "mt-[var(--content-rhythm-lg)] flex flex-wrap gap-3",
+                        a.includes("center") && "justify-center",
+                        a.includes("right") && "justify-end",
+                      ]}
+                    >
+                      {slide.cta_primary && (
+                        <CtaLink
+                          link={slide.cta_primary}
+                          variant="primary"
+                          class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+                        />
+                      )}
+                      {slide.cta_secondary && (
+                        <CtaLink
+                          link={slide.cta_secondary}
+                          variant="secondary"
+                          class="border-[var(--section-dark-fg-muted)] text-[var(--section-dark-fg)]"
+                        />
+                      )}
                     </div>
                   )}
                 </Container>
@@ -304,16 +315,28 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
             {staticSlide.subheading}
           </p>
         )}
-        {staticSlide.cta_text && staticSlide.cta_url && (
-          <div class="mt-[var(--content-rhythm-lg)]">
-            <Button
-              variant="default"
-              size="lg"
-              href={staticSlide.cta_url}
-              class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
-            >
-              {staticSlide.cta_text}
-            </Button>
+        {(staticSlide.cta_primary || staticSlide.cta_secondary) && (
+          <div
+            class:list={[
+              "mt-[var(--content-rhythm-lg)] flex flex-wrap gap-3",
+              staticAlign.includes("center") && "justify-center",
+              staticAlign.includes("right") && "justify-end",
+            ]}
+          >
+            {staticSlide.cta_primary && (
+              <CtaLink
+                link={staticSlide.cta_primary}
+                variant="primary"
+                class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+              />
+            )}
+            {staticSlide.cta_secondary && (
+              <CtaLink
+                link={staticSlide.cta_secondary}
+                variant="secondary"
+                class="border-[var(--section-dark-fg-muted)] text-[var(--section-dark-fg)]"
+              />
+            )}
           </div>
         )}
       </Container>

@@ -2,6 +2,8 @@
 import type { SharedCard, AspectRatio, CtaStyle } from "@/types";
 import { Card as UICard, CardHeader, CardTitle, CardDescription } from "@/components/starwind/card";
 import StrapiImage from "@/components/StrapiImage.astro";
+import CtaLink from "@/components/CtaLink.astro";
+import { resolveCta } from "@/lib/links";
 import { aspectRatioClass, ctaStyleClass } from "./variants";
 
 interface Props {
@@ -17,8 +19,9 @@ const arClass = aspectRatioClass[aspectRatio];
 const hasImage = card.image != null;
 const hasMaskReveal = hasImage && index != null;
 const isFullCard = ctaStyle === "full_card";
-const hasCta = !!(card.link_url && card.link_text);
-const clickable = isFullCard && hasCta;
+const hasCta = !!card.cta_primary;
+const resolved = hasCta ? resolveCta(card.cta_primary!) : null;
+const clickable = isFullCard && hasCta && resolved && resolved.href !== "#";
 const zoomClass = clickable && hasImage ? ctaStyleClass.full_card.image : "";
 const cardClass = [
   onDark && "bg-background/80 border-border/50",
@@ -28,6 +31,7 @@ const cardClass = [
 ]
   .filter(Boolean)
   .join(" ");
+const relAttr = resolved?.target === "_blank" ? "noopener noreferrer" : undefined;
 ---
 
 <UICard class={cardClass}>
@@ -80,17 +84,17 @@ const cardClass = [
   </CardHeader>
   {!isFullCard && hasCta && (
     <div class="px-(--card-spacing) pb-1">
-      <a
-        href={card.link_url}
-        class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-      >
-        {card.link_text} &rarr;
-      </a>
+      <CtaLink link={card.cta_primary!} variant="primary" size="sm" class="text-sm" />
     </div>
   )}
-  {clickable && (
-    <a href={card.link_url} class="after:absolute after:inset-0 after:z-10">
-      <span class="sr-only">{card.link_text}</span>
+  {clickable && resolved && (
+    <a
+      href={resolved.href}
+      target={resolved.target}
+      rel={relAttr}
+      class="after:absolute after:inset-0 after:z-10"
+    >
+      <span class="sr-only">{resolved.label}</span>
     </a>
   )}
 </UICard>

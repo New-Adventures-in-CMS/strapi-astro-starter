@@ -1,0 +1,73 @@
+{
+  "collectionName": "components_shared_links",
+  "info": {
+    "displayName": "Link",
+    "icon": "link",
+    "description": "Configurable button link (internal page or external URL) with target control"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "linkMode": {
+      "type": "enumeration",
+      "enum": ["internal", "external"],
+      "default": "internal",
+      "required": true
+    },
+    "page": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::page.page",
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "linkMode" }, "internal"]
+        }
+      }
+    },
+    "externalUrl": {
+      "type": "string",
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "linkMode" }, "external"]
+        }
+      }
+    },
+    "target": {
+      "type": "enumeration",
+      "enum": ["auto", "blank", "self"],
+      "default": "auto"
+    }
+  },
+  "config": {
+    "metadatas": {
+      "label": {
+        "edit": {
+          "description": "Testo del pulsante."
+        }
+      },
+      "linkMode": {
+        "edit": {
+          "description": "Tipo di link: internal (pagina del sito) o external (URL esterno)."
+        }
+      },
+      "page": {
+        "edit": {
+          "description": "Pagina interna a cui punta il link (solo se linkMode = internal)."
+        }
+      },
+      "externalUrl": {
+        "edit": {
+          "description": "URL esterno completo (solo se linkMode = external)."
+        }
+      },
+      "target": {
+        "edit": {
+          "description": "Come si apre il link: auto (interno = stessa finestra, esterno = nuova), blank (sempre nuova finestra), self (sempre stessa finestra)."
+        }
+      }
+    }
+  }
+}

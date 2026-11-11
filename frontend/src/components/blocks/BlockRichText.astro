@@ -1,23 +1,23 @@
 ---
-import type { ReadingWidth, SharedSection } from "@/types";
+import type { ReadingWidth, SharedSection, SharedLink } from "@/types";
 import { Prose } from "@/components/starwind/prose";
-import { Button } from "@/components/starwind/button";
 import { Section, Container } from "@/components/layout";
+import CtaLink from "@/components/CtaLink.astro";
 import { renderMarkdown } from "@/lib/markdown";
 
 interface Props {
   body: string;
-  cta_text?: string | null;
-  cta_url?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   align?: "left" | "center" | "right" | null;
   reading_width?: ReadingWidth | null;
   section?: SharedSection;
 }
 
-const { body, cta_text, cta_url, align, reading_width, section: sec } = Astro.props;
+const { body, cta_primary, cta_secondary, align, reading_width, section: sec } = Astro.props;
 const isWide = reading_width === "wide";
 const containerWidth = isWide ? "reading-wide" : "prose";
-const showCta = cta_text && cta_url;
+const showCta = cta_primary || cta_secondary;
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const html = renderMarkdown(body);
@@ -38,14 +38,13 @@ const compact = (spacing ?? "xl") === "none";
     {showCta && (
       <div
         class:list={[
-          "mt-[var(--content-rhythm-lg)]",
-          align === "center" && "text-center",
-          align === "right" && "text-right",
+          "mt-[var(--content-rhythm-lg)] flex flex-wrap gap-3",
+          align === "center" && "justify-center",
+          align === "right" && "justify-end",
         ]}
       >
-        <Button variant="default" size="lg" href={cta_url}>
-          {cta_text}
-        </Button>
+        {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
+        {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}
       </div>
     )}
   </Container>

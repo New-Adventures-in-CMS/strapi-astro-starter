@@ -22,18 +22,17 @@
       "allowedTypes": ["images"],
       "multiple": false
     },
-    "link_url": {
-      "type": "string"
-    },
-    "link_text": {
-      "type": "string"
+    "cta_primary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
     }
   },
   "config": {
     "metadatas": {
-      "link_url": {
+      "cta_primary": {
         "edit": {
-          "description": "Destinazione della card al clic: URL completo o percorso interno."
+          "description": "Link della card: il testo appare come link testuale o come label accessibile per la card cliccabile."
         }
       }
     }

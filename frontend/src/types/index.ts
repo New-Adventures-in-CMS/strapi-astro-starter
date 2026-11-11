@@ -24,6 +24,17 @@ export interface StrapiMedia {
   formats?: Record<string, { url: string; width: number; height: number }>;
 }
 
+export type LinkMode = "internal" | "external";
+export type LinkTarget = "auto" | "blank" | "self";
+
+export interface SharedLink {
+  linkMode: LinkMode;
+  page?: { slug: string } | null;
+  externalUrl?: string | null;
+  label: string;
+  target?: LinkTarget;
+}
+
 export type HeroAlign =
   | "center"
   | "top-left"
@@ -44,8 +55,8 @@ export interface HeroSlide {
   heading: string;
   eyebrow?: string | null;
   subheading?: string | null;
-  cta_text?: string | null;
-  cta_url?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   image?: StrapiMedia | null;
   align?: HeroAlign | null;
 }
@@ -55,8 +66,8 @@ export interface BlockHero {
   heading: string;
   eyebrow?: string | null;
   subheading?: string | null;
-  cta_text?: string | null;
-  cta_url?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   image?: StrapiMedia | null;
   immersive?: boolean | null;
   slides?: HeroSlide[] | null;
@@ -67,8 +78,8 @@ export interface BlockHero {
 export interface BlockRichText {
   __component: "blocks.rich-text";
   body: string;
-  cta_text?: string | null;
-  cta_url?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   align?: "left" | "center" | "right" | null;
   reading_width?: ReadingWidth | null;
   section?: SharedSection;
@@ -79,8 +90,8 @@ export interface BlockImageText {
   heading?: string | null;
   eyebrow?: string | null;
   body: string;
-  cta_text?: string | null;
-  cta_url?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
   image?: StrapiMedia | null;
   image_position: "left" | "right";
   image_fit?: ImageFit;
@@ -94,8 +105,7 @@ export interface SharedCard {
   eyebrow?: string | null;
   description?: string | null;
   image?: StrapiMedia | null;
-  link_url?: string | null;
-  link_text?: string | null;
+  cta_primary?: SharedLink | null;
 }
 
 export interface BlockCardGrid {
@@ -209,8 +219,6 @@ export interface SiteSettings {
   address: string;
   socialLinks: SocialLink[];
 }
-
-export type LinkMode = "internal" | "external";
 
 export type SocialPlatform = "facebook" | "instagram" | "x" | "youtube" | "linkedin" | "tiktok";
 

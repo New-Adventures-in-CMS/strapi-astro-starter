@@ -19,26 +19,61 @@ export function strapiMediaUrl(path: string | null | undefined): string | null {
 // REST rejects the flat `populate: { blocks: { populate: {...} } }` form
 // on dynamic zones with `Invalid key populate at blocks` (400) — the `on:`
 // form (per-component populate) is required.
+const ctaPopulate = { populate: { page: true } };
+
 export const pageBlocksPopulate = {
   blocks: {
     on: {
       "blocks.hero": {
-        populate: { image: true, slides: { populate: { image: true } } },
+        populate: {
+          image: true,
+          cta_primary: ctaPopulate,
+          cta_secondary: ctaPopulate,
+          slides: {
+            populate: {
+              image: true,
+              cta_primary: ctaPopulate,
+              cta_secondary: ctaPopulate,
+            },
+          },
+        },
       },
-      "blocks.rich-text": { populate: { section: true } },
+      "blocks.rich-text": {
+        populate: {
+          section: true,
+          cta_primary: ctaPopulate,
+          cta_secondary: ctaPopulate,
+        },
+      },
       "blocks.image-text": {
-        populate: { image: true, section: true, container: true },
+        populate: {
+          image: true,
+          section: true,
+          container: true,
+          cta_primary: ctaPopulate,
+          cta_secondary: ctaPopulate,
+        },
       },
       "blocks.card-grid": {
         populate: {
-          cards: { populate: { image: true } },
+          cards: {
+            populate: {
+              image: true,
+              cta_primary: ctaPopulate,
+            },
+          },
           section: true,
           container: true,
         },
       },
       "blocks.carousel": {
         populate: {
-          cards: { populate: { image: true } },
+          cards: {
+            populate: {
+              image: true,
+              cta_primary: ctaPopulate,
+            },
+          },
           section: true,
           container: true,
         },
