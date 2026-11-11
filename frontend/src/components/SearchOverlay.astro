@@ -1,0 +1,172 @@
+---
+import { Button } from "@/components/starwind/button";
+import SearchIcon from "@/components/SearchIcon.astro";
+---
+
+<button
+  type="button"
+  id="search-trigger"
+  aria-expanded="false"
+  aria-controls="search-overlay"
+  aria-label="Cerca"
+  class="rounded p-2 transition-colors"
+>
+  <SearchIcon class="size-5" />
+</button>
+
+<div
+  id="search-overlay"
+  class="pointer-events-none absolute left-0 top-full z-40 w-screen max-w-none"
+  hidden
+>
+  <div
+    data-search-popup
+    class:list={[
+      "pointer-events-auto relative w-full",
+      "bg-background text-foreground shadow-lg",
+      "transition-[height] duration-[360ms] ease-out",
+      "motion-reduce:transition-none motion-reduce:duration-0",
+    ]}
+    style="height: 0; overflow: hidden;"
+  >
+    <div class="mx-auto max-w-[700px] px-6 py-10 md:px-8 md:py-14 lg:py-16">
+      <form role="search" method="get" action="/search" class="flex items-center gap-3">
+        <label for="search-input" class="sr-only">
+          Cerca nel sito
+        </label>
+        <input
+          id="search-input"
+          type="search"
+          name="q"
+          aria-label="Cerca"
+          placeholder="Cerca…"
+          autocomplete="off"
+          class:list={[
+            "h-14 flex-1 rounded-lg border border-border bg-background px-5 text-lg text-foreground",
+            "placeholder:text-muted-foreground",
+            "outline-none focus-visible:ring-3 focus-visible:ring-outline/50",
+            "transition-shadow",
+          ]}
+        />
+        <Button type="submit" variant="default" size="lg">
+          Cerca
+        </Button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initSearchOverlay(): void {
+    const trigger = document.getElementById("search-trigger")!;
+    const overlay = document.getElementById("search-overlay")!;
+    const popup = overlay.querySelector<HTMLElement>("[data-search-popup]")!;
+    const input = overlay.querySelector<HTMLInputElement>("#search-input")!;
+    const header = trigger.closest("header")!;
+    if (!trigger || !overlay || !popup || !input || !header) return;
+
+    const CLOSE_MS = 200;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let open = false;
+    let animFrame: number | undefined;
+
+    function setOpen(next: boolean): void {
+      if (next === open) return;
+      open = next;
+
+      trigger.setAttribute("aria-expanded", String(open));
+
+      if (open) {
+        // Close megamenu if open
+        const navRoot = header.querySelector<HTMLElement>(
+          '[data-slot="navigation-menu"][data-layout="band"]',
+        );
+        if (navRoot?.getAttribute("data-state") === "open") {
+          navRoot.dispatchEvent(
+            new PointerEvent("pointerleave", { bubbles: false, pointerType: "mouse" }),
+          );
+        }
+
+        // Close mobile sheet if open
+        const sheetClose = header.querySelector<HTMLElement>(
+          '[data-slot="sheet-content"] [data-sw-sheet-close]',
+        );
+        sheetClose?.click();
+
+        overlay.hidden = false;
+        header.setAttribute("data-menu-open", "true");
+
+        const inner = popup.querySelector<HTMLElement>(":scope > div");
+        const targetH = inner?.offsetHeight ?? 0;
+        if (reducedMotion.matches) {
+          popup.style.height = `${targetH}px`;
+          input.focus();
+        } else {
+          popup.style.height = "0px";
+          cancelAnimationFrame(animFrame!);
+          animFrame = requestAnimationFrame(() => {
+            popup.style.height = `${targetH}px`;
+            popup.addEventListener("transitionend", () => input.focus(), { once: true });
+          });
+        }
+      } else {
+        popup.style.transitionDuration = reducedMotion.matches ? "0ms" : `${CLOSE_MS}ms`;
+        popup.style.height = "0px";
+
+        const finalize = () => {
+          overlay.hidden = true;
+          popup.style.transitionDuration = "";
+          if (
+            header
+              .querySelector<HTMLElement>('[data-slot="navigation-menu"]')
+              ?.getAttribute("data-state") !== "open"
+          ) {
+            header.removeAttribute("data-menu-open");
+          }
+          trigger.focus();
+        };
+
+        if (reducedMotion.matches) {
+          finalize();
+        } else {
+          setTimeout(finalize, CLOSE_MS);
+        }
+      }
+    }
+
+    // Toggle
+    trigger.addEventListener("click", () => setOpen(!open));
+
+    // Esc
+    document.addEventListener("keydown", (e) => {
+      if (open && e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+      }
+    });
+
+    // Click-away
+    document.addEventListener("pointerdown", (e) => {
+      if (!open) return;
+      const target = e.target as Node;
+      if (overlay.contains(target) || trigger.contains(target)) return;
+      setOpen(false);
+    });
+
+    // Close search when megamenu opens
+    const navRoot = header.querySelector<HTMLElement>(
+      '[data-slot="navigation-menu"][data-layout="band"]',
+    );
+    if (navRoot) {
+      const obs = new MutationObserver(() => {
+        if (open && navRoot.getAttribute("data-state") === "open") {
+          setOpen(false);
+        }
+      });
+      obs.observe(navRoot, { attributes: true, attributeFilter: ["data-state"] });
+    }
+  }
+
+  initSearchOverlay();
+</script>

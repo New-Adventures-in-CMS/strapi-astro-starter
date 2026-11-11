@@ -588,6 +588,34 @@
   }
 
   /* ========================================================================
+   * SEARCH TRIGGER — opacity-based hover (mirrors nav-link pattern)
+   * ======================================================================== */
+
+  #search-trigger {
+    background: transparent !important;
+    opacity: 0.72;
+    transition:
+      opacity 200ms ease,
+      color 250ms ease;
+  }
+
+  #search-trigger:focus-visible {
+    opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    #search-trigger:hover {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #search-trigger {
+      transition: none;
+    }
+  }
+
+  /* ========================================================================
    * HEADER ACTIONS SLOT — overlay-aware colors for icon buttons
    * ======================================================================== */
 

@@ -660,7 +660,6 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             eyebrow: "CAROUSEL GALLERY",
             heading: "Swipe through the set",
             lead: "Gallery in carousel view: the same images in a horizontal track with a peek of the next one, header aligned left.",
-            aspect_ratio: "4:5",
             display: "carousel",
             loop: false,
             section: { tone: "default" },

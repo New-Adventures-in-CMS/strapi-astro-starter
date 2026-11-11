@@ -134,7 +134,7 @@ export const gallery = tv({
     grid: "grid grid-cols-2 sm:grid-cols-3",
     thumb:
       "group relative cursor-pointer overflow-hidden border border-border focus-visible:ring-outline/50 focus-visible:ring-3 outline-none transition-shadow",
-    carouselSlide: "pl-6 basis-[82%] sm:basis-[46%] lg:basis-[46%] shrink-0 grow-0 min-w-0",
+    carouselSlide: "pl-6 basis-[82%] sm:basis-[46%] lg:basis-[64%] shrink-0 grow-0 min-w-0",
   },
   variants: {
     width: {

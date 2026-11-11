@@ -1,0 +1,26 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Section, Container } from "@/components/layout";
+
+const query = Astro.url.searchParams.get("q")?.trim() || "";
+---
+
+<Layout title={query ? `Cerca: ${query}` : "Cerca"} noindex={true}>
+  <Section spacing="xl">
+    <Container width="prose">
+      <div class="py-20 text-center">
+        {query ? (
+          <>
+            <p class="text-muted-foreground text-sm">Risultati per</p>
+            <p class="mt-2 text-2xl font-semibold">{query}</p>
+            <p class="text-muted-foreground mt-6 text-sm">
+              La ricerca full-text sarà disponibile con il plugin di produzione.
+            </p>
+          </>
+        ) : (
+          <p class="text-muted-foreground text-sm">Inserisci un termine di ricerca.</p>
+        )}
+      </div>
+    </Container>
+  </Section>
+</Layout>

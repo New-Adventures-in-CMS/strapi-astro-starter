@@ -21,6 +21,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/starwind/sheet";
+import SearchOverlay from "@/components/SearchOverlay.astro";
 
 interface Props {
   overlay?: boolean;
@@ -156,11 +157,10 @@ const isActive = (href: string | undefined): boolean =>
         )}
       </nav>
 
-      {Astro.slots.has("actions") && (
-        <div data-slot="header-actions" class="flex items-center gap-1 pl-2">
-          <slot name="actions" />
-        </div>
-      )}
+      <div data-slot="header-actions" class="flex items-center gap-1 pl-2">
+        <SearchOverlay />
+        <slot name="actions" />
+      </div>
 
       <!-- Mobile hamburger trigger (Sheet drawer) -->
       <div class="self-center lg:hidden">
