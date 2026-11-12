@@ -1,0 +1,91 @@
+{
+  "collectionName": "components_blocks_hero_sliders",
+  "info": {
+    "displayName": "Hero Slider",
+    "icon": "slideshow",
+    "description": "Full-width hero carousel with multiple slides and transition effects"
+  },
+  "options": {},
+  "attributes": {
+    "heroStyle": {
+      "type": "enumeration",
+      "enum": ["fade", "slide", "drift", "focus", "dim", "parallax", "tilt", "ken-burns"],
+      "default": "fade"
+    },
+    "immersive": {
+      "type": "boolean",
+      "default": false
+    },
+    "slides": {
+      "type": "component",
+      "repeatable": true,
+      "component": "hero.slide"
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": [
+        "center",
+        "top-left",
+        "top-center",
+        "top-right",
+        "middle-left",
+        "middle-right",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right"
+      ],
+      "default": "center"
+    },
+    "aspect_ratio": {
+      "type": "enumeration",
+      "enum": ["16:9", "21:9", "3:1"],
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "immersive" }, false]
+        }
+      }
+    }
+  },
+  "config": {
+    "layouts": {
+      "edit": [
+        [{ "name": "slides", "size": 12 }],
+        [
+          { "name": "heroStyle", "size": 6 },
+          { "name": "aspect_ratio", "size": 6 }
+        ],
+        [
+          { "name": "immersive", "size": 6 },
+          { "name": "align", "size": 6 }
+        ]
+      ]
+    },
+    "metadatas": {
+      "heroStyle": {
+        "edit": {
+          "description": "Effetto di transizione tra le slide: fade (dissolvenza), slide (scorrimento), drift (parallasse), focus (zoom-in), dim (oscuramento), parallax (profondità), tilt (inclinazione 3D), ken-burns (zoom lento continuo)."
+        }
+      },
+      "immersive": {
+        "edit": {
+          "description": "Se attivo, l'hero occupa tutta l'altezza dello schermo e l'header ci va sopra in trasparenza."
+        }
+      },
+      "slides": {
+        "edit": {
+          "description": "Le slide del carosello. Almeno due per un effetto carousel."
+        }
+      },
+      "align": {
+        "edit": {
+          "description": "Posizione predefinita del contenuto sulle slide. Può essere sovrascritta per singola slide."
+        }
+      },
+      "aspect_ratio": {
+        "edit": {
+          "description": "Rapporto d'aspetto della fascia (banner). Visibile solo se immersive è spento. Da tablet in su impone il rapporto; su mobile ha un pavimento di altezza minima."
+        }
+      }
+    }
+  }
+}

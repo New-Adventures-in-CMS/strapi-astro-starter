@@ -29,7 +29,8 @@
     "blocks": {
       "type": "dynamiczone",
       "components": [
-        "blocks.hero",
+        "blocks.hero-static",
+        "blocks.hero-slider",
         "blocks.rich-text",
         "blocks.image-text",
         "blocks.card-grid",

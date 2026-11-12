@@ -79,7 +79,10 @@
         [{ "name": "linkMode", "size": 6 }],
         [{ "name": "page", "size": 12 }],
         [{ "name": "externalUrl", "size": 12 }],
-        [{ "name": "area", "size": 6 }, { "name": "footerColumn", "size": 6 }],
+        [
+          { "name": "area", "size": 6 },
+          { "name": "footerColumn", "size": 6 }
+        ],
         [{ "name": "parent", "size": 12 }],
         [{ "name": "order", "size": 6 }]
       ]

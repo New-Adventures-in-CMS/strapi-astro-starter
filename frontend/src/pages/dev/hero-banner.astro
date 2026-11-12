@@ -1,0 +1,184 @@
+---
+// frontend/src/pages/dev/hero-banner.astro
+// Dev fixture — tests aspect_ratio banner mode on BlockHeroStatic (16:9, 21:9, 3:1).
+// aspect_ratio is visible only when immersive is off.
+import BlockHeroStatic from "@/components/blocks/BlockHeroStatic.astro";
+import BlockHeroSlider from "@/components/blocks/BlockHeroSlider.astro";
+import type { StrapiMedia } from "@/types";
+import "@/styles/starwind.css";
+
+const svgMedia = (svg: string, alt: string): StrapiMedia => ({
+  id: 0,
+  url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+  name: "banner-fixture",
+  mime: "image/svg+xml",
+  size: 0,
+  alternativeText: alt,
+});
+
+const SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2100 900'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#6d28d9'/><stop offset='.5' stop-color='#db2777'/>
+    <stop offset='1' stop-color='#f59e0b'/></linearGradient></defs>
+  <rect width='2100' height='900' fill='url(#g)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <circle cx='420' cy='300' r='130'/><circle cx='1680' cy='640' r='210'/>
+    <path d='M0 220 L2100 420'/><path d='M0 520 L2100 760'/></g></svg>`;
+
+const img = svgMedia(SVG, "Banner demo");
+
+const SVG2 = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2100 900'>
+  <defs><linearGradient id='g2' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='#0d9488'/><stop offset='.5' stop-color='#0284c7'/>
+    <stop offset='1' stop-color='#1e3a8a'/></linearGradient></defs>
+  <rect width='2100' height='900' fill='url(#g2)'/>
+  <g fill='none' stroke='#fff' stroke-opacity='.18' stroke-width='3'>
+    <rect x='200' y='180' width='320' height='320'/>
+    <rect x='980' y='420' width='420' height='260'/>
+    <path d='M0 700 L2100 300'/></g></svg>`;
+
+const SLIDER_SLIDES = [
+  {
+    heading: "Slider slide one",
+    eyebrow: "SLIDE 1",
+    subheading: "Non-immersive slider with aspect ratio.",
+    image: svgMedia(SVG, "Slider slide 1"),
+  },
+  {
+    heading: "Slider slide two",
+    eyebrow: "SLIDE 2",
+    subheading: "Second slide of the non-immersive slider.",
+    image: svgMedia(SVG2, "Slider slide 2"),
+  },
+];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero Banner Aspect Ratio Fixture</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <div data-hero-section="banner-16-9">
+      <div class="test-label">
+        <strong>16:9</strong> aspect-ratio="16:9" — standard video
+      </div>
+      <BlockHeroStatic
+        heading="Banner 16:9"
+        eyebrow="ASPECT RATIO"
+        subheading="Standard video aspect ratio. Mobile floor 60vh, md: aspect-video."
+        image={img}
+        immersive={false}
+        aspect_ratio="16:9"
+      />
+    </div>
+
+    <div data-hero-section="banner-21-9">
+      <div class="test-label">
+        <strong>21:9</strong> aspect-ratio="21:9" — ultrawide
+      </div>
+      <BlockHeroStatic
+        heading="Banner 21:9"
+        eyebrow="ASPECT RATIO"
+        subheading="Ultrawide cinematic banner. Mobile floor 60vh, md: aspect-[21/9]."
+        image={img}
+        immersive={false}
+        aspect_ratio="21:9"
+      />
+    </div>
+
+    <div data-hero-section="banner-3-1">
+      <div class="test-label">
+        <strong>3:1</strong> aspect-ratio="3:1" — strip
+      </div>
+      <BlockHeroStatic
+        heading="Banner 3:1"
+        eyebrow="ASPECT RATIO"
+        subheading="Thin strip banner. Mobile floor 60vh, md: aspect-[3/1]."
+        image={img}
+        immersive={false}
+        aspect_ratio="3:1"
+      />
+    </div>
+
+    <div data-hero-section="banner-none">
+      <div class="test-label">
+        <strong>NO RATIO</strong> Default height (no aspect_ratio)
+      </div>
+      <BlockHeroStatic
+        heading="Default height"
+        eyebrow="BASELINE"
+        subheading="No aspect_ratio prop — 70vh / md:80vh."
+        image={img}
+        immersive={false}
+      />
+    </div>
+
+    <div data-hero-section="banner-immersive">
+      <div class="test-label">
+        <strong>IMMERSIVE</strong> aspect_ratio ignored when immersive=true
+      </div>
+      <BlockHeroStatic
+        heading="Immersive overrides ratio"
+        eyebrow="OVERRIDE"
+        subheading="Immersive=true → 100svh regardless of aspect_ratio."
+        image={img}
+        immersive={true}
+        aspect_ratio="21:9"
+      />
+    </div>
+
+    <div data-hero-section="slider-21-9">
+      <div class="test-label">
+        <strong>SLIDER 21:9</strong> Non-immersive slider with aspect_ratio="21:9"
+      </div>
+      <BlockHeroSlider
+        slides={SLIDER_SLIDES}
+        autoplayDelay={3000}
+        heroStyle="fade"
+        immersive={false}
+        aspect_ratio="21:9"
+      />
+    </div>
+
+    <div data-hero-section="slider-default">
+      <div class="test-label">
+        <strong>SLIDER DEFAULT</strong> Non-immersive slider, no aspect_ratio
+      </div>
+      <BlockHeroSlider
+        slides={SLIDER_SLIDES}
+        autoplayDelay={3000}
+        heroStyle="slide"
+        immersive={false}
+      />
+    </div>
+    <style>
+      [data-hero-section] {
+        position: relative;
+      }
+      .test-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.72);
+        color: #fff;
+        font:
+          500 12px/1.5 ui-monospace,
+          "SF Mono",
+          Menlo,
+          monospace;
+        letter-spacing: 0.02em;
+        padding: 8px 14px;
+      }
+      .test-label strong {
+        letter-spacing: 0.12em;
+        margin-right: 10px;
+      }
+    </style>
+  </body>
+</html>

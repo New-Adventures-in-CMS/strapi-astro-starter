@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-import type { AspectRatio, CtaStyle } from "@/types";
+import type { AspectRatio, CtaStyle, HeroAspectRatio } from "@/types";
 
 export const aspectRatioClass: Record<AspectRatio, string> = {
   "16:9": "aspect-video",
@@ -8,6 +8,27 @@ export const aspectRatioClass: Record<AspectRatio, string> = {
   "1:1": "aspect-square",
   "4:5": "aspect-[4/5]",
 };
+
+export const heroAspectRatioClass: Record<HeroAspectRatio, string> = {
+  "16:9": "aspect-video",
+  "21:9": "aspect-[21/9]",
+  "3:1": "aspect-[3/1]",
+};
+
+const heroAspectResponsive: Record<HeroAspectRatio, string> = {
+  "16:9": "min-h-[60vh] md:aspect-video md:min-h-0",
+  "21:9": "min-h-[60vh] md:aspect-[21/9] md:min-h-0",
+  "3:1": "min-h-[60vh] md:aspect-[3/1] md:min-h-0",
+};
+
+export function heroHeightClasses(
+  immersive: boolean | null | undefined,
+  aspectRatio: HeroAspectRatio | null | undefined,
+): string {
+  if (immersive) return "min-h-[100svh]";
+  if (aspectRatio) return heroAspectResponsive[aspectRatio];
+  return "min-h-[70vh] md:min-h-[80vh]";
+}
 
 export const ctaStyleClass: Record<CtaStyle, { card: string; image: string }> = {
   button: { card: "", image: "" },

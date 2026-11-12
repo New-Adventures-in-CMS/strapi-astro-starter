@@ -1,0 +1,126 @@
+{
+  "collectionName": "components_blocks_hero_statics",
+  "info": {
+    "displayName": "Hero Static",
+    "icon": "picture",
+    "description": "Full-width static hero banner with heading, text, optional CTA and image effects"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "subheading": {
+      "type": "text"
+    },
+    "cta_primary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "cta_secondary": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": false
+    },
+    "image": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false
+    },
+    "immersive": {
+      "type": "boolean",
+      "default": false
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": [
+        "center",
+        "top-left",
+        "top-center",
+        "top-right",
+        "middle-left",
+        "middle-right",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right"
+      ],
+      "default": "center"
+    },
+    "effect": {
+      "type": "enumeration",
+      "enum": ["none", "tilt", "ken-burns"],
+      "default": "none"
+    },
+    "aspect_ratio": {
+      "type": "enumeration",
+      "enum": ["16:9", "21:9", "3:1"],
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "immersive" }, false]
+        }
+      }
+    }
+  },
+  "config": {
+    "layouts": {
+      "edit": [
+        [
+          { "name": "heading", "size": 6 },
+          { "name": "eyebrow", "size": 6 }
+        ],
+        [{ "name": "subheading", "size": 12 }],
+        [{ "name": "image", "size": 12 }],
+        [{ "name": "aspect_ratio", "size": 6 }],
+        [{ "name": "cta_primary", "size": 12 }],
+        [{ "name": "cta_secondary", "size": 12 }],
+        [
+          { "name": "immersive", "size": 4 },
+          { "name": "align", "size": 4 },
+          { "name": "effect", "size": 4 }
+        ]
+      ]
+    },
+    "metadatas": {
+      "cta_primary": {
+        "edit": {
+          "description": "CTA principale. Compare solo se compili almeno il testo."
+        }
+      },
+      "cta_secondary": {
+        "edit": {
+          "description": "CTA secondaria (opzionale), affiancata alla principale."
+        }
+      },
+      "image": {
+        "edit": {
+          "description": "Immagine di sfondo dell'hero."
+        }
+      },
+      "immersive": {
+        "edit": {
+          "description": "Se attivo, l'hero occupa tutta l'altezza dello schermo e l'header ci va sopra in trasparenza."
+        }
+      },
+      "align": {
+        "edit": {
+          "description": "Posizione del contenuto sull'immagine: center (default), oppure uno dei nove punti della griglia."
+        }
+      },
+      "effect": {
+        "edit": {
+          "description": "Effetto sull'immagine statica: none (nessuno), tilt (inclinazione 3D al mouse), ken-burns (zoom lento continuo)."
+        }
+      },
+      "aspect_ratio": {
+        "edit": {
+          "description": "Rapporto d'aspetto della fascia (banner). Visibile solo se immersive è spento. Da tablet in su impone il rapporto; su mobile ha un pavimento di altezza minima."
+        }
+      }
+    }
+  }
+}

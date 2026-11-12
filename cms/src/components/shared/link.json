@@ -44,7 +44,10 @@
   "config": {
     "layouts": {
       "edit": [
-        [{ "name": "linkMode", "size": 6 }, { "name": "label", "size": 6 }],
+        [
+          { "name": "linkMode", "size": 6 },
+          { "name": "label", "size": 6 }
+        ],
         [{ "name": "page", "size": 12 }],
         [{ "name": "externalUrl", "size": 12 }],
         [{ "name": "target", "size": 6 }]

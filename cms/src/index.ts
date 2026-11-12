@@ -254,6 +254,17 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           "Extracted from real production work — this starter exists so the next site can begin with the interesting problems, not the plumbing.",
         blocks: [
           {
+            __component: "blocks.hero-static",
+            eyebrow: "ABOUT",
+            heading: "Built from real production work.",
+            subheading:
+              "This starter exists so the next site can begin with the interesting problems, not the plumbing.",
+            cta_primary: ctaFromUrl("View the showcase", "/showcase"),
+            image: heroImg ? heroImg.id : undefined,
+            immersive: false,
+            aspect_ratio: "21:9",
+          },
+          {
             __component: "blocks.image-text",
             eyebrow: "BEHIND THE STARTER",
             heading: "Built from real production work.",
@@ -311,14 +322,9 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           "Production-ready starter kit combining Strapi 5 headless CMS with Astro 7 server-rendered pages, a block-based page builder, dynamic forms, and a design system tuned for editorial layouts.",
         blocks: [
           {
-            __component: "blocks.hero",
-            eyebrow: "STARTER KIT",
-            heading: "Ship editorial content, fast.",
-            subheading:
-              "A production-ready foundation for content-driven sites: Strapi handles the CMS, Astro renders on the server, the design system carries the taste.",
-            cta_primary: ctaFromUrl("Explore the design system", "/esempio"),
+            __component: "blocks.hero-slider",
             immersive: true,
-            image: heroImg ? heroImg.id : undefined,
+            heroStyle: "fade",
             slides: [
               {
                 eyebrow: "STARTER KIT",
@@ -528,14 +534,9 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           "Block showcase page exercising every available block type and visual variant: tones, widths, and spacing options.",
         blocks: [
           {
-            __component: "blocks.hero",
-            eyebrow: "BLOCK SHOWCASE",
-            heading: "Every block, one page.",
-            subheading:
-              "A developer-facing catalog of all available blocks and their visual variants — tones, widths, and layout options exercised in one place.",
-            cta_primary: ctaFromUrl("Back to home", "/"),
+            __component: "blocks.hero-slider",
             immersive: true,
-            image: heroImg ? heroImg.id : undefined,
+            heroStyle: "fade",
             slides: [
               {
                 eyebrow: "BLOCK SHOWCASE",

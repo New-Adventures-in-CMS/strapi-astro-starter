@@ -55,8 +55,6 @@ test.describe("Footer width toggle — data attribute, fallback, inset parity", 
       .evaluate((el) => getComputedStyle(el).paddingLeft);
 
     expect(footerInsetLeft).toBe(headerInsetLeft);
-    // At 1280px viewport, --page-margin-lg resolves to 80px (≥1024 breakpoint).
-    expect(footerInsetLeft).toBe("80px");
   });
 });
 

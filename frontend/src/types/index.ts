@@ -49,6 +49,10 @@ export type HeroAlign =
 export type HeroStyle =
   "fade" | "slide" | "drift" | "focus" | "dim" | "parallax" | "tilt" | "ken-burns";
 
+export type HeroStaticEffect = "none" | "tilt" | "ken-burns";
+
+export type HeroAspectRatio = "16:9" | "21:9" | "3:1";
+
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
 export interface HeroSlide {
   id?: number;
@@ -61,8 +65,8 @@ export interface HeroSlide {
   align?: HeroAlign | null;
 }
 
-export interface BlockHero {
-  __component: "blocks.hero";
+export interface BlockHeroStatic {
+  __component: "blocks.hero-static";
   heading: string;
   eyebrow?: string | null;
   subheading?: string | null;
@@ -70,9 +74,18 @@ export interface BlockHero {
   cta_secondary?: SharedLink | null;
   image?: StrapiMedia | null;
   immersive?: boolean | null;
+  align?: HeroAlign | null;
+  effect?: HeroStaticEffect | null;
+  aspect_ratio?: HeroAspectRatio | null;
+}
+
+export interface BlockHeroSlider {
+  __component: "blocks.hero-slider";
+  heroStyle?: HeroStyle | null;
+  immersive?: boolean | null;
   slides?: HeroSlide[] | null;
   align?: HeroAlign | null;
-  heroStyle?: HeroStyle | null;
+  aspect_ratio?: HeroAspectRatio | null;
 }
 
 export interface BlockRichText {
@@ -196,7 +209,8 @@ export interface BlockFaq {
 }
 
 export type PageBlock =
-  | BlockHero
+  | BlockHeroStatic
+  | BlockHeroSlider
   | BlockRichText
   | BlockImageText
   | BlockCardGrid
