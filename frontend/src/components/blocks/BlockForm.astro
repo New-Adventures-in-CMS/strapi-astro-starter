@@ -30,7 +30,9 @@ const onDark = tone === "dark";
         align="center"
         onDark={onDark}
       />
-      <DynamicForm slug={form.slug} />
+      <div data-reveal>
+        <DynamicForm slug={form.slug} />
+      </div>
     </Container>
   </Section>
 )}

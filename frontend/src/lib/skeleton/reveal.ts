@@ -11,7 +11,7 @@ const REVEAL_MARGIN = "0px 0px -12% 0px";
 export function initReveal(scope: ParentNode = document): () => void {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const nodes = Array.from(scope.querySelectorAll<HTMLElement>("[data-reveal]")).filter(
-    (n) => !n.hasAttribute("data-reveal-init"),
+    (n) => !n.hasAttribute("data-reveal-init") && !n.closest('[data-block="hero"]'),
   );
   const cleanups: Array<() => void> = [];
 
@@ -24,8 +24,13 @@ export function initReveal(scope: ParentNode = document): () => void {
     }
 
     if (node.getAttribute("data-reveal") === "stagger") {
-      Array.from(node.children).forEach((child, i) => {
-        (child as HTMLElement).style.transitionDelay = `${i * STAGGER_MS}ms`;
+      let staggerIndex = 0;
+      Array.from(node.children).forEach((child) => {
+        const el = child as HTMLElement;
+        if (el.hasAttribute("data-mask-heading")) return;
+        if (el.hasAttribute("data-stagger-skip")) return;
+        el.style.transitionDelay = `${staggerIndex * STAGGER_MS}ms`;
+        staggerIndex++;
       });
     }
 

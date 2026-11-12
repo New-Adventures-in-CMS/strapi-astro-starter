@@ -74,14 +74,14 @@ const cv = imageText({
           <div class:list={[cv.image(), "bg-muted border border-border/40"]} />
         )}
       </div>
-      <div class={cv.textCol()}>
+      <div class={cv.textCol()} data-stagger-skip>
         <div>
           <SectionHeader eyebrow={eyebrow} heading={heading} gap="md" />
           <Prose>
-            <div set:html={html} />
+            <div set:html={html} data-reveal />
           </Prose>
           {showCta && (
-            <div class="mt-[var(--content-rhythm-lg)] flex flex-wrap gap-3">
+            <div class="mt-[var(--content-rhythm-lg)] flex flex-wrap gap-3" data-reveal>
               {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
               {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}
             </div>

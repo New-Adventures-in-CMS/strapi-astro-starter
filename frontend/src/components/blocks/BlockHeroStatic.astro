@@ -78,13 +78,21 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
     />
   )}
 
-  <Container width="default" class={`relative z-10 ${hc.text()}`} data-hero-content>
+  <Container
+    width="default"
+    class={`relative z-10 ${hc.text()}`}
+    data-hero-content
+    data-reveal="stagger"
+  >
     {eyebrow && (
       <p class="mb-[var(--content-rhythm-sm)] text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
         {eyebrow}
       </p>
     )}
-    <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
+    <h1
+      class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]"
+      data-mask-heading
+    >
       {heading}
     </h1>
     {subheading && (
@@ -136,11 +144,33 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 
 <script>
   import { setupHeroTilt } from "@/lib/hero-tilt.js";
+  import { triggerHeroIntro, isHeroInViewport } from "@/lib/hero-intro.js";
+  import { observeInView } from "@skeleton/in-view.js";
 
+  const INTRO_DELAY = 150;
+  const REVEAL_MARGIN = "0px 0px -12% 0px";
   const KB_DURATION = 7000;
   const KB_EASE = "ease-out";
 
   document.querySelectorAll<HTMLElement>("[data-hero-static]").forEach((root) => {
+    const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const content = root.querySelector<HTMLElement>("[data-hero-content]");
+    if (content) {
+      if (isReduced) {
+        content.classList.add("is-revealed");
+        content.querySelector<HTMLElement>("[data-mask-heading]")?.classList.add("is-revealed");
+      } else {
+        const introDelay = isHeroInViewport(root) ? INTRO_DELAY : 0;
+        const stop = observeInView(root, {
+          once: true,
+          rootMargin: REVEAL_MARGIN,
+          threshold: 0.3,
+          onEnter: () => triggerHeroIntro(content, introDelay),
+        });
+        document.addEventListener("astro:before-swap", stop, { once: true });
+      }
+    }
+
     const heroEffect = root.dataset.heroEffect ?? "none";
     if (heroEffect === "tilt") {
       const cleanup = setupHeroTilt(root);
@@ -148,7 +178,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
     }
     if (heroEffect === "ken-burns") {
       const media = root.querySelector<HTMLElement>("[data-hero-media]");
-      if (media && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (media && !isReduced) {
         media.style.animation = `hero-ken-burns ${KB_DURATION}ms ${KB_EASE} forwards`;
         document.addEventListener(
           "astro:before-swap",

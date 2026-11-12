@@ -33,7 +33,7 @@ const gapClass = gapMap[gap];
 ---
 
 {(eyebrow || heading || lead) && (
-  <header class:list={[alignClass, gapClass, className]}>
+  <header class:list={[alignClass, gapClass, className]} data-reveal="stagger">
     {eyebrow && (
       <p
         class:list={[
@@ -44,7 +44,11 @@ const gapClass = gapMap[gap];
         {eyebrow}
       </p>
     )}
-    {heading && <h2 class:list={["font-heading text-balance", headingColor]}>{heading}</h2>}
+    {heading && (
+      <h2 class:list={["font-heading text-balance", headingColor]} data-mask-heading>
+        {heading}
+      </h2>
+    )}
     {lead && (
       <p
         class:list={[

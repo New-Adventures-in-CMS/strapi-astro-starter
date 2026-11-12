@@ -48,15 +48,7 @@ const showCta = cta_primary || cta_secondary;
 
 <Section tone={tone} spacing={spacing}>
   <Container width={width}>
-    <div data-reveal>
-      <SectionHeader
-        eyebrow={eyebrow}
-        heading={heading}
-        lead={lead}
-        align="center"
-        onDark={onDark}
-      />
-    </div>
+    <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="center" onDark={onDark} />
     <div
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       data-reveal="stagger"
@@ -70,6 +62,7 @@ const showCta = cta_primary || cta_secondary;
       <div
         class="mt-[var(--content-rhythm-xl)] flex flex-wrap justify-center gap-3"
         data-section-cta
+        data-reveal
       >
         {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
         {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}

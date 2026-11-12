@@ -142,13 +142,17 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
                 width="default"
                 class={`relative z-10 py-24 ${hc.text()}`}
                 data-hero-content
+                data-reveal="stagger"
               >
                 {slide.eyebrow && (
                   <p class="mb-[var(--content-rhythm-sm)] text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
                     {slide.eyebrow}
                   </p>
                 )}
-                <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
+                <h1
+                  class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]"
+                  data-mask-heading
+                >
                   {slide.heading}
                 </h1>
                 {slide.subheading && (
@@ -283,6 +287,16 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
   import { setupHeroFocus } from "@/lib/hero-focus.js";
   import { setupHeroDim } from "@/lib/hero-dim.js";
   import { setupHeroKenBurns } from "@/lib/hero-ken-burns.js";
+  import {
+    triggerHeroIntro,
+    resetHeroIntro,
+    restoreHeroTransitions,
+    isHeroInViewport,
+  } from "@/lib/hero-intro.js";
+  import { observeInView } from "@skeleton/in-view.js";
+
+  const INTRO_DELAY = 150;
+  const REVEAL_MARGIN = "0px 0px -12% 0px";
 
   document.querySelectorAll<HTMLElement>("[data-hero-carousel]").forEach((root) => {
     const prevBtn = root.querySelector<HTMLElement>("[data-carousel-prev]") ?? undefined;
@@ -301,6 +315,47 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
       dots,
       ...(heroTransition === "fade" ? { transition: "fade" as const } : {}),
     });
+
+    const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const slides = root.querySelectorAll<HTMLElement>("[data-hero-slide]");
+    const hero = root.closest<HTMLElement>('[data-block="hero"]') ?? root;
+
+    if (isReduced) {
+      slides.forEach((slide) => {
+        const content = slide.querySelector<HTMLElement>("[data-hero-content]");
+        if (content) {
+          content.classList.add("is-revealed");
+          content.querySelector<HTMLElement>("[data-mask-heading]")?.classList.add("is-revealed");
+        }
+      });
+    } else {
+      let introDone = false;
+
+      api.on("select", () => {
+        if (!introDone) return;
+        slides.forEach((slide) => resetHeroIntro(slide));
+        void root.offsetHeight;
+        slides.forEach((slide) => restoreHeroTransitions(slide));
+
+        const idx = api.selectedIndex();
+        const activeContent = slides[idx]?.querySelector<HTMLElement>("[data-hero-content]");
+        if (activeContent) triggerHeroIntro(activeContent, 0);
+      });
+
+      const introDelay = isHeroInViewport(hero) ? INTRO_DELAY : 0;
+      const stop = observeInView(hero, {
+        once: true,
+        rootMargin: REVEAL_MARGIN,
+        threshold: 0.3,
+        onEnter: () => {
+          introDone = true;
+          const idx = api.selectedIndex();
+          const activeContent = slides[idx]?.querySelector<HTMLElement>("[data-hero-content]");
+          if (activeContent) triggerHeroIntro(activeContent, introDelay);
+        },
+      });
+      document.addEventListener("astro:before-swap", stop, { once: true });
+    }
 
     if (heroEffect === "drift") {
       const cleanup = setupHeroDrift(api, root);

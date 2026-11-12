@@ -63,29 +63,19 @@ const thumbSizes = isCarousel
 <Section tone={tone} spacing={spacing}>
   {isCarousel && (
     <Container width={width}>
-      <div data-reveal>
-        <SectionHeader
-          eyebrow={eyebrow}
-          heading={heading}
-          lead={lead}
-          align="left"
-          onDark={onDark}
-        />
-      </div>
+      <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="left" onDark={onDark} />
     </Container>
   )}
 
   <Container width={width}>
     {!isCarousel && (
-      <div data-reveal>
-        <SectionHeader
-          eyebrow={eyebrow}
-          heading={heading}
-          lead={lead}
-          align="center"
-          onDark={onDark}
-        />
-      </div>
+      <SectionHeader
+        eyebrow={eyebrow}
+        heading={heading}
+        lead={lead}
+        align="center"
+        onDark={onDark}
+      />
     )}
 
     {images.length > 0 && (
@@ -290,6 +280,7 @@ const thumbSizes = isCarousel
       <div
         class:list={["mt-[var(--content-rhythm-xl)] flex flex-wrap gap-3", ctaAlignClass]}
         data-section-cta
+        data-reveal
       >
         {cta_primary && <CtaLink link={cta_primary} variant="primary" />}
         {cta_secondary && <CtaLink link={cta_secondary} variant="secondary" />}

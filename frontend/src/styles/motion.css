@@ -36,10 +36,55 @@
   transform: none;
 }
 
+/* De-nest: skip stagger animation on children that self-reveal */
+[data-reveal="stagger"] > [data-stagger-skip] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   [data-reveal="stagger"] > * {
     opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* --- Heading mask reveal ------------------------------------------- */
+
+[data-mask-heading] {
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(0.3em);
+  transition:
+    clip-path var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
+}
+[data-mask-heading].is-revealed {
+  clip-path: inset(-0.15em 0 -0.15em 0);
+  transform: none;
+}
+
+/* Inside stagger: skip fade-up, keep mask behavior */
+[data-reveal="stagger"] > [data-mask-heading],
+[data-reveal="stagger"].is-revealed > [data-mask-heading] {
+  opacity: 1;
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(0.3em);
+  transition:
+    clip-path var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
+}
+[data-reveal="stagger"] > [data-mask-heading].is-revealed,
+[data-reveal="stagger"].is-revealed > [data-mask-heading].is-revealed {
+  clip-path: inset(-0.15em 0 -0.15em 0);
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-mask-heading] {
+    clip-path: none !important;
     transform: none !important;
     transition: none !important;
   }

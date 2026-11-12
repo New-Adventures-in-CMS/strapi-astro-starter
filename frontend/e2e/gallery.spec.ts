@@ -83,8 +83,8 @@ test.describe("BlockGallery", () => {
   });
 
   test("grid has reveal hooks like card-grid", async ({ page }) => {
-    const headerWrapper = page.locator("[data-reveal]:not([data-reveal='stagger'])");
-    await expect(headerWrapper).toHaveCount(1);
+    const headerStagger = page.locator("header[data-reveal='stagger']");
+    await expect(headerStagger).toHaveCount(1);
 
     const grid = page.locator("[data-reveal='stagger'][data-mask-grid]");
     await expect(grid).toHaveCount(1);
