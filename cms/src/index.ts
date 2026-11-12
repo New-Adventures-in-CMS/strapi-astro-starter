@@ -262,7 +262,6 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             cta_primary: ctaFromUrl("View the showcase", "/showcase"),
             image: heroImg ? heroImg.id : undefined,
             immersive: false,
-            aspect_ratio: "21:9",
           },
           {
             __component: "blocks.image-text",
@@ -645,6 +644,17 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 image: cardImgs.tokens?.id ?? undefined,
               },
             ],
+          },
+          {
+            __component: "blocks.hero-static",
+            eyebrow: "VISUAL BREAK",
+            heading: "A banner in the wild.",
+            subheading:
+              "Hero-static at 21:9 as a mid-page stacco — not a header, but a cinematic pause between content sections.",
+            cta_primary: ctaFromUrl("Back to top", "/showcase"),
+            image: heroImg2 ? heroImg2.id : undefined,
+            immersive: false,
+            aspect_ratio: "21:9",
           },
           {
             __component: "blocks.gallery",
