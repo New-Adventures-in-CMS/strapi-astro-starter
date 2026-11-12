@@ -1,0 +1,163 @@
+---
+import type {
+  StrapiMedia,
+  HeroAlign,
+  SharedLink,
+  HeroStaticEffect,
+  HeroAspectRatio,
+} from "@/types";
+import { Section, Container } from "@/components/layout";
+import { heroContent } from "@/components/layout/variants";
+import { heroHeightClasses } from "@/components/blocks/variants";
+import CtaLink from "@/components/CtaLink.astro";
+import StrapiImage from "@/components/StrapiImage.astro";
+import { site } from "@/config/site";
+
+interface Props {
+  heading: string;
+  subheading?: string | null;
+  cta_primary?: SharedLink | null;
+  cta_secondary?: SharedLink | null;
+  image?: StrapiMedia | null;
+  eyebrow?: string | null;
+  immersive?: boolean | null;
+  align?: HeroAlign | null;
+  effect?: HeroStaticEffect | null;
+  aspect_ratio?: HeroAspectRatio | null;
+}
+
+const {
+  heading,
+  subheading,
+  cta_primary,
+  cta_secondary,
+  image,
+  eyebrow,
+  immersive,
+  align,
+  effect = "none",
+  aspect_ratio,
+} = Astro.props;
+
+const blockAlign: HeroAlign = align ?? site.heroAlign;
+const hc = heroContent({ align: blockAlign });
+const heightCls = heroHeightClasses(immersive, aspect_ratio);
+const heroEffect: HeroStaticEffect = effect ?? "none";
+
+const HERO_SIZES = "100vw";
+const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
+---
+
+<Section
+  tone="dark"
+  spacing="none"
+  class:list={[`overflow-hidden flex ${hc.wrap()}`, heightCls]}
+  data-block="hero"
+  data-hero-static=""
+  data-hero-effect={heroEffect}
+>
+  {image ? (
+    <>
+      <StrapiImage
+        image={image}
+        sizes={HERO_SIZES}
+        widths={HERO_WIDTHS}
+        loading="eager"
+        fetchpriority="high"
+        class="absolute inset-0 h-full w-full object-cover"
+        data-hero-media
+        loadingIndicator="blur"
+        wrapperClass="absolute inset-0"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
+    </>
+  ) : (
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--section-dark-accent),transparent)]"
+      data-hero-media
+    />
+  )}
+
+  <Container width="default" class={`relative z-10 ${hc.text()}`} data-hero-content>
+    {eyebrow && (
+      <p class="mb-[var(--content-rhythm-sm)] text-xs uppercase tracking-[0.2em] text-[var(--section-dark-fg-subtle)]">
+        {eyebrow}
+      </p>
+    )}
+    <h1 class="font-heading uppercase text-balance text-[var(--section-dark-fg)] text-[var(--fs-display)]">
+      {heading}
+    </h1>
+    {subheading && (
+      <p
+        class:list={[
+          "mt-[var(--content-rhythm-md)] text-[var(--fs-body-large)] leading-relaxed text-[var(--section-dark-fg-muted)] max-w-2xl",
+          blockAlign.includes("left") && "mr-auto text-left",
+          blockAlign.includes("center") && "mx-auto text-center",
+          blockAlign.includes("right") && "ml-auto text-right",
+        ]}
+      >
+        {subheading}
+      </p>
+    )}
+    {(cta_primary || cta_secondary) && (
+      <div
+        class:list={[
+          "mt-[var(--content-rhythm-lg)] flex flex-wrap gap-3",
+          blockAlign.includes("center") && "justify-center",
+          blockAlign.includes("right") && "justify-end",
+        ]}
+      >
+        {cta_primary && (
+          <CtaLink
+            link={cta_primary}
+            variant="primary"
+            class="bg-[var(--section-dark-cta-bg)] text-[var(--section-dark-cta-fg)] hover:bg-[var(--section-dark-cta-bg-hover)]"
+          />
+        )}
+        {cta_secondary && (
+          <CtaLink
+            link={cta_secondary}
+            variant="secondary"
+            class="border-[var(--section-dark-fg-muted)] text-[var(--section-dark-fg)]"
+          />
+        )}
+      </div>
+    )}
+  </Container>
+
+  {immersive && (
+    <div
+      id="header-overlay-sentinel"
+      class="pointer-events-none absolute bottom-0 h-px w-full z-30"
+      aria-hidden="true"
+    ></div>
+  )}
+</Section>
+
+<script>
+  import { setupHeroTilt } from "@/lib/hero-tilt.js";
+
+  const KB_DURATION = 7000;
+  const KB_EASE = "ease-out";
+
+  document.querySelectorAll<HTMLElement>("[data-hero-static]").forEach((root) => {
+    const heroEffect = root.dataset.heroEffect ?? "none";
+    if (heroEffect === "tilt") {
+      const cleanup = setupHeroTilt(root);
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
+    }
+    if (heroEffect === "ken-burns") {
+      const media = root.querySelector<HTMLElement>("[data-hero-media]");
+      if (media && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        media.style.animation = `hero-ken-burns ${KB_DURATION}ms ${KB_EASE} forwards`;
+        document.addEventListener(
+          "astro:before-swap",
+          () => {
+            media.style.animation = "";
+          },
+          { once: true },
+        );
+      }
+    }
+  });
+</script>

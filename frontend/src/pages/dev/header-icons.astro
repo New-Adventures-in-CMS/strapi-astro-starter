@@ -2,7 +2,7 @@
 // Dev fixture — validates overlay-aware icon slot in all header states:
 // transparent (over hero), solid (scrolled), megamenu-open.
 import Layout from "@/layouts/Layout.astro";
-import BlockHero from "@/components/blocks/BlockHero.astro";
+import BlockHeroStatic from "@/components/blocks/BlockHeroStatic.astro";
 import Search from "@tabler/icons/outline/search.svg";
 ---
 
@@ -14,7 +14,7 @@ import Search from "@tabler/icons/outline/search.svg";
   >
     <Search class="size-5" />
   </button>
-  <BlockHero
+  <BlockHeroStatic
     eyebrow="ICON SLOT"
     heading="Header icon demo"
     subheading="Icona lingua demo nello slot azioni. Verificare: on-dark (transparent), foreground (solid), foreground (megamenu aperto)."

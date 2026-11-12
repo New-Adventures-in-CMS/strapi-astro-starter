@@ -2,9 +2,9 @@
 // frontend/src/pages/dev/cta-fixture.astro
 // Dev fixture for e2e tests of shared.link CTA surfaces:
 // hero dual CTA + alignment, card button/full_card modes, link resolution.
-import BlockHero from "@/components/blocks/BlockHero.astro";
+import BlockHeroStatic from "@/components/blocks/BlockHeroStatic.astro";
 import BlockCardGrid from "@/components/blocks/BlockCardGrid.astro";
-import type { SharedLink, SharedCard, HeroSlide } from "@/types";
+import type { SharedLink, SharedCard } from "@/types";
 import "@/styles/starwind.css";
 
 const internalCta: SharedLink = {
@@ -19,28 +19,6 @@ const externalCta: SharedLink = {
   externalUrl: "https://example.com",
   target: "blank",
 };
-
-const leftSlides: HeroSlide[] = [
-  {
-    heading: "Hero left align",
-    eyebrow: "E2E",
-    subheading: "CTA alignment test — left",
-    cta_primary: internalCta,
-    cta_secondary: externalCta,
-    image: null,
-  },
-];
-
-const centerSlides: HeroSlide[] = [
-  {
-    heading: "Hero center align",
-    eyebrow: "E2E",
-    subheading: "CTA alignment test — center",
-    cta_primary: internalCta,
-    cta_secondary: externalCta,
-    image: null,
-  },
-];
 
 const buttonCards: SharedCard[] = [
   {
@@ -70,10 +48,24 @@ const fullCards: SharedCard[] = [
   </head>
   <body>
     <div data-section="hero-left">
-      <BlockHero heading="Hero left align" slides={leftSlides} align="bottom-left" />
+      <BlockHeroStatic
+        heading="Hero left align"
+        eyebrow="E2E"
+        subheading="CTA alignment test — left"
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+        align="bottom-left"
+      />
     </div>
     <div data-section="hero-center">
-      <BlockHero heading="Hero center align" slides={centerSlides} align="center" />
+      <BlockHeroStatic
+        heading="Hero center align"
+        eyebrow="E2E"
+        subheading="CTA alignment test — center"
+        cta_primary={internalCta}
+        cta_secondary={externalCta}
+        align="center"
+      />
     </div>
     <div data-section="card-button">
       <BlockCardGrid heading="Button cards" cards={buttonCards} cta_style="button" />

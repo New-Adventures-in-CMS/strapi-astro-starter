@@ -1,6 +1,7 @@
 ---
 import type { PageBlock } from "@/types";
-import BlockHero from "./BlockHero.astro";
+import BlockHeroStatic from "./BlockHeroStatic.astro";
+import BlockHeroSlider from "./BlockHeroSlider.astro";
 import BlockRichText from "./BlockRichText.astro";
 import BlockImageText from "./BlockImageText.astro";
 import BlockCardGrid from "./BlockCardGrid.astro";
@@ -18,8 +19,10 @@ const { blocks } = Astro.props;
 
 {blocks.map((block) => {
   switch (block.__component) {
-    case "blocks.hero":
-      return <BlockHero {...block} />;
+    case "blocks.hero-static":
+      return <BlockHeroStatic {...block} />;
+    case "blocks.hero-slider":
+      return <BlockHeroSlider {...block} />;
     case "blocks.rich-text":
       return <BlockRichText {...block} />;
     case "blocks.image-text":

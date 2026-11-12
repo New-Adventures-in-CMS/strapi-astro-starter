@@ -170,7 +170,8 @@ Traps:
   populate: {
     blocks: {
       on: {
-        "blocks.hero":       { populate: { image: true } },
+        "blocks.hero-static": { populate: { image: true, cta_primary: ctaPopulate, cta_secondary: ctaPopulate } },
+        "blocks.hero-slider": { populate: { slides: { populate: { image: true, cta_primary: ctaPopulate, cta_secondary: ctaPopulate } } } },
         "blocks.rich-text":  true,
         "blocks.image-text": { populate: { image: true } },
         "blocks.card-grid":  { populate: { cards: { populate: { image: true } } } },
@@ -223,17 +224,21 @@ Rules that will bite you if ignored:
 Components ship under two dynamic zones:
 
 - `form.campi` — form field types: Checkbox, Email, Select, Testo, Textarea.
-- `page.blocks` — page-builder blocks: `blocks.hero` (heading, subheading,
-  cta_text, cta_url, image, eyebrow, **immersive**), `blocks.rich-text` (body,
+- `page.blocks` — page-builder blocks: `blocks.hero-static` (heading, eyebrow,
+  subheading, cta_primary, cta_secondary, image, **immersive**, align,
+  effect: none|tilt|ken-burns, **aspect_ratio**: 16:9|21:9|3:1),
+  `blocks.hero-slider` (heroStyle, **immersive**, slides: hero.slide[],
+  align, **aspect_ratio**: 16:9|21:9|3:1), `blocks.rich-text` (body,
   eyebrow, **align**: left|center|right), `blocks.image-text` (heading, body,
   image, image_position, eyebrow, **tone**), `blocks.card-grid` (heading,
   cards, eyebrow, **tone**). `blocks.card-grid.cards` is a repeatable
   `shared.card` component.
 
-Astro renderers live at `frontend/src/components/blocks/` (`BlockHero.astro`,
-`BlockRichText.astro`, `BlockImageText.astro`, `BlockCardGrid.astro`) and are
-dispatched by `BlockRenderer.astro` on `__component`. Page templates render
-blocks first, then `body` Markdown below as a fallback article.
+Astro renderers live at `frontend/src/components/blocks/` (`BlockHeroStatic.astro`,
+`BlockHeroSlider.astro`, `BlockRichText.astro`, `BlockImageText.astro`,
+`BlockCardGrid.astro`) and are dispatched by `BlockRenderer.astro` on
+`__component`. Page templates render blocks first, then `body` Markdown below
+as a fallback article.
 
 **Bootstrap seed:** on empty DB, `cms/src/index.ts` seeds demo pages (home,
 about, services, contacts) plus a set of menu items and CC0 SVG images from

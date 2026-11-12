@@ -114,14 +114,18 @@ test.describe("Tabs — horizontal", () => {
     expect(box1!.width).toBeCloseTo(tab1Box!.width, -1);
 
     await tabs.nth(2).click();
-    await page.waitForTimeout(500);
+
+    const tab3Box = await tabs.nth(2).boundingBox();
+    expect(tab3Box).not.toBeNull();
+    await expect(async () => {
+      const box = await indicator.boundingBox();
+      expect(box).not.toBeNull();
+      expect(Math.abs(box!.x - tab3Box!.x)).toBeLessThan(15);
+      expect(Math.abs(box!.width - tab3Box!.width)).toBeLessThan(15);
+    }).toPass({ timeout: 2000 });
 
     const box2 = await indicator.boundingBox();
     expect(box2).not.toBeNull();
-    const tab3Box = await tabs.nth(2).boundingBox();
-    expect(tab3Box).not.toBeNull();
-    expect(Math.abs(box2!.x - tab3Box!.x)).toBeLessThan(15);
-    expect(Math.abs(box2!.width - tab3Box!.width)).toBeLessThan(15);
 
     expect(Math.abs(box2!.x - box1!.x)).toBeGreaterThan(20);
   });

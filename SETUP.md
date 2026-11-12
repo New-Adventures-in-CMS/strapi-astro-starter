@@ -324,7 +324,9 @@ Un `IntersectionObserver` monitora `#header-overlay-sentinel` (div `h-px absolut
 
 <!-- pages/index.astro — rilevamento automatico -->
 const headerOverlay =
-  firstBlock?.__component === "blocks.hero" && firstBlock.immersive === true;
+  (firstBlock?.__component === "blocks.hero-static" ||
+    firstBlock?.__component === "blocks.hero-slider") &&
+  firstBlock.immersive === true;
 ```
 
 #### Nav underline animato
@@ -363,14 +365,17 @@ Tutti i link e trigger di primo livello nel nav desktop hanno un `::after` pseud
 
 ### Hero immersive
 
-Campo `immersive` (boolean) sul blocco `blocks.hero` in Strapi.
+Campo `immersive` (boolean) su `blocks.hero-static` e `blocks.hero-slider`.
 
-| `immersive` | Altezza hero                   | Effetto header                          |
-| ----------- | ------------------------------ | --------------------------------------- |
-| `true`      | `min-h-[100svh]` (full-screen) | Overlay transparent → solid allo scroll |
-| `false`     | `min-h-[70vh] md:min-h-[80vh]` | Nessun overlay (header sempre solid)    |
+| `immersive` | `aspect_ratio` | Altezza hero                                       | Effetto header                          |
+| ----------- | -------------- | -------------------------------------------------- | --------------------------------------- |
+| `true`      | (ignorato)     | `min-h-[100svh]` (full-screen)                     | Overlay transparent → solid allo scroll |
+| `false`     | —              | `min-h-[70vh] md:min-h-[80vh]`                     | Nessun overlay (header sempre solid)    |
+| `false`     | `16:9`         | `min-h-[60vh] md:aspect-video md:min-h-0`          | Nessun overlay                          |
+| `false`     | `21:9`         | `min-h-[60vh] md:aspect-[21/9] md:min-h-0`        | Nessun overlay                          |
+| `false`     | `3:1`          | `min-h-[60vh] md:aspect-[3/1] md:min-h-0`         | Nessun overlay                          |
 
-Quando `immersive: true`, `BlockHero.astro` inietta `#header-overlay-sentinel` in fondo alla sezione. La home page e le pagine dinamiche rilevano automaticamente il flag per passare `headerOverlay` al layout.
+Quando `immersive: true`, `BlockHeroStatic.astro` / `BlockHeroSlider.astro` iniettano `#header-overlay-sentinel` in fondo alla sezione. La home page e le pagine dinamiche rilevano automaticamente il flag per passare `headerOverlay` al layout.
 
 ---
 
@@ -456,19 +461,20 @@ Il content-type `page` espone una Dynamic Zone `blocks` con quattro componenti
 riutilizzabili (namespace `blocks.*`, più `shared.card` come sotto-componente
 di `card-grid`).
 
-| Componente   | UID                 | Attributi                                                         |
-| ------------ | ------------------- | ----------------------------------------------------------------- |
-| Hero         | `blocks.hero`       | heading (req), subheading, cta_text, cta_url, image               |
-| Rich Text    | `blocks.rich-text`  | body (Markdown, req)                                              |
-| Image + Text | `blocks.image-text` | heading, body (Markdown, req), image, image_position (left/right) |
-| Card Grid    | `blocks.card-grid`  | heading, cards (repeatable `shared.card`)                         |
-| Card (sub)   | `shared.card`       | title (req), description, image, link_url, link_text              |
+| Componente    | UID                  | Attributi                                                                                                           |
+| ------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Hero Static   | `blocks.hero-static` | heading (req), eyebrow, subheading, cta_primary, cta_secondary, image, immersive, align, effect, aspect_ratio       |
+| Hero Slider   | `blocks.hero-slider` | heroStyle, immersive, slides (hero.slide[]), align, aspect_ratio                                                    |
+| Rich Text     | `blocks.rich-text`   | body (Markdown, req)                                                                                                |
+| Image + Text  | `blocks.image-text`  | heading, body (Markdown, req), image, image_position (left/right)                                                   |
+| Card Grid     | `blocks.card-grid`   | heading, cards (repeatable `shared.card`)                                                                           |
+| Card (sub)    | `shared.card`        | title (req), description, image, link_url, link_text                                                                |
 
 **Rendering (Astro):**
 
 - Renderer dispatcher: `frontend/src/components/blocks/BlockRenderer.astro`
-- Un componente per block: `BlockHero.astro`, `BlockRichText.astro`,
-  `BlockImageText.astro`, `BlockCardGrid.astro`
+- Un componente per block: `BlockHeroStatic.astro`, `BlockHeroSlider.astro`,
+  `BlockRichText.astro`, `BlockImageText.astro`, `BlockCardGrid.astro`
 - Tipi: `frontend/src/types/index.ts` (`PageBlock` union)
 - Populate REST richiede la forma `on:` per Dynamic Zone (la forma flat
   restituisce 400 `Invalid key populate at blocks`). Usa la costante

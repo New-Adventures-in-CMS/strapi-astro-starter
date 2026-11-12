@@ -32,7 +32,10 @@ try {
 const bodyHtml = renderMarkdown(home?.body);
 const hasBlocks = home?.blocks && home.blocks.length > 0;
 const firstBlock = home?.blocks?.[0];
-const headerOverlay = firstBlock?.__component === "blocks.hero" && firstBlock.immersive === true;
+const headerOverlay =
+  (firstBlock?.__component === "blocks.hero-static" ||
+    firstBlock?.__component === "blocks.hero-slider") &&
+  firstBlock.immersive === true;
 ---
 
 <Layout

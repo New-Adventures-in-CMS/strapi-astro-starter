@@ -24,11 +24,15 @@ const ctaPopulate = { populate: { page: true } };
 export const pageBlocksPopulate = {
   blocks: {
     on: {
-      "blocks.hero": {
+      "blocks.hero-static": {
         populate: {
           image: true,
           cta_primary: ctaPopulate,
           cta_secondary: ctaPopulate,
+        },
+      },
+      "blocks.hero-slider": {
+        populate: {
           slides: {
             populate: {
               image: true,
