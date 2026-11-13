@@ -31,10 +31,40 @@
       "component": "shared.link",
       "repeatable": false
     },
+    "media_type": {
+      "type": "enumeration",
+      "enum": ["image", "video"],
+      "default": "image"
+    },
     "image": {
       "type": "media",
       "allowedTypes": ["images"],
-      "multiple": false
+      "multiple": false,
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "media_type" }, "image"]
+        }
+      }
+    },
+    "poster": {
+      "type": "media",
+      "allowedTypes": ["images"],
+      "multiple": false,
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "media_type" }, "video"]
+        }
+      }
+    },
+    "video": {
+      "type": "media",
+      "allowedTypes": ["videos"],
+      "multiple": false,
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "media_type" }, "video"]
+        }
+      }
     },
     "immersive": {
       "type": "boolean",
@@ -58,7 +88,12 @@
     "effect": {
       "type": "enumeration",
       "enum": ["none", "tilt", "ken-burns"],
-      "default": "none"
+      "default": "none",
+      "conditions": {
+        "visible": {
+          "==": [{ "var": "media_type" }, "image"]
+        }
+      }
     },
     "aspect_ratio": {
       "type": "enumeration",
@@ -82,7 +117,12 @@
           { "name": "eyebrow", "size": 6 }
         ],
         [{ "name": "subheading", "size": 12 }],
-        [{ "name": "image", "size": 12 }],
+        [
+          { "name": "image", "size": 8 },
+          { "name": "media_type", "size": 4 }
+        ],
+        [{ "name": "video", "size": 12 }],
+        [{ "name": "poster", "size": 12 }],
         [{ "name": "aspect_ratio", "size": 6 }],
         [{ "name": "cta_primary", "size": 12 }],
         [{ "name": "cta_secondary", "size": 12 }],
@@ -110,9 +150,24 @@
           "description": "CTA secondaria (opzionale), affiancata alla principale."
         }
       },
+      "media_type": {
+        "edit": {
+          "description": "Scegli se l'hero mostra un'immagine o un video mp4."
+        }
+      },
       "image": {
         "edit": {
-          "description": "Immagine di sfondo dell'hero."
+          "description": "Immagine dell'hero."
+        }
+      },
+      "poster": {
+        "edit": {
+          "description": "Immagine di anteprima del video: viene mostrata prima che il video parta, come fallback, e quando l'utente ha le animazioni ridotte (reduced-motion)."
+        }
+      },
+      "video": {
+        "edit": {
+          "description": "File video mp4. Il campo poster fornisce l'anteprima e il first paint."
         }
       },
       "immersive": {

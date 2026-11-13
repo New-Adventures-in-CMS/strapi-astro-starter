@@ -1,0 +1,93 @@
+---
+// frontend/src/pages/dev/hero-video.astro
+// Dev fixture — tests hero-static with video media: non-immersive, immersive,
+// and effect guard (tilt/ken-burns should be ignored when media is video).
+import Layout from "@/layouts/Layout.astro";
+import BlockHeroStatic from "@/components/blocks/BlockHeroStatic.astro";
+import type { StrapiMedia } from "@/types";
+
+const posterImage: StrapiMedia = {
+  id: 0,
+  url: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect width='1280' height='720' fill='#1e293b'/><text x='640' y='360' text-anchor='middle' fill='#94a3b8' font-size='48'>POSTER</text></svg>`)}`,
+  name: "poster-fixture",
+  mime: "image/svg+xml",
+  size: 0,
+  alternativeText: "Poster fixture",
+};
+
+const videoMedia: StrapiMedia = {
+  id: 1,
+  url: "/uploads/hero-video.mp4",
+  name: "hero-video.mp4",
+  mime: "video/mp4",
+  size: 200,
+  width: 1280,
+  height: 720,
+};
+---
+
+<Layout title="Dev — Hero Video" headerOverlay={true}>
+  <div data-hero-section="video-non-immersive">
+    <BlockHeroStatic
+      heading="Video hero — non-immersive 16:9"
+      eyebrow="VIDEO"
+      subheading="media_type=video, aspect_ratio=16:9, not immersive."
+      media_type="video"
+      video={videoMedia}
+      poster={posterImage}
+      immersive={false}
+      aspect_ratio="16:9"
+    />
+  </div>
+
+  <div data-hero-section="video-immersive">
+    <BlockHeroStatic
+      heading="Video hero — immersive"
+      eyebrow="IMMERSIVE VIDEO"
+      subheading="media_type=video, immersive=true. Should trigger headerOverlay and sentinel."
+      media_type="video"
+      video={videoMedia}
+      poster={posterImage}
+      immersive={true}
+    />
+  </div>
+
+  <div data-hero-section="video-effect-tilt">
+    <BlockHeroStatic
+      heading="Video hero — effect=tilt (should be ignored)"
+      eyebrow="EFFECT GUARD"
+      subheading="media_type=video with effect=tilt. Tilt must NOT be applied."
+      media_type="video"
+      video={videoMedia}
+      poster={posterImage}
+      immersive={false}
+      effect="tilt"
+      aspect_ratio="21:9"
+    />
+  </div>
+
+  <div data-hero-section="video-effect-kenburns">
+    <BlockHeroStatic
+      heading="Video hero — effect=ken-burns (should be ignored)"
+      eyebrow="EFFECT GUARD"
+      subheading="media_type=video with effect=ken-burns. Ken-burns must NOT be applied."
+      media_type="video"
+      video={videoMedia}
+      poster={posterImage}
+      immersive={false}
+      effect="ken-burns"
+      aspect_ratio="16:9"
+    />
+  </div>
+
+  <div data-hero-section="image-regression">
+    <BlockHeroStatic
+      heading="Image hero — regression check"
+      eyebrow="REGRESSION"
+      subheading="media_type=image (default). Should render image as before."
+      image={posterImage}
+      immersive={false}
+      aspect_ratio="16:9"
+    />
+  </div>
+</Layout>

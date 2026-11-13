@@ -27,6 +27,8 @@ export const pageBlocksPopulate = {
       "blocks.hero-static": {
         populate: {
           image: true,
+          video: true,
+          poster: true,
           cta_primary: ctaPopulate,
           cta_secondary: ctaPopulate,
         },

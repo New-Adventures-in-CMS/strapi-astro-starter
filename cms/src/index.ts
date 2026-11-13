@@ -52,7 +52,9 @@ async function uploadSeedImage(
             ? "image/jpeg"
             : ext === ".webp"
               ? "image/webp"
-              : "application/octet-stream";
+              : ext === ".mp4"
+                ? "video/mp4"
+                : "application/octet-stream";
 
     const uploadService = strapi.plugin("upload").service("upload");
     const [uploaded] = await uploadService.upload({
@@ -142,6 +144,11 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
       strapi,
       "photo-hero-2.jpg",
       "Second hero slide gradient placeholder (cold palette)",
+    );
+    const heroVideo = await uploadSeedImage(
+      strapi,
+      "hero-video.mp4",
+      "Colorful gradient loop placeholder for hero video testing",
     );
     const heroImg = heroPhoto ?? heroSvg;
     const heroImg2 = heroPhoto2 ?? heroImg;
@@ -671,6 +678,19 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             immersive: false,
             aspect_ratio: "21:9",
             anchor_id: "visual-break",
+          },
+          {
+            __component: "blocks.hero-static",
+            eyebrow: "VIDEO HERO",
+            heading: "Motion speaks louder.",
+            subheading:
+              "Hero-static with a video background — mp4 loops muted, the poster field provides the preview image. Effects are disabled for video media.",
+            media_type: "video",
+            video: heroVideo ? heroVideo.id : undefined,
+            poster: heroImg2 ? heroImg2.id : undefined,
+            immersive: false,
+            aspect_ratio: "16:9",
+            anchor_id: "video-hero",
           },
           {
             __component: "blocks.gallery",

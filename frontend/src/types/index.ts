@@ -52,6 +52,8 @@ export type HeroStyle =
 
 export type HeroStaticEffect = "none" | "tilt" | "ken-burns";
 
+export type HeroMediaType = "image" | "video";
+
 export type HeroAspectRatio = "16:9" | "21:9" | "3:1";
 
 // Blocchi del page builder (Dynamic Zone su `page.blocks`)
@@ -74,7 +76,10 @@ export interface BlockHeroStatic {
   subheading?: string | null;
   cta_primary?: SharedLink | null;
   cta_secondary?: SharedLink | null;
+  media_type?: HeroMediaType | null;
   image?: StrapiMedia | null;
+  video?: StrapiMedia | null;
+  poster?: StrapiMedia | null;
   immersive?: boolean | null;
   align?: HeroAlign | null;
   effect?: HeroStaticEffect | null;

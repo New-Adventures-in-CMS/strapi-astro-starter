@@ -5,7 +5,9 @@ import type {
   SharedLink,
   HeroStaticEffect,
   HeroAspectRatio,
+  HeroMediaType,
 } from "@/types";
+import { strapiMediaUrl } from "@/lib/strapi";
 import { Section, Container } from "@/components/layout";
 import { heroContent } from "@/components/layout/variants";
 import { heroHeightClasses } from "@/components/blocks/variants";
@@ -19,7 +21,10 @@ interface Props {
   subheading?: string | null;
   cta_primary?: SharedLink | null;
   cta_secondary?: SharedLink | null;
+  media_type?: HeroMediaType | null;
   image?: StrapiMedia | null;
+  video?: StrapiMedia | null;
+  poster?: StrapiMedia | null;
   eyebrow?: string | null;
   immersive?: boolean | null;
   align?: HeroAlign | null;
@@ -33,7 +38,10 @@ const {
   subheading,
   cta_primary,
   cta_secondary,
+  media_type,
   image,
+  video,
+  poster,
   eyebrow,
   immersive,
   align,
@@ -46,6 +54,10 @@ const blockAlign: HeroAlign = align ?? site.heroAlign;
 const hc = heroContent({ align: blockAlign });
 const heightCls = heroHeightClasses(immersive, aspect_ratio);
 const heroEffect: HeroStaticEffect = effect ?? "none";
+
+const isVideo = media_type === "video" && video;
+const videoUrl = isVideo ? strapiMediaUrl(video.url) : undefined;
+const posterUrl = poster ? strapiMediaUrl(poster.url) : undefined;
 
 const anchorId = anchor_id ? slugifyAnchor(anchor_id) : undefined;
 const HERO_SIZES = "100vw";
@@ -61,7 +73,23 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
   data-hero-static=""
   data-hero-effect={heroEffect}
 >
-  {image ? (
+  {isVideo && videoUrl ? (
+    <>
+      <video
+        class="absolute inset-0 h-full w-full object-cover"
+        data-hero-media
+        poster={posterUrl}
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        data-hero-video
+      >
+        <source src={videoUrl} type="video/mp4" />
+      </video>
+      <div class="absolute inset-0 bg-gradient-to-r from-[var(--section-dark-overlay-from)] via-[var(--section-dark-overlay-via)] to-[var(--section-dark-overlay-to)]" />
+    </>
+  ) : media_type !== "video" && image ? (
     <>
       <StrapiImage
         image={image}
@@ -159,6 +187,18 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 
   document.querySelectorAll<HTMLElement>("[data-hero-static]").forEach((root) => {
     const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const videoEl = root.querySelector<HTMLVideoElement>("video[data-hero-video]");
+    const hasVideo = videoEl !== null;
+
+    if (videoEl) {
+      if (isReduced) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      } else {
+        videoEl.play().catch(() => {});
+      }
+    }
+
     const content = root.querySelector<HTMLElement>("[data-hero-content]");
     if (content) {
       if (isReduced) {
@@ -177,11 +217,11 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
     }
 
     const heroEffect = root.dataset.heroEffect ?? "none";
-    if (heroEffect === "tilt") {
+    if (heroEffect === "tilt" && !hasVideo) {
       const cleanup = setupHeroTilt(root);
       document.addEventListener("astro:before-swap", cleanup, { once: true });
     }
-    if (heroEffect === "ken-burns") {
+    if (heroEffect === "ken-burns" && !hasVideo) {
       const media = root.querySelector<HTMLElement>("[data-hero-media]");
       if (media && !isReduced) {
         media.style.animation = `hero-ken-burns ${KB_DURATION}ms ${KB_EASE} forwards`;
