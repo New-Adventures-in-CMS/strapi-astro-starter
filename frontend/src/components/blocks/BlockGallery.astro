@@ -18,6 +18,7 @@ import {
   dialogCloseButton,
 } from "@/components/starwind/dialog/variants";
 import { gallery as galleryTv, carousel as cv, aspectRatioClass } from "./variants";
+import { slugifyAnchor } from "@/lib/links";
 
 interface Props {
   heading?: string | null;
@@ -58,9 +59,10 @@ const gv = galleryTv({ width });
 const thumbSizes = isCarousel
   ? "(min-width: 1024px) 64vw, (min-width: 640px) 46vw, 82vw"
   : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";
+const anchorId = sec?.anchor_id ? slugifyAnchor(sec.anchor_id) : undefined;
 ---
 
-<Section tone={tone} spacing={spacing}>
+<Section tone={tone} spacing={spacing} id={anchorId}>
   {isCarousel && (
     <Container width={width}>
       <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="left" onDark={onDark} />

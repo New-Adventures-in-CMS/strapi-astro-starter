@@ -1,0 +1,85 @@
+---
+import BlockHeroStatic from "@/components/blocks/BlockHeroStatic.astro";
+import BlockRichText from "@/components/blocks/BlockRichText.astro";
+import type { SharedLink, SharedSection } from "@/types";
+import "@/styles/starwind.css";
+
+const samePageCta: SharedLink = {
+  label: "Jump to features",
+  linkMode: "anchor",
+  anchor: "Features!",
+};
+
+const crossPageCta: SharedLink = {
+  label: "Jump to About FAQ",
+  linkMode: "internal",
+  page: { slug: "about" },
+  anchor: "about-faq",
+};
+
+const externalWithAnchor: SharedLink = {
+  label: "External docs",
+  linkMode: "external",
+  externalUrl: "https://docs.astro.build",
+  anchor: "should-be-ignored",
+};
+
+const heroAnchorCta: SharedLink = {
+  label: "Jump to hero",
+  linkMode: "anchor",
+  anchor: "hero-top",
+};
+
+const deadCta: SharedLink = {
+  label: "Dead link",
+  linkMode: "internal",
+};
+
+const anchoredSection: SharedSection = { anchor_id: "Features!" };
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anchor Link Fixture</title>
+    <style>
+      :root {
+        --header-h: 4rem;
+      }
+      html {
+        scroll-padding-top: var(--header-h);
+      }
+    </style>
+  </head>
+  <body>
+    <div data-section="hero-anchor">
+      <BlockHeroStatic
+        heading="Anchor test hero"
+        cta_primary={samePageCta}
+        cta_secondary={crossPageCta}
+        anchor_id="hero-top"
+      />
+    </div>
+    <div data-section="dead-cta">
+      <BlockRichText body="## Dead CTA test" cta_primary={deadCta} />
+    </div>
+    <div data-section="external-anchor">
+      <BlockRichText body="## External with anchor" cta_primary={externalWithAnchor} />
+    </div>
+    <div style="min-height: 120vh;"></div>
+    <div data-section="hero-anchor-cta">
+      <BlockRichText body="## Link targeting hero" cta_primary={heroAnchorCta} />
+    </div>
+    <div data-section="anchor-target">
+      <BlockRichText body="## This is the features section" section={anchoredSection} />
+    </div>
+    <script>
+      import { initSmoothScroll } from "@skeleton/smooth-scroll.js";
+      import { initAnchorScroll } from "@skeleton/anchor-scroll.js";
+      initSmoothScroll("off");
+      initAnchorScroll();
+    </script>
+  </body>
+</html>

@@ -11,6 +11,7 @@ import { Section, Container } from "@/components/layout";
 import SectionHeader from "@/components/SectionHeader.astro";
 import CtaLink from "@/components/CtaLink.astro";
 import Card from "./Card.astro";
+import { slugifyAnchor } from "@/lib/links";
 
 interface Props {
   heading?: string | null;
@@ -44,9 +45,10 @@ const spacing = sec?.spacing ?? "xl";
 const width = container?.width ?? "contained";
 const onDark = tone === "dark";
 const showCta = cta_primary || cta_secondary;
+const anchorId = sec?.anchor_id ? slugifyAnchor(sec.anchor_id) : undefined;
 ---
 
-<Section tone={tone} spacing={spacing}>
+<Section tone={tone} spacing={spacing} id={anchorId}>
   <Container width={width}>
     <SectionHeader eyebrow={eyebrow} heading={heading} lead={lead} align="center" onDark={onDark} />
     <div

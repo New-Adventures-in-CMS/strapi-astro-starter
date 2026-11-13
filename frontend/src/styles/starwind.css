@@ -159,6 +159,10 @@
   --section-dark-accent: color-mix(in srgb, var(--white) 8%, transparent);
 }
 
+html {
+  scroll-padding-top: var(--header-h);
+}
+
 /* Accordion inside dark Section */
 [data-tone="dark"] [data-slot="accordion-item"] {
   --border: var(--section-dark-accent);

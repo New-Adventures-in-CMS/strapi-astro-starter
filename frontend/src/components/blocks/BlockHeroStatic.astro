@@ -12,6 +12,7 @@ import { heroHeightClasses } from "@/components/blocks/variants";
 import CtaLink from "@/components/CtaLink.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
 import { site } from "@/config/site";
+import { slugifyAnchor } from "@/lib/links";
 
 interface Props {
   heading: string;
@@ -24,6 +25,7 @@ interface Props {
   align?: HeroAlign | null;
   effect?: HeroStaticEffect | null;
   aspect_ratio?: HeroAspectRatio | null;
+  anchor_id?: string | null;
 }
 
 const {
@@ -37,6 +39,7 @@ const {
   align,
   effect = "none",
   aspect_ratio,
+  anchor_id,
 } = Astro.props;
 
 const blockAlign: HeroAlign = align ?? site.heroAlign;
@@ -44,6 +47,7 @@ const hc = heroContent({ align: blockAlign });
 const heightCls = heroHeightClasses(immersive, aspect_ratio);
 const heroEffect: HeroStaticEffect = effect ?? "none";
 
+const anchorId = anchor_id ? slugifyAnchor(anchor_id) : undefined;
 const HERO_SIZES = "100vw";
 const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 ---
@@ -51,6 +55,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 <Section
   tone="dark"
   spacing="none"
+  id={anchorId}
   class:list={[`overflow-hidden flex ${hc.wrap()}`, heightCls]}
   data-block="hero"
   data-hero-static=""

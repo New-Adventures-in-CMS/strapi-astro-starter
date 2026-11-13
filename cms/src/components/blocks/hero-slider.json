@@ -44,6 +44,9 @@
           "==": [{ "var": "immersive" }, false]
         }
       }
+    },
+    "anchor_id": {
+      "type": "string"
     }
   },
   "config": {
@@ -57,7 +60,8 @@
         [
           { "name": "immersive", "size": 6 },
           { "name": "align", "size": 6 }
-        ]
+        ],
+        [{ "name": "anchor_id", "size": 6 }]
       ]
     },
     "metadatas": {
@@ -84,6 +88,11 @@
       "aspect_ratio": {
         "edit": {
           "description": "Rapporto d'aspetto della fascia (banner). Visibile solo se immersive è spento. Da tablet in su impone il rapporto; su mobile ha un pavimento di altezza minima."
+        }
+      },
+      "anchor_id": {
+        "edit": {
+          "description": "ID àncora dell'hero (es. 'hero-home'). Dev'essere univoco nella pagina: id duplicati rompono la navigazione in silenzio."
         }
       }
     }

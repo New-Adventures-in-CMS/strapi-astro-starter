@@ -24,13 +24,14 @@ export interface StrapiMedia {
   formats?: Record<string, { url: string; width: number; height: number }>;
 }
 
-export type LinkMode = "internal" | "external";
+export type LinkMode = "internal" | "anchor" | "external";
 export type LinkTarget = "auto" | "blank" | "self";
 
 export interface SharedLink {
   linkMode: LinkMode;
   page?: { slug: string } | null;
   externalUrl?: string | null;
+  anchor?: string | null;
   label: string;
   target?: LinkTarget;
 }
@@ -77,6 +78,7 @@ export interface BlockHeroStatic {
   align?: HeroAlign | null;
   effect?: HeroStaticEffect | null;
   aspect_ratio?: HeroAspectRatio | null;
+  anchor_id?: string | null;
 }
 
 export interface BlockHeroSlider {
@@ -86,6 +88,7 @@ export interface BlockHeroSlider {
   slides?: HeroSlide[] | null;
   align?: HeroAlign | null;
   aspect_ratio?: HeroAspectRatio | null;
+  anchor_id?: string | null;
 }
 
 export interface BlockRichText {
@@ -161,6 +164,7 @@ export type SectionSpacing = "none" | "sm" | "md" | "lg" | "xl";
 export interface SharedSection {
   tone?: SectionTone;
   spacing?: SectionSpacing;
+  anchor_id?: string | null;
 }
 
 export interface SharedContainer {

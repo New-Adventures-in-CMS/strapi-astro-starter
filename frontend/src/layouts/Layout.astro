@@ -53,6 +53,7 @@ const { stickyShell, imageMaskReveal } = await getSiteSettings();
       import { initImageLoading } from "@skeleton/image-loading.js";
       import { initSmoothScroll } from "@skeleton/smooth-scroll.js";
       import { initScrollParallax } from "@skeleton/scroll-parallax.js";
+      import { initAnchorScroll } from "@skeleton/anchor-scroll.js";
       import { site } from "@/config/site";
       initSmoothScroll(site.motion.smooth);
       initReveal();
@@ -60,6 +61,7 @@ const { stickyShell, imageMaskReveal } = await getSiteSettings();
       initHeadingMaskReveal();
       initImageLoading();
       initScrollParallax();
+      initAnchorScroll();
     </script>
   </body>
 </html>

@@ -16,6 +16,9 @@
       "type": "enumeration",
       "enum": ["none", "sm", "md", "lg", "xl"],
       "default": "xl"
+    },
+    "anchor_id": {
+      "type": "string"
     }
   },
   "config": {
@@ -28,6 +31,11 @@
       "spacing": {
         "edit": {
           "description": "Spazio verticale sopra e sotto la sezione, da none (nessuno) a xl (massimo). Usa none per attaccare due blocchi senza stacco."
+        }
+      },
+      "anchor_id": {
+        "edit": {
+          "description": "ID àncora della sezione (es. 'servizi'). Dev'essere univoco nella pagina: id duplicati rompono la navigazione in silenzio. I link possono puntare a questo id con #servizi o /pagina#servizi."
         }
       }
     }

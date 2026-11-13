@@ -11,22 +11,41 @@ interface LinkLike {
   linkMode: LinkMode;
   page?: { slug: string } | null;
   externalUrl?: string | null;
+  anchor?: string | null;
+}
+
+export function slugifyAnchor(raw: string): string {
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 export function resolveHrefCore(link: LinkLike): { href: string; external: boolean } {
   switch (link.linkMode) {
+    case "anchor": {
+      const fragment = link.anchor ? slugifyAnchor(link.anchor) : "";
+      return { href: fragment ? `#${fragment}` : "#", external: false };
+    }
     case "external": {
       if (!link.externalUrl) return { href: "#", external: false };
-      const isExternal = /^https?:\/\//.test(link.externalUrl);
-      return { href: link.externalUrl, external: isExternal };
+      return {
+        href: link.externalUrl,
+        external: /^https?:\/\//.test(link.externalUrl),
+      };
     }
     case "internal":
     default: {
       if (!link.page?.slug) return { href: "#", external: false };
-      return {
-        href: link.page.slug === "home" ? "/" : `/${link.page.slug}`,
-        external: false,
-      };
+      let href = link.page.slug === "home" ? "/" : `/${link.page.slug}`;
+      if (link.anchor) {
+        const fragment = slugifyAnchor(link.anchor);
+        if (fragment) href = `${href}#${fragment}`;
+      }
+      return { href, external: false };
     }
   }
 }

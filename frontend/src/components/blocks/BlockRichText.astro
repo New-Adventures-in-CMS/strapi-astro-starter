@@ -4,6 +4,7 @@ import { Prose } from "@/components/starwind/prose";
 import { Section, Container } from "@/components/layout";
 import CtaLink from "@/components/CtaLink.astro";
 import { renderMarkdown } from "@/lib/markdown";
+import { slugifyAnchor } from "@/lib/links";
 
 interface Props {
   body: string;
@@ -28,9 +29,15 @@ const alignClass =
       ? "text-right [&_h1]:text-right [&_h2]:text-right [&_h3]:text-right [&_p]:text-right [&_li]:text-right"
       : undefined;
 const compact = (spacing ?? "xl") === "none";
+const anchorId = sec?.anchor_id ? slugifyAnchor(sec.anchor_id) : undefined;
 ---
 
-<Section tone={tone} spacing={spacing} data-richtext-compact={compact ? "" : undefined}>
+<Section
+  tone={tone}
+  spacing={spacing}
+  id={anchorId}
+  data-richtext-compact={compact ? "" : undefined}
+>
   <Container width={containerWidth} class={alignClass} data-reveal>
     <Prose class:list={[alignClass, isWide && "max-w-none"]}>
       <div set:html={html} />

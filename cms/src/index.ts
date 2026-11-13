@@ -282,7 +282,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             __component: "blocks.faq",
             eyebrow: "DOMANDE FREQUENTI",
             heading: "FAQ",
-            section: {},
+            section: { anchor_id: "about-faq" },
             items: [
               {
                 question: "What is this starter?",
@@ -542,7 +542,16 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
                 heading: "Every block, one page.",
                 subheading:
                   "A developer-facing catalog of all available blocks and their visual variants — tones, widths, and layout options exercised in one place.",
-                cta_primary: ctaFromUrl("Back to home", "/"),
+                cta_primary: {
+                  label: "Jump to features",
+                  linkMode: "anchor" as const,
+                  anchor: "features",
+                },
+                cta_secondary: {
+                  label: "Jump to the banner",
+                  linkMode: "anchor" as const,
+                  anchor: "visual-break",
+                },
                 image: heroImg ? heroImg.id : undefined,
               },
               {
@@ -558,7 +567,12 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           {
             __component: "blocks.rich-text",
             body: "## What you're looking at\n\nThis page exercises **every block type** shipped with the starter, including variants the home page doesn't touch: muted and dark tones, full and bleed widths, and the carousel block (seeded here for the first time).\n\nIt's a developer tool, not a landing page — use it to audit rendering, spacing, and dark-mode behavior across all combinations.",
-            cta_primary: ctaFromUrl("Read the setup guide", "/about"),
+            cta_primary: {
+              label: "Jump to About FAQ",
+              linkMode: "internal" as const,
+              page: connectSeedPage("about"),
+              anchor: "about-faq",
+            },
             section: { tone: "muted" },
           },
           {
@@ -590,7 +604,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             aspect_ratio: "1:1",
             cta_primary: ctaFromUrl("Explore all features", "/about"),
             cta_secondary: ctaFromUrl("Back to home", "/"),
-            section: { tone: "dark" },
+            section: { tone: "dark", anchor_id: "features" },
             container: { width: "full" },
             cards: [
               {
@@ -655,6 +669,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
             image: heroImg2 ? heroImg2.id : undefined,
             immersive: false,
             aspect_ratio: "21:9",
+            anchor_id: "visual-break",
           },
           {
             __component: "blocks.gallery",

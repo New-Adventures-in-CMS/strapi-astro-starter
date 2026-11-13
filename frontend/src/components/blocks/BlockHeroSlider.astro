@@ -7,6 +7,7 @@ import CtaLink from "@/components/CtaLink.astro";
 import StrapiImage from "@/components/StrapiImage.astro";
 import { site } from "@/config/site";
 import type { HeroTransition, HeroEffect } from "@/config/site";
+import { slugifyAnchor } from "@/lib/links";
 
 interface Props {
   slides?: HeroSlide[] | null;
@@ -15,9 +16,18 @@ interface Props {
   immersive?: boolean | null;
   align?: HeroAlign | null;
   aspect_ratio?: HeroAspectRatio | null;
+  anchor_id?: string | null;
 }
 
-const { slides, autoplayDelay = 5000, heroStyle, immersive, align, aspect_ratio } = Astro.props;
+const {
+  slides,
+  autoplayDelay = 5000,
+  heroStyle,
+  immersive,
+  align,
+  aspect_ratio,
+  anchor_id,
+} = Astro.props;
 
 const HERO_PRESETS: Record<HeroStyle, { transition: HeroTransition; effect: HeroEffect }> = {
   fade: { transition: "fade", effect: "none" },
@@ -43,6 +53,7 @@ if (import.meta.env.DEV && heroEffect !== requestedEffect) {
 }
 const isDrift = heroEffect === "drift";
 const heightCls = heroHeightClasses(immersive, aspect_ratio);
+const anchorId = anchor_id ? slugifyAnchor(anchor_id) : undefined;
 
 const safeSlides = slides ?? [];
 const firstSlide = safeSlides[0];
@@ -56,6 +67,7 @@ const HERO_WIDTHS = [640, 1024, 1280, 1536, 1920, 2560];
 <Section
   tone="dark"
   spacing="none"
+  id={anchorId}
   class:list={[`overflow-hidden flex ${firstHC.wrap()}`, heightCls]}
   data-block="hero"
 >

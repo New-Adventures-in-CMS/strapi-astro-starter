@@ -13,7 +13,7 @@
     },
     "linkMode": {
       "type": "enumeration",
-      "enum": ["internal", "external"],
+      "enum": ["internal", "anchor", "external"],
       "default": "internal",
       "required": true
     },
@@ -35,6 +35,14 @@
         }
       }
     },
+    "anchor": {
+      "type": "string",
+      "conditions": {
+        "visible": {
+          "!=": [{ "var": "linkMode" }, "external"]
+        }
+      }
+    },
     "target": {
       "type": "enumeration",
       "enum": ["auto", "blank", "self"],
@@ -50,7 +58,7 @@
         ],
         [{ "name": "page", "size": 12 }],
         [{ "name": "externalUrl", "size": 12 }],
-        [{ "name": "target", "size": 6 }]
+        [{ "name": "anchor", "size": 6 }, { "name": "target", "size": 6 }]
       ]
     },
     "metadatas": {
@@ -61,7 +69,7 @@
       },
       "linkMode": {
         "edit": {
-          "description": "Tipo di link: internal (pagina del sito) o external (URL esterno)."
+          "description": "Tipo di link: internal (pagina del sito), anchor (àncora nella pagina corrente), external (URL esterno)."
         }
       },
       "page": {
@@ -72,6 +80,11 @@
       "externalUrl": {
         "edit": {
           "description": "URL esterno completo (solo se linkMode = external)."
+        }
+      },
+      "anchor": {
+        "edit": {
+          "description": "ID della sezione di arrivo (es. 'servizi'). Dev'essere univoco nella pagina. In modo Anchor punta a questa pagina (#id); in modo Internal aggiunge il punto di arrivo sulla pagina collegata (/slug#id)."
         }
       },
       "target": {

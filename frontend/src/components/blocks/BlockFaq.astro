@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/starwind/accordion";
 import { renderMarkdown } from "@/lib/markdown";
+import { slugifyAnchor } from "@/lib/links";
 
 interface Props {
   eyebrow?: string | null;
@@ -24,9 +25,10 @@ const containerWidth = reading_width === "wide" ? "reading-wide" : "prose";
 const tone = sec?.tone ?? "default";
 const spacing = sec?.spacing ?? "xl";
 const onDark = tone === "dark";
+const anchorId = sec?.anchor_id ? slugifyAnchor(sec.anchor_id) : undefined;
 ---
 
-<Section tone={tone} spacing={spacing}>
+<Section tone={tone} spacing={spacing} id={anchorId}>
   <Container width={containerWidth}>
     <SectionHeader eyebrow={eyebrow} heading={heading} align="center" onDark={onDark} />
     <div data-reveal>
