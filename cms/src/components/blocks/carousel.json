@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "shown": {
+      "type": "boolean",
+      "default": true
+    },
     "autoplay": {
       "type": "boolean",
       "default": false
@@ -65,6 +69,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "shown", "size": 4 }],
         [
           { "name": "heading", "size": 6 },
           { "name": "eyebrow", "size": 6 }
@@ -86,6 +91,11 @@
       ]
     },
     "metadatas": {
+      "shown": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "autoplay": {
         "edit": {
           "description": "Se attivo, il carosello scorre da solo. Valuta l'accessibilità prima di attivarlo."

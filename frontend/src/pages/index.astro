@@ -8,6 +8,7 @@ import { Badge } from "@/components/starwind/badge";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/starwind/card";
 import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
 import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
+import { isBlockShown } from "@/lib/blocks";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
@@ -31,7 +32,7 @@ try {
 
 const bodyHtml = renderMarkdown(home?.body);
 const hasBlocks = home?.blocks && home.blocks.length > 0;
-const firstBlock = home?.blocks?.[0];
+const firstBlock = home?.blocks?.find(isBlockShown);
 const headerOverlay =
   (firstBlock?.__component === "blocks.hero-static" ||
     firstBlock?.__component === "blocks.hero-slider") &&

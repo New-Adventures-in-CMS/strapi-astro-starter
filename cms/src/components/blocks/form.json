@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "shown": {
+      "type": "boolean",
+      "default": true
+    },
     "eyebrow": {
       "type": "string"
     },
@@ -35,6 +39,11 @@
   },
   "config": {
     "metadatas": {
+      "shown": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "reading_width": {
         "edit": {
           "description": "Larghezza della colonna: normal (misura di lettura standard) o wide (più larga, circa 860px). Tienila su normal per la massima leggibilità."

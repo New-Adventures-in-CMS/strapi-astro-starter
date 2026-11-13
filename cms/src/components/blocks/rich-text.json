@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "shown": {
+      "type": "boolean",
+      "default": true
+    },
     "body": {
       "type": "richtext",
       "required": true
@@ -40,6 +44,11 @@
   },
   "config": {
     "metadatas": {
+      "shown": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "cta_primary": {
         "edit": {
           "description": "CTA principale sotto il testo."

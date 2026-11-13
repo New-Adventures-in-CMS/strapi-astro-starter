@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "shown": {
+      "type": "boolean",
+      "default": true
+    },
     "heroStyle": {
       "type": "enumeration",
       "enum": ["fade", "slide", "drift", "focus", "dim", "parallax", "tilt", "ken-burns"],
@@ -40,7 +44,7 @@
       "type": "enumeration",
       "enum": ["16:9", "21:9", "3:1"],
       "conditions": {
-        "visible": {
+        "shown": {
           "==": [{ "var": "immersive" }, false]
         }
       }
@@ -52,6 +56,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "shown", "size": 4 }],
         [{ "name": "slides", "size": 12 }],
         [
           { "name": "heroStyle", "size": 6 },
@@ -65,6 +70,11 @@
       ]
     },
     "metadatas": {
+      "shown": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "heroStyle": {
         "edit": {
           "description": "Effetto di transizione tra le slide: fade (dissolvenza), slide (scorrimento), drift (parallasse), focus (zoom-in), dim (oscuramento), parallax (profondità), tilt (inclinazione 3D), ken-burns (zoom lento continuo)."

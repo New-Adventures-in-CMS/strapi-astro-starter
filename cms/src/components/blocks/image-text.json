@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "shown": {
+      "type": "boolean",
+      "default": true
+    },
     "heading": {
       "type": "string"
     },
@@ -63,6 +67,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "shown", "size": 4 }],
         [
           { "name": "heading", "size": 6 },
           { "name": "eyebrow", "size": 6 }
@@ -81,6 +86,11 @@
       ]
     },
     "metadatas": {
+      "shown": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "cta_primary": {
         "edit": {
           "description": "CTA principale sotto il testo."

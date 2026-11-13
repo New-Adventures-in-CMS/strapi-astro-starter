@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "shown": {
+      "type": "boolean",
+      "default": true
+    },
     "heading": {
       "type": "string",
       "required": true
@@ -60,7 +64,7 @@
       "type": "enumeration",
       "enum": ["16:9", "21:9", "3:1"],
       "conditions": {
-        "visible": {
+        "shown": {
           "==": [{ "var": "immersive" }, false]
         }
       }
@@ -72,6 +76,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "shown", "size": 4 }],
         [
           { "name": "heading", "size": 6 },
           { "name": "eyebrow", "size": 6 }
@@ -90,6 +95,11 @@
       ]
     },
     "metadatas": {
+      "shown": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "cta_primary": {
         "edit": {
           "description": "CTA principale. Compare solo se compili almeno il testo."
