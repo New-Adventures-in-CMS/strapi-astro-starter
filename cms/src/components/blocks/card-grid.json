@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
     "eyebrow": {
       "type": "string"
     },
@@ -57,6 +61,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "visible", "size": 4 }],
         [
           { "name": "eyebrow", "size": 6 },
           { "name": "heading", "size": 6 }
@@ -74,6 +79,11 @@
       ]
     },
     "metadatas": {
+      "visible": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "aspect_ratio": {
         "edit": {
           "description": "Proporzione delle immagini del blocco (ritaglio cover, altezza uniforme)."

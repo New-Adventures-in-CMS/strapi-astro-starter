@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
     "eyebrow": {
       "type": "string"
     },
@@ -65,6 +69,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "visible", "size": 4 }],
         [
           { "name": "eyebrow", "size": 6 },
           { "name": "heading", "size": 6 }
@@ -83,6 +88,11 @@
       ]
     },
     "metadatas": {
+      "visible": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "display": {
         "edit": {
           "description": "Come mostrare le immagini: griglia di thumbnail o carosello scorrevole con peek."

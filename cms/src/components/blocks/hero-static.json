@@ -7,6 +7,10 @@
   },
   "options": {},
   "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
     "heading": {
       "type": "string",
       "required": true
@@ -72,6 +76,7 @@
   "config": {
     "layouts": {
       "edit": [
+        [{ "name": "visible", "size": 4 }],
         [
           { "name": "heading", "size": 6 },
           { "name": "eyebrow", "size": 6 }
@@ -90,6 +95,11 @@
       ]
     },
     "metadatas": {
+      "visible": {
+        "edit": {
+          "description": "Se disattivato, questo blocco non viene mostrato nel sito."
+        }
+      },
       "cta_primary": {
         "edit": {
           "description": "CTA principale. Compare solo se compili almeno il testo."
