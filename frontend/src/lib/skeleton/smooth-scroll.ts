@@ -7,6 +7,12 @@ const DURATION: Record<Exclude<MotionSmoothPreset, "off">, number> = {
   marked: 1.6,
 };
 
+let activeLenis: Lenis | null = null;
+
+export function getLenis(): Lenis | null {
+  return activeLenis;
+}
+
 /**
  * Smooth scroll globale (Lenis). Nudo e riusabile (candidato @team/ui).
  * Disattivo se preset "off", se prefers-reduced-motion, o su puntatore coarse (touch):
@@ -21,6 +27,7 @@ export function initSmoothScroll(preset: MotionSmoothPreset): () => void {
     duration: DURATION[preset],
     smoothWheel: true,
   });
+  activeLenis = lenis;
 
   let rafId = 0;
   function raf(time: number) {
@@ -32,5 +39,6 @@ export function initSmoothScroll(preset: MotionSmoothPreset): () => void {
   return () => {
     cancelAnimationFrame(rafId);
     lenis.destroy();
+    activeLenis = null;
   };
 }

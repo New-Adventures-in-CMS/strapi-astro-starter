@@ -61,7 +61,11 @@ const cv = imageText({
     <div class={cv.grid()} data-reveal="stagger">
       <div class={cv.imageCol()} data-mask-skip>
         {image ? (
-          <div data-mask-reveal class:list={["overflow-hidden", cv.image()]}>
+          <div
+            data-mask-reveal
+            data-parallax={image_fit !== "contain" ? "" : undefined}
+            class:list={["overflow-hidden", cv.image()]}
+          >
             <StrapiImage
               image={image}
               alt={image.alternativeText || heading || ""}

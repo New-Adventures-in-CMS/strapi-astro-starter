@@ -132,12 +132,20 @@
     transform: scale(1);
   }
 
+  /* Parallax: permanent scale on image-text images (scoped via data-parallax) */
+  [data-parallax] img:not(.si-blur) {
+    transform: scale(1.16);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-mask-reveal],
     [data-mask-reveal] > img {
       clip-path: none !important;
       transform: none !important;
       transition: none !important;
+    }
+    [data-parallax] img:not(.si-blur) {
+      transform: none !important;
     }
   }
 }

@@ -5,6 +5,7 @@ export * from "./scroll-state.js";
 export * from "./carousel.js";
 export * from "./reveal.js";
 export * from "./smooth-scroll.js";
+export * from "./scroll-parallax.js";
 export * from "./form-validation.js";
 export * from "./scrollspy.js";
 export * from "./lightbox.js";
