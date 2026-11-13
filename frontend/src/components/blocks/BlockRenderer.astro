@@ -1,6 +1,6 @@
 ---
 import type { PageBlock } from "@/types";
-import { isBlockVisible } from "@/lib/blocks";
+import { isBlockShown } from "@/lib/blocks";
 import BlockHeroStatic from "./BlockHeroStatic.astro";
 import BlockHeroSlider from "./BlockHeroSlider.astro";
 import BlockRichText from "./BlockRichText.astro";
@@ -18,7 +18,7 @@ interface Props {
 const { blocks } = Astro.props;
 ---
 
-{blocks.filter(isBlockVisible).map((block) => {
+{blocks.filter(isBlockShown).map((block) => {
   switch (block.__component) {
     case "blocks.hero-static":
       return <BlockHeroStatic {...block} />;

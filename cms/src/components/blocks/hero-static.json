@@ -7,7 +7,7 @@
   },
   "options": {},
   "attributes": {
-    "visible": {
+    "shown": {
       "type": "boolean",
       "default": true
     },
@@ -64,7 +64,7 @@
       "type": "enumeration",
       "enum": ["16:9", "21:9", "3:1"],
       "conditions": {
-        "visible": {
+        "shown": {
           "==": [{ "var": "immersive" }, false]
         }
       }
@@ -76,7 +76,7 @@
   "config": {
     "layouts": {
       "edit": [
-        [{ "name": "visible", "size": 4 }],
+        [{ "name": "shown", "size": 4 }],
         [
           { "name": "heading", "size": 6 },
           { "name": "eyebrow", "size": 6 }
@@ -95,7 +95,7 @@
       ]
     },
     "metadatas": {
-      "visible": {
+      "shown": {
         "edit": {
           "description": "Se disattivato, questo blocco non viene mostrato nel sito."
         }

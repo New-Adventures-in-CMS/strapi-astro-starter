@@ -7,7 +7,7 @@ import { Section, Container } from "@/components/layout";
 import { Prose } from "@/components/starwind/prose";
 import BlockRenderer from "@/components/blocks/BlockRenderer.astro";
 import { strapiFind, pageBlocksPopulate } from "@/lib/strapi";
-import { isBlockVisible } from "@/lib/blocks";
+import { isBlockShown } from "@/lib/blocks";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Page } from "@/types";
 
@@ -37,7 +37,7 @@ if (!page) return Astro.redirect("/404");
 
 const bodyHtml = renderMarkdown(page.body);
 const hasBlocks = page.blocks && page.blocks.length > 0;
-const firstBlock = page.blocks?.find(isBlockVisible);
+const firstBlock = page.blocks?.find(isBlockShown);
 const headerOverlay =
   (firstBlock?.__component === "blocks.hero-static" ||
     firstBlock?.__component === "blocks.hero-slider") &&

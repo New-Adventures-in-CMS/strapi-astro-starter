@@ -68,7 +68,7 @@ export interface HeroSlide {
 
 export interface BlockHeroStatic {
   __component: "blocks.hero-static";
-  visible?: boolean;
+  shown?: boolean;
   heading: string;
   eyebrow?: string | null;
   subheading?: string | null;
@@ -84,7 +84,7 @@ export interface BlockHeroStatic {
 
 export interface BlockHeroSlider {
   __component: "blocks.hero-slider";
-  visible?: boolean;
+  shown?: boolean;
   heroStyle?: HeroStyle | null;
   immersive?: boolean | null;
   slides?: HeroSlide[] | null;
@@ -95,7 +95,7 @@ export interface BlockHeroSlider {
 
 export interface BlockRichText {
   __component: "blocks.rich-text";
-  visible?: boolean;
+  shown?: boolean;
   body: string;
   cta_primary?: SharedLink | null;
   cta_secondary?: SharedLink | null;
@@ -106,7 +106,7 @@ export interface BlockRichText {
 
 export interface BlockImageText {
   __component: "blocks.image-text";
-  visible?: boolean;
+  shown?: boolean;
   heading?: string | null;
   eyebrow?: string | null;
   body: string;
@@ -130,7 +130,7 @@ export interface SharedCard {
 
 export interface BlockCardGrid {
   __component: "blocks.card-grid";
-  visible?: boolean;
+  shown?: boolean;
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
@@ -145,7 +145,7 @@ export interface BlockCardGrid {
 
 export interface BlockCarousel {
   __component: "blocks.carousel";
-  visible?: boolean;
+  shown?: boolean;
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
@@ -179,7 +179,7 @@ export interface SharedContainer {
 
 export interface BlockForm {
   __component: "blocks.form";
-  visible?: boolean;
+  shown?: boolean;
   eyebrow?: string | null;
   heading?: string | null;
   lead?: string | null;
@@ -192,7 +192,7 @@ export type GalleryDisplay = "grid" | "carousel";
 
 export interface BlockGallery {
   __component: "blocks.gallery";
-  visible?: boolean;
+  shown?: boolean;
   heading?: string | null;
   eyebrow?: string | null;
   lead?: string | null;
@@ -213,7 +213,7 @@ export interface FaqItem {
 
 export interface BlockFaq {
   __component: "blocks.faq";
-  visible?: boolean;
+  shown?: boolean;
   eyebrow?: string | null;
   heading?: string | null;
   reading_width?: ReadingWidth | null;

@@ -588,7 +588,7 @@ async function seedDemoPages(strapi: Core.Strapi, formDocId?: string | null) {
           },
           {
             __component: "blocks.image-text",
-            visible: false,
+            shown: false,
             eyebrow: "ZIG-ZAG PAIR",
             heading: "Now the image flips to the right.",
             body: "Placing two image-text blocks back to back with alternating `image_position` creates the classic editorial zig-zag pattern.\n\nBoth use `width: bleed`, so the images alternate between left edge and right edge.",

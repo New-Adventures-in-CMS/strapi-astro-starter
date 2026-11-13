@@ -1,2 +1,1 @@
-export const isBlockVisible = (block: { visible?: boolean | null }): boolean =>
-  block.visible !== false;
+export const isBlockShown = (block: { shown?: boolean | null }): boolean => block.shown !== false;
